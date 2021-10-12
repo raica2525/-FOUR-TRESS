@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\00_Sys">
+      <UniqueIdentifier>{d2d36f4c-f6cc-45ed-ab1e-3de49ce9b849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\01_Parents">
+      <UniqueIdentifier>{435cb34f-e41c-4774-88ae-224341d50b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\02_Objects">
+      <UniqueIdentifier>{69737daf-93e6-4afe-bac1-cf734a7cbbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h01_Parents">
+      <UniqueIdentifier>{d544b025-207b-4866-b166-71982ff169d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h00_Sys">
+      <UniqueIdentifier>{d48ed6d6-d6fc-4e0f-b12e-09378e7f1f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h02_Objects">
+      <UniqueIdentifier>{a03f18bf-6f46-4430-b56d-8398bc474637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\99_Utilities">
+      <UniqueIdentifier>{a536229c-59c0-4de8-afef-5337d6f11da2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h99_Utilities">
+      <UniqueIdentifier>{466191da-c84b-4735-b7ef-f8702455d096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\99_Utilities\imgui">
+      <UniqueIdentifier>{e0fd4273-5c8b-4606-a17c-3c65b3b9f273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h99_Utilities\imgui">
+      <UniqueIdentifier>{325eb865-f7ca-43ab-8fd2-54062cfa9480}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダー ファイル\h00_Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダー ファイル\h00_Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\h00_Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダー ファイル\h00_Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2d.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx9.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_win32.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imjapaneserange.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル\00_Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\00_Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース ファイル\00_Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2d.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx9.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_win32.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース ファイル\00_Sys</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
