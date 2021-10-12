@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Data">
+      <UniqueIdentifier>{215007e7-eef1-4b48-9007-a56f7bad1532}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Mode">
+      <UniqueIdentifier>{eba3306e-953d-464a-8d11-26dbfb76700e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Data_h">
+      <UniqueIdentifier>{6da1578f-09ab-489d-835a-d33bca412462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Mode_h">
+      <UniqueIdentifier>{5d0393f5-4753-483f-9a84-56177bd41d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Useful_h">
+      <UniqueIdentifier>{202e3ed6-9e37-44c2-a107-157a901c19ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ObjParent_h">
+      <UniqueIdentifier>{32fd4d45-e2f1-4f63-aabf-dcb8e837c9f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Obj_h">
+      <UniqueIdentifier>{648991a6-ef7c-4d2f-8c66-6668eeba64c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Useful">
+      <UniqueIdentifier>{0b189793-cb90-42e0-a4db-470e627ff89c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\ObjParent">
+      <UniqueIdentifier>{26af332a-d4d3-42e3-8096-24379d560af9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj">
+      <UniqueIdentifier>{b2c45457-6c2c-4daf-87f8-450cd3ad3fe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sys">
+      <UniqueIdentifier>{938331b5-b547-4a2d-858e-20004c9be817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Sys_h">
+      <UniqueIdentifier>{7885ff65-1459-48de-bed9-6a7dd02cb491}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="effectData.cpp">
+      <Filter>ソース ファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="modelData.cpp">
+      <Filter>ソース ファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>ソース ファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="custom.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="manual.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="mode.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="ball.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="bg.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="effect2d.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="effect3d.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="locus.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="modelEffect.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="outline.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="player_custom.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="player_sp.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="wave.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="ai.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="animation.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="billboard.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2d.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="cliping_musk.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+    <ClCompile Include="library.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+    <ClCompile Include="number.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+    <ClCompile Include="number_array.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+    <ClCompile Include="text.cpp">
+      <Filter>ソース ファイル\Useful</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="effectData.h">
+      <Filter>ヘッダー ファイル\Data_h</Filter>
+    </ClInclude>
+    <ClInclude Include="modelData.h">
+      <Filter>ヘッダー ファイル\Data_h</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル\Data_h</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>ヘッダー ファイル\Data_h</Filter>
+    </ClInclude>
+    <ClInclude Include="custom.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="manual.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="mode.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ヘッダー ファイル\Mode_h</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="pause.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="ball.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="bg.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="effect2d.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="effect3d.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="locus.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="modelEffect.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="outline.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="ui.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="wave.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="ai.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="animation.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="billboard.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2d.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="cliping_musk.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="library.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="number.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="number_array.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="text.h">
+      <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
