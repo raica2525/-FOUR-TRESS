@@ -16,9 +16,6 @@
     <Filter Include="ソース ファイル\00_Sys">
       <UniqueIdentifier>{d2d36f4c-f6cc-45ed-ab1e-3de49ce9b849}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\01_Parents">
-      <UniqueIdentifier>{435cb34f-e41c-4774-88ae-224341d50b98}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\02_Objects">
       <UniqueIdentifier>{69737daf-93e6-4afe-bac1-cf734a7cbbb4}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\h99_Utilities\imgui">
       <UniqueIdentifier>{325eb865-f7ca-43ab-8fd2-54062cfa9480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\01_Parents">
+      <UniqueIdentifier>{435cb34f-e41c-4774-88ae-224341d50b98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,9 @@
     <ClInclude Include="imjapaneserange.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -140,5 +143,15 @@
     <ClCompile Include="renderer.cpp">
       <Filter>ソース ファイル\00_Sys</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
 </Project>

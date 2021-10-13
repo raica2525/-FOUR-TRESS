@@ -20,12 +20,13 @@
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
 #include "imjapaneserange.h"
+#include "resource.h"
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //静的メンバ変数宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 CRenderer* CManager::m_pRenderer = NULL;
 CCamera* CManager::m_pCamera = NULL;
-bool CManager::m_bImShowAnotherWindow = false;
+bool CManager::m_bImShowMainWindow = false;
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //コンストラクタ
@@ -155,12 +156,26 @@ void CManager::UpdateImGui(void)
 	
 	//初期のウィンドウサイズを指定
 	ImGui::SetNextWindowSize(ImVec2(320, 100), ImGuiCond_Once);
-
+	bool bBuffMainWindow = m_bImShowMainWindow;
 	//BeginからEndで一つのウィンドウ
-	ImGui::Begin("Debug", &m_bImShowAnotherWindow);
-	ImGui::Text("FPS:%d", GetFPS());
-	ImGui::Text(u8"卍kirito卍");
-	ImGui::End();
+	if (m_bImShowMainWindow)
+	{
+		ImGui::Begin(u8"オブジェクト情報", &m_bImShowMainWindow);
+		ImGui::Text("FPS:%d", GetFPS());
+		ImGui::Text(u8"テストTest");
+		ImGui::End();
+	}
+	if (bBuffMainWindow != m_bImShowMainWindow)
+	{
+		ChangeCheckMenuItem(ID_WINDOW_OBJECTINFO);
+	}
 
 	ImGui::EndFrame();
+}
+
+
+bool CManager::ChangeShowMainWindow(void)
+{
+	m_bImShowMainWindow = !m_bImShowMainWindow;
+	return m_bImShowMainWindow;
 }

@@ -32,8 +32,8 @@
 // マクロ定義
 //*****************************************************************************
 
-#define SCREEN_WIDTH (1920) //画面の解像度（X方向)
-#define SCREEN_HEIGHT (1080)	//画面の解像度（Y方向）
+#define SCREEN_WIDTH (1280) //画面の解像度（X方向)
+#define SCREEN_HEIGHT (720)	//画面の解像度（Y方向）
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #define FVF_VERTEX_3D	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #define NUM_POLYGON		(2)
@@ -69,5 +69,7 @@ class CManager;
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
 int GetFPS(void);
-
+void OpenDialog(HWND hWnd,int func);
+void MenuBar(MENUITEMINFO menuinfo, HWND hWnd, WPARAM wParam);
+void ChangeCheckMenuItem(UINT nItem);
 #endif

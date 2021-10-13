@@ -7,11 +7,12 @@
 #include "main.h"
 #include "manager.h"
 #include "imgui_impl_win32.h"
+#include "resource.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-
-#define WINDOW_NAME		"ポリゴンの描画"	// ウインドウのキャプション名
+#define WINDOW_NAME		"マップ制作ツール"	// ウインドウのキャプション名
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -23,7 +24,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //*****************************************************************************
 LPDIRECT3D9				g_pD3D = NULL;			// Direct3Dオブジェクト
 LPDIRECT3DDEVICE9		g_pD3DDevice = NULL;	// Deviceオブジェクト(描画に必要)
-
 
 
 #ifdef _DEBUG
@@ -47,10 +47,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		0,
 		0,
 		hInstance,
-		NULL,
+		LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)),
 		LoadCursor(NULL, IDC_ARROW),
 		(HBRUSH)(COLOR_WINDOW + 1),
-		NULL,
+		MAKEINTRESOURCE(IDR_MENU1),
 		CLASS_NAME,
 		NULL
 	};
@@ -61,6 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DWORD dwFrameCount;
 	DWORD dwExecLastTime;
 	DWORD dwFPSLastTime;
+
 	
 	// ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
@@ -96,7 +97,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// ウインドウの表示
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	
+
+	HACCEL hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR1));
 	// メッセージループ
 	while(1)
 	{
@@ -106,7 +108,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{// PostQuitMessage()が呼ばれたらループ終了
 				break;
 			}
-			else
+			else if(!TranslateAccelerator(hWnd, hAccel,&msg))
 			{
 				// メッセージの翻訳とディスパッチ
 				TranslateMessage(&msg);
@@ -163,6 +165,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+	MENUITEMINFO menuinfo;
+	ZeroMemory(&menuinfo, sizeof(menuinfo));
+	menuinfo.cbSize = sizeof(menuinfo);
 	switch(uMsg)
 	{
 	case WM_CREATE:
@@ -181,6 +186,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
+	case WM_COMMAND:
+		MenuBar(menuinfo,hWnd,wParam);
+		return 0;
 	default:
 		break;
 	}
@@ -191,4 +199,78 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int GetFPS(void)
 {
 	return g_nCountFPS;
+}
+
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// ダイアログを開く(funcが0の場合保存、1の場合読み込み)
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+void OpenDialog(HWND hWnd,int func)
+{
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	char SavePath[512];
+	char FileName[256];
+	FileName[0] = '\0';
+	GetCurrentDirectory(512, SavePath);
+	strcat(SavePath, "\\Save");
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.lpstrInitialDir = SavePath;
+	ofn.lpstrFile = FileName;
+	ofn.nMaxFile = 256;
+	ofn.lpstrDefExt = "ini";
+	ofn.lpstrFilter = "設定ファイル(*.ini)\0*.ini\0" "テキストファイル(*.txt)\0*.txt\0" "すべてのファイル(*.*)\0*.*\0";
+	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST;
+	if (func == 0)
+	{
+		GetSaveFileName(&ofn);
+	}
+	else if (func == 1)
+	{
+		GetOpenFileName(&ofn);
+	}
+}
+
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// メニューバーの処理
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
+{
+	switch (LOWORD(wParam))
+	{
+	case ID_WINDOW_OBJECTINFO:
+		CManager::ChangeShowMainWindow();
+		ChangeCheckMenuItem(ID_WINDOW_OBJECTINFO);
+		break;
+	case ID_FILE_OPEN:
+		OpenDialog(hWnd, 1);
+		break;
+	case ID_FILE_SAVE:
+		OpenDialog(hWnd, 0);
+		break;
+	case ID_FILE_EXIT:
+		DestroyWindow(hWnd);
+		break;
+	default:
+		break;
+	}
+}
+
+void ChangeCheckMenuItem(UINT nItem)
+{
+	MENUITEMINFO menuinfo;
+	ZeroMemory(&menuinfo, sizeof(menuinfo));
+	menuinfo.cbSize = sizeof(menuinfo);
+	menuinfo.fMask = MIIM_STATE;
+	GetMenuItemInfo(GetMenu(FindWindow(CLASS_NAME, NULL)), nItem, FALSE, &menuinfo);
+	if (menuinfo.fState == MFS_UNCHECKED)
+	{
+		menuinfo.fState = MFS_CHECKED;
+	}
+	else
+	{
+		menuinfo.fState = MFS_UNCHECKED;
+	}
+	SetMenuItemInfo(GetMenu(FindWindow(CLASS_NAME, NULL)), nItem, FALSE, &menuinfo);
 }

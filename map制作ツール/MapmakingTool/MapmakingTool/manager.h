@@ -30,12 +30,13 @@ public:
 	static CCamera* GetCamera(void) { return m_pCamera; }
 	static void LoadFile(void);
 	static void UnloadFiles(void);
+	static bool ChangeShowMainWindow(void);
 private:
 	void InitImGui(HWND hWnd);
 	void UpdateImGui(void);
 	static CRenderer* m_pRenderer;			//レンダラのポインタ
 	static CCamera* m_pCamera;
-	static bool m_bImShowAnotherWindow;
+	static bool m_bImShowMainWindow;
 
 
 };
