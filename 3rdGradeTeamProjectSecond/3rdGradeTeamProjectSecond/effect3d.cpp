@@ -406,8 +406,14 @@ CEffect3D* CEffect3D::Create(const int nType, D3DXVECTOR3 pos, float fScatterAng
         if (pCreateInfo->nRotSpeedMax > 0)
         {
             fRotAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
-            pEffect3D->m_fRotSpeed = D3DXToRadian(float(GetRandNum(pCreateInfo->nRotSpeedMax, pCreateInfo->nRotSpeedMin)) / EFFECT_FLOATING_POINT
-                - float(GetRandNum(pCreateInfo->nRotSpeedMax, pCreateInfo->nRotSpeedMin)) / EFFECT_FLOATING_POINT);
+            pEffect3D->m_fRotSpeed = D3DXToRadian(float(GetRandNum(pCreateInfo->nRotSpeedMax, pCreateInfo->nRotSpeedMin)) / EFFECT_FLOATING_POINT);
+
+            // ‰ñ“]‚ÌŒü‚«‚ðƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
+            int nToggle = GetRandNum(1, 0);
+            if (nToggle == 1)
+            {
+                pEffect3D->m_fRotSpeed *= -1;
+            }
         }
         pEffect3D->CBillboard::SetRotAngle(fRotAngle);
 

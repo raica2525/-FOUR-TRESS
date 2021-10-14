@@ -16,31 +16,13 @@
 // マクロ定義
 //================================================
 
+// カメラの振動
 #define SHAKE_VALUE_BALL_HIT_WALL 6.25f
 #define SHAKE_VALUE_SHOOT_BALL_SMALL 25.0f
 #define SHAKE_VALUE_SHOOT_BALL_BIG 50.0f
 #define SHAKE_VALUE_SHOOT_BALL_ULTRA 50.0f
 
 #define CAMERA_DEFAULT_ROT D3DXToRadian(90.0f)
-
-// ロックオン時のカメラの位置の微調整
-#define CAMERA_LOCK_ON_POS_ADJUST D3DXVECTOR3(0.0f, 400.0f, -1000.0f)
-#define CAMERA_LOCK_ON_OFFSET -750.0f
-
-// 決着時のカメラの位置微調整
-#define CAMERA_FINISH_NEXT_PLAYER_FRAME 90
-#define CAMERA_FINISH_ROT_SPEED D3DXToRadian(3.0f)
-//#define CAMERA_FINISH_OFFSET -600.0f
-//#define CAMERA_FINISH_HEIGHT D3DXToRadian(75.0f)
-
-// カメラの移動速度
-#define CAMERA_MOVE_RATE 0.1f                                     // カメラの補間値
-
-// 視野
-#define CAMERA_VIEW_RANGE 25000.0f
-
-// 視野角
-#define CAMERA_VIEW_ANGLE D3DXToRadian(45.0f)
 
 //================================================
 // カメラクラス宣言

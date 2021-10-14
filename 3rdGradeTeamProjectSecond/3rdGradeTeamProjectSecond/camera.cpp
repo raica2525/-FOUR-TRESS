@@ -21,6 +21,32 @@
 // 静的メンバ変数宣言
 //========================
 
+//================================================
+// マクロ定義
+//================================================
+
+// カメラの基本情報
+#define CAMERA_LOCK_ON_THETA D3DXToRadian(160.0f)    // 0度が真上
+#define CAMERA_LOCK_ON_OFFSET -8750.0f               // 注視点との距離
+
+// メニュー画面でのカメラ
+#define CAMERA_POS_IN_MENU  D3DXVECTOR3(0.0f, 400.0f, -1000.0f)
+#define CAMERA_DISTANCE_IN_MENU -750.0f
+#define CAMERA_THETA_IN_MENU 1.4f
+
+// 決着時のカメラの位置微調整
+#define CAMERA_FINISH_NEXT_PLAYER_FRAME 90
+#define CAMERA_FINISH_ROT_SPEED D3DXToRadian(3.0f)
+
+// カメラの移動速度
+#define CAMERA_MOVE_RATE 0.1f
+
+// 視野
+#define CAMERA_VIEW_RANGE 25000.0f
+
+// 視野角
+#define CAMERA_VIEW_ANGLE D3DXToRadian(45.0f)
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -66,22 +92,22 @@ void CCamera::ResetCamera(D3DXVECTOR3 pos, float fRot, SETTING setting)
     switch (setting)
     {
     case SETTING_GAME:
-        m_posRDest = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_pos = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_posV = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_posR = pos + CAMERA_LOCK_ON_POS_ADJUST;
+        m_posRDest = pos;
+        m_pos = pos;
+        m_posV = pos;
+        m_posR = pos;
         m_fDistance = CAMERA_LOCK_ON_OFFSET;
         m_state = STATE_BUTTLE;   // バトル中のカメラにする
-        m_fTheta = 1.4f;
+        m_fTheta = CAMERA_LOCK_ON_THETA;
         break;
     case SETTING_CUSTOM:
-        m_posRDest = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_pos = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_posV = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_posR = pos + CAMERA_LOCK_ON_POS_ADJUST;
-        m_fDistance = CAMERA_LOCK_ON_OFFSET;
-        m_state = STATE_OUT_GAME;   // アウトゲームのカメラにする
-        m_fTheta = 1.4f;
+        m_posRDest = CAMERA_POS_IN_MENU;
+        m_pos = CAMERA_POS_IN_MENU;
+        m_posV = CAMERA_POS_IN_MENU;
+        m_posR = CAMERA_POS_IN_MENU;
+        m_fDistance = CAMERA_DISTANCE_IN_MENU;
+        m_state = STATE_OUT_GAME;   // アウトゲームのカメラにする（メニュー画面想定）
+        m_fTheta = CAMERA_THETA_IN_MENU;
         break;
     }
 
@@ -192,12 +218,12 @@ HRESULT CCamera::Init(void)
     // デバイスを取得
     LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-    // 仮に、ステージ1開始時のプレイヤーの位置に合わせている
+    // 仮に、メニュー画面に合わせている
     m_posRDest = DEFAULT_VECTOR;
     m_posVDest = DEFAULT_VECTOR;
-    m_pos = DEFAULT_VECTOR + CAMERA_LOCK_ON_POS_ADJUST;
-    m_posV = DEFAULT_VECTOR + CAMERA_LOCK_ON_POS_ADJUST;
-    m_posR = DEFAULT_VECTOR + CAMERA_LOCK_ON_POS_ADJUST;
+    m_pos = CAMERA_POS_IN_MENU;
+    m_posV = CAMERA_POS_IN_MENU;
+    m_posR = CAMERA_POS_IN_MENU;
     m_pos = DEFAULT_VECTOR;
     m_posV = DEFAULT_VECTOR;
     m_posR = DEFAULT_VECTOR;
@@ -256,9 +282,17 @@ void CCamera::Update(void)
         break;
 
     case STATE_BUTTLE:
-
+    {
         // カメラと自身の距離
         m_fDistance = CAMERA_LOCK_ON_OFFSET;
+
+        // 仮に1Pにロックオン
+        CPlayer *pPlayer = CGame::GetPlayer(0);
+        if (pPlayer)
+        {
+            m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDeffence().y / 2, 0.0f);
+            m_posRDest = m_pos;
+        }
 
         if (m_shakePhase == SHAKE_PHASE_NONE)
         {
@@ -277,6 +311,7 @@ void CCamera::Update(void)
         }
 
         break;
+    }
 
     case STATE_FINISH_EACH:
     {

@@ -59,7 +59,7 @@ CNumberArray *CGame::m_pNumArray_BallSpd = NULL;
 CGame::TYPE CGame::m_type = TYPE_TRAINING;
 int CGame::m_nNumAllPlayer = 0;
 int CGame::m_nNumStock = 3; // 初期のストック数は3個
-bool CGame::m_bUseKeyboard = false;
+bool CGame::m_bUseKeyboard = true;
 int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
 CGame::STATE CGame::m_state = STATE_ROUND_START;
@@ -150,9 +150,9 @@ HRESULT CGame::Init(void)
         m_nNumStock = 3;     // トレーニングは3ストック固定
     }
 
-    // ステージのモデルを生成
-    CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
-    CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
+    //// ステージのモデルを生成
+    //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
+    //CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
 
                                         // UIを生成
     CUI::Place(CUI::SET_GAME);

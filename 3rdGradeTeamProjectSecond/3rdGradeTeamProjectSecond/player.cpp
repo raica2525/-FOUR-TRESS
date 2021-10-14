@@ -60,6 +60,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_controlInput.fLeftStickAngle = 0.0f;
     m_controlInput.bTiltedRightStick = false;
     m_controlInput.fRightStickAngle = 0.0f;
+    m_controlInput.fPlayerAngle = 0.0f;
     m_controlInput.bTriggerA = false;
     m_controlInput.bPressA = false;
     m_controlInput.bTriggerX = false;
@@ -123,7 +124,6 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nModelPosDefUp = 0;
     m_nModelPosDefDown = 0;
 
-    m_nCntTurnTime = 0;
     m_nCntPressJump = 0;
     m_bDiveCheck = false;
     m_bDiving = false;
@@ -153,6 +153,8 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_bSpBarrier = false;
     m_nCntSpGaugeMaxTime = 0;
     m_voiceSet = VOICE_SET_ROBO;
+
+    m_rotDest = DEFAULT_VECTOR;
 
     //===================================
     // 特殊能力対応周り
@@ -499,18 +501,21 @@ void CPlayer::Input(void)
                 if (pInputKeyboard->GetKeyboardPress(DIK_W))
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(-45.0f);
+                    m_controlInput.fPlayerAngle = D3DXToRadian(135.0f);
                 }
                 else if (pInputKeyboard->GetKeyboardPress(DIK_S))
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(-135.0f);
+                    m_controlInput.fPlayerAngle = D3DXToRadian(45.0f);
                 }
                 else if (pInputKeyboard->GetKeyboardPress(DIK_D))
                 {
-                    m_controlInput.fLeftStickAngle = D3DXToRadian(0.0f);
+                    m_controlInput.bTiltedLeftStick = false;
                 }
                 else
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(-90.0f);
+                    m_controlInput.fPlayerAngle = D3DXToRadian(90.0f);
                 }
             }
             else if (pInputKeyboard->GetKeyboardPress(DIK_D))
@@ -518,40 +523,45 @@ void CPlayer::Input(void)
                 if (pInputKeyboard->GetKeyboardPress(DIK_W))
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(45.0f);
+                    m_controlInput.fPlayerAngle = -D3DXToRadian(135.0f);
                 }
                 else if (pInputKeyboard->GetKeyboardPress(DIK_S))
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(135.0f);
+                    m_controlInput.fPlayerAngle = -D3DXToRadian(45.0f);
                 }
                 else if (pInputKeyboard->GetKeyboardPress(DIK_A))
                 {
-                    m_controlInput.fLeftStickAngle = D3DXToRadian(0.0f);
+                    m_controlInput.bTiltedLeftStick = false;
                 }
                 else
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(90.0f);
+                    m_controlInput.fPlayerAngle = -D3DXToRadian(90.0f);
                 }
             }
             else if (pInputKeyboard->GetKeyboardPress(DIK_W))
             {
                 if (pInputKeyboard->GetKeyboardPress(DIK_S))
                 {
-                    m_controlInput.fLeftStickAngle = D3DXToRadian(0.0f);
+                    m_controlInput.bTiltedLeftStick = false;
                 }
                 else
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(0.0f);
+                    m_controlInput.fPlayerAngle = D3DXToRadian(180.0f);
                 }
             }
             else if (pInputKeyboard->GetKeyboardPress(DIK_S))
             {
                 if (pInputKeyboard->GetKeyboardPress(DIK_W))
                 {
-                    m_controlInput.fLeftStickAngle = D3DXToRadian(0.0f);
+                    m_controlInput.bTiltedLeftStick = false;
                 }
                 else
                 {
                     m_controlInput.fLeftStickAngle = D3DXToRadian(180.0f);
+                    m_controlInput.fPlayerAngle = D3DXToRadian(0.0f);
                 }
             }
         }
@@ -582,6 +592,7 @@ void CPlayer::Input(void)
 
             // 角度を求める
             m_controlInput.fLeftStickAngle = atan2(Controller.lX, Controller.lY*-1);
+            m_controlInput.fPlayerAngle = atan2(Controller.lX*-1, Controller.lY);
         }
         else
         {
@@ -1208,7 +1219,6 @@ void CPlayer::Respawn(void)
     m_move = DEFAULT_VECTOR;
     m_nCntLandingTime = 0;
     m_bGroundOld = false;
-    m_nCntTurnTime = 0;
     m_bSquat = false;
     m_nCntStopTime = 0;
 
@@ -1308,6 +1318,7 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
     // 結びつけるメンバ変数の初期化
     pPlayer->m_startPos = pos;
     pPlayer->m_startRot = rot;
+    pPlayer->m_rotDest = rot;
     pPlayer->m_nStock = nStock;
     pPlayer->m_nIdxCreate = nIdxCreate;
     pPlayer->m_AIlevel = AIlevel;
@@ -1589,6 +1600,36 @@ void CPlayer::Movement(float fSpeed)
         m_move.x *= fControlMoveRate;
     }
 
+    // 奥行きの移動量制御
+    if (m_move.z != 0.0f)
+    {
+        // 制御の割合を、状況によって変える
+        float fControlMoveRate = PLAYER_CONTROL_MOVE_ON_GROUND;
+
+        // 負傷していないなら
+        if (m_damageState == DAMAGE_STATE_NONE)
+        {
+            // 空中なら
+            if (!m_bGround)
+            {
+                fControlMoveRate = PLAYER_CONTROL_MOVE_IN_AIR;
+            }
+        }
+        else
+        {
+            fControlMoveRate = PLAYER_CONTROL_MOVE_TAKE_DAMAGE;
+        }
+
+        // しゃがんでいるなら
+        if (m_bSquat)
+        {
+            fControlMoveRate = PLAYER_CONTROL_MOVE_SQUAT;
+        }
+
+        // 移動量制御
+        m_move.z *= fControlMoveRate;
+    }
+
     // モーションをまずは待機にする
     GetAnimation()->SetAnimation(ANIM_IDLE);
 
@@ -1678,16 +1719,17 @@ void CPlayer::Movement(float fSpeed)
     DamageMotion();
     //====================================================
 
-    // 回転制御
-    // 地面にいて、負傷していない状態かつ、攻撃状態がなしかチャージなら
-    if (m_bGround)
-    {
-        if (m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE ||
-            m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_SWING_CHARGE)
-        {
-            RotControl();
-        }
-    }
+    //// 回転制御
+    //// 地面にいて、負傷していない状態かつ、攻撃状態がなしかチャージなら
+    //if (m_bGround)
+    //{
+    //    if (m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE ||
+    //        m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_SWING_CHARGE)
+    //    {
+    //        RotControl();
+    //    }
+    //}
+    RotControl();
 
     // 位置を反映
     SetPos(pos);
@@ -2088,110 +2130,35 @@ void CPlayer::Control(float fSpeed)
     // 地上で攻撃中以外なら（主に地上スイングでは動けない）
     if (!m_bGround || m_attackState == ATTACK_STATE_NONE)
     {
-        // 振り向き時間を数える
-        if (m_nCntTurnTime > PLAYER_TURN_FRAME)
-        {
-            m_nCntTurnTime = 0;
-        }
-
         // 負傷していない状態かつ、着地中でもないなら
         if (m_damageState == DAMAGE_STATE_NONE && m_nCntLandingTime <= 0)
         {
             // スティックが倒れているなら移動
             if (m_controlInput.bTiltedLeftStick)
             {
-                // 右移動
-                if (STICK_RIGHT(m_controlInput.fLeftStickAngle))
+                if (m_bGround)
                 {
-                    if (m_nCntTurnTime > 0)
-                    {
-                        m_nCntTurnTime++;
+                    //// 砂煙の発生
+                    //if (fabsf(m_moveOld.x) <= PLAYER_SET_WALK_SMOKE_VALUE)
+                    //{
+                    //    CEffect3D::Emit(CEffectData::TYPE_WALK_SMOKE_LEFT, GetPos(), GetPos());
+                    //}
 
-                        // もし振り向き中にまた振り向いたら、カウントを1から
-                        if (rot.y == PLAYER_ROT_LEFT)
-                        {
-                            m_nCntTurnTime = 1;
-                        }
-                    }
-                    else
-                    {
-                        if (m_bGround)
-                        {
-                            // 向いている方向に進む
-                            if (rot.y == PLAYER_ROT_RIGHT)
-                            {
-                                // 砂煙の発生
-                                if (fabsf(m_moveOld.x) <= PLAYER_SET_WALK_SMOKE_VALUE)
-                                {
-                                    CEffect3D::Emit(CEffectData::TYPE_WALK_SMOKE_LEFT, GetPos(), GetPos());
-                                }
-                                m_move.x = fSpeed;
+                    // 移動量に代入
+                    m_move.x = sinf(m_controlInput.fLeftStickAngle)*fSpeed;
+                    m_move.z = cosf(m_controlInput.fLeftStickAngle)*fSpeed;
 
-                                // モーションを歩きにする
-                                GetAnimation()->SetAnimation(ANIM_MOVE);
-                            }
-                            else
-                            {
-                                // 方向転換開始
-                                m_nCntTurnTime++;
-                            }
-                        }
-                        else
-                        {
-                            // 空中移動
-                            m_move.x += fSpeed / PLAYER_TURN_FRAME;
-                        }
-                    }
+                    // モーションを歩きにする
+                    GetAnimation()->SetAnimation(ANIM_MOVE);
+
+                    //キャラの向きを変える
+                    m_rotDest.y = m_controlInput.fPlayerAngle;
                 }
-                else if (STICK_LEFT(m_controlInput.fLeftStickAngle))
+                else
                 {
-                    if (m_nCntTurnTime > 0)
-                    {
-                        m_nCntTurnTime++;
-
-                        // もし振り向き中にまた振り向いたら、カウントを1から
-                        if (rot.y == PLAYER_ROT_RIGHT)
-                        {
-                            m_nCntTurnTime = 1;
-                        }
-                    }
-                    else
-                    {
-                        if (m_bGround)
-                        {
-                            // 向いている方向に進む
-                            if (rot.y == PLAYER_ROT_LEFT)
-                            {
-                                // 砂煙の発生
-                                if (fabsf(m_moveOld.x) <= PLAYER_SET_WALK_SMOKE_VALUE)
-                                {
-                                    CEffect3D::Emit(CEffectData::TYPE_WALK_SMOKE_RIGHT, GetPos(), GetPos());
-                                }
-                                m_move.x = -fSpeed;
-
-                                // モーションを歩きにする
-                                GetAnimation()->SetAnimation(ANIM_MOVE);
-                            }
-                            else
-                            {
-                                // 方向転換開始
-                                m_nCntTurnTime++;
-                            }
-                        }
-                        else
-                        {
-                            // 空中移動
-                            m_move.x -= fSpeed / PLAYER_TURN_FRAME;
-                        }
-                    }
-                }
-                else if (STICK_DOWN(m_controlInput.fLeftStickAngle))
-                {
-                    // 地上なら、しゃがみ
-                    if (m_bGround)
-                    {
-                        m_bSquat = true;
-                    }
+                    // 空中移動は、徐々に加算
+                    m_move.x += sinf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
+                    m_move.z += cosf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
                 }
             }
 
@@ -2203,6 +2170,14 @@ void CPlayer::Control(float fSpeed)
             else if (m_move.x < -fSpeed)
             {
                 m_move.x = -fSpeed;
+            }
+            if (m_move.z > fSpeed)
+            {
+                m_move.z = fSpeed;
+            }
+            else if (m_move.z < -fSpeed)
+            {
+                m_move.z = -fSpeed;
             }
         }
     }
@@ -2285,9 +2260,8 @@ void CPlayer::Jump(void)
                     // 地面にいないことに
                     m_bGround = false;
 
-                    // 念のため着地時間と振り向き時間をリセット
+                    // 念のため着地時間をリセット
                     m_nCntLandingTime = 0;
-                    m_nCntTurnTime = 0;
 
                     // ジャンプのカウンタ加算
                     m_nCntPressJump++;
@@ -2322,9 +2296,8 @@ void CPlayer::Jump(void)
                                 // 三段ジャンプを使ったフラグをtrueに
                                 m_bUsedThreeJump = true;
 
-                                // 念のため着地時間と振り向き時間をリセット
+                                // 念のため着地時間をリセット
                                 m_nCntLandingTime = 0;
-                                m_nCntTurnTime = 0;
 
                                 // ジャンプのカウンタ加算
                                 m_nCntPressJump++;
@@ -2360,9 +2333,8 @@ void CPlayer::Jump(void)
                             // 二段ジャンプを使ったフラグをtrueに
                             m_bUsedSecondJump = true;
 
-                            // 念のため着地時間と振り向き時間をリセット
+                            // 念のため着地時間をリセット
                             m_nCntLandingTime = 0;
-                            m_nCntTurnTime = 0;
 
                             // ジャンプのカウンタ加算
                             m_nCntPressJump++;
@@ -3186,33 +3158,31 @@ void CPlayer::RotControl()
     // 設定する回転
     D3DXVECTOR3 rot = GetRot();
 
-    // スティックが倒れているなら向きを変える
-    if (m_controlInput.bTiltedLeftStick)
+    // 回転の制限
+    if (rot.y > D3DX_PI)
     {
-        if (!m_bSquat)
-        {
-            // スティックの角度から、向きを変える
-            if (STICK_RIGHT(m_controlInput.fLeftStickAngle))
-            {
-                rot.y = PLAYER_ROT_RIGHT;
-            }
-            else if (STICK_LEFT(m_controlInput.fLeftStickAngle))
-            {
-                rot.y = PLAYER_ROT_LEFT;
-            }
-        }
-        else
-        {
-            // しゃがみながら向きを変える場合、スティックは下寄り
-            if (STICK_SQUAT_RIGHT(m_controlInput.fLeftStickAngle))
-            {
-                rot.y = PLAYER_ROT_RIGHT;
-            }
-            else if (STICK_SQUAT_LEFT(m_controlInput.fLeftStickAngle))
-            {
-                rot.y = PLAYER_ROT_LEFT;
-            }
-        }
+        rot.y -= D3DX_PI * 2.0f;
+    }
+    else if (rot.y < -D3DX_PI)
+    {
+        rot.y += D3DX_PI * 2.0f;
+    }
+
+    // 目的の角度の回転を制限
+    float fRotMin = m_rotDest.y - rot.y;
+    if (fRotMin > D3DX_PI)
+    {
+        m_rotDest.y -= D3DX_PI * 2.0f;
+    }
+    else if (fRotMin < -D3DX_PI)
+    {
+        m_rotDest.y += D3DX_PI * 2.0f;
+    }
+
+    // 目的の値に近づける
+    if (fabsf(fRotMin) >= 0.0f)
+    {
+        rot.y += (m_rotDest.y - rot.y) * PLAYER_TURN_SPEED;
     }
 
     // 回転の設定

@@ -38,7 +38,7 @@
 #define PLAYER_CONTROL_MOVE_TAKE_DAMAGE 0.975f              // 負傷中の移動量制御
 #define PLAYER_CONTROL_MOVE_SQUAT 0.965f                    // しゃがみ中の移動量制御
 #define PLAYER_CONTROL_MOVE_DEATH 0.98f                     // 死亡中の移動量制御
-#define PLAYER_TURN_FRAME 4                                 // 振り向きに必要なフレーム数
+#define PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR 4               // 空中での移動量加算割合
 #define PLAYER_LANDING_TIME 5                               // 着地フレーム
 #define PLAYER_ATTACK_ANIM_MIN_FRAME 10                     // 最低保証の攻撃アニメーション再生（ヒットストップ時、変な格好で止めないため）（各攻撃フレームより短く）
 #define PLAYER_SQUAT_CUT_COLLISION_SIZE 0.6f                // しゃがみが当たり判定を削る割合
@@ -52,6 +52,7 @@
 #define PLAYER_SP_GAUGE_MAX_EFFECT_INTERVAL 30              // SPゲージエフェクトのインターバル
 #define PLAYER_VICTORY_VOICE_FRAME 60                       // 勝利ボイスフレーム
 #define PLAYER_SP_WHOLE_FRAME 120                           // 必殺技全体フレーム
+#define PLAYER_TURN_SPEED D3DXToRadian(10.0f)                // 振り向きスピード
 
 // プレイヤーの防御周り
 #define PLAYER_MAX_STOCK 6                                  // ストックの最大数
@@ -300,6 +301,7 @@ public:
         float fLeftStickAngle;          // 左スティック角度
         bool bTiltedRightStick;         // 右スティックが傾いたかどうか
         float fRightStickAngle;         // 右スティック角度
+        float fPlayerAngle;             // プレイヤー角度
         bool bTriggerA;                 // Aボタントリガー
         bool bPressA;                   // Aボタンプレス
         bool bTriggerX;                 // Xボタントリガー
@@ -516,7 +518,6 @@ private:
     int m_nModelPosDefUp;                    // モデルの初期位置データ（上半身）
     int m_nModelPosDefDown;                  // モデルの初期位置データ（下半身）
 
-    int m_nCntTurnTime;                      // 方向転換時間
     int m_nCntPressJump;                     // ジャンプを押した時間
     bool m_bDiveCheck;                       // 急降下になるかどうかのチェック
     bool m_bDiving;                          // 急降下中
@@ -547,9 +548,11 @@ private:
     int m_nCntSpGaugeMaxTime;                // 必殺ゲージMAX時間
     int m_voiceSet;                          // ボイスセット
 
-                                             //===================================    
-                                             // 特殊能力対応周り                      
-                                             //===================================    
+    D3DXVECTOR3 m_rotDest;                   // 向き(目的値)
+
+    //===================================    
+    // 特殊能力対応周り                      
+    //===================================    
     bool m_bUsedThreeJump;                   // 三段ジャンプを使ったかどうか
     int m_nSwingChargeMax;                   // 最大溜め時間
 };
