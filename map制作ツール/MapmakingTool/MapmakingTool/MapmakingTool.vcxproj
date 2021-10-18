@@ -152,11 +152,16 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imdebugwindow.h" />
     <ClInclude Include="imgui.h" />
+    <ClInclude Include="imguimanager.h" />
+    <ClInclude Include="imguiwindow.h" />
     <ClInclude Include="imgui_impl_dx9.h" />
     <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="imgui_internal.h" />
     <ClInclude Include="imjapaneserange.h" />
+    <ClInclude Include="immapwindow.h" />
+    <ClInclude Include="imobjectwindow.h" />
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
@@ -171,12 +176,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="imdebugwindow.cpp" />
     <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imguimanager.cpp" />
+    <ClCompile Include="imguiwindow.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="immapwindow.cpp" />
+    <ClCompile Include="imobjectwindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="model.cpp" />

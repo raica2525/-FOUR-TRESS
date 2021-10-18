@@ -13,6 +13,7 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 class CRenderer;
 class CCamera;
+class CImGuiManager;
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //クラス定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -28,16 +29,14 @@ public:
 	void Draw(void);						//描画関数
 	static CRenderer* GetRenderer(void) { return m_pRenderer; }
 	static CCamera* GetCamera(void) { return m_pCamera; }
+	static CImGuiManager* GetImGuiManager(void) { return m_pImGuiManager; }
 	static void LoadFile(void);
 	static void UnloadFiles(void);
-	static bool ChangeShowMainWindow(void);
+
 private:
-	void InitImGui(HWND hWnd);
-	void UpdateImGui(void);
+	static CImGuiManager* m_pImGuiManager;
 	static CRenderer* m_pRenderer;			//レンダラのポインタ
 	static CCamera* m_pCamera;
-	static bool m_bImShowMainWindow;
-
 
 };
 

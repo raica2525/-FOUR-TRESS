@@ -8,7 +8,8 @@
 #include "manager.h"
 #include "imgui_impl_win32.h"
 #include "resource.h"
-
+#include "imguimanager.h"
+#include "imguiwindow.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -144,11 +145,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// 終了処理
-	if(pManager != NULL)
-	pManager->Uninit();
-	delete pManager;
-	pManager = NULL;
-
+	if (pManager != NULL)
+	{
+		pManager->Uninit();
+		delete pManager;
+		pManager = NULL;
+	}
 
 	// ウィンドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
@@ -240,8 +242,16 @@ void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
 	switch (LOWORD(wParam))
 	{
 	case ID_WINDOW_OBJECTINFO:
-		CManager::ChangeShowMainWindow();
+		CManager::GetImGuiManager()->GetImGuiWindow(CImGuiManager::IMWINDOW_OBJ_INFO)->ChangeShowWindow();
 		ChangeCheckMenuItem(ID_WINDOW_OBJECTINFO);
+		break;
+	case ID_WINDOW_MAPINFO:
+		CManager::GetImGuiManager()->GetImGuiWindow(CImGuiManager::IMWINDOW_MAP_INFO)->ChangeShowWindow();
+		ChangeCheckMenuItem(ID_WINDOW_MAPINFO);
+		break;
+	case ID_WINDOW_DEBUGINFO:
+		CManager::GetImGuiManager()->GetImGuiWindow(CImGuiManager::IMWINDOW_DEBUG_INFO)->ChangeShowWindow();
+		ChangeCheckMenuItem(ID_WINDOW_DEBUGINFO);
 		break;
 	case ID_FILE_OPEN:
 		OpenDialog(hWnd, 1);

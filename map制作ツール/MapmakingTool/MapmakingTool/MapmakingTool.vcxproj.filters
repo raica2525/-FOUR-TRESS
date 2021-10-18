@@ -34,14 +34,26 @@
     <Filter Include="ヘッダー ファイル\h99_Utilities">
       <UniqueIdentifier>{466191da-c84b-4735-b7ef-f8702455d096}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\99_Utilities\imgui">
-      <UniqueIdentifier>{e0fd4273-5c8b-4606-a17c-3c65b3b9f273}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\h99_Utilities\imgui">
-      <UniqueIdentifier>{325eb865-f7ca-43ab-8fd2-54062cfa9480}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\01_Parents">
       <UniqueIdentifier>{435cb34f-e41c-4774-88ae-224341d50b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\99_Utilities\imgui">
+      <UniqueIdentifier>{93e56d72-0296-408b-8e04-0ddf71b3c28c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h99_Utilities\imgui">
+      <UniqueIdentifier>{95f93fbe-98d5-4ba2-873b-5c260dcf5b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h99_Utilities\imgui\imgui_lib">
+      <UniqueIdentifier>{325eb865-f7ca-43ab-8fd2-54062cfa9480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\99_Utilities\imgui\imgui_lib">
+      <UniqueIdentifier>{e0fd4273-5c8b-4606-a17c-3c65b3b9f273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\99_Utilities\imgui\imgui_window">
+      <UniqueIdentifier>{001af26f-d198-4ea2-9110-7e85a73685e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\h99_Utilities\imgui\imgui_window">
+      <UniqueIdentifier>{e0fceaca-556b-43f6-af44-13758d18b107}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,34 +82,49 @@
       <Filter>ヘッダー ファイル\h01_Parents</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_dx9.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imstb_rectpack.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imstb_textedit.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imconfig.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="imjapaneserange.h">
-      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="imguimanager.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imguiwindow.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imdebugwindow.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
+    </ClInclude>
+    <ClInclude Include="immapwindow.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
+    </ClInclude>
+    <ClInclude Include="imobjectwindow.h">
+      <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -123,25 +150,40 @@
       <Filter>ソース ファイル\01_Parents</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_dx9.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="imgui_tables.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
     </ClCompile>
     <ClCompile Include="renderer.cpp">
       <Filter>ソース ファイル\00_Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="imguimanager.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imdebugwindow.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_window</Filter>
+    </ClCompile>
+    <ClCompile Include="immapwindow.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_window</Filter>
+    </ClCompile>
+    <ClCompile Include="imobjectwindow.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui\imgui_window</Filter>
+    </ClCompile>
+    <ClCompile Include="imguiwindow.cpp">
+      <Filter>ソース ファイル\99_Utilities\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

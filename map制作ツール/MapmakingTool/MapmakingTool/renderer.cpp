@@ -4,6 +4,7 @@
 #include "manager.h"
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
+#include "imguimanager.h"
 CRenderer::CRenderer()
 {
 	m_pD3D = NULL;
@@ -141,9 +142,9 @@ void CRenderer::Draw(void)
 	{
 		// ƒ|ƒŠƒSƒ“‚Ì•`‰æˆ—
 		CScene::DrawAll();
-		ImGui::Render();
-		ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
-	
+		
+		CManager::GetImGuiManager()->Draw();
+
 		// Direct3D‚É‚æ‚é•`‰æ‚ÌI—¹
 		m_pD3DDevice->EndScene();
 	}

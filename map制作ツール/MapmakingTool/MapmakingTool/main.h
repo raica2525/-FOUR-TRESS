@@ -38,8 +38,9 @@
 #define FVF_VERTEX_3D	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1)
 #define NUM_POLYGON		(2)
 #define NUM_VERTEX		(4)
-#define CLASS_NAME		"AppClass"			// ウインドウのクラス名
-#define ZERO_VEC		D3DXVECTOR3(0.0f,0.0f,0.0f)
+#define CLASS_NAME		("AppClass")			// ウインドウのクラス名
+#define ZERO_VEC		(D3DXVECTOR3(0.0f,0.0f,0.0f))
+#define SAFE_DELETE(p) {if(p != NULL){delete p;p = NULL;}}
 
 //*****************************************************************************
 // 構造体定義
