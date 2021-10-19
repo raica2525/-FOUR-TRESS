@@ -1544,8 +1544,8 @@ CPlayer * CPlayer::CreateInResult(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCont
     pPlayer->m_rank = rank;
     if (pPlayer->m_rank != RANK_1)
     {
-        // 1位以外は、武器を描画しない
-        pPlayer->SetDrawWeapon(false);
+        //// 1位以外は、武器を描画しない
+        //pPlayer->SetDrawWeapon(false);
     }
 
     // マネキンモードに
@@ -1671,13 +1671,17 @@ void CPlayer::Movement(float fSpeed)
     {
         pos.x = -mapLimit.fWidth + m_collisionSizeDeffence.x;
     }
-    if (pos.x + m_collisionSizeDeffence.x > mapLimit.fWidth)
+    else if (pos.x + m_collisionSizeDeffence.x > mapLimit.fWidth)
     {
         pos.x = mapLimit.fWidth - m_collisionSizeDeffence.x;
     }
-    if (pos.y + m_collisionSizeDeffence.y > mapLimit.fHeight)
+    if (pos.z + m_collisionSizeDeffence.x > mapLimit.fWidth)
     {
-        pos.y = mapLimit.fHeight - m_collisionSizeDeffence.y;
+        pos.z = mapLimit.fWidth - m_collisionSizeDeffence.x;
+    }
+    else if (pos.z - m_collisionSizeDeffence.x < -mapLimit.fWidth)
+    {
+        pos.z = -mapLimit.fWidth + m_collisionSizeDeffence.x;
     }
 
     //====================================================
@@ -1742,12 +1746,8 @@ void CPlayer::Movement(float fSpeed)
     {
         if (m_damageState == DAMAGE_STATE_NONE || m_damageState == DAMAGE_STATE_STAND_UP && m_nCntTakeDamageTime <= PLAYER_TAKE_DAMAGE_STAND_UP_INVINCIBLE_FRAME)
         {
-            D3DXVECTOR3 size = m_collisionSizeDeffence;
-            if (m_bSquat)
-            {
-                size.y *= PLAYER_SQUAT_CUT_COLLISION_SIZE;
-            }
-            CDebug::Create(pos, size, CDebug::TYPE_MOMENT);
+            D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSizeDeffence.x, m_collisionSizeDeffence.x, m_collisionSizeDeffence.x);
+            CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
         }
     }
 #endif // COLLISION_TEST

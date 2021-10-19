@@ -47,8 +47,6 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
 
     // アニメーションはデフォルトで使うことを設定
     m_bUseAnimation = true;
-
-    m_bDrawWeapon = true;
 }
 
 //=============================================================================
@@ -160,14 +158,6 @@ void CCharacter::Draw(void)
         {
             // 全ての親は、キャラクターの位置そのものを渡す
             m_apModel[nCount]->Draw(m_pos, m_rot);
-        }
-        else if (nCount == CPlayer::PARTS_WEP)
-        {
-            // 武器を描画するなら
-            if (m_bDrawWeapon)
-            {
-                m_apModel[nCount]->Draw(m_apModel[m_anIndexParent[nCount]]);
-            }
         }
         else
         {

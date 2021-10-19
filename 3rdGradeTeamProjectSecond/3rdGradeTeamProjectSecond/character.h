@@ -44,9 +44,9 @@ public:
     void LoadModelData(char* cFilePass);                          // テキストファイルから直接読み込む時に使う関数
     void LoadModelData(int nModelPosDefUp, int nModelPosDefDown); // モデルの初期位置データから読み込むときに使う関数
 
-                                                                  /*========================================================
-                                                                  // セッター
-                                                                  //======================================================*/
+    /*========================================================
+    // セッター
+    //======================================================*/
     void SetPartPos(int index, D3DXVECTOR3 pos) { m_apModel[index]->SetPos(pos); }
     void SetPartRot(int index, D3DXVECTOR3 rot) { m_apModel[index]->SetRot(rot); }
     void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
@@ -56,7 +56,6 @@ public:
     void SetAnimFilePass(char* cFilePass) { m_cAnimFilePass = cFilePass; }
 
     void BindParts(int nPartsIndex, int nPartsType) { m_aPartsType[nPartsIndex] = nPartsType; }
-    void SetDrawWeapon(bool bDrawWeapon) { m_bDrawWeapon = bDrawWeapon; }
 
     /*========================================================
     // ゲッター
@@ -90,8 +89,6 @@ private:
     char* m_cAnimFilePass;                                              // アニメーションファイルのパス
 
     bool m_bUseAnimation;												// アニメーションさせるかどうか
-
-    bool m_bDrawWeapon;                                                 // 武器を描画するかどうか
 };
 
 #endif

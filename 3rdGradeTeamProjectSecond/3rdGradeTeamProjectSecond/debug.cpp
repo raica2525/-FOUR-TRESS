@@ -27,6 +27,7 @@
 //=============================================================================
 CDebug::CDebug() :CScene3D(CScene::OBJTYPE_MODEL_EFFECT)
 {
+    m_nModelType = 0;
     m_nLife = 2;
     m_type = TYPE_PERMANENT;
 }
@@ -49,7 +50,7 @@ HRESULT CDebug::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
     SetScale(size);
 
-    BindModelData(1);   // “–‚½‚è”»’è‰ÂŽ‹‰»‚Í1”Ô
+    BindModelData(m_nModelType);   // “–‚½‚è”»’è‰ÂŽ‹‰»‚Í1”Ô
 
     return S_OK;
 }
@@ -96,7 +97,7 @@ void CDebug::Draw(void)
 // ƒCƒ“ƒXƒ^ƒ“ƒX¶¬ˆ—
 // Author : Œã“¡T”V•
 //=============================================================================
-void CDebug::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type)
+void CDebug::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type, int nModelType)
 {
 #ifdef _DEBUG
     if (!CManager::GetRenderer()->GetDispFont())
@@ -108,6 +109,7 @@ void CDebug::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type)
     CDebug *pDebug = NULL;
     pDebug = new CDebug;
     pDebug->m_type = type;
+    pDebug->m_nModelType = nModelType;
     pDebug->Init(pos, size);
 }
 

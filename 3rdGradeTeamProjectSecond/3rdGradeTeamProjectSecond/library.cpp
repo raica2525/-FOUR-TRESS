@@ -238,6 +238,21 @@ bool IsCollisionCircle2D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXV
     return (fDistance <= fSumRadius);
 }
 
+//=============================================================================
+// ‰~‚Ì“–‚½‚è”»’è3D
+// Author : Œã“¡T”V•
+//=============================================================================
+bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2)
+{
+    // ‹——£‚ð‹‚ß‚é
+    float fDistance = sqrtf(powf(pos1.x - pos2.x, 2.0f) + powf(pos1.z - pos2.z, 2.0f));
+
+    // 2‚Â‚Ì”¼Œa‚ð‘«‚µ‚½‚à‚Ì‚ð‹‚ß‚é
+    float fSumRadius = (fSize1 + fSize2) / 2;
+
+    return (fDistance <= fSumRadius);
+}
+
 //===========================================
 // ”ÍˆÍ“à‚ÅAƒ‰ƒ“ƒ_ƒ€‚È”Žš‚ð“¾‚éi+‚Æ-‚ð‚Ü‚½‚®‚Ì‚É‚Í”ñ‘Î‰žj
 // Author : Œã“¡T”V•
@@ -354,7 +369,7 @@ bool IsCollisionSide2D(const D3DXVECTOR3 r1, const D3DXVECTOR3 r2, const D3DXVEC
 }
 
 //===========================================
-// ‰ñ“]‚·‚é‹éŒ`‚Ö‚Ì“–‚½‚è”»’èi‰ñ“]‚µ‚È‚¢‚à‚Ì‚©‚çA‰ñ“]‚·‚é‹éŒ`‚Öj
+// ‰ñ“]‚·‚é‹éŒ`‚Ö‚Ì“–‚½‚è”»’èi‰ñ“]‚µ‚È‚¢‹éŒ`‚Æ‰ñ“]‚·‚é‹éŒ`j
 // Author : Œã“¡T”V•
 //===========================================
 bool IsCollisionToRotationRect(const D3DXVECTOR3 myCenter, const D3DXVECTOR3 mySize, const D3DXVECTOR3 targetPos1, const D3DXVECTOR3 targetPos2, const D3DXVECTOR3 targetPos3, const D3DXVECTOR3 targetPos4)
