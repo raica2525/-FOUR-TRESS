@@ -17,8 +17,8 @@
 //========================
 
 // ゲーム内の移動範囲
-#define GAME_LIMIT_WIDTH 1100.0f    // 2倍になる
-#define GAME_LIMIT_HEIGHT 1000.0f   // 仮でわかりやすいように本家の2倍のサイズのステージ
+#define GAME_LIMIT_WIDTH 3100.0f    // 2倍になる
+#define GAME_LIMIT_HEIGHT 1000.0f   // 仮でわかりやすいように本家の2倍のサイズのステージ(Blsze Smashでのみ使用)
 
 //========================
 // 列挙型定義
@@ -55,6 +55,7 @@ bool IsCollisionRectangle2D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, c
 bool IsCollisionRectangle3D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
 BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos1Old, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
 bool IsCollisionCircle2D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
+bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
 int GetRandNum(const int nMax, const int nMin);
 float GetAngleToTarget2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 float GetAngleToTarget3D2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);

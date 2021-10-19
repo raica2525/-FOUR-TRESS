@@ -150,9 +150,9 @@ HRESULT CGame::Init(void)
         m_nNumStock = 3;     // トレーニングは3ストック固定
     }
 
-    //// ステージのモデルを生成
+    // ステージのモデルを生成
     //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
-    //CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
+    CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
 
                                         // UIを生成
     CUI::Place(CUI::SET_GAME);

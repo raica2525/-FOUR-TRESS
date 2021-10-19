@@ -948,4 +948,12 @@ MODEL_DATASET
 	NAME = data/MODEL/lucifer/08_handL.x
 END_MODEL_DATASET
 
+#---------------------------------------
+# [118] 当たり判定可視化2
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 118
+	NAME = data/MODEL/debug2.x
+END_MODEL_DATASET
+
 END_SCRIPT		# この行は絶対消さないこと！

@@ -47,7 +47,7 @@ public:
     void Uninit(void);
     void Update(void);
     void Draw(void);
-    static void Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type);  // 戻り値は呼び出し先で使う必要がないため無し
+    static void Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type, int nModelType = 1);  // 戻り値は呼び出し先で使う必要がないため無し
 
 #ifdef _DEBUG
     static void ReloadUI(CUI::SET set);     // テクスチャの再読み込み
@@ -55,6 +55,7 @@ public:
 #endif
 
 private:
+    int m_nModelType;
     int m_nLife;    // 寿命
     TYPE m_type;    // 種類
 };
