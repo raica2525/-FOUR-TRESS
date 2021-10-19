@@ -114,6 +114,9 @@
     <ClInclude Include="imobjectwindow.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
     </ClInclude>
+    <ClInclude Include="fileio.h">
+      <Filter>ヘッダー ファイル\h99_Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -160,6 +163,9 @@
     </ClCompile>
     <ClCompile Include="imguiwindow.cpp">
       <Filter>ソース ファイル\99_Utilities\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="fileio.cpp">
+      <Filter>ソース ファイル\99_Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

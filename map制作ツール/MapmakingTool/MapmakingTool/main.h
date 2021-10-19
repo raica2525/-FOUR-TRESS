@@ -61,16 +61,23 @@ typedef struct
 	D3DCOLOR col;
 	D3DXVECTOR2 tex;
 } VERTEX_3D;
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-//前方宣言
+//列挙型定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-class CManager;
+enum DIALOG
+{
+	DIALOG_LOAD = 0,
+	DIALOG_SAVE,
+	DIALOG_MAX
+};
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //プロトタイプ宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
 int GetFPS(void);
-void OpenDialog(HWND hWnd,int func);
+void OpenDialog(HWND hWnd, DIALOG dialog);
 void MenuBar(MENUITEMINFO menuinfo, HWND hWnd, WPARAM wParam);
 void ChangeCheckMenuItem(UINT nItem);
 #endif

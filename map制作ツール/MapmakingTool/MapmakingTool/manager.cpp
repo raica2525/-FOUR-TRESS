@@ -11,11 +11,7 @@
 #include "manager.h"
 #include <stdio.h>
 #include "renderer.h"
-#include "scene.h"
-#include "scene2d.h"
 #include "camera.h"
-#include "scene3d.h"
-#include "model.h"
 #include "resource.h"
 #include "imguimanager.h"
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -65,7 +61,7 @@ HRESULT CManager::Init(HWND hWnd, bool bWindow, HINSTANCE hInstance)
 void CManager::Uninit(void)
 {
 	//シーンの終了
-	CScene::ReleaseAll();
+	//CScene::ReleaseAll();
 	
 	//カメラの終了
 	if (m_pCamera != NULL)

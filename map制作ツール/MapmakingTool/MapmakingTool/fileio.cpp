@@ -1,32 +1,19 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //
-//	imdebugwindow.h
+//	fileio.cpp
 //	Author:池田悠希
 //
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-#ifndef _IMDEBUGWINDOW_H_
-#define _IMDEBUGWINDOW_H_
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //インクルードファイル
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-#include "main.h"
-#include "imguiwindow.h"
+#include "fileio.h"
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-//クラス定義
+//ロード
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-class CImDebugWindow : public CImGuiWindow
+HRESULT CFileIO::Load(char* dest, size_t destSize, char* filePath)
 {
-public:
-
-	CImDebugWindow();		//コンストラクタ
-	~CImDebugWindow();		//デストラクタ
-	void Init(void);
-	void Update(void);		//更新関数
-	static CImDebugWindow* Create(void);
-
-};
-
-#endif
-
+	return S_OK;
+}

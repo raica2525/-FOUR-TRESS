@@ -55,6 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		CLASS_NAME,
 		NULL
 	};
+
 	RECT rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 	HWND hWnd;
 	MSG msg;
@@ -68,7 +69,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassEx(&wcex);
 
 	// 指定したクライアント領域を確保するために必要なウィンドウ座標を計算
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, true);
 
 	// ウィンドウの作成
 	hWnd = CreateWindow(CLASS_NAME,
@@ -82,6 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						NULL,
 						hInstance,
 						NULL);
+
 	//初期化処理
 	pManager = new CManager;
 	pManager->Init(hWnd,true, hInstance);
@@ -206,7 +208,7 @@ int GetFPS(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // ダイアログを開く(funcが0の場合保存、1の場合読み込み)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void OpenDialog(HWND hWnd,int func)
+void OpenDialog(HWND hWnd, DIALOG dialog)
 {
 	OPENFILENAME ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -221,19 +223,22 @@ void OpenDialog(HWND hWnd,int func)
 	ofn.lpstrInitialDir = SavePath;
 	ofn.lpstrFile = FileName;
 	ofn.nMaxFile = 256;
-	ofn.lpstrDefExt = "ini";
-	ofn.lpstrFilter = "設定ファイル(*.ini)\0*.ini\0" "テキストファイル(*.txt)\0*.txt\0" "すべてのファイル(*.*)\0*.*\0";
+	ofn.lpstrDefExt = "json";
+	ofn.lpstrFilter = "JSONファイル(*.json)\0*.json\0" "テキストファイル(*.txt)\0*.txt\0" "すべてのファイル(*.*)\0*.*\0";
 	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST;
-	if (func == 0)
+	switch (dialog)
 	{
-		GetSaveFileName(&ofn);
-	}
-	else if (func == 1)
-	{
+	case DIALOG_LOAD:
 		GetOpenFileName(&ofn);
+		break;
+	case DIALOG_SAVE:
+		GetSaveFileName(&ofn);
+		break;
+	default:
+		assert(false);
+		break;
 	}
 }
-
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // メニューバーの処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -253,11 +258,11 @@ void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
 		CManager::GetImGuiManager()->GetImGuiWindow(CImGuiManager::IMWINDOW_DEBUG_INFO)->ChangeShowWindow();
 		ChangeCheckMenuItem(ID_WINDOW_DEBUGINFO);
 		break;
-	case ID_FILE_OPEN:
-		OpenDialog(hWnd, 1);
+	case ID_FILE_LOAD:
+		OpenDialog(hWnd, DIALOG_LOAD);
 		break;
 	case ID_FILE_SAVE:
-		OpenDialog(hWnd, 0);
+		OpenDialog(hWnd, DIALOG_SAVE);
 		break;
 	case ID_FILE_EXIT:
 		DestroyWindow(hWnd);
@@ -274,6 +279,7 @@ void ChangeCheckMenuItem(UINT nItem)
 	menuinfo.cbSize = sizeof(menuinfo);
 	menuinfo.fMask = MIIM_STATE;
 	GetMenuItemInfo(GetMenu(FindWindow(CLASS_NAME, NULL)), nItem, FALSE, &menuinfo);
+	DWORD error = GetLastError();
 	if (menuinfo.fState == MFS_UNCHECKED)
 	{
 		menuinfo.fState = MFS_CHECKED;

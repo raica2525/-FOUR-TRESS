@@ -9,7 +9,6 @@
 #include "camera.h"
 #include "renderer.h"
 #include "manager.h"
-#include "scene.h"
 #include <stdio.h>
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
