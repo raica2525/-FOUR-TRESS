@@ -167,12 +167,8 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
-    <ClInclude Include="model.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="scene2d.h" />
-    <ClInclude Include="scene3d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
@@ -189,11 +185,7 @@
     <ClCompile Include="imobjectwindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
-    <ClCompile Include="model.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="scene2d.cpp" />
-    <ClCompile Include="scene3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

@@ -69,18 +69,6 @@
     <ClInclude Include="camera.h">
       <Filter>ヘッダー ファイル\h00_Sys</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ヘッダー ファイル\h01_Parents</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダー ファイル\h01_Parents</Filter>
-    </ClInclude>
-    <ClInclude Include="scene2d.h">
-      <Filter>ヘッダー ファイル\h01_Parents</Filter>
-    </ClInclude>
-    <ClInclude Include="scene3d.h">
-      <Filter>ヘッダー ファイル\h01_Parents</Filter>
-    </ClInclude>
     <ClInclude Include="imgui.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
@@ -136,18 +124,6 @@
     </ClCompile>
     <ClCompile Include="manager.cpp">
       <Filter>ソース ファイル\00_Sys</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>ソース ファイル\01_Parents</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>ソース ファイル\01_Parents</Filter>
-    </ClCompile>
-    <ClCompile Include="scene2d.cpp">
-      <Filter>ソース ファイル\01_Parents</Filter>
-    </ClCompile>
-    <ClCompile Include="scene3d.cpp">
-      <Filter>ソース ファイル\01_Parents</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
       <Filter>ソース ファイル\99_Utilities\imgui\imgui_lib</Filter>
