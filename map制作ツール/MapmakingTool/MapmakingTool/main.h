@@ -18,7 +18,8 @@
 #include <dinput.h>
 #include "d3dx9.h"
 #include <time.h>
-
+#include <stdio.h>
+#include <assert.h>
 //*****************************************************************************
 // ライブラリファイルのリンク
 //*****************************************************************************
@@ -42,6 +43,7 @@
 #define ZERO_VEC		(D3DXVECTOR3(0.0f,0.0f,0.0f))
 #define SAFE_DELETE(p) {if(p != NULL){delete p;p = NULL;}}
 
+using namespace std;
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
@@ -63,21 +65,10 @@ typedef struct
 } VERTEX_3D;
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-//列挙型定義
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
-enum DIALOG
-{
-	DIALOG_LOAD = 0,
-	DIALOG_SAVE,
-	DIALOG_MAX
-};
-
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //プロトタイプ宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
 int GetFPS(void);
-void OpenDialog(HWND hWnd, DIALOG dialog);
 void MenuBar(MENUITEMINFO menuinfo, HWND hWnd, WPARAM wParam);
 void ChangeCheckMenuItem(UINT nItem);
 #endif

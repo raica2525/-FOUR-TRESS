@@ -96,9 +96,6 @@
     <ClInclude Include="imjapaneserange.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="imguimanager.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
     </ClInclude>
@@ -115,6 +112,9 @@
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
     </ClInclude>
     <ClInclude Include="fileio.h">
+      <Filter>ヘッダー ファイル\h99_Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル\h99_Utilities</Filter>
     </ClInclude>
   </ItemGroup>

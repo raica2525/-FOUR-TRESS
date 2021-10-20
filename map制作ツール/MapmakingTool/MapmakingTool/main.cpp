@@ -10,6 +10,7 @@
 #include "resource.h"
 #include "imguimanager.h"
 #include "imguiwindow.h"
+#include "fileio.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -206,40 +207,6 @@ int GetFPS(void)
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-// ダイアログを開く(funcが0の場合保存、1の場合読み込み)
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void OpenDialog(HWND hWnd, DIALOG dialog)
-{
-	OPENFILENAME ofn;
-	ZeroMemory(&ofn, sizeof(ofn));
-	char SavePath[512];
-	char FileName[256];
-	FileName[0] = '\0';
-	GetCurrentDirectory(512, SavePath);
-	strcat(SavePath, "\\Save");
-
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = hWnd;
-	ofn.lpstrInitialDir = SavePath;
-	ofn.lpstrFile = FileName;
-	ofn.nMaxFile = 256;
-	ofn.lpstrDefExt = "json";
-	ofn.lpstrFilter = "JSONファイル(*.json)\0*.json\0" "テキストファイル(*.txt)\0*.txt\0" "すべてのファイル(*.*)\0*.*\0";
-	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST;
-	switch (dialog)
-	{
-	case DIALOG_LOAD:
-		GetOpenFileName(&ofn);
-		break;
-	case DIALOG_SAVE:
-		GetSaveFileName(&ofn);
-		break;
-	default:
-		assert(false);
-		break;
-	}
-}
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // メニューバーの処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
@@ -259,10 +226,13 @@ void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
 		ChangeCheckMenuItem(ID_WINDOW_DEBUGINFO);
 		break;
 	case ID_FILE_LOAD:
-		OpenDialog(hWnd, DIALOG_LOAD);
+		CFileIO::OpenDialog(hWnd, CFileIO::DIALOG_LOAD);
 		break;
 	case ID_FILE_SAVE:
-		OpenDialog(hWnd, DIALOG_SAVE);
+		CFileIO::OpenDialog(hWnd, CFileIO::DIALOG_SAVE);
+		break;
+	case ID_FILE_OVERRIDE:
+		CFileIO::OverWrite(hWnd);
 		break;
 	case ID_FILE_EXIT:
 		DestroyWindow(hWnd);
