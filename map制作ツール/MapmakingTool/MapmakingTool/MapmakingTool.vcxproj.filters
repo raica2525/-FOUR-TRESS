@@ -96,6 +96,9 @@
     <ClInclude Include="imjapaneserange.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_lib</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="imguimanager.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui</Filter>
     </ClInclude>
@@ -111,11 +114,23 @@
     <ClInclude Include="imobjectwindow.h">
       <Filter>ヘッダー ファイル\h99_Utilities\imgui\imgui_window</Filter>
     </ClInclude>
-    <ClInclude Include="fileio.h">
-      <Filter>ヘッダー ファイル\h99_Utilities</Filter>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>ヘッダー ファイル\h99_Utilities</Filter>
+    <ClInclude Include="scene2d.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="modelData.h">
+      <Filter>ヘッダー ファイル\h01_Parents</Filter>
+    </ClInclude>
+    <ClInclude Include="building.h">
+      <Filter>ヘッダー ファイル\h02_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ヘッダー ファイル\h02_Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -164,8 +179,23 @@
     <ClCompile Include="imguiwindow.cpp">
       <Filter>ソース ファイル\99_Utilities\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="fileio.cpp">
-      <Filter>ソース ファイル\99_Utilities</Filter>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2d.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="modelData.cpp">
+      <Filter>ソース ファイル\01_Parents</Filter>
+    </ClCompile>
+    <ClCompile Include="building.cpp">
+      <Filter>ソース ファイル\02_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル\02_Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

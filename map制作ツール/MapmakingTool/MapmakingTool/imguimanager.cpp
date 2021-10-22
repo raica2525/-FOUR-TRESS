@@ -30,8 +30,6 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 CImGuiManager::CImGuiManager()
 {
-	m_bShowStructures = true;
-	m_str[0] = '\0';
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

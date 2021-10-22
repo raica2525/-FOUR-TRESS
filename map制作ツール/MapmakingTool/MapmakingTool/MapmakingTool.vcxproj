@@ -150,8 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="building.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="fileio.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imdebugwindow.h" />
     <ClInclude Include="imgui.h" />
@@ -168,12 +169,17 @@
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="modelData.h" />
+    <ClInclude Include="object.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="scene2d.h" />
+    <ClInclude Include="scene3d.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="building.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="fileio.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="imdebugwindow.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imguimanager.cpp" />
@@ -187,7 +193,11 @@
     <ClCompile Include="imobjectwindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="modelData.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="scene2d.cpp" />
+    <ClCompile Include="scene3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

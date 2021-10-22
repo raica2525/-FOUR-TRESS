@@ -8,12 +8,15 @@
 #define _MANAGER_H_
 
 #include "main.h"
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //前方宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 class CRenderer;
 class CCamera;
 class CImGuiManager;
+class CModelData;
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //クラス定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -30,6 +33,7 @@ public:
 	static CRenderer* GetRenderer(void) { return m_pRenderer; }
 	static CCamera* GetCamera(void) { return m_pCamera; }
 	static CImGuiManager* GetImGuiManager(void) { return m_pImGuiManager; }
+	static CModelData* GetModelData(void) { return m_pModelData; }
 	static void LoadFile(void);
 	static void UnloadFiles(void);
 
@@ -37,7 +41,7 @@ private:
 	static CImGuiManager* m_pImGuiManager;
 	static CRenderer* m_pRenderer;			//レンダラのポインタ
 	static CCamera* m_pCamera;
-
+	static CModelData* m_pModelData;
 };
 
 #endif

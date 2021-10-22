@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "renderer.h"
 #include "manager.h"
+#include "object.h"
 #include <stdio.h>
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

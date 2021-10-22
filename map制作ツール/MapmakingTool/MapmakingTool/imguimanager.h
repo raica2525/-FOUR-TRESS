@@ -37,18 +37,8 @@ public:
 	void Update(void);		//çXêVä÷êî
 	void Draw(void);		//ï`âÊä÷êî
 	CImGuiWindow* GetImGuiWindow(IMWINDOW imWindow) { return m_pImGuiWindow[imWindow]; };
-	bool GetShowStructure(void) { return m_bShowStructures; };
-	bool GetShowCollisions(void) { return m_bShowCollisions; };
-	void GetStr(char* _Dest) { strcpy(_Dest, m_str); };
 
-	void SetShowStructures(bool bShowStructures) { m_bShowStructures = bShowStructures; };
-	void SetShowCollisions(bool bShowCollisions) { m_bShowCollisions = bShowCollisions; };
-	void SetStr(char* str) { strcpy(m_str, str); };
 private:
-	bool m_bShowStructures;
-	bool m_bShowCollisions;
-	bool m_bShowEnemys;
-	char m_str[1024];
 	CImGuiWindow* m_pImGuiWindow[IMWINDOW_MAX];
 };
 

@@ -18,8 +18,9 @@
 #include <dinput.h>
 #include "d3dx9.h"
 #include <time.h>
-#include <stdio.h>
-#include <assert.h>
+#include <iostream>
+#include <fstream>
+
 //*****************************************************************************
 // ライブラリファイルのリンク
 //*****************************************************************************
@@ -43,7 +44,10 @@
 #define ZERO_VEC		(D3DXVECTOR3(0.0f,0.0f,0.0f))
 #define SAFE_DELETE(p) {if(p != NULL){delete p;p = NULL;}}
 
-using namespace std;
+// デフォルト設定
+#define DEFAULT_VECTOR (D3DXVECTOR3(0.0f,0.0f,0.0f))
+#define DEFAULT_ALPHATEST_BORDER_2D 50
+
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
@@ -63,12 +67,16 @@ typedef struct
 	D3DCOLOR col;
 	D3DXVECTOR2 tex;
 } VERTEX_3D;
-
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+//前方宣言
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+class CManager;
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //プロトタイプ宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
 int GetFPS(void);
+void OpenDialog(HWND hWnd,int func);
 void MenuBar(MENUITEMINFO menuinfo, HWND hWnd, WPARAM wParam);
 void ChangeCheckMenuItem(UINT nItem);
 #endif
