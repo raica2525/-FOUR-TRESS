@@ -10,7 +10,6 @@
 #include "resource.h"
 #include "imguimanager.h"
 #include "imguiwindow.h"
-#include "fileio.h"
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -56,7 +55,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		CLASS_NAME,
 		NULL
 	};
-
 	RECT rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 	HWND hWnd;
 	MSG msg;
@@ -70,7 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassEx(&wcex);
 
 	// 指定したクライアント領域を確保するために必要なウィンドウ座標を計算
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, true);
+	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 
 	// ウィンドウの作成
 	hWnd = CreateWindow(CLASS_NAME,
@@ -84,7 +82,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						NULL,
 						hInstance,
 						NULL);
-
 	//初期化処理
 	pManager = new CManager;
 	pManager->Init(hWnd,true, hInstance);
@@ -207,6 +204,37 @@ int GetFPS(void)
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// ダイアログを開く(funcが0の場合保存、1の場合読み込み)
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+void OpenDialog(HWND hWnd,int func)
+{
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	char SavePath[512];
+	char FileName[256];
+	FileName[0] = '\0';
+	GetCurrentDirectory(512, SavePath);
+	strcat(SavePath, "\\Save");
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.lpstrInitialDir = SavePath;
+	ofn.lpstrFile = FileName;
+	ofn.nMaxFile = 256;
+	ofn.lpstrDefExt = "ini";
+	ofn.lpstrFilter = "設定ファイル(*.ini)\0*.ini\0" "テキストファイル(*.txt)\0*.txt\0" "すべてのファイル(*.*)\0*.*\0";
+	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_FILEMUSTEXIST;
+	if (func == 0)
+	{
+		GetSaveFileName(&ofn);
+	}
+	else if (func == 1)
+	{
+		GetOpenFileName(&ofn);
+	}
+}
+
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // メニューバーの処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
@@ -225,14 +253,11 @@ void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
 		CManager::GetImGuiManager()->GetImGuiWindow(CImGuiManager::IMWINDOW_DEBUG_INFO)->ChangeShowWindow();
 		ChangeCheckMenuItem(ID_WINDOW_DEBUGINFO);
 		break;
-	case ID_FILE_LOAD:
-		CFileIO::OpenDialog(hWnd, CFileIO::DIALOG_LOAD);
+	case ID_FILE_OPEN:
+		OpenDialog(hWnd, 1);
 		break;
 	case ID_FILE_SAVE:
-		CFileIO::OpenDialog(hWnd, CFileIO::DIALOG_SAVE);
-		break;
-	case ID_FILE_OVERRIDE:
-		CFileIO::OverWrite(hWnd);
+		OpenDialog(hWnd, 0);
 		break;
 	case ID_FILE_EXIT:
 		DestroyWindow(hWnd);
@@ -252,7 +277,6 @@ void ChangeCheckMenuItem(UINT nItem)
 	menuinfo.cbSize = sizeof(menuinfo);
 	menuinfo.fMask = MIIM_STATE;
 	GetMenuItemInfo(GetMenu(FindWindow(CLASS_NAME, NULL)), nItem, FALSE, &menuinfo);
-	DWORD error = GetLastError();
 	if (menuinfo.fState == MFS_UNCHECKED) 
 	{
 		menuinfo.fState = MFS_CHECKED;

@@ -9,7 +9,6 @@
 
 #include "main.h"
 #include "imgui.h"
-
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //クラス定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -29,7 +28,6 @@ protected:
 	UINT GetMenuID(void) { return m_unMenuID; };
 	bool m_bShow;
 	static const ImVec2 IMGUI_DEFAULT_SIZE;
-
 private:
 	UINT m_unMenuID;
 };

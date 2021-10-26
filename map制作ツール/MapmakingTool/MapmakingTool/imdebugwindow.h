@@ -25,7 +25,6 @@ public:
 	void Init(void);
 	void Update(void);		//XVŠÖ”
 	static CImDebugWindow* Create(void);
-
 };
 
 #endif

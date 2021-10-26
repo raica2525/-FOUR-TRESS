@@ -1,4 +1,6 @@
 #include "renderer.h"
+#include "object.h"
+#include "scene2d.h"
 #include "manager.h"
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
@@ -124,7 +126,7 @@ void CRenderer::Uninit(void)
 void CRenderer::Update(void)
 {
 	// ƒ|ƒŠƒSƒ“‚ÌXVˆ—
-	//CScene::UpdateAll();
+	CObject::UpdateAll();
 }
 
 //=============================================================================
@@ -143,7 +145,7 @@ void CRenderer::Draw(void)
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// ƒ|ƒŠƒSƒ“‚Ì•`‰æˆ—
-		//CScene::DrawAll();
+		CObject::DrawAll();
 		
 		CManager::GetImGuiManager()->Draw();
 

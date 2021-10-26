@@ -11,15 +11,21 @@
 #include "manager.h"
 #include <stdio.h>
 #include "renderer.h"
+#include "object.h"
+#include "scene2d.h"
 #include "camera.h"
 #include "resource.h"
 #include "imguimanager.h"
+#include "modelData.h"
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //静的メンバ変数宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 CRenderer* CManager::m_pRenderer = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CImGuiManager* CManager::m_pImGuiManager = NULL;
+CModelData* CManager::m_pModelData = NULL;
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //コンストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -49,6 +55,9 @@ HRESULT CManager::Init(HWND hWnd, bool bWindow, HINSTANCE hInstance)
 	
 	m_pCamera = new CCamera;		//カメラオブジェクトの生成
 	m_pCamera->Init();
+
+	m_pModelData = new CModelData;
+	m_pModelData->Init();
 	
 	LoadFile();						//ファイル読み込み
 
@@ -61,7 +70,7 @@ HRESULT CManager::Init(HWND hWnd, bool bWindow, HINSTANCE hInstance)
 void CManager::Uninit(void)
 {
 	//シーンの終了
-	//CScene::ReleaseAll();
+	CObject::ReleaseAll();
 	
 	//カメラの終了
 	if (m_pCamera != NULL)
@@ -82,6 +91,12 @@ void CManager::Uninit(void)
 	{
 		m_pRenderer->Uninit();
 		SAFE_DELETE(m_pRenderer);
+	}
+
+	if (m_pModelData != NULL) 
+	{
+		m_pModelData->Uninit();
+		SAFE_DELETE(m_pModelData);
 	}
 
 	//読み込んだファイルのアンロード
