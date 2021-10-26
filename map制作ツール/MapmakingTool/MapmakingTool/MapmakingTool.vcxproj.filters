@@ -115,6 +115,12 @@
       <Filter>ヘッダー ファイル\h99_Utilities</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル\h00_Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="picojson.h">
+      <Filter>ヘッダー ファイル\h99_Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
       <Filter>ヘッダー ファイル\h99_Utilities</Filter>
     </ClInclude>
   </ItemGroup>
@@ -165,6 +171,9 @@
       <Filter>ソース ファイル\99_Utilities\imgui</Filter>
     </ClCompile>
     <ClCompile Include="fileio.cpp">
+      <Filter>ソース ファイル\99_Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="json.cpp">
       <Filter>ソース ファイル\99_Utilities</Filter>
     </ClCompile>
   </ItemGroup>

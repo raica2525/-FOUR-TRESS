@@ -242,6 +242,9 @@ void MenuBar(MENUITEMINFO menuinfo,HWND hWnd,WPARAM wParam)
 	}
 }
 
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// メニューバーのチェックマーク切り替え
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void ChangeCheckMenuItem(UINT nItem)
 {
 	MENUITEMINFO menuinfo;
@@ -250,7 +253,7 @@ void ChangeCheckMenuItem(UINT nItem)
 	menuinfo.fMask = MIIM_STATE;
 	GetMenuItemInfo(GetMenu(FindWindow(CLASS_NAME, NULL)), nItem, FALSE, &menuinfo);
 	DWORD error = GetLastError();
-	if (menuinfo.fState == MFS_UNCHECKED)
+	if (menuinfo.fState == MFS_UNCHECKED) 
 	{
 		menuinfo.fState = MFS_CHECKED;
 	}

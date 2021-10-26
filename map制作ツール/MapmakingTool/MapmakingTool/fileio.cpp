@@ -10,7 +10,7 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 #include "main.h"
 #include "fileio.h"
-
+#include "json.h"
 char CFileIO::m_currentFilePath[MAX_FILEPATH_LENGTH]= {};
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -23,7 +23,14 @@ HRESULT CFileIO::Load(char* dest, size_t destSize, char* filePath)
 	{
 		return E_FAIL;
 	}
-	fscanf(fp, "%s", dest);
+	dest[0] = '\0';
+
+	char buffer[256];
+	while (!feof(fp))
+	{
+		fscanf(fp, "%s", buffer);
+		strcat(dest,buffer);
+	}
 	if (strlen(dest) >= destSize)
 	{
 		assert(false);
@@ -44,7 +51,6 @@ HRESULT CFileIO::Save(char* src, char* filePath)
 		return E_FAIL;
 	}
 	fprintf(fp, "%s", src);
-	int len = strlen(src);
 	fclose(fp);
 	strcpy(m_currentFilePath, filePath);
 	return S_OK;
@@ -77,6 +83,7 @@ void CFileIO::OpenDialog(HWND hWnd, DIALOG dialog)
 		GetOpenFileName(&ofn);
 		char str[1024];
 		Load(str, 1024, FileName);
+		CJson::FromJson(str);
 		break;
 	case DIALOG_SAVE:
 		GetSaveFileName(&ofn);

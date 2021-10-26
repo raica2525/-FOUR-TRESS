@@ -20,6 +20,8 @@
 #include <time.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string>
+#include <vector>
 //*****************************************************************************
 // ライブラリファイルのリンク
 //*****************************************************************************
@@ -41,9 +43,9 @@
 #define NUM_VERTEX		(4)
 #define CLASS_NAME		("AppClass")			// ウインドウのクラス名
 #define ZERO_VEC		(D3DXVECTOR3(0.0f,0.0f,0.0f))
+#define NOT_EXIST		(-1)
 #define SAFE_DELETE(p) {if(p != NULL){delete p;p = NULL;}}
 
-using namespace std;
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************

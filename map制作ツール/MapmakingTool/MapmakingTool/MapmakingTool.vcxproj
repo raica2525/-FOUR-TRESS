@@ -166,8 +166,10 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="json.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="picojson.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -185,6 +187,7 @@
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="immapwindow.cpp" />
     <ClCompile Include="imobjectwindow.cpp" />
+    <ClCompile Include="json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="renderer.cpp" />
