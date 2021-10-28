@@ -13,6 +13,7 @@
 #include "game.h"
 #include "debug.h"
 #include "effect2d.h"
+#include "file_manager.h"
 
 //=============================================================================
 // タイトルのコンストラクタ
@@ -41,11 +42,8 @@ HRESULT CTitle::Init(void)
     // マウスカーソルの表示(念のため)
     ShowCursor(TRUE);
 
-    // UIを生成
-    CUI::Place(CUI::SET_TITLE);
-
-    // BGMを再生
-    CManager::SoundPlay(CSound::LABEL_BGM_TITLE);
+    // ファイルの読み込み
+    CFile_Manager::GetInstance()->CFile_Manager::Read();
 
     return S_OK;
 }

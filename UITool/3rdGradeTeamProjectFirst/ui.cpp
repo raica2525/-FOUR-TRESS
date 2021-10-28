@@ -21,11 +21,15 @@
 #include<string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <algorithm>
 
 //=======================================
 // 静的メンバ変数宣言
 //=======================================
-CUI *CUI::m_apAccessUI[] = {};
+CUI* CUI::m_apAccessUI[] = {};
+std::vector<CUI*> CUI::m_pUI = {};  // UIの情報
+bool CUI::IsPreview = false;        // プレビューモードか
 
 //=========================================================
 // UIのコンストラクタ
@@ -106,44 +110,45 @@ void CUI::Uninit(void)
 //=========================================================
 void CUI::Update(void)
 {
-    // アニメーションを使うなら
-    if (m_nAnimPattern > 1)
-    {
-        // 一周していないならテクスチャアニメーションを更新
-        if (!m_bOneRoundAnim)
+
+        // アニメーションを使うなら
+        if (m_nAnimPattern > 1)
         {
-            // リピートするなら、一周のフラグと結びつけない
-            if (m_bRepeat)
+            // 一周していないならテクスチャアニメーションを更新
+            if (!m_bOneRoundAnim)
             {
-                if (m_nAnimParagraph > 2)
+                // リピートするなら、一周のフラグと結びつけない
+                if (m_bRepeat)
                 {
-                    CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
+                    if (m_nAnimParagraph > 2)
+                    {
+                        CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
+                    }
+                    else
+                    {
+                        CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
+                    }
                 }
                 else
                 {
-                    CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
-                }
-            }
-            else
-            {
-                if (m_nAnimParagraph > 2)
-                {
-                    m_bOneRoundAnim = CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
-                }
-                else
-                {
-                    m_bOneRoundAnim = CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
+                    if (m_nAnimParagraph > 2)
+                    {
+                        m_bOneRoundAnim = CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
+                    }
+                    else
+                    {
+                        m_bOneRoundAnim = CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
+                    }
                 }
             }
         }
-    }
 
-    // アクション
-    for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
-    {
-        PlayAction(nCnt);
-    }
-    
+        // アクション
+        for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
+        {
+            PlayAction(nCnt);
+        }
+
     // 各頂点を更新（角度も反映）（ゲージ系は、別で頂点情報を調整済み）
     CScene2D::SetColor(m_col);
     if (m_aActionInfo[0].action != ACTION_GAUGE && m_aActionInfo[1].action != ACTION_GAUGE &&
@@ -256,334 +261,6 @@ CUI *CUI::Create(int nTexType, D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRotAngle,
 }
 
 //=========================================================
-// UIの設置
-// Author : 後藤慎之助
-//=========================================================
-void CUI::Place(SET set)
-{
-    // ファイルポイント
-    FILE *pFile = NULL;
-
-    // 変数宣言
-    char cReadText[1024];	// 文字として読み取り用
-    char cHeadText[1024];	// 文字の判別用
-    char cDie[1024];		// 使わない文字 
-    int nBool = 0;          // intからboolへの橋渡し
-
-    // ファイルを開く
-    switch (set)
-    {
-    case SET_TITLE:
-        pFile = fopen("data/TXT/ui_sample.txt", "r");
-        break;
-    case SET_MANUAL:
-        pFile = fopen("data/TXT/ui_manual.txt", "r");
-        break;
-    case SET_CUSTOM:
-        pFile = fopen("data/TXT/ui_custom.txt", "r");
-        break;
-    case SET_GAME:
-        pFile = fopen("data/TXT/ui_game.txt", "r");
-        break;
-    case SET_RESULT:
-        pFile = fopen("data/TXT/ui_result.txt", "r");
-        break;
-    case SET_MENU:
-        pFile = fopen("data/TXT/ui_menu.txt", "r");
-        break;
-    }
-
-    // 開けたら
-    if (pFile != NULL)
-    {
-        // SCRIPTの文字が見つかるまで
-        while (strcmp(cHeadText, "SCRIPT") != 0)
-        {
-            // テキストからcReadText分文字を受け取る
-            fgets(cReadText, sizeof(cReadText), pFile);
-
-            // cReedTextをcHeadTextに格納
-            sscanf(cReadText, "%s", &cHeadText);
-        }
-
-        // cHeadTextがSCRIPTの時
-        if (strcmp(cHeadText, "SCRIPT") == 0)
-        {
-            // cHeadTextがEND_SCRIPTになるまで
-            while (strcmp(cHeadText, "END_SCRIPT") != 0)
-            {
-                fgets(cReadText, sizeof(cReadText), pFile);
-                sscanf(cReadText, "%s", &cHeadText);
-
-                // cHeadTextがUISETの時
-                if (strcmp(cHeadText, "UISET") == 0)
-                {
-                    // 生成時に結びつけるもの
-                    int nTexType = 0;                                   // 画像番号
-                    int nAccessNum = NOT_EXIST;                         // アクセスナンバー
-                    D3DXVECTOR3 pos = DEFAULT_VECTOR;                   // 位置
-                    D3DXVECTOR3 size = DEFAULT_VECTOR;                  // 大きさ
-                    D3DXVECTOR3 collisionPos = DEFAULT_VECTOR;          // 当たり判定の位置
-                    D3DXVECTOR3 collisionSize = DEFAULT_VECTOR;         // 当たり判定の大きさ
-                    int nRot = 0;                                       // 角度
-                    D3DXCOLOR col = DEFAULT_COLOR;                      // 色
-                    bool bAddBrend = false;                             // 加算合成
-                    bool bUseZBuffer = false;                           // 3Dモデルの後ろに出すかどうか
-                    bool bFrontText = false;                            // テキストよりも手前かどうか
-                    int nAlphaTestBorder = DEFAULT_ALPHATEST_BORDER_2D; // アルファテストのボーダー
-                    bool bShaveTex = false;                             // 端の1ピクセル削るかどうか
-                    bool bDisp = true;                                  // 表示するかどうか
-                    int nIndexAction = 0;                               // アクションのインデックス    
-                    ActionInfo aActionInfo[MAX_ACTION] = {};            // アクションの情報
-                    memset(aActionInfo, 0, sizeof(aActionInfo));
-                    memset(aActionInfo->afParam, 0, sizeof(aActionInfo->afParam));
-
-                    // cHeadTextがEND_UISETになるまで
-                    while (strcmp(cHeadText, "END_UISET") != 0)
-                    {
-                        fgets(cReadText, sizeof(cReadText), pFile);
-                        sscanf(cReadText, "%s", &cHeadText);
-
-                        if (strcmp(cHeadText, "TYPE") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nTexType);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (nTexType < 0 || nTexType >= MAX_TEXTURE)
-                            {
-                                nTexType = 0;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ACCESS_NUM") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nAccessNum);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (nAccessNum < 0 || nAccessNum >= MAX_ACCESS_NUM)
-                            {
-                                nAccessNum = NOT_EXIST;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "NO_DRAW") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 1)
-                            {
-                                bDisp = false;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "POS") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f %f", &cDie, &cDie, &pos.x, &pos.y);
-                        }
-                        else if (strcmp(cHeadText, "SIZE") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f %f", &cDie, &cDie, &size.x, &size.y);
-                        }
-                        else if (strcmp(cHeadText, "COLLISION_POS") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f %f", &cDie, &cDie, &collisionPos.x, &collisionPos.y);
-                        }
-                        else if (strcmp(cHeadText, "COLLISION_SIZE") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f %f", &cDie, &cDie, &collisionSize.x, &collisionSize.y);
-                        }
-                        else if (strcmp(cHeadText, "ROT") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nRot);
-                        }
-                        else if (strcmp(cHeadText, "COL") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f %f %f %f", &cDie, &cDie, &col.r, &col.g, &col.b, &col.a);
-                        }
-                        else if (strcmp(cHeadText, "ADD_BLEND") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 0)
-                            {
-                                bAddBrend = false;
-                            }
-                            else
-                            {
-                                bAddBrend = true;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "USE_ZBUFFER") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 0)
-                            {
-                                bUseZBuffer = false;
-                            }
-                            else
-                            {
-                                bUseZBuffer = true;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "FRONT_TEXT") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 0)
-                            {
-                                bFrontText = false;
-                            }
-                            else
-                            {
-                                bFrontText = true;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ALPHA_TEST_BORDER") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nAlphaTestBorder);
-                        }
-                        else if (strcmp(cHeadText, "SHAVE_TEX") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 0)
-                            {
-                                bShaveTex = false;
-                            }
-                            else
-                            {
-                                bShaveTex = true;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ACTION0") == 0)
-                        {
-                            nIndexAction = 0;
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &aActionInfo[nIndexAction].action);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (aActionInfo[nIndexAction].action < ACTION_NONE || aActionInfo[nIndexAction].action >= ACTION_MAX)
-                            {
-                                aActionInfo[nIndexAction].action = ACTION_NONE;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ACTION1") == 0)
-                        {
-                            nIndexAction = 1;
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &aActionInfo[nIndexAction].action);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (aActionInfo[nIndexAction].action < ACTION_NONE || aActionInfo[nIndexAction].action >= ACTION_MAX)
-                            {
-                                aActionInfo[nIndexAction].action = ACTION_NONE;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ACTION2") == 0)
-                        {
-                            nIndexAction = 2;
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &aActionInfo[nIndexAction].action);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (aActionInfo[nIndexAction].action < ACTION_NONE || aActionInfo[nIndexAction].action >= ACTION_MAX)
-                            {
-                                aActionInfo[nIndexAction].action = ACTION_NONE;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "ACTION3") == 0)
-                        {
-                            nIndexAction = 3;
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &aActionInfo[nIndexAction].action);
-
-                            // 不正な値は全てデフォルトを呼び出す
-                            if (aActionInfo[nIndexAction].action < ACTION_NONE || aActionInfo[nIndexAction].action >= ACTION_MAX)
-                            {
-                                aActionInfo[nIndexAction].action = ACTION_NONE;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "LOCK") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
-
-                            if (nBool == 0)
-                            {
-                                aActionInfo[nIndexAction].bLock = false;
-                            }
-                            else
-                            {
-                                aActionInfo[nIndexAction].bLock = true;
-                            }
-                        }
-                        else if (strcmp(cHeadText, "PARAM0") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[0]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM1") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[1]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM2") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[2]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM3") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[3]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM4") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[4]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM5") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[5]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM6") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[6]);
-                        }
-                        else if (strcmp(cHeadText, "PARAM7") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %f", &cDie, &cDie, &aActionInfo[nIndexAction].afParam[7]);
-                        }
-                    }
-
-                    // 生成（アクションの情報も結びつける）
-                    CUI* pUI = Create(nTexType, pos, size, nRot, col, bFrontText, bAddBrend, nAlphaTestBorder, bUseZBuffer, collisionPos, collisionSize);
-                    for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
-                    {
-                        pUI->SetActionInfo(nCnt, aActionInfo[nCnt].action, aActionInfo[nCnt].bLock,
-                            aActionInfo[nCnt].afParam[0], aActionInfo[nCnt].afParam[1], aActionInfo[nCnt].afParam[2], aActionInfo[nCnt].afParam[3],
-                            aActionInfo[nCnt].afParam[4], aActionInfo[nCnt].afParam[5], aActionInfo[nCnt].afParam[6], aActionInfo[nCnt].afParam[7]);
-                    }
-
-                    // アクセス権を取得する
-                    if (nAccessNum > NOT_EXIST && nAccessNum < MAX_ACCESS_NUM)
-                    {
-                        pUI->SetAccessUI(nAccessNum);
-                    }
-
-                    // 端の1ピクセルを削るかどうか
-                    if (bShaveTex)
-                    {
-                        pUI->SetShaveTex();
-                    }
-
-                    // 表示するかどうかを設定
-                    pUI->SetDisp(bDisp);
-#ifdef _DEBUG
-                    pUI->SetReloadUI();
-#endif
-                }
-            }
-        }
-        // ファイルを閉じる
-        fclose(pFile);
-    }
-    // 開けなかったら
-    else
-    {
-        printf("開けれませんでした\n");
-    }
-}
-
-//=========================================================
 // UIのアクセス権を取得
 // Author : 後藤慎之助
 //=========================================================
@@ -616,6 +293,7 @@ void CUI::SetAccessUI(int nNum)
 //=========================================================
 void CUI::SetActionInfo(int nNum, int action, bool bLock, float fParam0, float fParam1, float fParam2, float fParam3, float fParam4, float fParam5, float fParam6, float fParam7)
 {
+
     m_aActionInfo[nNum].action = action;  
     m_aActionInfo[nNum].nCntTime = 0;
     m_aActionInfo[nNum].bLock = bLock;
@@ -1389,6 +1067,7 @@ void CUI::PlayActionTexBrend(int nNum)
 //=========================================================
 void CUI::PlayActionLoopAnim(int nNum)
 {
+
     // 変数宣言
     bool bRightToLeft = false;
     CScene2D::DIRECT direct = CScene2D::DIRECT_VERTICAL;
@@ -1592,36 +1271,136 @@ void CUI::RimitRepeatValue(float& fChangeRate, const float fMemoryValue, const f
 }
 
 //=========================================================
-// [fileString] 文字列の生成
+// [fileString] UIの情報を文字列に変換
 // Author : AYANOKUDO
+// 返り値 : UIの情報
 //=========================================================
 std::string CUI::fileString(void)
 {
+    std::ostringstream oss;
+    // UIの情報をひとまとめにする
+    oss << BaseString()         // テクスチャの種類、位置、大きさ
+        << RotString()          // 角度
+        << ColorString()        // 色
+        << AddBlendString()     // 加算合成
+        << AlphaTestString()    // アルファテスト
+        << ActionString();      // アクションの文字列
 
+    return oss.str();
+}
+
+//=========================================================
+// [BaseString] 基本の情報を文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::BaseString(void)
+{
+    // 出力する情報の取得
     D3DXVECTOR3 pos = CScene2D::GetPosition();
+    D3DXVECTOR3 size = CScene2D::GetSize();
+
+    std::ostringstream oss;
+    oss << "TYPE = " << m_nTexType << std::endl
+        << "POS  = " << std::_Floating_to_string("%.1f", pos.x) << " " << std::_Floating_to_string("%.1f", pos.y) << std::endl// 位置
+        << "SIZE = " << std::_Floating_to_string("%.1f", size.x) << " " << std::_Floating_to_string("%.1f", size.y) << std::endl;// 大きさ
+    return oss.str();
+}
+
+//=========================================================
+// [RotString] 向きを文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::RotString(void)
+{
+    // デフォルト値の場合はスキップ
+    if (m_fMemoryRotAngle == 0.0f)
+        return "\0";
+
+    std::ostringstream oss;
+    oss << "ROT  = " << m_fMemoryRotAngle << std::endl; 
+
+    return oss.str();
+}
+
+//=========================================================
+// [ActionString] アクション情報を文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::ActionString(void)
+{
+    // デフォルト値のときはスキップ
+
+    std::ostringstream oss;
+    std::vector<std::ostringstream > action(MAX_ACTION);            // アクションの文字列
+    std::vector<std::ostringstream > param(MAX_ACTION_PARAM);       // パラメータの文字列
+
+    for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
+    {
+        action[nCnt] << "ACTION" << nCnt << " = " << std::endl      // アクションの数ぶん繰り返し
+            << "LOCK = " << m_aActionInfo[nCnt].bLock << std::endl;
+
+            for (int i = 0; i < MAX_ACTION_PARAM; i++)
+            {
+                param[i] << "PARAM" << i << " = " << m_aActionInfo[nCnt].afMemoryParam[i] << std::endl;     // パラメーターぶん繰り返し
+            }
+    }
+
+
+    // アクションの数だけ繰り返し
+    return oss.str();
+}
+
+//=========================================================
+// [ColorString] 色を文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::ColorString(void)
+{
+    // デフォルト値の場合はスキップ
+    if (m_memoryCol == DEFAULT_COLOR)
+        return "\0";
 
     std::ostringstream oss;
 
-    oss << "TYPE = "<< m_nTexType<<std::endl
-        <<"POS = "<< pos.x <<" "<< pos.y;
+    oss << "COL  = " << std::_Floating_to_string("%.1f", m_memoryCol.r)            // 色：R
+        << " " << std::_Floating_to_string("%.1f", m_memoryCol.g)                  // 色：G
+        << " " << std::_Floating_to_string("%.1f", m_memoryCol.b)                  // 色：B
+        << " " << std::_Floating_to_string("%.1f", m_memoryCol.a) << std::endl;    // 色：A
+    return oss.str();
+}
 
-    //<< m_nTexType << std::endl
-    m_memoryPos;                    // 記憶用位置
-    m_memorySize;                   // 記憶用大きさ
-    m_fMemoryRotAngle;              // 記憶用角度
-    m_memoryCol;                    // 記憶用色
+//=========================================================
+// [AddBlendString] 加算合成かを文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::AddBlendString(void)
+{
+    // デフォルト値の場合はスキップ
+    if (m_bUseAdditiveSynthesis == false)
+        return "\0";
 
-    m_fRotAngle;// 回転角度
+    std::ostringstream oss;
 
-    m_col;
-    m_bUseAdditiveSynthesis;
-    m_collisionPos;
-    m_collisionSize;
+    oss << "ADD_BLEND =" << m_bUseAdditiveSynthesis << std::endl;   //アルファブレンドの設定
 
-    m_nAnimParagraph;
-    m_nAnimPattern;
-    m_nAnimSpeed;
-    m_bRepeat;
+    return oss.str();
+}
+
+//=========================================================
+// [AlphaTestString] アルファブレンドを文字列に変換
+// Author : AYANOKUDO
+//=========================================================
+std::string CUI::AlphaTestString(void)
+{
+    // 書く情報の取得
+    int nAlphaTestBorder = GetAlphaTestBorder();
+
+    // デフォルト値の場合はスキップ
+    if (nAlphaTestBorder == DEFAULT_ALPHATEST_BORDER_2D)
+        return "\0";
+
+    std::ostringstream oss;
+    oss << "ALPHA_TEST_BORDER =" << nAlphaTestBorder << std::endl;
 
     return oss.str();
 }

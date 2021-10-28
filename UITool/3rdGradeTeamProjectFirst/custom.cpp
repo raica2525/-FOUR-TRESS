@@ -22,6 +22,8 @@
 #include "player.h"
 #include "game.h"
 #include "effect2d.h"
+#include "file_manager.h"
+#include <iostream>
 
 //========================================
 // マクロ定義
@@ -73,7 +75,7 @@ HRESULT CCustom::Init(void)
     BindHaveParts();
 
     // UIを外部ファイルから生成
-    CUI::Place(CUI::SET_CUSTOM);
+    CFile_Manager::GetInstance()->Read();
 
     // プレイヤー(マネキン)の生成
     m_aEntryInfo[PLAYER_1].pPlayer = CPlayer::CreateInCustom(D3DXVECTOR3(-950.0f, 650.0f, 0.0f), DEFAULT_VECTOR, PLAYER_1, false);

@@ -77,8 +77,25 @@ void CGUI::Uninit(void)
 //=============================================================================
 void CGUI::Update(void)
 {
+    static OPENFILENAME ofn = { 0 };// ファイルダイアログ構造体
+    static TCHAR strFile[MAX_PATH], strCustom[256] = TEXT("Before files\0*.*\0\0");
+
+    // 構造体初期化
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFilter = TEXT("Text files {*.txt}\0*.txt\0")
+        TEXT("HTML files {*.htm}\0*.htm;*.html\0")
+        TEXT("All files {*.*}\0*.*\0\0");
+    ofn.lpstrCustomFilter = strCustom;
+    ofn.nMaxCustFilter = 256;
+    ofn.nFilterIndex = 0;
+    ofn.lpstrFile = strFile;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_FILEMUSTEXIST;
+
     ImGuiWindowFlags window_flags = 0;
-    // Start the Dear ImGui frame
+
+    //  ImGuiフレームの開始
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -86,6 +103,7 @@ void CGUI::Update(void)
     // システムフレーム
     ImGui::Begin(u8"システム");
 
+    // メニューバー（未完成）
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("Menu"))
@@ -97,7 +115,9 @@ void CGUI::Update(void)
         }
         ImGui::EndMenuBar();
     }
+
     static bool show_app_main_menu_bar = false;
+
 
     if (ImGui::Button(u8"ファイルの保存"))
     {
@@ -107,14 +127,30 @@ void CGUI::Update(void)
         delete pFileManager;
 
     }
+
+    if (ImGui::Button(u8"開く"))
+    {
+        // ファイル選択ダイアログを表示
+        std::cout << "参照を選択" << std::endl;
+        GetOpenFileName(&ofn);// ダイアログ表示
+        // ファイルの読み込み
+        CFile_Manager::GetInstance()->CFile_Manager::Read(ofn.lpstrFile);
+        std::cout << ofn.lpstrFile<<std::endl;
+    }
+
     ImGui::SameLine();
     ImGui::SameLine(110);
 
-    if (ImGui::Button(u8"プレビュー"))
+    // チェックボックス
+    if (ImGui::Checkbox(u8"プレビュー", &CUI::GetPreview()))
     {
-        // プレビューフラグをオン
-        CDebug::SetIsReload(true);
+        // IsPreviewがtrueだとプレビューモードに切り替え
+        CDebug::SetIsReload(CUI::GetPreview());
     }
+    // ツールチップ
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip(u8"モードを切り替えます");
+
 
     if (ImGui::CollapsingHeader(u8"折り畳み"))
     {
@@ -125,11 +161,11 @@ void CGUI::Update(void)
     static float col1[3] = { 1.0f,0.0f,0.2f };
     ImGui::ColorEdit3("color 1", col1);
 
-    ImGui::DragInt("Value", &Value, 100, 0, 100);// バーのやつ
 
     Manual();// 操作方法表示
     information();
     ImGui::End();// 終わり
+
 
 
     ImGui::EndFrame();
@@ -169,19 +205,29 @@ void CGUI::Manual(void)
 void CGUI::information(void)
 {
 
-    // UIの情報を取得
-    CUI* pUI = CUI::GetAccessUI(0);
-    D3DXVECTOR3 pos = pUI->GetPosition();
             ImGui::Begin(u8"情報");
 
-            static float fpos[3] = { 0.0f,0.0,0.0, };
-            static float size[3] = { 0.0,0.0,0.0, };
+            static int nUI = 0;// 選択しているUI
 
             // 折りたたみボックス
             if (!ImGui::CollapsingHeader(u8"選択"))
             {
+                static int e = 0;
+                ImGui::Combo(u8"テクスチャ", &e, u8"なし \0ゲージ \0拡縮 \0移動 \0透明度 \0色変え \0回転 \0テクスチャブレンド \0ループアニメーション \0テクスチャの描画位置指定 \0エフェクト発生");
+
+                const char* listbox_items[] = { u8"背景", u8"ロゴ", u8"Cherry",  };
+                ImGui::ListBox(u8"オブジェクト", &nUI, listbox_items, IM_ARRAYSIZE(listbox_items), 5);
 
             }
+
+            // UIの情報を取得
+            CUI* pUI = CUI::GetUI(nUI);
+
+            assert(pUI);
+
+            D3DXVECTOR3 pos = pUI->GetPosition();
+            D3DXVECTOR3 size = pUI->GetSize();
+
             // 折りたたみボックス
             if (!ImGui::CollapsingHeader(u8"トランスフォーム"))
             {
@@ -190,15 +236,14 @@ void CGUI::information(void)
             }
 
             pUI->SetPosition(pos);
-
-            static float begin = 10, end = 90, z = 100;
+            pUI->SetSize(size);
 
             static int item = 0;
-            static int e = 0;
 
             // 折りたたみボックス
             if (!ImGui::CollapsingHeader(u8"アクション"))
             {
+                static int e = 0;
                 // 情報1が特定の値だと出現
                 ImGui::Combo(u8"情報2", &e, u8"なし \0ゲージ \0拡縮 \0移動 \0透明度 \0色変え \0回転 \0テクスチャブレンド \0ループアニメーション \0テクスチャの描画位置指定 \0エフェクト発生");
             }
@@ -209,7 +254,6 @@ void CGUI::information(void)
             // ツールチップ
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(u8"カーソルなどに使用する場合はロックしてください");
-            static int i1 = 0;
     ImGui::End();// 終わり
 
 }

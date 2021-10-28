@@ -17,6 +17,9 @@
 #include <dinput.h>
 #include <xaudio2.h>
 #include <thread>
+#include <assert.h>
+#include <vector>
+#include <iostream>
 
 //*****************************************************************************
 // ライブラリファイルのリンク
@@ -34,7 +37,7 @@
 
 // ウインドウのクラス名とキャプション名
 #define CLASS_NAME		"AppClass"
-#define WINDOW_NAME		"BLAZE_SMASH"
+#define WINDOW_NAME		"UItool"
 
 // ウインドウの位置
 #define	WINDOW_POS_X	(0)
@@ -120,6 +123,6 @@ typedef struct
 //*****************************************************************************
 #ifdef _DEBUG
 int GetFPS(void);    // FPS取得
-#endif
+#endif //_DEBUG
 
-#endif
+#endif //_MAIN_H_

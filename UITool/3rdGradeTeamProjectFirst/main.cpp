@@ -8,18 +8,23 @@
 #include "renderer.h"
 #include "manager.h"
 #include "imgui/imgui.h"// 工藤追加
+#include "define.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 //#undef _DEBUG
 #define FONT "C:\\Windows\\Fonts\\meiryo.ttc"       // フォントファイル
+#define MSG(m) {\
+	MessageBoxA(NULL,m,NULL,MB_OK);}
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+// IMGUIの設定
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //*****************************************************************************
 // グローバル変数:
 //*****************************************************************************
@@ -29,8 +34,6 @@ int						g_nCountFPS;
 bool g_bDeviceChange = false;		//池田変更
 
 
-                                    // IMGUIの設定
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 //=============================================================================
 // メイン関数
@@ -38,6 +41,16 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT uMs
 //=============================================================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+#ifdef _DEBUG
+     //コンソールを作成する
+    AllocConsole();
+    // 標準入出力に割り当てる
+    FILE* fp = NULL;
+    // 現在のコード
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    printf("%s", "起動中\n");
+#endif // _DEBUG
+
     WNDCLASSEX wcex =
     {
         sizeof(WNDCLASSEX),
@@ -49,7 +62,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         NULL,
         LoadCursor(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
-        NULL,
+        wcex.lpszMenuName = "MENUID",
         CLASS_NAME,
         NULL
     };
@@ -202,6 +215,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
             break;
         }
+    case WM_COMMAND:
+        switch (LOWORD(wParam)) {
+        case MENU_ITEM1:
+            MSG("開くが選択されました");
+            return 0;
+        case MENU_ITEM2:
+            MSG("閉じるが選択されました");
+            return 0;
+        case MENU_ITEM3:
+            MSG("設定が選択されました");
+            return 0;
+        case MENU_ITEM4:
+            MSG("オプションが選択されました");
+            return 0;
+        }
         break;
 
     case WM_DEVICECHANGE:		//デバイスの構成が変わった時			//池田追加
@@ -209,6 +237,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
 
     default:
+
         break;
     }
 

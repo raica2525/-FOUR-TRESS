@@ -16,7 +16,6 @@
 //================================================
 // マクロ定義
 //================================================
-
 #define MAX_ACTION 4        // アクションの最大数
 #define MAX_ACTION_PARAM 8  // アクションの補助値の最大数
 
@@ -25,24 +24,10 @@
 //================================================
 // クラス宣言
 //================================================
-
 // UIクラス
 class CUI : public CScene2D
 {
 public:
-
-    // セット
-    typedef enum
-    {
-        SET_NONE = 0,
-        SET_TITLE,
-        SET_MANUAL,
-        SET_CUSTOM,
-        SET_GAME,
-        SET_RESULT,
-        SET_MENU,
-        SET_MAX
-    }SET;
 
     // 動きの種類
     typedef enum
@@ -186,11 +171,11 @@ public:
     static CUI *Create(int nTexType, D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRotAngle, D3DXCOLOR col,
         bool bFrontText = false, bool bUseAddiveSynthesis = false, int nAlphaTestBorder = 0, bool bUseZBuffer = false,
         D3DXVECTOR3 collisionPos = DEFAULT_VECTOR, D3DXVECTOR3 collisionSize = DEFAULT_VECTOR);
-    static void Place(SET set);     // 外部ファイルからUIの配置
 
     /*========================================================
     // ゲッター
     //======================================================*/
+    static bool& GetPreview(void) { return IsPreview; }
     D3DXCOLOR GetCol(void) { return m_col; }
     D3DXVECTOR3 GetCollisionPos(void) { return m_collisionPos; }
     D3DXVECTOR3 GetCollisionSize(void) { return m_collisionSize; }
@@ -198,23 +183,27 @@ public:
     float GetActionParam(int nNumAction, int nNumParam) { return m_aActionInfo[nNumAction].afParam[nNumParam]; }
     D3DXVECTOR3 GetMemorySize(void) { return m_memorySize; }
     bool GetDisp(void) { return m_bDisp; }
+    static CUI* GetUI(int nNum) { return m_pUI[nNum]; }// UIの情報
 
     /*========================================================
     // セッター
     //======================================================*/
+    static void SetPreview(bool Preview) { IsPreview = Preview; }  // プレビューモードか
     void SetAccessUI(int nNum);
     void SetDontUse(void) { m_bUse = false; }
     void SetCol(D3DXCOLOR col) { m_col = col; }
     void SetAlpha(float fAlpha) { m_col.a = fAlpha; }
     void SetActionInfo(int nNum, int action, bool bLock,
-        float fParam0 = 0, float fParam1 = 0, float fParam2 = 0, float fParam3 = 0,
-        float fParam4 = 0, float fParam5 = 0, float fParam6 = 0, float fParam7 = 0);    // ここでのみ、アクションの補助値周りの設定をできる
+    float fParam0 = 0, float fParam1 = 0, float fParam2 = 0, float fParam3 = 0,
+    float fParam4 = 0, float fParam5 = 0, float fParam6 = 0, float fParam7 = 0);    // ここでのみ、アクションの補助値周りの設定をできる
     void SetActionLock(int nNum, bool bLock);
     void SetActionReset(int nNum);
     void SetAllActionReset(void);
     void SetFirstPos(void) { SetPosition(m_memoryPos); }    // アクション経由ではなく、最初の位置に戻すとき使う（例:カーソルのリセット）
     void SetDisp(bool bDisp) { m_bDisp = bDisp; }
     void SetPositon(D3DXVECTOR3 pos) { m_memoryPos = pos; }
+    static void SetUI(CUI* pUI) { m_pUI.push_back(pUI); }
+
     /*========================================================
     // アクション
     //======================================================*/
@@ -237,9 +226,18 @@ public:
     /*========================================================
     // 文字列の生成
     //======================================================*/
-     std::string fileString(void);// 文字列の生成
+     std::string fileString(void);          // 文字列の生成
+     std::string BaseString(void);          // 基本の情報を文字列に変換
+     std::string RotString(void);           // 角度を文字列に変換
+     std::string ColorString(void);         // 色を文字列に変換
+     std::string AddBlendString(void);      // 加算合成を文字列に変換
+     std::string AlphaTestString(void);
+     std::string ActionString(void);        // アクションの情報
 
 private:
+    static bool IsPreview;  // プレビューモードか
+
+    static std::vector<CUI*> m_pUI;             // UIの情報
     static CUI* m_apAccessUI[MAX_ACCESS_NUM];   // アクセスできるUI
     int m_nTexType;                             // 使うテクスチャの種類
     ActionInfo m_aActionInfo[MAX_ACTION];       // 動きの状態
@@ -251,8 +249,8 @@ private:
 
     D3DXVECTOR3 m_memoryPos;                    // 記憶用位置
     D3DXVECTOR3 m_memorySize;                   // 記憶用大きさ
-    float       m_fMemoryRotAngle;                    // 記憶用角度
-    D3DXCOLOR   m_memoryCol;                      // 記憶用色
+    float       m_fMemoryRotAngle;              // 記憶用角度
+    D3DXCOLOR   m_memoryCol;                    // 記憶用色
 
     //int m_nCntAnimTime;                       // アニメーション用カウンタ（effect3dから持ってきた際に削除、scene2dに元々あるため）
     bool m_bOneRoundAnim;                       // アニメーションが一周したかどうか

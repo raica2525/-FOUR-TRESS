@@ -43,7 +43,7 @@ CManual::~CManual()
 HRESULT CManual::Init(void)
 {
     // UI‚ð¶¬
-    CUI::Place(CUI::SET_MANUAL);
+    CFile_Manager::GetInstance()->CFile_Manager::Read(CFile_Manager::SET_MANUAL);
 
     return S_OK;
 }

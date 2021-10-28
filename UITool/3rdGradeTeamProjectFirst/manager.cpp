@@ -467,7 +467,6 @@ void CManager::SetMode(MODE mode)
         break;
 
     case MODE_MANUAL:
-        m_pMode = new CManual;
         break;
 
     case MODE_CUSTOM:

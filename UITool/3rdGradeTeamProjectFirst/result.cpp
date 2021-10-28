@@ -45,7 +45,7 @@ CResult::~CResult()
 HRESULT CResult::Init(void)
 {
     // UI‚ğ¶¬
-    CUI::Place(CUI::SET_RESULT);
+    CFile_Manager::GetInstance()->CFile_Manager::Read();
 
     // ƒvƒŒƒCƒ„[¶¬
     for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)

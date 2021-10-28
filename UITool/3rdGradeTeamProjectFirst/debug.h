@@ -14,6 +14,7 @@
 #include "scene3d.h"
 #include "ui.h"
 #include "mode.h"
+#include "file_manager.h"
 
 //================================================
 // マクロ定義
@@ -50,7 +51,7 @@ public:
     static void Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type);  // 戻り値は呼び出し先で使う必要がないため無し
 
 #ifdef _DEBUG
-    static void ReloadUI(CUI::SET set);     // テクスチャの再読み込み
+    static void ReloadUI(CFile_Manager::SET set);     // テクスチャの再読み込み
     static void CommonCommand(void);        // 共通のデバッグコマンド
 #endif
 

@@ -155,7 +155,7 @@ HRESULT CGame::Init(void)
     CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
 
     // UIを生成
-    CUI::Place(CUI::SET_GAME);
+    CFile_Manager::GetInstance()->Read();
 
     // ポーズの生成
     m_pPause = CPause::Create();

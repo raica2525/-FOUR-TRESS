@@ -157,6 +157,7 @@
     <ClCompile Include="cliping_musk.cpp" />
     <ClCompile Include="custom.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="edit.cpp" />
     <ClCompile Include="effect2d.cpp" />
     <ClCompile Include="effect3d.cpp" />
     <ClCompile Include="effectData.cpp" />
@@ -176,7 +177,6 @@
     <ClCompile Include="locus.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
-    <ClCompile Include="manual.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="mode.cpp" />
     <ClCompile Include="model.cpp" />
@@ -212,6 +212,8 @@
     <ClInclude Include="cliping_musk.h" />
     <ClInclude Include="custom.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="edit.h" />
     <ClInclude Include="effect2d.h" />
     <ClInclude Include="effect3d.h" />
     <ClInclude Include="effectData.h" />
@@ -245,6 +247,7 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
@@ -256,6 +259,9 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="ui.h" />
     <ClInclude Include="wave.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

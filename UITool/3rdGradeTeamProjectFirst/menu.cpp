@@ -40,7 +40,7 @@ CMenu::~CMenu()
 HRESULT CMenu::Init(void)
 {
     // UI‚ğ¶¬
-    CUI::Place(CUI::SET_MENU);
+    CFile_Manager::GetInstance()->Read();
 
     return S_OK;
 }

@@ -89,6 +89,7 @@ public:
     D3DXVECTOR3 GetPosition(void) { return m_pos; }
     D3DXVECTOR3 GetSize(void) { return m_size; }
 
+    int GetAlphaTestBorder(void) {return m_nAlphaTestBorder; }
 private:
     static bool m_bAdditiveSynthesis;                       // â¡éZçáê¨Ç∑ÇÈÇ©Ç«Ç§Ç©
     static bool m_bNega;                                    // îΩì]çáê¨Ç∑ÇÈÇ©Ç«Ç§Ç©

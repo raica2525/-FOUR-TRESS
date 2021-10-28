@@ -117,13 +117,13 @@ void CDebug::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, TYPE type)
 // Author : 後藤慎之助
 //=============================================================================
 #ifdef _DEBUG
-void CDebug::ReloadUI(CUI::SET set)
+void CDebug::ReloadUI(CFile_Manager::SET set)
 {
     // リロードするUIを削除
     CScene::ReleaseReloadUI();
 
     // UIの再配置
-    CUI::Place(set);
+    CFile_Manager::GetInstance()->Read();
 }
 
 //=============================================================================
@@ -151,24 +151,24 @@ void CDebug::CommonCommand(void)
         switch (mode)
         {
         case CManager::MODE_TITLE:
-            ReloadUI(CUI::SET_TITLE);
+            ReloadUI(CFile_Manager::SET_TITLE);
             break;
         case CManager::MODE_CUSTOM:
-            ReloadUI(CUI::SET_CUSTOM);
+            ReloadUI(CFile_Manager::SET_CUSTOM);
             break;
         case CManager::MODE_MANUAL:
-            ReloadUI(CUI::SET_MANUAL);
+            ReloadUI(CFile_Manager::SET_MANUAL);
             break;
         case CManager::MODE_RESULT:
-            ReloadUI(CUI::SET_RESULT);
+            ReloadUI(CFile_Manager::SET_RESULT);
             break;
         case CManager::MODE_MENU:
-            ReloadUI(CUI::SET_MENU);
+            ReloadUI(CFile_Manager::SET_MENU);
             break;
         case CManager::MODE_GAME:
             {
                 // UIのリロード
-                ReloadUI(CUI::SET_GAME);
+                ReloadUI(CFile_Manager::SET_GAME);
 
                 // プレイヤーのパーツ設定をリロード
                 CModelData* pModelData = CManager::GetModelData();
