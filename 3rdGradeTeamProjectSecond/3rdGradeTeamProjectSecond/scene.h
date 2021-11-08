@@ -27,24 +27,26 @@ public:
     // オブジェクトの種類(描画順)
     typedef enum
     {
-        OBJTYPE_NONE,               // なし
+        OBJTYPE_NONE = 0,           // なし
         OBJTYPE_NONE_DRAW,          // 描画しない
         OBJTYPE_BG,                 // 背景
         OBJTYPE_EFFECT3D_Z_NONE,    // エフェクト3D（Zバッファを無視）
-        OBJTYPE_BALL,               // ボール
-                                    //OBJTYPE_ENEMY,            // エネミー（今回はいない、その代わりCPUがいる）
-                                    OBJTYPE_PLAYER,             // プレイヤー
-                                                                //OBJTYPE_BLOCK,            // ブロック（今回は使っていない）
-                                                                OBJTYPE_MODEL_EFFECT,       // モデルエフェクト
-                                                                                            //OBJTYPE_ITEM,             // アイテム（今回は使っていない）
-                                                                                            OBJTYPE_EFFECT3D,           // エフェクト3D
-                                                                                            OBJTYPE_EFFECT2D_BACK_UI,   // エフェクト2D（UIより後ろ）
-                                                                                            OBJTYPE_UI_BACK_TEXT,       // UI（テキストより後ろ）
-                                                                                            OBJTYPE_TEXT,               // テキスト
-                                                                                            OBJTYPE_UI_FRONT_TEXT,      // UI（テキストより手前）
-                                                                                            OBJTYPE_EFFECT2D_FRONT_UI,  // エフェクト2D（UIより手前）
-                                                                                            OBJTYPE_WAVE,               // 画面上に出るウェーブ
-                                                                                            OBJTYPE_MAX                 // オブジェクトの種類の最大数
+        OBJTYPE_ROAD,               // 道
+        OBJTYPE_FORTRESS,           // 移動要塞
+        OBJTYPE_PLAYER,             // プレイヤー
+        OBJTYPE_ENEMY,              // エネミー
+        OBJTYPE_ITEM,               // アイテム
+        OBJTYPE_BULLET,             // 弾
+        OBJTYPE_MODEL_EFFECT,       // モデルエフェクト
+        OBJTYPE_BLOCK,              // ブロック
+        OBJTYPE_EFFECT3D,           // エフェクト3D
+        OBJTYPE_EFFECT2D_BACK_UI,   // エフェクト2D（UIより後ろ）
+        OBJTYPE_UI_BACK_TEXT,       // UI（テキストより後ろ）
+        OBJTYPE_TEXT,               // テキスト
+        OBJTYPE_UI_FRONT_TEXT,      // UI（テキストより手前）
+        OBJTYPE_EFFECT2D_FRONT_UI,  // エフェクト2D（UIより手前）
+        OBJTYPE_WAVE,               // 画面上に出るウェーブ
+        OBJTYPE_MAX                 // オブジェクトの種類の最大数
     }OBJTYPE;
 
     CScene(OBJTYPE objType);    // イニシャライザでオブジェクトタイプを紐づけ
@@ -72,12 +74,12 @@ public:
     static CScene*GetTopScene(OBJTYPE objtype) { return m_apTop[objtype]; }              // その種類の先頭のオブジェクトを取得
     CScene* GetNextScene(void) { return m_pNext; }                                      // 次のオブジェクトを取得
 
-                                                                                        /*============================================================================================================================
-                                                                                        // オブジェクトのタイプごとでコンストラクタで次のシーン等を記憶しているため、絶対にオブジェクトタイプを書き換えてはいけない
-                                                                                        //void SetObjType(OBJTYPE objtype) { m_objType = objtype; }
-                                                                                        // トップに種類を入れて取得できるので、ゲッターも使う機会がなくなった
-                                                                                        //OBJTYPE GetObjType(void) { return m_objType; }
-                                                                                        ============================================================================================================================*/
+    /*============================================================================================================================
+    // オブジェクトのタイプごとでコンストラクタで次のシーン等を記憶しているため、絶対にオブジェクトタイプを書き換えてはいけない
+    //void SetObjType(OBJTYPE objtype) { m_objType = objtype; }
+    // トップに種類を入れて取得できるので、ゲッターも使う機会がなくなった
+    //OBJTYPE GetObjType(void) { return m_objType; }
+    ============================================================================================================================*/
 
 protected:
     void Release(void);                 // 単体を開放

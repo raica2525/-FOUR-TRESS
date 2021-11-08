@@ -146,9 +146,11 @@
   <ItemGroup>
     <ClCompile Include="ai.cpp" />
     <ClCompile Include="animation.cpp" />
-    <ClCompile Include="ball.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="block.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bullet_type.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="cliping_musk.cpp" />
@@ -157,7 +159,10 @@
     <ClCompile Include="effect2d.cpp" />
     <ClCompile Include="effect3d.cpp" />
     <ClCompile Include="effectData.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_type.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fortress.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="library.cpp" />
@@ -180,6 +185,7 @@
     <ClCompile Include="player_sp.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
+    <ClCompile Include="road.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3d.cpp" />
@@ -193,9 +199,10 @@
   <ItemGroup>
     <ClInclude Include="ai.h" />
     <ClInclude Include="animation.h" />
-    <ClInclude Include="ball.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="billboard.h" />
+    <ClInclude Include="block.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="cliping_musk.h" />
@@ -204,7 +211,9 @@
     <ClInclude Include="effect2d.h" />
     <ClInclude Include="effect3d.h" />
     <ClInclude Include="effectData.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="fortress.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="library.h" />
@@ -225,6 +234,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
+    <ClInclude Include="road.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3d.h" />

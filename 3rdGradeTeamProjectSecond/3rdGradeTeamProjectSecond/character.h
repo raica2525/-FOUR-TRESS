@@ -43,6 +43,7 @@ public:
     void DeathDraw(void);                                         // やられた時の描画
     void LoadModelData(char* cFilePass);                          // テキストファイルから直接読み込む時に使う関数
     void LoadModelData(int nModelPosDefUp, int nModelPosDefDown); // モデルの初期位置データから読み込むときに使う関数
+    void RotControl(void);                                        // 向きを調整
 
     /*========================================================
     // セッター
@@ -54,6 +55,8 @@ public:
     void SetPartNum(int nPartNum) { m_nPartsNum = nPartNum; }                       // パーツの最大数を設定
     void SetPosOld(const D3DXVECTOR3 posOld) { m_posOld = posOld; }
     void SetAnimFilePass(char* cFilePass) { m_cAnimFilePass = cFilePass; }
+    void SetRotDest(const D3DXVECTOR3 rotDest) { m_rotDest = rotDest; }
+    void SetRotDestY(const float fRotDestY) { m_rotDest.y = fRotDestY; }
 
     void BindParts(int nPartsIndex, int nPartsType) { m_aPartsType[nPartsIndex] = nPartsType; }
 
@@ -68,6 +71,7 @@ public:
     D3DXVECTOR3 GetRot(void) { return m_rot; }
     CAnimation * GetAnimation(void) { return m_pAnimation; }
     D3DXVECTOR3 GetPosOld(void) { return m_posOld; }
+    D3DXVECTOR3 GetRotDest(void) { return m_rotDest; }
 
     // アニメーションを使用しない場合のセッター
     void SetUnableAnimation(void) { m_bUseAnimation = false; }
@@ -89,6 +93,7 @@ private:
     char* m_cAnimFilePass;                                              // アニメーションファイルのパス
 
     bool m_bUseAnimation;												// アニメーションさせるかどうか
+    D3DXVECTOR3 m_rotDest;                                              // 向き(目的値)
 };
 
 #endif

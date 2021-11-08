@@ -132,8 +132,8 @@ void CScene::SpUpdate(void)
 {
     for (int nCnt = 0; nCnt < OBJTYPE_MAX; nCnt++)
     {
-        // ボールとプレイヤー以外なら
-        if (nCnt != OBJTYPE_BALL && nCnt != OBJTYPE_PLAYER)
+        // プレイヤー以外なら
+        if (nCnt != OBJTYPE_PLAYER)
         {
             // 先頭、最新のものがあるなら
             if (m_apTop[nCnt] != NULL && m_apCur[nCnt] != NULL)
@@ -299,7 +299,7 @@ void CScene::DrawInBlowMoment(void)
     for (int nCnt = 0; nCnt < OBJTYPE_MAX; nCnt++)
     {
         // 描画するものなら
-        if (nCnt == OBJTYPE_BALL || nCnt == OBJTYPE_PLAYER)
+        if (nCnt == OBJTYPE_PLAYER)
         {
             // 先頭、最新のものがあるなら
             if (m_apTop[nCnt] != NULL && m_apCur[nCnt] != NULL)

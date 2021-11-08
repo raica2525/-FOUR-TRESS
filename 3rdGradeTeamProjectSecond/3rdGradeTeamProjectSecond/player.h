@@ -383,7 +383,7 @@ public:
     void Movement(float fSpeed);                                                        // 行動
     void MoveMotion(void);                                                              // 移動モーションの管理
     void CollisionBall(D3DXVECTOR3 playerPos);                                          // ボールに当たったかどうか
-    void TakeDamage(float fDamage, int nWho, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseLuckyGuard, bool bSetOff = false);   // ダメージをくらう
+    void TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseLuckyGuard);   // ダメージをくらう
     void Control(float fSpeed);                                                         // 制御
     void Jump(void);                                                                    // ジャンプ
     void AttackUpdate(D3DXVECTOR3 pos, bool bFirstCollision);                           // 攻撃更新処理
@@ -395,9 +395,8 @@ public:
     void CatchReady(D3DXVECTOR3 playerPos);                                             // キャッチの構え
     void Bunt(D3DXVECTOR3 playerPos);                                                   // バント
     void Absorb(D3DXVECTOR3 playerPos);                                                 // 吸収
-    bool IsAttackBall(D3DXVECTOR3 attackPos, D3DXVECTOR3 attackSize, D3DXVECTOR3 moveAngle, float fPower, bool bFirstCollision, int flag);   // 攻撃の当たり判定
+    bool IsAttackEnemy(D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, D3DXVECTOR3 moveAngle, float fPower, bool bFirstCollision, int flag);   // 攻撃の当たり判定
     void LeaveWepAfterimage(void);                                                      // 武器の残像を残す
-    void RotControl();                                                                  // 回転制御
     void AttackMotion(void);                                                            // 攻撃モーションの管理
     void DamageUpdate(D3DXVECTOR3 pos);                                                 // 負傷更新処理
     void DamageMotion(void);                                                            // 負傷モーションの管理
@@ -406,9 +405,9 @@ public:
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nNumTexture);					// クリッピングマスク適用 //池田追加
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size);									// テクスチャなしクリッピングマスク適用 //池田追加
 
-                                                                                        /*========================================================
-                                                                                        // カスタマイズの文字列周り
-                                                                                        //======================================================*/
+    /*========================================================
+    // カスタマイズの文字列周り
+    //======================================================*/
     static void CustomPartsName(char* pName, int nPartsType);
     void CustomExName(char* pName, int exFlag);
     void CustomSpName(char* pName);
@@ -453,7 +452,7 @@ public:
     bool GetGround(void) { return m_bGround; }
     int GetPressJumpTime(void) { return m_nCntPressJump; }
     int GetStock(void) { return m_nStock; }
-    D3DXVECTOR3 GetCollisionSizeDeffence(void) { return m_collisionSizeDeffence; }
+    D3DXVECTOR2 GetCollisionSizeDeffence(void) { return m_collisionSizeDeffence; }
     AI_LEVEL GetAILevel(void) { return m_AIlevel; }
     int GetCustomPartsNum(int nParts) { return m_anNumCustomParts[nParts]; }
     bool GetUseControllerEffect(void);       // コントローラの振動を使用するかどうか
@@ -535,8 +534,7 @@ private:
     float m_fSpGaugeCurrent;                 // 現在の必殺ゲージ量
     float m_fSpGaugeMax;                     // 最大必殺ゲージ量
 
-    D3DXVECTOR3 m_collisionSizeAttack;       // 攻撃衝突サイズ
-    D3DXVECTOR3 m_collisionSizeDeffence;     // 防御衝突サイズ
+    D3DXVECTOR2 m_collisionSizeDeffence;     // 防御衝突サイズ（円柱）
 
     CClipingMusk* m_pClipingMusk;			 // クリッピングマスク
     int m_nNumWep;                           // 武器のモデル番号
@@ -547,8 +545,6 @@ private:
     bool m_bSpBarrier;						 // 必殺技によるバリアを獲得しているかどうか
     int m_nCntSpGaugeMaxTime;                // 必殺ゲージMAX時間
     int m_voiceSet;                          // ボイスセット
-
-    D3DXVECTOR3 m_rotDest;                   // 向き(目的値)
 
     //===================================    
     // 特殊能力対応周り                      

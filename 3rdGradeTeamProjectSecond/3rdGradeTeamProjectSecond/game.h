@@ -17,7 +17,6 @@
 //*****************************************************************************
 // 前方宣言
 //*****************************************************************************
-class CBall;
 class CPause;
 class CUI;
 class CEffect2D;
@@ -61,17 +60,6 @@ public:
         float fHeight;
         float fWidth;
     }MAP_LIMIT;
-
-    // シュートの予約
-    typedef struct
-    {
-        D3DXVECTOR3 attackCenterPos;    // 攻撃の中心位置
-        D3DXVECTOR3 moveAngle;          // 移動角度
-        float fPower;                   // パワー
-        bool bFirstCollision;           // 硬直前のファーストヒットか
-        int flag;                       // ボールへのシュートフラグ
-        bool bReserved;                 // 予約中かどうか
-    }RESERVE_SHOOT;
 
     CGame();
     ~CGame();
@@ -122,7 +110,6 @@ public:
     //======================================================*/
     static STATE GetState(void) { return m_state; }                                 // ゲームの状態を取得
     static CPlayer* GetPlayer(const int nNum) { return m_apPlayer[nNum]; }          // プレイヤーを取得
-    static CBall* GetBall(void) { return m_pBall; }                                 // ボールを取得
     static int GetNumAllPlayer(void) { return m_nNumAllPlayer; }                    // 全体プレイヤー人数を取得
     static int GetNumDefeatPlayer(void) { return m_nNumDefeatPlayer; }              // やられたプレイヤー人数を取得
     static int GetWhoWorstPlayer(void) { return m_nWhoWorstPlayer; }                // ワーストのプレイヤーを取得
@@ -133,7 +120,6 @@ public:
     static int GetNumCurrentDispPlayer(void) { return (m_nNumAllPlayer - m_nNumDeathPlayer - m_nNumDefeatPlayer); } // 現在生きているプレイヤー人数を取得
     static CEffect2D* GetNega(void) { return m_pEffect2d_Nega; }                    // 反転合成のエフェクトを取得
     static CEffect2D* GetPosi(void) { return m_pEffect2d_Posi; }                    // 反転合成を戻すためのエフェクトを取得
-    static CNumberArray* GetNumArrayBallSpd(void) { return m_pNumArray_BallSpd; }   // ボールスピード表示を取得
     static bool GetUseKeyboard(void) { return m_bUseKeyboard; }                     // キーボードを使うかどうか取得
     static int GetStock(void) { return m_nNumStock; }                               // ストック数を取得
     static int GetPlayerRank(int nIdx) { return m_anPlayerRank[nIdx]; }             // プレイヤーの順位を取得
@@ -145,8 +131,6 @@ public:
     /*========================================================
     // 便利な関数
     //======================================================*/
-    static void ReserveShoot(D3DXVECTOR3 attackCenterPos, D3DXVECTOR3 moveAngle, float fPower, bool bFirstCollision, int flag, int nWho);
-    void JudgmentShoot(void);                                                       // 誰がシュートを打てたかの判定
     static float GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);        // 一番近いプレイヤーへの角度を求める
     static D3DXVECTOR3  GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);   // 一番近いプレイヤーの位置を求める
     static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ
@@ -157,11 +141,9 @@ private:
     static CPlayer *m_apPlayer[MAX_PLAYER];                // プレイヤーのポインタ
     static int m_anPlayerRank[MAX_PLAYER];                 // プレイヤーのランキング（配列の若い順から1位、2位、、、）
     static int m_anPlayerRankInThisRound[MAX_PLAYER];      // このラウンド内のプレイヤーのランキング（配列の若い順から1位、2位、、、）
-    static CBall *m_pBall;                                 // ボールのポインタ
     static CPause *m_pPause;                               // ポーズのポインタ
     static CEffect2D *m_pEffect2d_Nega;                    // 反転合成へのポインタ
     static CEffect2D *m_pEffect2d_Posi;                    // 反転合成を戻すためのポインタ
-    static CNumberArray *m_pNumArray_BallSpd;              // ボールスピード表示へのポインタ
 
     static TYPE m_type;                                    // ゲーム種類
     static int m_nNumAllPlayer;                            // 全体プレイヤー人数
@@ -174,7 +156,6 @@ private:
     static int m_nNumDefeatPlayer;                         // やられたプレイヤー人数
     static int m_nWhoWorstPlayer;                          // ワーストのプレイヤー
     static int m_nNumDeathPlayer;                          // 死んだプレイヤー人数
-    static RESERVE_SHOOT m_aReserveShoot[MAX_PLAYER];      // シュートの予約
 
     static CPlayer *m_pSpPlayer;                           // ストライクシュートプレイヤーのポインタ
     static bool m_bCurrentSpShot;                          // 現在ストライクシュートを撃っているかどうか

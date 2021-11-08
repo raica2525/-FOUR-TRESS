@@ -10,7 +10,6 @@
 //========================
 #include "player.h"
 #include "effect3d.h"
-#include "ball.h"
 #include "game.h"
 #include "effect2d.h"
 #include "manager.h"
@@ -125,51 +124,51 @@ void CPlayer::SpHeal(void)
 //=============================================================================
 void CPlayer::SpDecoy(void)
 {
-    // 攻撃角度
-    float fAttackAngle = D3DXToRadian(180.0f);    // ニュートラルは真下
+    //// 攻撃角度
+    //float fAttackAngle = D3DXToRadian(180.0f);    // ニュートラルは真下
 
-                                                  // スティックが倒れているならその方向に飛ばす
-    if (m_controlInput.bTiltedLeftStick)
-    {
-        fAttackAngle = m_controlInput.fLeftStickAngle;
-    }
+    //                                              // スティックが倒れているならその方向に飛ばす
+    //if (m_controlInput.bTiltedLeftStick)
+    //{
+    //    fAttackAngle = m_controlInput.fLeftStickAngle;
+    //}
 
-    // 移動角度決定
-    D3DXVECTOR3 moveAngle = DEFAULT_VECTOR;
-    moveAngle.x = sinf(fAttackAngle);
-    moveAngle.y = cosf(fAttackAngle);
+    //// 移動角度決定
+    //D3DXVECTOR3 moveAngle = DEFAULT_VECTOR;
+    //moveAngle.x = sinf(fAttackAngle);
+    //moveAngle.y = cosf(fAttackAngle);
 
-    // ボールを生成（現在ボール位置から、当たり判定のないものを生成）
-    CBall*pBall = CBall::Create(CGame::GetBall()->GetPos(), false);
+    //// ボールを生成（現在ボール位置から、当たり判定のないものを生成）
+    //CBall*pBall = CBall::Create(CGame::GetBall()->GetPos(), false);
 
-    // 生成したボールに必要な情報を結びつける
-    pBall->SetMoveAngle(moveAngle);
-    pBall->SetSpeed(CGame::GetBall()->GetSpeed());
-    pBall->SetStartButtle(false);
-    pBall->SetWhoShooting(m_nIdxCreate);
-    pBall->SetPlayer(this);
-    pBall->SetHitWallMax((int)m_afParam[PARAM_7_WEAPON_SP]);    // 補助値から壁に当たったら消える最大数を設定
+    //// 生成したボールに必要な情報を結びつける
+    //pBall->SetMoveAngle(moveAngle);
+    //pBall->SetSpeed(CGame::GetBall()->GetSpeed());
+    //pBall->SetStartButtle(false);
+    //pBall->SetWhoShooting(m_nIdxCreate);
+    //pBall->SetPlayer(this);
+    //pBall->SetHitWallMax((int)m_afParam[PARAM_7_WEAPON_SP]);    // 補助値から壁に当たったら消える最大数を設定
 
-                                                                // 追加で生成するボール
-    if ((int)m_afParam[PARAM_6_WEAPON_SP] > 0)
-    {
-        for (int nCnt = 0; nCnt < (int)m_afParam[PARAM_6_WEAPON_SP]; nCnt++)
-        {
-            // 攻撃角度をランダムに決める
-            fAttackAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
-            moveAngle.x = sinf(fAttackAngle);
-            moveAngle.y = cosf(fAttackAngle);
+    //                                                            // 追加で生成するボール
+    //if ((int)m_afParam[PARAM_6_WEAPON_SP] > 0)
+    //{
+    //    for (int nCnt = 0; nCnt < (int)m_afParam[PARAM_6_WEAPON_SP]; nCnt++)
+    //    {
+    //        // 攻撃角度をランダムに決める
+    //        fAttackAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
+    //        moveAngle.x = sinf(fAttackAngle);
+    //        moveAngle.y = cosf(fAttackAngle);
 
-            // ボールを生成
-            pBall = CBall::Create(CGame::GetBall()->GetPos(), false);
-            pBall->SetMoveAngle(moveAngle);
-            pBall->SetSpeed(CGame::GetBall()->GetSpeed());
-            pBall->SetStartButtle(false);
-            pBall->SetWhoShooting(m_nIdxCreate);
-            pBall->SetPlayer(this);
-            pBall->SetHitWallMax((int)m_afParam[PARAM_7_WEAPON_SP]);
-        }
-    }
+    //        // ボールを生成
+    //        pBall = CBall::Create(CGame::GetBall()->GetPos(), false);
+    //        pBall->SetMoveAngle(moveAngle);
+    //        pBall->SetSpeed(CGame::GetBall()->GetSpeed());
+    //        pBall->SetStartButtle(false);
+    //        pBall->SetWhoShooting(m_nIdxCreate);
+    //        pBall->SetPlayer(this);
+    //        pBall->SetHitWallMax((int)m_afParam[PARAM_7_WEAPON_SP]);
+    //    }
+    //}
 }
 
 //=============================================================================
@@ -178,7 +177,7 @@ void CPlayer::SpDecoy(void)
 //=============================================================================
 void CPlayer::SpWallThrough(void)
 {
-    CGame::GetBall()->SetWallThrough((int)m_afParam[PARAM_7_WEAPON_SP]);
+    //CGame::GetBall()->SetWallThrough((int)m_afParam[PARAM_7_WEAPON_SP]);
 }
 
 //=============================================================================

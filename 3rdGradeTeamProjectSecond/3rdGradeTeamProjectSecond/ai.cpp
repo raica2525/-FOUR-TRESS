@@ -10,7 +10,6 @@
 //========================
 #include "ai.h"
 #include "game.h"
-#include "ball.h"
 #include "library.h"
 
 //=============================================================================
@@ -381,22 +380,22 @@ void CAi::GetWaitTime(void)
 //=============================================================================
 void CAi::DontMove(bool bUseTurn)
 {
-    m_pPlayer->GetControlInput()->bTiltedLeftStick = false;
+    //m_pPlayer->GetControlInput()->bTiltedLeftStick = false;
 
-    // 移動しない程度にボールのほうを振り向くなら
-    if (bUseTurn)
-    {
-        // ボールのほうを向いていないならそちらを向く
-        if (!IsFacingBall())
-        {
-            // ボールを取得
-            CBall* pBall = CGame::GetBall();
-            float fAngle = GetAngleToTarget3D2D(m_pPlayer->GetPos(), pBall->GetPos());
+    //// 移動しない程度にボールのほうを振り向くなら
+    //if (bUseTurn)
+    //{
+    //    // ボールのほうを向いていないならそちらを向く
+    //    if (!IsFacingBall())
+    //    {
+    //        // ボールを取得
+    //        CBall* pBall = CGame::GetBall();
+    //        float fAngle = GetAngleToTarget3D2D(m_pPlayer->GetPos(), pBall->GetPos());
 
-            m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
-            m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
-        }
-    }
+    //        m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
+    //        m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
+    //    }
+    //}
 }
 
 //=============================================================================
@@ -405,15 +404,15 @@ void CAi::DontMove(bool bUseTurn)
 //=============================================================================
 bool CAi::IsFacingBall(void)
 {
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
 
-    // ボールのほうを向いていない
-    if (pBall->GetPos().x > m_pPlayer->GetPos().x && m_pPlayer->GetRot().y == PLAYER_ROT_LEFT ||
-        pBall->GetPos().x < m_pPlayer->GetPos().x && m_pPlayer->GetRot().y == PLAYER_ROT_RIGHT)
-    {
-        return false;
-    }
+    //// ボールのほうを向いていない
+    //if (pBall->GetPos().x > m_pPlayer->GetPos().x && m_pPlayer->GetRot().y == PLAYER_ROT_LEFT ||
+    //    pBall->GetPos().x < m_pPlayer->GetPos().x && m_pPlayer->GetRot().y == PLAYER_ROT_RIGHT)
+    //{
+    //    return false;
+    //}
 
     // ボールの方を向いている
     return true;
@@ -425,12 +424,12 @@ bool CAi::IsFacingBall(void)
 //=============================================================================
 void CAi::RushToBall(void)
 {
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
-    float fAngle = GetAngleToTarget3D2D(m_pPlayer->GetPos(), pBall->GetPos());
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
+    //float fAngle = GetAngleToTarget3D2D(m_pPlayer->GetPos(), pBall->GetPos());
 
-    m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
-    m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
+    //m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
+    //m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
 }
 
 //=============================================================================
@@ -439,48 +438,48 @@ void CAi::RushToBall(void)
 //=============================================================================
 void CAi::RunAwayFromBall(void)
 {
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
-    float fAngle = GetAngleToTarget3D2D(pBall->GetPos(), m_pPlayer->GetPos());
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
+    //float fAngle = GetAngleToTarget3D2D(pBall->GetPos(), m_pPlayer->GetPos());
 
-    // 右か左に角度調整
-    if (fAngle > D3DXToRadian(0.0f) && fAngle <= D3DXToRadian(180.0f))
-    {
-        fAngle = D3DXToRadian(90.0f);
-    }
-    else
-    {
-        fAngle = D3DXToRadian(-90.0f);
-    }
+    //// 右か左に角度調整
+    //if (fAngle > D3DXToRadian(0.0f) && fAngle <= D3DXToRadian(180.0f))
+    //{
+    //    fAngle = D3DXToRadian(90.0f);
+    //}
+    //else
+    //{
+    //    fAngle = D3DXToRadian(-90.0f);
+    //}
 
-    // ステージの横幅の約半分まで離れたら、強制的に考える（レベル3は待ちにする）
-    float fDistance = GetDistance2D(m_pPlayer->GetPos(), CGame::GetBall()->GetPos());
-    if (fDistance >= CGame::GetMapLimit().fWidth - BALL_COLLISION_SIZE_SIDE)
-    {
-        if (m_pPlayer->GetAILevel() == CPlayer::AI_LEVEL_3)
-        {
-            // 乱戦時は待ったほうが強い
-            GetWaitTime();
+    //// ステージの横幅の約半分まで離れたら、強制的に考える（レベル3は待ちにする）
+    //float fDistance = GetDistance2D(m_pPlayer->GetPos(), CGame::GetBall()->GetPos());
+    //if (fDistance >= CGame::GetMapLimit().fWidth - BALL_COLLISION_SIZE_SIDE)
+    //{
+    //    if (m_pPlayer->GetAILevel() == CPlayer::AI_LEVEL_3)
+    //    {
+    //        // 乱戦時は待ったほうが強い
+    //        GetWaitTime();
 
-            // 向いている方向に入力させる
-            if (m_pPlayer->GetRot().y == PLAYER_ROT_LEFT)
-            {
-                fAngle = D3DXToRadian(-90.0f);
-            }
-            else if (m_pPlayer->GetRot().y == PLAYER_ROT_RIGHT)
-            {
-                fAngle = D3DXToRadian(90.0f);
-            }
-        }
-        else
-        {
-            GetThinkingTime();
-        }
-    }
+    //        // 向いている方向に入力させる
+    //        if (m_pPlayer->GetRot().y == PLAYER_ROT_LEFT)
+    //        {
+    //            fAngle = D3DXToRadian(-90.0f);
+    //        }
+    //        else if (m_pPlayer->GetRot().y == PLAYER_ROT_RIGHT)
+    //        {
+    //            fAngle = D3DXToRadian(90.0f);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        GetThinkingTime();
+    //    }
+    //}
 
-    // プレイヤーの入力に反映
-    m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
-    m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
+    //// プレイヤーの入力に反映
+    //m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
+    //m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
 }
 
 //=============================================================================
@@ -492,32 +491,32 @@ bool CAi::JumpBecauseBallUp(void)
     // ジャンプするかどうか
     bool bUseJump = false;
 
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
 
-    // ボールのほうが上にあるなら
-    if (pBall->GetPos().y > m_pPlayer->GetPos().y + m_pPlayer->GetCollisionSizeDeffence().y)
-    {
-        bUseJump = true;
-    }
+    //// ボールのほうが上にあるなら
+    //if (pBall->GetPos().y > m_pPlayer->GetPos().y + m_pPlayer->GetCollisionSizeDeffence().y)
+    //{
+    //    bUseJump = true;
+    //}
 
-    // 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
-    if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
-    {
-        return false;
-    }
+    //// 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
+    //if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
+    //{
+    //    return false;
+    //}
 
-    // 空中にいて、滞空が終了したなら、長押し解除
-    if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
-    {
-        return false;
-    }
+    //// 空中にいて、滞空が終了したなら、長押し解除
+    //if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
+    //{
+    //    return false;
+    //}
 
-    // ボールが配置されていないなら、ジャンプしない
-    if (!pBall->GetDisp())
-    {
-        return false;
-    }
+    //// ボールが配置されていないなら、ジャンプしない
+    //if (!pBall->GetDisp())
+    //{
+    //    return false;
+    //}
 
     return bUseJump;
 }
@@ -531,32 +530,32 @@ bool CAi::JumpBecauseBallMoveDown(void)
     // ジャンプするかどうか
     bool bUseJump = false;
 
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
 
-    // ボールが下に動いてるから
-    if (pBall->GetPosOld().y > pBall->GetPos().y)
-    {
-        bUseJump = true;
-    }
+    //// ボールが下に動いてるから
+    //if (pBall->GetPosOld().y > pBall->GetPos().y)
+    //{
+    //    bUseJump = true;
+    //}
 
-    // 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
-    if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
-    {
-        return false;
-    }
+    //// 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
+    //if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
+    //{
+    //    return false;
+    //}
 
-    // 空中にいて、滞空が終了したなら、長押し解除
-    if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
-    {
-        return false;
-    }
+    //// 空中にいて、滞空が終了したなら、長押し解除
+    //if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
+    //{
+    //    return false;
+    //}
 
-    // ボールが配置されていないなら、ジャンプしない
-    if (!pBall->GetDisp())
-    {
-        return false;
-    }
+    //// ボールが配置されていないなら、ジャンプしない
+    //if (!pBall->GetDisp())
+    //{
+    //    return false;
+    //}
 
     return bUseJump;
 }
@@ -570,65 +569,65 @@ bool CAi::DecideAttack(bool bUseTurn)
     // 基本的な攻撃をするかどうか
     bool bUseDecideAttack = false;
 
-    // ボールを取得
-    CBall* pBall = CGame::GetBall();
+    //// ボールを取得
+    //CBall* pBall = CGame::GetBall();
 
-    // ボールが当たり判定を使っていないなら、関数を抜ける
-    if (!pBall->GetUseCollision())
-    {
-        return false;
-    }
+    //// ボールが当たり判定を使っていないなら、関数を抜ける
+    //if (!pBall->GetUseCollision())
+    //{
+    //    return false;
+    //}
 
-    // ボールのほうを向いていないなら、関数を抜ける（振り向きで打てる攻撃を使用しないので、若干弱くなる）
-    if (!bUseTurn)
-    {
-        if (!IsFacingBall())
-        {
-            return false;
-        }
-    }
-    else
-    {
-        // ターンを使うとしても、そもそもターンを使えない状況（地面にいる）なら、関数を抜ける
-        if (!IsFacingBall() && m_pPlayer->GetGround())
-        {
-            return false;
-        }
-    }
+    //// ボールのほうを向いていないなら、関数を抜ける（振り向きで打てる攻撃を使用しないので、若干弱くなる）
+    //if (!bUseTurn)
+    //{
+    //    if (!IsFacingBall())
+    //    {
+    //        return false;
+    //    }
+    //}
+    //else
+    //{
+    //    // ターンを使うとしても、そもそもターンを使えない状況（地面にいる）なら、関数を抜ける
+    //    if (!IsFacingBall() && m_pPlayer->GetGround())
+    //    {
+    //        return false;
+    //    }
+    //}
 
-    // プレイヤーの中心座標
-    D3DXVECTOR3 playerCenterPos = m_pPlayer->GetPos() + D3DXVECTOR3(0.0f, m_pPlayer->GetCollisionSizeDeffence().y * 0.5f, 0.0f);
+    //// プレイヤーの中心座標
+    //D3DXVECTOR3 playerCenterPos = m_pPlayer->GetPos() + D3DXVECTOR3(0.0f, m_pPlayer->GetCollisionSizeDeffence().y * 0.5f, 0.0f);
 
-    // 攻撃をすると判断する距離
-    float fAttackDistance = (m_pPlayer->GetCollisionSizeDeffence().x + m_pPlayer->GetCollisionSizeDeffence().y) * 0.5f + (BALL_COLLISION_SIZE_SIDE);
-    if (GetDistance2D(playerCenterPos, pBall->GetPos()) <= fAttackDistance)
-    {
-        bUseDecideAttack = true;
+    //// 攻撃をすると判断する距離
+    //float fAttackDistance = (m_pPlayer->GetCollisionSizeDeffence().x + m_pPlayer->GetCollisionSizeDeffence().y) * 0.5f + (BALL_COLLISION_SIZE_SIDE);
+    //if (GetDistance2D(playerCenterPos, pBall->GetPos()) <= fAttackDistance)
+    //{
+    //    bUseDecideAttack = true;
 
-        // チャージ中にボールが近づいたなら、即座に離す
-        if (m_pPlayer->GetSwingCharge() > 0)
-        {
-            bUseDecideAttack = false;
-        }
+    //    // チャージ中にボールが近づいたなら、即座に離す
+    //    if (m_pPlayer->GetSwingCharge() > 0)
+    //    {
+    //        bUseDecideAttack = false;
+    //    }
 
-        // コアが避ける中ならボールの方を向く
-        if (m_core == CORE_AVOID)
-        {
-            RushToBall();
+    //    // コアが避ける中ならボールの方を向く
+    //    if (m_core == CORE_AVOID)
+    //    {
+    //        RushToBall();
 
-            // 打ち始めで近くのプレイヤーに左右されないため、関数を抜ける
-            if (m_pPlayer->GetStopTime() == 0)
-            {
-                return true;
-            }
-        }
+    //        // 打ち始めで近くのプレイヤーに左右されないため、関数を抜ける
+    //        if (m_pPlayer->GetStopTime() == 0)
+    //        {
+    //            return true;
+    //        }
+    //    }
 
-        // 飛ばすとき、近くのプレイヤーのほうにスティックを倒す
-        if (m_pPlayer->GetStopTime() == 1 || m_pPlayer->GetStopTime() == 0)
-        {
-            GetAttackAngle();
-        }
-    }
+    //    // 飛ばすとき、近くのプレイヤーのほうにスティックを倒す
+    //    if (m_pPlayer->GetStopTime() == 1 || m_pPlayer->GetStopTime() == 0)
+    //    {
+    //        GetAttackAngle();
+    //    }
+    //}
 
     return bUseDecideAttack;
 }
@@ -639,88 +638,88 @@ bool CAi::DecideAttack(bool bUseTurn)
 //=============================================================================
 void CAi::GetAttackAngle(void)
 {
-    // スティックを倒すのは確定
-    m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
+    //// スティックを倒すのは確定
+    //m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
 
-    // ランダムに数字を決める
-    int nRandNum = GetRandNum(100, 1);
-    int nBorderNum = 0;
+    //// ランダムに数字を決める
+    //int nRandNum = GetRandNum(100, 1);
+    //int nBorderNum = 0;
 
-    switch (m_pPlayer->GetAILevel())
-    {
-    case CPlayer::AI_LEVEL_1:
-        nBorderNum = ATTACK_TARGET_AI_LEVEL_1;
-        break;
-    case CPlayer::AI_LEVEL_2:
-        nBorderNum = ATTACK_TARGET_AI_LEVEL_2;
-        break;
-    case CPlayer::AI_LEVEL_3:
-        nBorderNum = ATTACK_TARGET_AI_LEVEL_3;
-        break;
-    }
+    //switch (m_pPlayer->GetAILevel())
+    //{
+    //case CPlayer::AI_LEVEL_1:
+    //    nBorderNum = ATTACK_TARGET_AI_LEVEL_1;
+    //    break;
+    //case CPlayer::AI_LEVEL_2:
+    //    nBorderNum = ATTACK_TARGET_AI_LEVEL_2;
+    //    break;
+    //case CPlayer::AI_LEVEL_3:
+    //    nBorderNum = ATTACK_TARGET_AI_LEVEL_3;
+    //    break;
+    //}
 
-    // 境界の値の範囲内なら、近くの敵を狙った角度に倒す（レベル3だけ精度がアップ）
-    float fAttackAngle = 0.0f;
-    CBall* pBall = CGame::GetBall();
-    if (nRandNum >= 1 && nRandNum <= nBorderNum)
-    {
-        switch (m_pPlayer->GetAILevel())
-        {
-        case CPlayer::AI_LEVEL_1:
-        case CPlayer::AI_LEVEL_2:
-            fAttackAngle = CGame::GetAngleToClosestPlayer(m_pPlayer->GetIdxCreate(), m_pPlayer->GetPos());   //（自分と対象プレイヤーの角度）
-            break;
-        case CPlayer::AI_LEVEL_3:
-            // 打ち始めなら、空中と地上で攻撃を使い分ける
-            if (m_pPlayer->GetStopTime() == 0)
-            {
-                if (m_pPlayer->GetGround())
-                {
-                    // スイング（上入力でなる）
-                    fAttackAngle = D3DXToRadian(0.0f);
-                }
-                else
-                {
-                    // 空中なら、ボールとの位置関係で使う攻撃を変える
-                    if (pBall->GetPos().y > m_pPlayer->GetPos().y + m_pPlayer->GetCollisionSizeDeffence().y)
-                    {
-                        // スマッシュ（向きも合わせる）
-                        if (pBall->GetPos().x > m_pPlayer->GetPos().x)
-                        {
-                            fAttackAngle = D3DXToRadian(90.0f);
-                        }
-                        else
-                        {
-                            fAttackAngle = D3DXToRadian(-90.0f);
-                        }
-                    }
-                    else if (pBall->GetPos().y < m_pPlayer->GetPos().y)
-                    {
-                        // スパイク
-                        fAttackAngle = D3DXToRadian(180.0f);
-                    }
-                    else
-                    {
-                        // スイング（上入力でなる）
-                        fAttackAngle = D3DXToRadian(0.0f);
-                    }
-                }
-            }
-            else if (m_pPlayer->GetStopTime() == 1)
-            {
-                // 飛ばすときは、近くの敵を狙う（ボールと対象プレイヤーの角度）
-                fAttackAngle = GetAngleToTarget3D2D(pBall->GetPos(),
-                    CGame::GetPosToClosestPlayer(m_pPlayer->GetIdxCreate(), m_pPlayer->GetPos()));
-            }
-            break;
-        }
-    }
-    else
-    {
-        // 範囲外なら、適当にスティックを倒す
-        fAttackAngle = float(rand() % 314) / 100 - float(rand() % 314) / 100;
-    }
+    //// 境界の値の範囲内なら、近くの敵を狙った角度に倒す（レベル3だけ精度がアップ）
+    //float fAttackAngle = 0.0f;
+    //CBall* pBall = CGame::GetBall();
+    //if (nRandNum >= 1 && nRandNum <= nBorderNum)
+    //{
+    //    switch (m_pPlayer->GetAILevel())
+    //    {
+    //    case CPlayer::AI_LEVEL_1:
+    //    case CPlayer::AI_LEVEL_2:
+    //        fAttackAngle = CGame::GetAngleToClosestPlayer(m_pPlayer->GetIdxCreate(), m_pPlayer->GetPos());   //（自分と対象プレイヤーの角度）
+    //        break;
+    //    case CPlayer::AI_LEVEL_3:
+    //        // 打ち始めなら、空中と地上で攻撃を使い分ける
+    //        if (m_pPlayer->GetStopTime() == 0)
+    //        {
+    //            if (m_pPlayer->GetGround())
+    //            {
+    //                // スイング（上入力でなる）
+    //                fAttackAngle = D3DXToRadian(0.0f);
+    //            }
+    //            else
+    //            {
+    //                // 空中なら、ボールとの位置関係で使う攻撃を変える
+    //                if (pBall->GetPos().y > m_pPlayer->GetPos().y + m_pPlayer->GetCollisionSizeDeffence().y)
+    //                {
+    //                    // スマッシュ（向きも合わせる）
+    //                    if (pBall->GetPos().x > m_pPlayer->GetPos().x)
+    //                    {
+    //                        fAttackAngle = D3DXToRadian(90.0f);
+    //                    }
+    //                    else
+    //                    {
+    //                        fAttackAngle = D3DXToRadian(-90.0f);
+    //                    }
+    //                }
+    //                else if (pBall->GetPos().y < m_pPlayer->GetPos().y)
+    //                {
+    //                    // スパイク
+    //                    fAttackAngle = D3DXToRadian(180.0f);
+    //                }
+    //                else
+    //                {
+    //                    // スイング（上入力でなる）
+    //                    fAttackAngle = D3DXToRadian(0.0f);
+    //                }
+    //            }
+    //        }
+    //        else if (m_pPlayer->GetStopTime() == 1)
+    //        {
+    //            // 飛ばすときは、近くの敵を狙う（ボールと対象プレイヤーの角度）
+    //            fAttackAngle = GetAngleToTarget3D2D(pBall->GetPos(),
+    //                CGame::GetPosToClosestPlayer(m_pPlayer->GetIdxCreate(), m_pPlayer->GetPos()));
+    //        }
+    //        break;
+    //    }
+    //}
+    //else
+    //{
+    //    // 範囲外なら、適当にスティックを倒す
+    //    fAttackAngle = float(rand() % 314) / 100 - float(rand() % 314) / 100;
+    //}
 
-    // 得た攻撃角度を結びつける
-    m_pPlayer->GetControlInput()->fLeftStickAngle = fAttackAngle;
+    //// 得た攻撃角度を結びつける
+    //m_pPlayer->GetControlInput()->fLeftStickAngle = fAttackAngle;
 }

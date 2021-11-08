@@ -47,6 +47,7 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
 
     // アニメーションはデフォルトで使うことを設定
     m_bUseAnimation = true;
+    m_rotDest = DEFAULT_VECTOR;
 }
 
 //=============================================================================
@@ -212,15 +213,15 @@ void CCharacter::LoadModelData(char* cFilePass)
     m_cAnimFilePass = cFilePass;
 
     // ファイルポイント
-    FILE *pFile;
+    FILE *pFile = NULL;
 
     // 変数宣言
     int  nCntLoad = 0;
-    char cReedText[128];	// 文字として読み取り用
-    char cHeadText[256];	//
-    char cDie[128];
-    D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-    D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    char cReedText[2048];	// 文字として読み取り用
+    char cHeadText[2048];	//
+    char cDie[2048];
+    D3DXVECTOR3 pos = DEFAULT_VECTOR;
+    D3DXVECTOR3 rot = DEFAULT_VECTOR;
 
     // ファイル開
     pFile = fopen(cFilePass, "r");
@@ -283,8 +284,6 @@ void CCharacter::LoadModelData(char* cFilePass)
         // ファイル閉
         fclose(pFile);
     }
-
-    // 開けない
     else
     {
         printf("開けれませんでした\n");
@@ -316,5 +315,39 @@ void CCharacter::LoadModelData(int nModelPosDefUp, int nModelPosDefDown)
     {
         m_anIndexParent[pModelPosDefDown->nIndex[nCnt]] = pModelPosDefDown->nParent[nCnt];
         m_aPosDefault[pModelPosDefDown->nIndex[nCnt]] = pModelPosDefDown->pos[nCnt];
+    }
+}
+
+//=============================================================================
+// 向き調整処理
+// Author : 後藤慎之助
+//=============================================================================
+void CCharacter::RotControl(void)
+{
+    // 回転の制限
+    if (m_rot.y > D3DX_PI)
+    {
+        m_rot.y -= D3DX_PI * 2.0f;
+    }
+    else if (m_rot.y < -D3DX_PI)
+    {
+        m_rot.y += D3DX_PI * 2.0f;
+    }
+
+    // 目的の角度の回転を制限
+    float fRotMin = m_rotDest.y - m_rot.y;
+    if (fRotMin > D3DX_PI)
+    {
+        m_rotDest.y -= D3DX_PI * 2.0f;
+    }
+    else if (fRotMin < -D3DX_PI)
+    {
+        m_rotDest.y += D3DX_PI * 2.0f;
+    }
+
+    // 目的の値に近づける
+    if (fabsf(fRotMin) >= 0.0f)
+    {
+        m_rot.y += (m_rotDest.y - m_rot.y) * PLAYER_TURN_SPEED;
     }
 }

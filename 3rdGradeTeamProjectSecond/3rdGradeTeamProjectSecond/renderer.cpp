@@ -16,7 +16,6 @@
 #include "game.h"
 #include "pause.h"
 #include "player.h"
-#include "ball.h"
 #include "camera.h"
 
 //========================================
@@ -370,7 +369,7 @@ void CRenderer::GameDebugData(void)
 
     // 最初のプレイヤーの能力を取得
     CPlayer* pPlayer = CGame::GetPlayer(0);
-    CBall* pBall = CGame::GetBall();
+    //CBall* pBall = CGame::GetBall();
 
     // プレイヤー1がいないなら関数を抜ける
     if (!pPlayer)
@@ -378,12 +377,13 @@ void CRenderer::GameDebugData(void)
         return;
     }
 
-    // 描画内容を決める
-    wsprintf(str, "FPS:%d\nOBJ:%d\n\nATK:%d\nDEF:%d\nSPD:%d\nWEI:%d\n\nLIFE:%d\nSP_GAUGE:%d\nPOINT:%d\nSTOCK:%d\n\nCHARGE:%d\n\nBALL_SPD:%d\nBALL_WHO_SHOOT:%d\nBALL_WHO_ABSORB:%d\nBALL_STOP:%d\n\nALL_PLAYERS:%d\nDEFEATED_PLAYERS:%d\nPRE_WORST_PLAYER:%d\nDEATH_PLAYERS:%d",
-        GetFPS(), CScene::GetNumObjAll(), (int)pPlayer->GetAtk(), (int)pPlayer->GetDef(), (int)pPlayer->GetSpd(), (int)pPlayer->GetWei(), (int)pPlayer->GetLife(), (int)pPlayer->GetSpGaugeCurrent(), (int)pPlayer->GetPoint(), (int)pPlayer->GetStock(),
-        (int)pPlayer->GetSwingCharge(),
-        (int)pBall->GetSpeed(), pBall->GetWhoShooting(), pBall->GetWhoAbsorbing(), pBall->GetStopTime(),
-        CGame::GetNumAllPlayer(), CGame::GetNumDefeatPlayer(), CGame::GetWhoWorstPlayer(), CGame::GetNumDeathPlayer());
+    //// 描画内容を決める
+    //wsprintf(str, "FPS:%d\nOBJ:%d\n\nATK:%d\nDEF:%d\nSPD:%d\nWEI:%d\n\nLIFE:%d\nSP_GAUGE:%d\nPOINT:%d\nSTOCK:%d\n\nCHARGE:%d\n\nBALL_SPD:%d\nBALL_WHO_SHOOT:%d\nBALL_WHO_ABSORB:%d\nBALL_STOP:%d\n\nALL_PLAYERS:%d\nDEFEATED_PLAYERS:%d\nPRE_WORST_PLAYER:%d\nDEATH_PLAYERS:%d",
+    //    GetFPS(), CScene::GetNumObjAll(), (int)pPlayer->GetAtk(), (int)pPlayer->GetDef(), (int)pPlayer->GetSpd(), (int)pPlayer->GetWei(), (int)pPlayer->GetLife(), (int)pPlayer->GetSpGaugeCurrent(), (int)pPlayer->GetPoint(), (int)pPlayer->GetStock(),
+    //    (int)pPlayer->GetSwingCharge(),
+    //    (int)pBall->GetSpeed(), pBall->GetWhoShooting(), pBall->GetWhoAbsorbing(), pBall->GetStopTime(),
+    //    CGame::GetNumAllPlayer(), CGame::GetNumDefeatPlayer(), CGame::GetWhoWorstPlayer(), CGame::GetNumDeathPlayer());
+    wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
 
     // テキスト描画
     m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));

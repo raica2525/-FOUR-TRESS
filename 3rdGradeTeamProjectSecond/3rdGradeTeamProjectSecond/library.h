@@ -56,9 +56,10 @@ bool IsCollisionRectangle3D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, c
 BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos1Old, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
 bool IsCollisionCircle2D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
 bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
+bool IsCollisionCylinder(const D3DXVECTOR3 pos1, const D3DXVECTOR2 size1, const D3DXVECTOR3 pos2, const D3DXVECTOR2 size2);
 int GetRandNum(const int nMax, const int nMin);
 float GetAngleToTarget2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
-float GetAngleToTarget3D2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
+float GetAngleToTargetXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 float GetDistance2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 D3DXVECTOR3 caclRotate(const D3DXVECTOR3 p1, const D3DXVECTOR3 cp, float deg);
 bool IsCollisionSide2D(const D3DXVECTOR3 r1, const D3DXVECTOR3 r2, const D3DXVECTOR3 p1, const D3DXVECTOR3 p2);

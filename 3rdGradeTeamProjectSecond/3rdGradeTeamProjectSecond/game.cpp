@@ -22,13 +22,15 @@
 #include "pause.h"
 #include "scene2d.h"
 #include "camera.h"
-#include "ball.h"
 #include "bg.h"
 #include "wave.h"
 #include "effect2d.h"
 #include "effect3d.h"
 #include "number_array.h"
 #include "text.h"
+#include "enemy.h"
+#include "road.h"
+#include "fortress.h"
 
 //========================================
 // マクロ定義
@@ -50,11 +52,9 @@ bool CGame::m_bStopObjUpdate = false;
 CPlayer *CGame::m_apPlayer[] = {};
 int CGame::m_anPlayerRank[] = {};
 int CGame::m_anPlayerRankInThisRound[] = {};
-CBall *CGame::m_pBall = NULL;
 CPause *CGame::m_pPause = NULL;
 CEffect2D *CGame::m_pEffect2d_Nega = NULL;
 CEffect2D *CGame::m_pEffect2d_Posi = NULL;
-CNumberArray *CGame::m_pNumArray_BallSpd = NULL;
 
 CGame::TYPE CGame::m_type = TYPE_TRAINING;
 int CGame::m_nNumAllPlayer = 0;
@@ -67,7 +67,6 @@ CGame::MAP_LIMIT CGame::m_mapLimit = {};
 int CGame::m_nNumDefeatPlayer = 0;
 int CGame::m_nWhoWorstPlayer = PLAYER_1;
 int CGame::m_nNumDeathPlayer = 0;
-CGame::RESERVE_SHOOT CGame::m_aReserveShoot[] = {};
 
 CPlayer *CGame::m_pSpPlayer = NULL;
 bool CGame::m_bCurrentSpShot = false;
@@ -86,11 +85,9 @@ CGame::CGame()
     memset(m_apPlayer, 0, sizeof(m_apPlayer));
     memset(m_anPlayerRank, 0, sizeof(m_anPlayerRank));
     memset(m_anPlayerRankInThisRound, 0, sizeof(m_anPlayerRankInThisRound));
-    m_pBall = NULL;
     m_pPause = NULL;
     m_pEffect2d_Nega = NULL;
     m_pEffect2d_Posi = NULL;
-    m_pNumArray_BallSpd = NULL;
     m_pSpPlayer = NULL;
 
     // 静的メンバ変数を初期化（遷移時に毎回必要なものだけ）
@@ -104,15 +101,6 @@ CGame::CGame()
     m_nNumDefeatPlayer = 0;
     m_nWhoWorstPlayer = PLAYER_1;
     m_nNumDeathPlayer = 0;
-    for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
-    {
-        m_aReserveShoot[nCnt].attackCenterPos = DEFAULT_VECTOR;
-        m_aReserveShoot[nCnt].moveAngle = DEFAULT_VECTOR;
-        m_aReserveShoot[nCnt].fPower = 0.0f;
-        m_aReserveShoot[nCnt].bFirstCollision = true;
-        m_aReserveShoot[nCnt].flag = CBall::SHOOT_FLAG_NONE;
-        m_aReserveShoot[nCnt].bReserved = false;
-    }
 
     // 仮でマップ制限をつけている
     m_mapLimit.fHeight = GAME_LIMIT_HEIGHT;
@@ -154,7 +142,7 @@ HRESULT CGame::Init(void)
     //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
     CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
 
-                                        // UIを生成
+    // UIを生成
     CUI::Place(CUI::SET_GAME);
 
     // ポーズの生成
@@ -214,17 +202,11 @@ HRESULT CGame::Init(void)
     // カメラのロックオン場所を変える
     CManager::GetCamera()->CCamera::ResetCamera(DEFAULT_VECTOR, CAMERA_DEFAULT_ROT, CCamera::SETTING_GAME);
 
-    // ボールを生成
-    m_pBall = CBall::Create(D3DXVECTOR3(0.0f, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f), true);
-
     // 反転合成用のエフェクトを生成
     m_pEffect2d_Nega = CEffect2D::Create(3, DEFAULT_VECTOR);
     m_pEffect2d_Nega->SetUseUpdate(false);
     m_pEffect2d_Posi = CEffect2D::Create(3, DEFAULT_VECTOR);
     m_pEffect2d_Posi->SetUseUpdate(false);
-
-    // ボールスピード表示を生成
-    m_pNumArray_BallSpd = CNumberArray::Create(12, D3DXVECTOR3(640.0f, 675.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), (int)BALL_FIRST_SPEED, false);
 
     // BGMをランダム再生
     int nRand = GetRandNum(2, 0);
@@ -240,6 +222,52 @@ HRESULT CGame::Init(void)
         CManager::SoundPlay(CSound::LABEL_BGM_BATTLE02);
         break;
     }
+
+    // 仮の見た目確認用モデル生成
+    CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
+    CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
+
+    // 仮の敵配置
+    D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
+    bool bNextParagraph = false;
+    for (int nCnt = 1; nCnt < 26; nCnt++)
+    {
+        if (bNextParagraph)
+        {
+            enemyPos.x = -2000.0f;
+            bNextParagraph = false;
+        }
+
+        CEnemy::Create(CEnemy::TYPE_SPIDER, enemyPos);
+
+        if (nCnt % 5 == 0)
+        {
+            enemyPos.z += 1000.0f;
+            bNextParagraph = true;
+        }
+        
+        enemyPos.x += 1000.0f;
+    }
+
+    // 仮の道生成
+    D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
+    for (int nCnt = 0; nCnt < 10; nCnt++)
+    {
+        D3DXVECTOR3 rot = DEFAULT_VECTOR;
+        if (nCnt < 5)
+        {
+            roadPos.z += 500.0f;
+        }
+        else
+        {
+            roadPos.x += 500.0f;
+            rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
+        }
+        CRoad::Create(roadPos, rot);
+    }
+
+    // 仮の移動要塞生成
+    CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
 
     return S_OK;
 }
@@ -341,24 +369,11 @@ void CGame::RoundStart(void)
         m_apPlayer[nCntPlayer]->ResetStatusEveryRound();
     }
 
-    // ボールスピード表示をリセット
-    m_pNumArray_BallSpd->SetDispNumber((int)BALL_FIRST_SPEED);
-    CUI *pBallGaugeR = CUI::GetAccessUI(0);
-    CUI *pBallGaugeL = CUI::GetAccessUI(1);
-    if (pBallGaugeR)
-    {
-        pBallGaugeR->SetLeftToRightGauge(BALL_UPDATE_METER_MIN_STOP_FRAME, 0);
-    }
-    if (pBallGaugeL)
-    {
-        pBallGaugeL->SetRightToLeftGauge(BALL_UPDATE_METER_MIN_STOP_FRAME, 0);
-    }
-
     // カウンタを加算
     m_nCntGameTime++;
 
     // 一定フレームで、バトル中に
-    if (m_nCntGameTime >= BALL_DISPING_TIME)
+    if (m_nCntGameTime >= 180)
     {
         // カウンタリセット
         m_nCntGameTime = 0;
@@ -454,9 +469,6 @@ void CGame::RoundStart(void)
 //=============================================================================
 void CGame::InButtle(void)
 {
-    // ボールの予約状況判断（もしフィニッシュになった1Fでも、次のラウンドに予約を持ち越さないように、予約を反映させておく）
-    JudgmentShoot();
-
     switch (m_type)
     {
     case TYPE_ARENA:
@@ -588,9 +600,6 @@ void CGame::BlowMoment(void)
         // 勝敗判定へ
         m_state = STATE_FINISH;
 
-        // ボールは消しておく
-        m_pBall->SetDispOff();
-
         // 一撃の瞬間時、念のためリセットするもの
         BlowMomentMakeSureReset();
     }
@@ -647,10 +656,6 @@ void CGame::JudgmentFinish(void)
             // やられたプレイヤー人数をリセット
             m_nNumDefeatPlayer = 0;
 
-            // ボールをリセットし、最も負けた人に吸収させる
-            m_pBall->Reset(D3DXVECTOR3(0.0f, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f));
-            m_pBall->SetAbsorb(m_apPlayer[m_nWhoWorstPlayer]);
-
             // もう一度ラウンド開始へ
             m_state = STATE_ROUND_START;
         }
@@ -679,195 +684,6 @@ void CGame::JudgmentFinish(void)
                 pTelop->SetActionReset(1);
                 pTelop->SetActionLock(1, false);
                 pTelop->SetActionReset(2);
-            }
-        }
-    }
-}
-
-//========================================
-// シュートの予約
-// Author : 後藤慎之助
-//========================================
-void CGame::ReserveShoot(D3DXVECTOR3 attackCenterPos, D3DXVECTOR3 moveAngle, float fPower, bool bFirstCollision, int flag, int nWho)
-{
-    // 予約情報を更新
-    m_aReserveShoot[nWho].attackCenterPos = attackCenterPos;
-    m_aReserveShoot[nWho].moveAngle = moveAngle;
-    m_aReserveShoot[nWho].fPower = fPower;
-    m_aReserveShoot[nWho].bFirstCollision = bFirstCollision;
-    m_aReserveShoot[nWho].flag = flag;
-    m_aReserveShoot[nWho].bReserved = true;
-}
-
-//========================================
-// 誰がシュートを撃てたかの判定
-// Author : 後藤慎之助
-//========================================
-void CGame::JudgmentShoot(void)
-{
-    // 定義
-    const int NO_PLAYER = -1; // 誰も打てなかった
-
-                              // 変数宣言
-    int nNumShootingPlayer = NO_PLAYER;  // シュートを打つプレイヤー
-    int nNumAbsorbingPlayer = NO_PLAYER; // 吸収するプレイヤー
-    bool abSetOff[MAX_PLAYER];           // 相殺するプレイヤー
-    for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
-    {
-        abSetOff[nCnt] = false;
-    }
-
-    // 予約状況をチェック
-    int nNumReservingPlayer = 0;        // 予約中のプレイヤー人数
-    int nNumFirstCollisionPlayer = 0;   // 最初の接触をするプレイヤー
-    for (int nCnt = 0; nCnt < m_nNumAllPlayer; nCnt++)
-    {
-        if (m_aReserveShoot[nCnt].bReserved)
-        {
-            // 予約中なら、予約を反映
-            m_aReserveShoot[nCnt].bReserved = false;
-            nNumReservingPlayer++;
-
-            // 最初の接触ではなく、すでに硬直中ならほぼ確実に打てる（吸収だけには負ける）
-            if (!m_aReserveShoot[nCnt].bFirstCollision)
-            {
-                if (IS_BITOFF(m_aReserveShoot[nNumFirstCollisionPlayer].flag, CBall::SHOOT_FLAG_ABSORB))
-                {
-                    nNumShootingPlayer = nCnt;
-                }
-                else
-                {
-                    nNumAbsorbingPlayer = nCnt;
-                }
-            }
-            else
-            {
-                // 最初の接触なら、他のプレイヤーと相殺の競争
-                abSetOff[nCnt] = true;
-                nNumFirstCollisionPlayer = nCnt;
-            }
-        }
-    }
-
-    // 相殺状況をチェック
-    if (nNumReservingPlayer >= 2)
-    {
-        bool bUseWave = false;
-        D3DXVECTOR3 setOffPos = m_pBall->GetPos();
-        for (int nCnt = 0; nCnt < m_nNumAllPlayer; nCnt++)
-        {
-            if (abSetOff[nCnt])
-            {
-                // 相殺のノックバック
-                m_apPlayer[nCnt]->TakeDamage(0.0f, nCnt, setOffPos, setOffPos, false, true);
-
-                // 波と音発生
-                if (!bUseWave)
-                {
-                    bUseWave = true;
-                    CWave::Create(setOffPos, BALL_WAVE_FIRST_SIZE);
-                    CManager::SoundPlay(CSound::LABEL_SE_OFFSET);
-                }
-            }
-        }
-
-        // 相殺に打ち勝った人がいないなら
-        if (nNumShootingPlayer == NO_PLAYER && nNumAbsorbingPlayer == NO_PLAYER)
-        {
-            // ボールを打ち上げる
-            m_pBall->Launch(setOffPos);
-        }
-    }
-
-    // 吸収者がいるなら
-    if (nNumAbsorbingPlayer != NO_PLAYER)
-    {
-        // 打つのを横取り
-        nNumShootingPlayer = NO_PLAYER;
-        nNumReservingPlayer = 1;
-        nNumFirstCollisionPlayer = nNumAbsorbingPlayer;
-    }
-
-    // 誰かがシュートを打つなら、シュート
-    if (nNumShootingPlayer != NO_PLAYER)
-    {
-        m_pBall->Shoot(m_aReserveShoot[nNumShootingPlayer].attackCenterPos,
-            m_aReserveShoot[nNumShootingPlayer].moveAngle,
-            m_aReserveShoot[nNumShootingPlayer].fPower,
-            m_aReserveShoot[nNumShootingPlayer].bFirstCollision,
-            m_aReserveShoot[nNumShootingPlayer].flag,
-            m_apPlayer[nNumShootingPlayer]);
-    }
-    else
-    {
-        // 1人のみの予約なら、最初の接触
-        if (nNumReservingPlayer == 1)
-        {
-            // 最初の接触は、硬直時間を結びつける
-            m_apPlayer[nNumFirstCollisionPlayer]->SetStopTime(m_pBall->Shoot(m_aReserveShoot[nNumFirstCollisionPlayer].attackCenterPos,
-                m_aReserveShoot[nNumFirstCollisionPlayer].moveAngle,
-                m_aReserveShoot[nNumFirstCollisionPlayer].fPower,
-                m_aReserveShoot[nNumFirstCollisionPlayer].bFirstCollision,
-                m_aReserveShoot[nNumFirstCollisionPlayer].flag,
-                m_apPlayer[nNumFirstCollisionPlayer]));
-
-            // 必殺ゲージ上昇（バントと吸収は上がらず、キャッチは追加で更に上がる）
-            if (IS_BITOFF(m_aReserveShoot[nNumFirstCollisionPlayer].flag, CBall::SHOOT_FLAG_BUNT) &&
-                IS_BITOFF(m_aReserveShoot[nNumFirstCollisionPlayer].flag, CBall::SHOOT_FLAG_ABSORB))
-            {
-                if (IS_BITON(m_aReserveShoot[nNumFirstCollisionPlayer].flag, CBall::SHOOT_FLAG_THROW))
-                {
-                    m_apPlayer[nNumFirstCollisionPlayer]->GainSpGauge(true);
-                }
-                else
-                {
-                    // 通常攻撃のエフェクト
-                    switch (m_apPlayer[nNumFirstCollisionPlayer]->GetIdxControlAndColor())
-                    {
-                    case PLAYER_1:
-                        if (m_pBall->GetSpeed() < BALL_SHOOT_BIG_HIT_SPEED)
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_1P, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        else
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_1P_FAST, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        break;
-                    case PLAYER_2:
-                        if (m_pBall->GetSpeed() < BALL_SHOOT_BIG_HIT_SPEED)
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_2P, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        else
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_2P_FAST, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        break;
-                    case PLAYER_3:
-                        if (m_pBall->GetSpeed() < BALL_SHOOT_BIG_HIT_SPEED)
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_3P, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        else
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_3P_FAST, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        break;
-                    case PLAYER_4:
-                        if (m_pBall->GetSpeed() < BALL_SHOOT_BIG_HIT_SPEED)
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_4P, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        else
-                        {
-                            CEffect3D::Emit(CEffectData::TYPE_SHOOT_CIRCLE_4P_FAST, m_pBall->GetPos(), m_pBall->GetPos());
-                        }
-                        break;
-                    }
-
-                    m_apPlayer[nNumFirstCollisionPlayer]->GainSpGauge();
-                }
             }
         }
     }

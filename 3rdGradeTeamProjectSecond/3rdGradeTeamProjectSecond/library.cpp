@@ -248,9 +248,32 @@ bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXV
     float fDistance = sqrtf(powf(pos1.x - pos2.x, 2.0f) + powf(pos1.z - pos2.z, 2.0f));
 
     // 2‚Â‚Ì”¼Œa‚ğ‘«‚µ‚½‚à‚Ì‚ğ‹‚ß‚é
-    float fSumRadius = (fSize1 + fSize2) / 2;
+    float fSumRadius = (fSize1 + fSize2) / 2.0f;
 
     return (fDistance <= fSumRadius);
+}
+
+//=============================================================================
+// ‰~’Œ“¯m‚Ì“–‚½‚è”»’è
+// Author : Œã“¡T”V•
+//=============================================================================
+bool IsCollisionCylinder(const D3DXVECTOR3 pos1, const D3DXVECTOR2 size1, const D3DXVECTOR3 pos2, const D3DXVECTOR2 size2)
+{
+    // ‰~“¯m‚ª‚Ô‚Â‚©‚Á‚Ä‚¢‚é‚È‚çA‚‚³ŒvZ
+    if (sqrtf(powf(pos1.x - pos2.x, 2.0f) + powf(pos1.z - pos2.z, 2.0f)) <= (size1.x + size2.x) / 2.0f)
+    {
+        // “–‚½‚é‘¤‚Ì‰º•”•ª‚ªA“–‚½‚ç‚ê‚é‘¤‚Ì‚‚³‚Ì”ÍˆÍ“à‚È‚çA“–‚½‚Á‚Ä‚¢‚é
+        if (pos1.y >= pos2.y && pos1.y <= pos2.y + size2.y)
+        {
+            return true;
+        }
+        else if (pos1.y + size1.y >= pos2.y && pos1.y + size1.y <= pos2.y + size2.y)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //===========================================
@@ -297,16 +320,16 @@ float GetAngleToTarget2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
 }
 
 //===========================================
-// ‘ÎÛ‚Ö‚ÌŠp“x‚ğ“¾‚é2.5D
+// ‘ÎÛ‚Ö‚ÌŠp“x‚ğ“¾‚éXZ
 // Author : Œã“¡T”V•
 //===========================================
-float GetAngleToTarget3D2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
+float GetAngleToTargetXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
 {
     // •Ï”éŒ¾
     float fAngle = 0.0f;                    // •Ô‚·Šp“x
 
-                                            // Šp“x‚ğ‹‚ß‚é
-    fAngle = atan2((targetPos.x - myPos.x), (targetPos.y - myPos.y));
+    // Šp“x‚ğ‹‚ß‚é
+    fAngle = atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z));
 
     return fAngle;
 }

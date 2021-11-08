@@ -84,9 +84,6 @@
     <ClCompile Include="title.cpp">
       <Filter>ソース ファイル\Mode</Filter>
     </ClCompile>
-    <ClCompile Include="ball.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="bg.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
@@ -186,6 +183,27 @@
     <ClCompile Include="text.cpp">
       <Filter>ソース ファイル\Useful</Filter>
     </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_type.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet_type.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="fortress.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="road.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="block.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="effectData.h">
@@ -244,9 +262,6 @@
     </ClInclude>
     <ClInclude Include="renderer.h">
       <Filter>ヘッダー ファイル\Sys_h</Filter>
-    </ClInclude>
-    <ClInclude Include="ball.h">
-      <Filter>ヘッダー ファイル\Obj_h</Filter>
     </ClInclude>
     <ClInclude Include="bg.h">
       <Filter>ヘッダー ファイル\Obj_h</Filter>
@@ -316,6 +331,21 @@
     </ClInclude>
     <ClInclude Include="text.h">
       <Filter>ヘッダー ファイル\Useful_h</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="fortress.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="road.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="block.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

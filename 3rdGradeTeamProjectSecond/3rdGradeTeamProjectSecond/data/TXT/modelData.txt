@@ -5,11 +5,11 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 
 #---------------------------------------
-# [0] ボール
+# [0] 仮モデル
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 0
-	NAME = data/MODEL/ball.x
+	NAME = data/MODEL/example0.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -149,203 +149,203 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [18] クライノートの腰
+# [18] スパイダーの体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 18
-	NAME = data/MODEL/Kleinod/00_bodyD.x
+	NAME = data/MODEL/spider/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [19] クライノートの胸部
+# [19] スパイダーの腹
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 19
-	NAME = data/MODEL/Kleinod/01_bodyU.x
+	NAME = data/MODEL/spider/01_stomach.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [20] クライノートの頭
+# [20] スパイダーの牙0
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 20
-	NAME = data/MODEL/Kleinod/02_head.x
+	NAME = data/MODEL/spider/02_fang_00.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [21] クライノートの右肩
+# [21] スパイダーの牙1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 21
-	NAME = data/MODEL/Kleinod/03_armUR.x
+	NAME = data/MODEL/spider/03_fang_01.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [22] クライノートの右腕
+# [22] スパイダーの右足0
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 22
-	NAME = data/MODEL/Kleinod/04_armDR.x
+	NAME = data/MODEL/spider/04_leg_right_00.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [23] クライノートの右手
+# [23] スパイダーの右足1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 23
-	NAME = data/MODEL/Kleinod/05_handR.x
+	NAME = data/MODEL/spider/05_leg_right_01.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [24] クライノートの左肩
+# [24] スパイダーの右足2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 24
-	NAME = data/MODEL/Kleinod/06_armUL.x
+	NAME = data/MODEL/spider/06_leg_right_02.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [25] クライノートの左腕
+# [25] スパイダーの右足3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 25
-	NAME = data/MODEL/Kleinod/07_armDL.x
+	NAME = data/MODEL/spider/07_leg_right_03.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [26] クライノートの左手
+# [26] スパイダーの左足0
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 26
-	NAME = data/MODEL/Kleinod/08_handL.x
+	NAME = data/MODEL/spider/08_leg_left_00.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [27] クライノートの右腿
+# [27] スパイダーの左足1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 27
-	NAME = data/MODEL/Kleinod/09_legUR.x
+	NAME = data/MODEL/spider/09_leg_left_01.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [28] クライノートの右脚
+# [28] スパイダーの左足2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 28
-	NAME = data/MODEL/Kleinod/10_legDR.x
+	NAME = data/MODEL/spider/10_leg_left_02.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [29] クライノートの右足
+# [29] スパイダーの左足3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 29
-	NAME = data/MODEL/Kleinod/11_footR.x
+	NAME = data/MODEL/spider/11_leg_left_03.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [30] クライノートの左腿
+# [30] キューブ
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 30
-	NAME = data/MODEL/Kleinod/12_legUL.x
+	NAME = data/MODEL/cube.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [31] クライノートの左脚
+# [31] アーミーの仮モデル
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 31
-	NAME = data/MODEL/Kleinod/13_legDL.x
+	NAME = data/MODEL/example1.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [32] クライノートの左足
+# [32] ボール
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 32
-	NAME = data/MODEL/Kleinod/14_footL.x
+	NAME = data/MODEL/ball.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [33] クライノートの武器(剣)
+# [33] UFO機体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 33
-	NAME = data/MODEL/Kleinod/15_weapon.x
+	NAME = data/MODEL/UFO/00_Fighter.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [34] ステージ1
+# [34] UFO右飾り1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 34
-	NAME = data/MODEL/stage1.x
+	NAME = data/MODEL/UFO/01_RightWing1.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [35] イカロスの腰
+# [35] UFO右飾り2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 35
-	NAME = data/MODEL/icarus/00_bodyD.x
+	NAME = data/MODEL/UFO/02_RightWing2.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [36] イカロスの胸部
+# [36] UFO右飾り3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 36
-	NAME = data/MODEL/icarus/01_bodyU.x
+	NAME = data/MODEL/UFO/03_RightWing3.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [37] イカロスの頭
+# [37] UFO右飾り4
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 37
-	NAME = data/MODEL/icarus/02_head.x
+	NAME = data/MODEL/UFO/04_RightWing4.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [38] イカロスの右肩
+# [38] UFO左飾り1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 38
-	NAME = data/MODEL/icarus/03_armUR.x
+	NAME = data/MODEL/UFO/05_LeftWing1.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [39] イカロスの右腕
+# [39] UFO左飾り2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 39
-	NAME = data/MODEL/icarus/04_armDR.x
+	NAME = data/MODEL/UFO/06_LeftWing2.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [40] イカロスの右手
+# [40] UFO左飾り3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 40
-	NAME = data/MODEL/icarus/05_handR.x
+	NAME = data/MODEL/UFO/07_LeftWing3.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [41] イカロスの左肩
+# [41] UFO左飾り4
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 41
-	NAME = data/MODEL/icarus/06_armUL.x
+	NAME = data/MODEL/UFO/08_LeftWing4.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [42] イカロスの左腕
+# [42] 道
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 42
-	NAME = data/MODEL/icarus/07_armDL.x
+	NAME = data/MODEL/road.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -954,6 +954,14 @@ END_MODEL_DATASET
 MODEL_DATASET
 	TYPE = 118
 	NAME = data/MODEL/debug2.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [119] 当たり判定可視化3
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 119
+	NAME = data/MODEL/debug3.x
 END_MODEL_DATASET
 
 END_SCRIPT		# この行は絶対消さないこと！
