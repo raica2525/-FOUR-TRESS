@@ -175,15 +175,22 @@ public:
     /*========================================================
     // ゲッター
     //======================================================*/
-    static bool& GetPreview(void) { return IsPreview; }
     D3DXCOLOR GetCol(void) { return m_col; }
     D3DXVECTOR3 GetCollisionPos(void) { return m_collisionPos; }
     D3DXVECTOR3 GetCollisionSize(void) { return m_collisionSize; }
     static CUI* GetAccessUI(int nNum);// インスタンスのゲッタ
+    ActionInfo GetActionInfo(int nNum) { return m_aActionInfo[nNum]; }
     float GetActionParam(int nNumAction, int nNumParam) { return m_aActionInfo[nNumAction].afParam[nNumParam]; }
-    D3DXVECTOR3 GetMemorySize(void) { return m_memorySize; }
     bool GetDisp(void) { return m_bDisp; }
+
+    // 編集用
+    static bool& GetPreview(void) { return IsPreview; }
     static CUI* GetUI(int nNum) { return m_pUI[nNum]; }// UIの情報
+    D3DXVECTOR3 GetMemoryPos(void) { return m_memoryPos; }  // 記憶用位置
+    D3DXVECTOR3 GetMemorySize(void) { return m_memorySize; }// 記憶用大きさ
+    D3DXCOLOR GetMemoryCol(void) { return m_memoryCol; }    // 記憶用色
+    float GetRot(void) { return m_fRotAngle; }// 角度
+    float GetMemoryRot(void) { return m_fMemoryRotAngle; }
 
     /*========================================================
     // セッター
@@ -194,15 +201,21 @@ public:
     void SetCol(D3DXCOLOR col) { m_col = col; }
     void SetAlpha(float fAlpha) { m_col.a = fAlpha; }
     void SetActionInfo(int nNum, int action, bool bLock,
-    float fParam0 = 0, float fParam1 = 0, float fParam2 = 0, float fParam3 = 0,
-    float fParam4 = 0, float fParam5 = 0, float fParam6 = 0, float fParam7 = 0);    // ここでのみ、アクションの補助値周りの設定をできる
+        float fParam0 = 0, float fParam1 = 0, float fParam2 = 0, float fParam3 = 0,
+        float fParam4 = 0, float fParam5 = 0, float fParam6 = 0, float fParam7 = 0);    // ここでのみ、アクションの補助値周りの設定をできる
     void SetActionLock(int nNum, bool bLock);
     void SetActionReset(int nNum);
     void SetAllActionReset(void);
     void SetFirstPos(void) { SetPosition(m_memoryPos); }    // アクション経由ではなく、最初の位置に戻すとき使う（例:カーソルのリセット）
     void SetDisp(bool bDisp) { m_bDisp = bDisp; }
-    void SetPositon(D3DXVECTOR3 pos) { m_memoryPos = pos; }
+
+    // 編集用
     static void SetUI(CUI* pUI) { m_pUI.push_back(pUI); }
+    void SetMemoryPos(D3DXVECTOR3 pos) { m_memoryPos = pos; }
+    void SetMemorySize(D3DXVECTOR3 size) { m_memorySize = size; }
+    void SetRot(float rot) { m_fRotAngle = rot; }               // 角度
+    void SetMemoryRot(float rot) { m_fMemoryRotAngle = rot; }         // 記憶用角度
+    void SetMemoryCol(D3DXCOLOR col) { m_memoryCol = col; }
 
     /*========================================================
     // アクション
@@ -226,13 +239,13 @@ public:
     /*========================================================
     // 文字列の生成
     //======================================================*/
-     std::string fileString(void);          // 文字列の生成
-     std::string BaseString(void);          // 基本の情報を文字列に変換
-     std::string RotString(void);           // 角度を文字列に変換
-     std::string ColorString(void);         // 色を文字列に変換
-     std::string AddBlendString(void);      // 加算合成を文字列に変換
-     std::string AlphaTestString(void);
-     std::string ActionString(void);        // アクションの情報
+    std::string fileString(void);          // 文字列の生成
+    std::string BaseString(void);          // 基本の情報を文字列に変換
+    std::string RotString(void);           // 角度を文字列に変換
+    std::string ColorString(void);         // 色を文字列に変換
+    std::string AddBlendString(void);      // 加算合成を文字列に変換
+    std::string AlphaTestString(void);
+    std::string ActionString(void);        // アクションの情報
 
 private:
     static bool IsPreview;  // プレビューモードか

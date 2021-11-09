@@ -157,11 +157,14 @@ void CUI::Update(void)
         CScene2D::SetRotVertex(m_fRotAngle);
     }
 
-    // 透明、大きさがないなら使用フラグをfalseに
-    D3DXVECTOR3 size = CScene2D::GetSize();
-    if (m_col.a < 0.0f || size.x < 0.0f || size.y < 0.0f)
+    if (IsPreview)
     {
-        m_bUse = false;
+        //透明、大きさがないなら使用フラグをfalseに
+        D3DXVECTOR3 size = CScene2D::GetSize();
+        if (m_col.a < 0.0f || size.x < 0.0f || size.y < 0.0f)
+        {
+            m_bUse = false;
+        }
     }
     
     // 使用フラグがないなら終了処理（上記の使用フラグをfalseに以外にも、セッターからfalseにできるためこの手法）
@@ -293,60 +296,59 @@ void CUI::SetAccessUI(int nNum)
 //=========================================================
 void CUI::SetActionInfo(int nNum, int action, bool bLock, float fParam0, float fParam1, float fParam2, float fParam3, float fParam4, float fParam5, float fParam6, float fParam7)
 {
+        m_aActionInfo[nNum].action = action;
+        m_aActionInfo[nNum].nCntTime = 0;
+        m_aActionInfo[nNum].bLock = bLock;
+        m_aActionInfo[nNum].afParam[0] = fParam0;
+        m_aActionInfo[nNum].afParam[1] = fParam1;
+        m_aActionInfo[nNum].afParam[2] = fParam2;
+        m_aActionInfo[nNum].afParam[3] = fParam3;
+        m_aActionInfo[nNum].afParam[4] = fParam4;
+        m_aActionInfo[nNum].afParam[5] = fParam5;
+        m_aActionInfo[nNum].afParam[6] = fParam6;
+        m_aActionInfo[nNum].afParam[7] = fParam7;
 
-    m_aActionInfo[nNum].action = action;  
-    m_aActionInfo[nNum].nCntTime = 0;
-    m_aActionInfo[nNum].bLock = bLock;
-    m_aActionInfo[nNum].afParam[0] = fParam0;
-    m_aActionInfo[nNum].afParam[1] = fParam1;
-    m_aActionInfo[nNum].afParam[2] = fParam2;
-    m_aActionInfo[nNum].afParam[3] = fParam3;
-    m_aActionInfo[nNum].afParam[4] = fParam4;
-    m_aActionInfo[nNum].afParam[5] = fParam5;
-    m_aActionInfo[nNum].afParam[6] = fParam6;
-    m_aActionInfo[nNum].afParam[7] = fParam7;
-
-    // テクスチャブレンドアクションなら、ここで用いるテクスチャをバインド
-    if (m_aActionInfo[nNum].action == ACTION_TEX_BREND)
-    {
-        // ブレンド方法
-        CScene2D::BREND brend = CScene2D::BREND_NORMAL;
-        switch ((int)m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_HOW_TO])
+        // テクスチャブレンドアクションなら、ここで用いるテクスチャをバインド
+        if (m_aActionInfo[nNum].action == ACTION_TEX_BREND)
         {
-        case CScene2D::BREND_NORMAL:
-            brend = CScene2D::BREND_NORMAL;
-            break;
-        case CScene2D::BREND_SEAL:
-            brend = CScene2D::BREND_SEAL;
-            break;
-        case CScene2D::BREND_IGNORE_INFO:
-            brend = CScene2D::BREND_APPLY_INFO;
-            CScene2D::SetBrend(CScene2D::BREND_IGNORE_INFO);
-            break;
+            // ブレンド方法
+            CScene2D::BREND brend = CScene2D::BREND_NORMAL;
+            switch ((int)m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_HOW_TO])
+            {
+            case CScene2D::BREND_NORMAL:
+                brend = CScene2D::BREND_NORMAL;
+                break;
+            case CScene2D::BREND_SEAL:
+                brend = CScene2D::BREND_SEAL;
+                break;
+            case CScene2D::BREND_IGNORE_INFO:
+                brend = CScene2D::BREND_APPLY_INFO;
+                CScene2D::SetBrend(CScene2D::BREND_IGNORE_INFO);
+                break;
+            }
+
+            // ブレンド用のテクスチャをバインド
+            m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_IDX]
+                = (float)BindTexture((int)m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_TEX_NUMBER], brend);
+        }
+        else if (m_aActionInfo[nNum].action == ACTION_ROT)
+        {
+            // 回転アクションなら、値をラジアンにする
+            m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE] = D3DXToRadian(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE]);
+            m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] = D3DXToRadian(m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE]);
+        }
+        else if (m_aActionInfo[nNum].action == ACTION_TEX_PLACE)
+        {
+            // 描画するテクスチャの場所を指定
+            CScene2D::SetTexturePlace((int)m_aActionInfo[nNum].afParam[PARAM_TEX_PLACE_PLACE], (int)m_aActionInfo[nNum].afParam[PARAM_TEX_PLACE_PATTERN]);
         }
 
-        // ブレンド用のテクスチャをバインド
-        m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_IDX]
-            = (float)BindTexture((int)m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_TEX_NUMBER], brend);
-    }
-    else if (m_aActionInfo[nNum].action == ACTION_ROT)
-    {
-        // 回転アクションなら、値をラジアンにする
-        m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE] = D3DXToRadian(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE]);
-        m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] = D3DXToRadian(m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE]);
-    }
-    else if (m_aActionInfo[nNum].action == ACTION_TEX_PLACE)
-    {
-        // 描画するテクスチャの場所を指定
-        CScene2D::SetTexturePlace((int)m_aActionInfo[nNum].afParam[PARAM_TEX_PLACE_PLACE], (int)m_aActionInfo[nNum].afParam[PARAM_TEX_PLACE_PATTERN]);
-    }
-
-    // 記憶用変数に結びつける
-    m_aActionInfo[nNum].bMemoryLock = m_aActionInfo[nNum].bLock;
-    for (int nCnt = 0; nCnt < MAX_ACTION_PARAM; nCnt++)
-    {
-        m_aActionInfo[nNum].afMemoryParam[nCnt] = m_aActionInfo[nNum].afParam[nCnt];
-    }
+        // 記憶用変数に結びつける
+        m_aActionInfo[nNum].bMemoryLock = m_aActionInfo[nNum].bLock;
+        for (int nCnt = 0; nCnt < MAX_ACTION_PARAM; nCnt++)
+        {
+            m_aActionInfo[nNum].afMemoryParam[nCnt] = m_aActionInfo[nNum].afParam[nCnt];
+        }
 }
 
 //=========================================================
@@ -368,48 +370,49 @@ void CUI::SetActionLock(int nNum, bool bLock)
 //=========================================================
 void CUI::SetActionReset(int nNum)
 {
-    // 範囲内なら
-    if (nNum >= 0 && nNum < MAX_ACTION)
-    {
-        // 構造体の内容をリセット
-        m_aActionInfo[nNum].nCntTime = 0;
-        m_aActionInfo[nNum].bLock = m_aActionInfo[nNum].bMemoryLock;
-        for (int nCntParam = 0; nCntParam < MAX_ACTION_PARAM; nCntParam++)
+        // 範囲内なら
+        if (nNum >= 0 && nNum < MAX_ACTION)
         {
-            m_aActionInfo[nNum].afParam[nCntParam] = m_aActionInfo[nNum].afMemoryParam[nCntParam];
+            // 構造体の内容をリセット
+            m_aActionInfo[nNum].nCntTime = 0;
+            m_aActionInfo[nNum].bLock = m_aActionInfo[nNum].bMemoryLock;
+            for (int nCntParam = 0; nCntParam < MAX_ACTION_PARAM; nCntParam++)
+            {
+                m_aActionInfo[nNum].afParam[nCntParam] = m_aActionInfo[nNum].afMemoryParam[nCntParam];
+            }
+
+            // アクションによって、リセットするものを変える
+            switch (m_aActionInfo[nNum].action)
+            {
+            case ACTION_SIZE:
+                CScene2D::SetSize(m_memorySize);
+                break;
+            case ACTION_POS:
+                CScene2D::SetPosition(m_memoryPos);
+                break;
+            case ACTION_ALPHA:
+                m_col.a = m_memoryCol.a;
+                break;
+            case ACTION_COLOR:
+                m_col = m_memoryCol;
+                break;
+            case ACTION_ROT:
+                //m_fRotAngle = m_fMemoryRotAngle;
+                break;
+            case ACTION_TEX_BREND:
+                CScene2D::ResetCountAnim((int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_BREND_IDX]);
+                PlayActionTexBrend(nNum);   // テクスチャ座標更新
+                break;
+            case ACTION_LOOP_ANIM:
+                CScene2D::ResetCountAnim();
+                PlayActionLoopAnim(nNum);   // テクスチャ座標更新
+                break;
+            case ACTION_TEX_PLACE:
+                CScene2D::SetTexturePlace((int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_PLACE_PLACE], (int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_PLACE_PATTERN]);
+                break;
+            }
         }
 
-        // アクションによって、リセットするものを変える
-        switch (m_aActionInfo[nNum].action)
-        {
-        case ACTION_SIZE:
-            CScene2D::SetSize(m_memorySize);
-            break;
-        case ACTION_POS:
-            CScene2D::SetPosition(m_memoryPos);
-            break;
-        case ACTION_ALPHA:
-            m_col.a = m_memoryCol.a;
-            break;
-        case ACTION_COLOR:
-            m_col = m_memoryCol;
-            break;
-        case ACTION_ROT:
-            m_fRotAngle = m_fMemoryRotAngle;
-            break;
-        case ACTION_TEX_BREND:
-            CScene2D::ResetCountAnim((int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_BREND_IDX]);
-            PlayActionTexBrend(nNum);   // テクスチャ座標更新
-            break;
-        case ACTION_LOOP_ANIM:
-            CScene2D::ResetCountAnim();
-            PlayActionLoopAnim(nNum);   // テクスチャ座標更新
-            break;
-        case ACTION_TEX_PLACE:
-            CScene2D::SetTexturePlace((int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_PLACE_PLACE], (int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_PLACE_PATTERN]);
-            break;
-        }
-    }
 }
 
 //=========================================================
@@ -910,87 +913,87 @@ void CUI::PlayActionColor(int nNum)
 //=========================================================
 void CUI::PlayActionRot(int nNum)
 {
-    // 変数宣言
-    const float ANGLE_ADJUST = D3DXToRadian(90.0f);   // 時計でいう0が0度の時に合わせる（2Dポリゴンの頂点をZで指定しているから）
+         //変数宣言
+        const float ANGLE_ADJUST = D3DXToRadian(90.0f);   // 時計でいう0が0度の時に合わせる（2Dポリゴンの頂点をZで指定しているから）
 
-    // 制限を考慮
-    bool bUpdate = false;   // 更新するかどうか
-    switch ((int)m_aActionInfo[nNum].afParam[PARAM_ROT_RIMIT])
-    {
-    case RIMIT_NONE:
-        bUpdate = true;
-        break;
-
-    case RIMIT_TO_FRAME:
-        if (m_aActionInfo[nNum].nCntTime < (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+        // 制限を考慮
+        bool bUpdate = false;   // 更新するかどうか
+        switch ((int)m_aActionInfo[nNum].afParam[PARAM_ROT_RIMIT])
         {
-            // カウンタ加算
-            m_aActionInfo[nNum].nCntTime++;
+        case RIMIT_NONE:
             bUpdate = true;
-        }
-        break;
+            break;
 
-    case RIMIT_FROM_FRAME:
-        if (m_aActionInfo[nNum].nCntTime >= (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+        case RIMIT_TO_FRAME:
+            if (m_aActionInfo[nNum].nCntTime < (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+            {
+                // カウンタ加算
+                m_aActionInfo[nNum].nCntTime++;
+                bUpdate = true;
+            }
+            break;
+
+        case RIMIT_FROM_FRAME:
+            if (m_aActionInfo[nNum].nCntTime >= (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+            {
+                bUpdate = true;
+            }
+            else
+            {
+                // カウンタ加算
+                m_aActionInfo[nNum].nCntTime++;
+            }
+            break;
+
+        case RIMIT_TO_VALUE:
+            RimitToValue(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE],
+                m_fRotAngle, m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] - ANGLE_ADJUST, bUpdate);
+            break;
+
+        case RIMIT_REPEAT_FRAME:
+            if (m_aActionInfo[nNum].nCntTime < (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+            {
+                // カウンタ加算
+                m_aActionInfo[nNum].nCntTime++;
+                bUpdate = true;
+            }
+            else
+            {
+                // カウンタリセットし、変化量を反転させる
+                m_aActionInfo[nNum].nCntTime = 0;
+                m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE] *= -1;
+            }
+            break;
+
+        case RIMIT_REPEAT_VALUE:
+            RimitRepeatValue(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE],
+                m_fMemoryRotAngle, m_fRotAngle, m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] - ANGLE_ADJUST, bUpdate);
+            break;
+
+        case RIMIT_EQUAL_VALUE_FROM_FRAME:
+            if (m_aActionInfo[nNum].nCntTime >= (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
+            {
+                m_fRotAngle = m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE];
+            }
+            else
+            {
+                // カウンタ加算
+                m_aActionInfo[nNum].nCntTime++;
+            }
+            break;
+        }
+
+        // 更新
+        if (bUpdate)
         {
-            bUpdate = true;
+            m_fRotAngle += m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE];
         }
-        else
+
+        // 角度の調整
+        if (m_fRotAngle > D3DXToRadian(180.0f) || m_fRotAngle < D3DXToRadian(-180.0f))
         {
-            // カウンタ加算
-            m_aActionInfo[nNum].nCntTime++;
+            m_fRotAngle *= -1;
         }
-        break;
-
-    case RIMIT_TO_VALUE:
-        RimitToValue(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE],
-            m_fRotAngle, m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] - ANGLE_ADJUST, bUpdate);
-        break;
-
-    case RIMIT_REPEAT_FRAME:
-        if (m_aActionInfo[nNum].nCntTime < (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
-        {
-            // カウンタ加算
-            m_aActionInfo[nNum].nCntTime++;
-            bUpdate = true;
-        }
-        else
-        {
-            // カウンタリセットし、変化量を反転させる
-            m_aActionInfo[nNum].nCntTime = 0;
-            m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE] *= -1;
-        }
-        break;
-
-    case RIMIT_REPEAT_VALUE:
-        RimitRepeatValue(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE],
-            m_fMemoryRotAngle, m_fRotAngle, m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE] - ANGLE_ADJUST, bUpdate);
-        break;
-
-    case RIMIT_EQUAL_VALUE_FROM_FRAME:
-        if (m_aActionInfo[nNum].nCntTime >= (int)m_aActionInfo[nNum].afParam[PARAM_ROT_FRAME])
-        {
-            m_fRotAngle = m_aActionInfo[nNum].afParam[PARAM_ROT_VALUE];
-        }
-        else
-        {
-            // カウンタ加算
-            m_aActionInfo[nNum].nCntTime++;
-        }
-        break;
-    }
-
-    // 更新
-    if (bUpdate)
-    {
-        m_fRotAngle += m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE];
-    }
-
-    // 角度の調整
-    if (m_fRotAngle > D3DXToRadian(180.0f) || m_fRotAngle < D3DXToRadian(-180.0f))
-    {
-        m_fRotAngle *= -1;
-    }
 }
 
 //=========================================================
@@ -1295,14 +1298,10 @@ std::string CUI::fileString(void)
 //=========================================================
 std::string CUI::BaseString(void)
 {
-    // 出力する情報の取得
-    D3DXVECTOR3 pos = CScene2D::GetPosition();
-    D3DXVECTOR3 size = CScene2D::GetSize();
-
     std::ostringstream oss;
     oss << "TYPE = " << m_nTexType << std::endl
-        << "POS  = " << std::_Floating_to_string("%.1f", pos.x) << " " << std::_Floating_to_string("%.1f", pos.y) << std::endl// 位置
-        << "SIZE = " << std::_Floating_to_string("%.1f", size.x) << " " << std::_Floating_to_string("%.1f", size.y) << std::endl;// 大きさ
+        << "POS  = " << std::_Floating_to_string("%.1f", m_memoryPos.x) << " " << std::_Floating_to_string("%.1f", m_memoryPos.y) << std::endl// 位置
+        << "SIZE = " << std::_Floating_to_string("%.1f", m_memorySize.x) << " " << std::_Floating_to_string("%.1f", m_memorySize.y) << std::endl;// 大きさ
     return oss.str();
 }
 
@@ -1331,22 +1330,23 @@ std::string CUI::ActionString(void)
     // デフォルト値のときはスキップ
 
     std::ostringstream oss;
-    std::vector<std::ostringstream > action(MAX_ACTION);            // アクションの文字列
-    std::vector<std::ostringstream > param(MAX_ACTION_PARAM);       // パラメータの文字列
-
-    for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
-    {
-        action[nCnt] << "ACTION" << nCnt << " = " << std::endl      // アクションの数ぶん繰り返し
-            << "LOCK = " << m_aActionInfo[nCnt].bLock << std::endl;
-
-            for (int i = 0; i < MAX_ACTION_PARAM; i++)
-            {
-                param[i] << "PARAM" << i << " = " << m_aActionInfo[nCnt].afMemoryParam[i] << std::endl;     // パラメーターぶん繰り返し
-            }
-    }
-
+    //std::vector<std::ostringstream > action(MAX_ACTION);            // アクションの文字列
+    //std::vector<std::ostringstream > param(MAX_ACTION_PARAM);       // パラメータの文字列
 
     // アクションの数だけ繰り返し
+    oss << "ACTION" << 0 << " = " << m_aActionInfo[0].action << std::endl      // アクションの数ぶん繰り返し
+        << "LOCK = " << m_aActionInfo[0].bLock << std::endl
+
+        // パラメーターぶん繰り返し
+        << "PARAM" << 0 << " = " << m_aActionInfo[0].afMemoryParam[0] << std::endl
+        << "PARAM" << 1 << " = " << m_aActionInfo[0].afMemoryParam[1] << std::endl
+        << "PARAM" << 2 << " = " << m_aActionInfo[0].afMemoryParam[2] << std::endl
+        << "PARAM" << 3 << " = " << m_aActionInfo[0].afMemoryParam[3] << std::endl
+        << "PARAM" << 4 << " = " << m_aActionInfo[0].afMemoryParam[4] << std::endl
+        << "PARAM" << 5 << " = " << m_aActionInfo[0].afMemoryParam[5] << std::endl
+        << "PARAM" << 6 << " = " << m_aActionInfo[0].afMemoryParam[6] << std::endl
+        << "PARAM" << 7 << " = " << m_aActionInfo[0].afMemoryParam[7] << std::endl;
+
     return oss.str();
 }
 

@@ -157,7 +157,6 @@
     <ClCompile Include="cliping_musk.cpp" />
     <ClCompile Include="custom.cpp" />
     <ClCompile Include="debug.cpp" />
-    <ClCompile Include="edit.cpp" />
     <ClCompile Include="effect2d.cpp" />
     <ClCompile Include="effect3d.cpp" />
     <ClCompile Include="effectData.cpp" />
@@ -213,7 +212,6 @@
     <ClInclude Include="custom.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="define.h" />
-    <ClInclude Include="edit.h" />
     <ClInclude Include="effect2d.h" />
     <ClInclude Include="effect3d.h" />
     <ClInclude Include="effectData.h" />
@@ -247,6 +245,7 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="resorce.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
