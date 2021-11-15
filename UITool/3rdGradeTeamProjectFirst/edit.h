@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// GUIクラス [gui.h]
+// 編集モードクラス [edit.h]
 // Author : AYANO KUDO
 //
 //=============================================================================
@@ -10,6 +10,7 @@
 #include "main.h"
 #include "imgui/imgui.h"
 #include "ui.h"
+
 //*****************************************************************************
 // 前方宣言
 //*****************************************************************************
@@ -18,13 +19,26 @@ class CUI;
 //*****************************************************************************
 // クラスの定義
 //*****************************************************************************
-class CGUI
+class CEdit
 {
-public:
-    CGUI();
-    ~CGUI();
+   static CEdit* m_pInstance;
+    CEdit();
 
-    static CGUI* Create(HWND hWnd);
+public:
+
+    ~CEdit();
+
+    // フレーム列挙
+    typedef enum
+    {
+        FREME_MANUAL = 0,
+        FREME_INFO,
+        FREME_OBJECT,
+        FREME_SYSTEM,
+        FREME_MAX
+    }FREME;
+
+    static CEdit* Create(HWND hWnd);
 
     void Init(HWND hWnd);
     void Uninit(void);
@@ -48,10 +62,18 @@ public:
     void ActionTexPlace     (CUI::ActionInfo& Action);
     void ActionEmitEffect   (CUI::ActionInfo& Action);
 
+    //std::string TextureName(void);// テクスチャの名前
+    int TextureCheck(int nTextureNum);// テクスチャのチェック
+    //  Set関数
+    void SetIsOpen(FREME freme, bool isOpen) { m_IsOpen[freme] = isOpen; }
+
+    // Get関数
+    static CEdit* GetInstance(void) { return m_pInstance; }
 private:
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);// 色
     HWND m_hwnd;
     int m_UINum;// 選択しているUIの番号
     OPENFILENAME ofn;// ファイルダイアログ構造体
+    bool m_IsOpen[FREME_MAX];// フレームを開いているか
 };
 #endif // !_UI_H_

@@ -7,16 +7,17 @@
 #include "main.h"
 #include "renderer.h"
 #include "manager.h"
+
 #include "imgui/imgui.h"// 工藤追加
-#include "define.h"
+#include "resource.h"
+#include "edit.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 //#undef _DEBUG
 #define FONT "C:\\Windows\\Fonts\\meiryo.ttc"       // フォントファイル
-#define MSG(m) {\
-	MessageBoxA(NULL,m,NULL,MB_OK);}
+#define MSG(m) {MessageBoxA(NULL,m,NULL,MB_OK);}
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -54,18 +55,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     WNDCLASSEX wcex =
     {
         sizeof(WNDCLASSEX),
-        CS_CLASSDC,
+        CS_HREDRAW | CS_VREDRAW,
         WndProc,
         0,
         0,
         hInstance,
-        NULL,
+        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION)),  // アイコン
         LoadCursor(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
-        wcex.lpszMenuName = "MENUID",
+        MAKEINTRESOURCE(IDR_MENU1),                             // メニューの名前
         CLASS_NAME,
-        NULL
+        LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION))
     };
+
     RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
     HWND hWnd;
     MSG msg;
@@ -215,29 +217,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
             break;
         }
-    case WM_COMMAND:
-        switch (LOWORD(wParam)) {
-        case MENU_ITEM1:
-            MSG("開くが選択されました");
-            return 0;
-        case MENU_ITEM2:
-            MSG("閉じるが選択されました");
-            return 0;
-        case MENU_ITEM3:
-            MSG("設定が選択されました");
-            return 0;
-        case MENU_ITEM4:
-            MSG("オプションが選択されました");
-            return 0;
-        }
-        break;
 
     case WM_DEVICECHANGE:		//デバイスの構成が変わった時			//池田追加
         g_bDeviceChange = true;	//コントローラーを再生成するフラグ
         break;
 
-    default:
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case ID_40001:
+            //バージョン(A)
+            MSG("メニューの実装Ver1.0", "バージョン情報");
+            break;
 
+        case ID_40002:
+            //終了(X)
+            PostMessage(hWnd, WM_CLOSE, 0, 0);
+            break;
+
+        case FLEME_MANUAL:// 操作方法フレーム表示
+            CEdit::GetInstance()->SetIsOpen(CEdit::FREME_MANUAL, true);
+            break;
+
+        case FLEME_SYSTEM:
+            CEdit::GetInstance()->SetIsOpen(CEdit::FREME_SYSTEM, true);
+
+            break;
+
+        case FLEME_OBJECT:
+            CEdit::GetInstance()->SetIsOpen(CEdit::FREME_OBJECT, true);
+
+            break;
+
+        case FLEME_INFO:
+            CEdit::GetInstance()->SetIsOpen(CEdit::FREME_INFO, true);
+
+            break;
+
+        }
+        break;
+
+    default:
         break;
     }
 

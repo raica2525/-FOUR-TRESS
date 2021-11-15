@@ -397,7 +397,7 @@ void CUI::SetActionReset(int nNum)
                 m_col = m_memoryCol;
                 break;
             case ACTION_ROT:
-                //m_fRotAngle = m_fMemoryRotAngle;
+                m_fRotAngle = m_fMemoryRotAngle;
                 break;
             case ACTION_TEX_BREND:
                 CScene2D::ResetCountAnim((int)m_aActionInfo[nNum].afMemoryParam[PARAM_TEX_BREND_IDX]);
@@ -1002,6 +1002,9 @@ void CUI::PlayActionRot(int nNum)
 //=========================================================
 void CUI::PlayActionTexBrend(int nNum)
 {
+    //if (!IsPreview)// プレビューモードではない時はスキップ
+    //    return;
+
     // テクスチャ情報から、アニメーションの有無等を取得
     CTexture::Info *pTextureInfo = CManager::GetTexture()->GetInfo((int)m_aActionInfo[nNum].afParam[PARAM_TEX_BREND_TEX_NUMBER]);
     int nPattern = pTextureInfo->nPattern;
@@ -1070,6 +1073,8 @@ void CUI::PlayActionTexBrend(int nNum)
 //=========================================================
 void CUI::PlayActionLoopAnim(int nNum)
 {
+    //if (!IsPreview)// プレビューモードではない時はスキップ
+    //    return;
 
     // 変数宣言
     bool bRightToLeft = false;
@@ -1334,18 +1339,28 @@ std::string CUI::ActionString(void)
     //std::vector<std::ostringstream > param(MAX_ACTION_PARAM);       // パラメータの文字列
 
     // アクションの数だけ繰り返し
-    oss << "ACTION" << 0 << " = " << m_aActionInfo[0].action << std::endl      // アクションの数ぶん繰り返し
-        << "LOCK = " << m_aActionInfo[0].bLock << std::endl
+    for (int nAction = 0; nAction < MAX_ACTION; nAction++)
+    {
+        // アクションが無いときはスキップ
+        if (m_aActionInfo[nAction].action == 0)
+        {
+            continue;
+        }
 
-        // パラメーターぶん繰り返し
-        << "PARAM" << 0 << " = " << m_aActionInfo[0].afMemoryParam[0] << std::endl
-        << "PARAM" << 1 << " = " << m_aActionInfo[0].afMemoryParam[1] << std::endl
-        << "PARAM" << 2 << " = " << m_aActionInfo[0].afMemoryParam[2] << std::endl
-        << "PARAM" << 3 << " = " << m_aActionInfo[0].afMemoryParam[3] << std::endl
-        << "PARAM" << 4 << " = " << m_aActionInfo[0].afMemoryParam[4] << std::endl
-        << "PARAM" << 5 << " = " << m_aActionInfo[0].afMemoryParam[5] << std::endl
-        << "PARAM" << 6 << " = " << m_aActionInfo[0].afMemoryParam[6] << std::endl
-        << "PARAM" << 7 << " = " << m_aActionInfo[0].afMemoryParam[7] << std::endl;
+        // 文字列に変換
+        oss << "ACTION" << nAction << " = " << m_aActionInfo[nAction].action << std::endl
+            << "LOCK = " << m_aActionInfo[nAction].bLock << std::endl
+
+            // パラメーターぶん繰り返し
+            << "PARAM" << 0 << " = " << m_aActionInfo[nAction].afMemoryParam[0] << std::endl
+            << "PARAM" << 1 << " = " << m_aActionInfo[nAction].afMemoryParam[1] << std::endl
+            << "PARAM" << 2 << " = " << m_aActionInfo[nAction].afMemoryParam[2] << std::endl
+            << "PARAM" << 3 << " = " << m_aActionInfo[nAction].afMemoryParam[3] << std::endl
+            << "PARAM" << 4 << " = " << m_aActionInfo[nAction].afMemoryParam[4] << std::endl
+            << "PARAM" << 5 << " = " << m_aActionInfo[nAction].afMemoryParam[5] << std::endl
+            << "PARAM" << 6 << " = " << m_aActionInfo[nAction].afMemoryParam[6] << std::endl
+            << "PARAM" << 7 << " = " << m_aActionInfo[nAction].afMemoryParam[7] << std::endl;
+    }
 
     return oss.str();
 }

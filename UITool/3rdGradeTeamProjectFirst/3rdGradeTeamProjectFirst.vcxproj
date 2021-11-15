@@ -163,7 +163,7 @@
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="file_manager.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gui.cpp" />
+    <ClCompile Include="edit.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -218,7 +218,7 @@
     <ClInclude Include="fade.h" />
     <ClInclude Include="file_manager.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gui.h" />
+    <ClInclude Include="edit.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx9.h" />
@@ -245,7 +245,6 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="resorce.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
@@ -260,7 +259,7 @@
     <ClInclude Include="wave.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
+    <ResourceCompile Include="UItool.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

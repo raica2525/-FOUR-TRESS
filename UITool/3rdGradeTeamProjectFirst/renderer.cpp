@@ -18,7 +18,7 @@
 #include "player.h"
 #include "ball.h"
 #include "camera.h"
-#include "gui.h"// 工藤追加
+#include "edit.h"// 工藤追加
 
 //========================================
 // 静的メンバ変数宣言
@@ -26,7 +26,7 @@
 #ifdef _DEBUG
 bool CRenderer::m_bDispFont = false;
 #endif
-CGUI *CRenderer::m_pUI = NULL;         // UIポインタ(工藤追加)
+CEdit *CRenderer::m_pUI = NULL;         // UIポインタ(工藤追加)
 
 //========================================
 // レンダリングのデフォルトコンストラクタ
@@ -164,7 +164,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 #endif
 
     // GUI（工藤追加）
-    m_pUI = CGUI::Create(hWnd);
+    m_pUI = CEdit::Create(hWnd);
 
     return S_OK;
 }

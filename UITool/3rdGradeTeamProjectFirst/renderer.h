@@ -15,7 +15,7 @@
 //================================================
 //前方宣言
 //================================================
-class CGUI;// 工藤追加
+class CEdit;// 工藤追加
 
 //================================================
 // クラス宣言
@@ -44,7 +44,7 @@ private:
     LPDIRECT3DDEVICE9		m_pD3DDevice;	    // Deviceオブジェクト(描画に必要)
 
     LPDIRECT3DTEXTURE9		m_pScreenTexture;   // スクリーンのテクスチャ
-    static CGUI*m_pUI;                         // UIクラスのポインタ（工藤追加）
+    static CEdit*m_pUI;                         // UIクラスのポインタ（工藤追加）
 #ifdef _DEBUG
     void DrawDebugData(void);
     void GameDebugData(void);

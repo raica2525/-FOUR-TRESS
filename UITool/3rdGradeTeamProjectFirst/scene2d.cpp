@@ -234,7 +234,6 @@ void CScene2D::Draw(void)
 					pDevice->SetTextureStageState(nCount, D3DTSS_COLORARG2, D3DTA_CURRENT);
 					pDevice->SetTextureStageState(nCount, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 					break;
-
 				case BREND_SEAL:
 					pDevice->SetTextureStageState(nCount, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 					pDevice->SetTextureStageState(nCount, D3DTSS_COLOROP, D3DTOP_BLENDTEXTUREALPHA);
@@ -327,6 +326,11 @@ int CScene2D::BindTexture(const int nNumTexture, const BREND brend)
     m_apTexture[m_nNumTexture] = pTexture->GetInfo(nNumTexture)->pTexture;
     m_aBrend[m_nNumTexture++] = brend;
 
+    // 最大値を超えないようにする
+    if (m_nNumTexture >= MAX_BREND_TEXTURE)
+    {
+        m_nNumTexture = MAX_BREND_TEXTURE-1;
+    }
     return nCurrentNumTex;
 }
 
@@ -538,6 +542,12 @@ bool CScene2D::SetFlowingAnimation(int nSpeed, int nPattern, bool bRightToLeft, 
 {
     // 変数宣言
     bool bOneRound = false;   // アニメーションが一周したかどうか
+
+    // ゼロだった時1にする
+    if (nPattern == 0)
+    {
+        nPattern = 1;
+    }
 
     // アニメーション
     m_anCounterAnim[nTex]++;	//カウンタ加算
