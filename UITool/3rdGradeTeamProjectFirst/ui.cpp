@@ -111,43 +111,43 @@ void CUI::Uninit(void)
 void CUI::Update(void)
 {
 
-        // アニメーションを使うなら
-        if (m_nAnimPattern > 1)
+    // アニメーションを使うなら
+    if (m_nAnimPattern > 1)
+    {
+        // 一周していないならテクスチャアニメーションを更新
+        if (!m_bOneRoundAnim)
         {
-            // 一周していないならテクスチャアニメーションを更新
-            if (!m_bOneRoundAnim)
+            // リピートするなら、一周のフラグと結びつけない
+            if (m_bRepeat)
             {
-                // リピートするなら、一周のフラグと結びつけない
-                if (m_bRepeat)
+                if (m_nAnimParagraph > 2)
                 {
-                    if (m_nAnimParagraph > 2)
-                    {
-                        CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
-                    }
-                    else
-                    {
-                        CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
-                    }
+                    CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
                 }
                 else
                 {
-                    if (m_nAnimParagraph > 2)
-                    {
-                        m_bOneRoundAnim = CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
-                    }
-                    else
-                    {
-                        m_bOneRoundAnim = CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
-                    }
+                    CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
+                }
+            }
+            else
+            {
+                if (m_nAnimParagraph > 2)
+                {
+                    m_bOneRoundAnim = CScene2D::SetAllParagraphAnimation(m_nAnimParagraph, m_nAnimSpeed, m_nAnimPattern);
+                }
+                else
+                {
+                    m_bOneRoundAnim = CScene2D::SetAnimation(m_nAnimSpeed, m_nAnimPattern);
                 }
             }
         }
+    }
 
-        // アクション
-        for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
-        {
-            PlayAction(nCnt);
-        }
+    // アクション
+    for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
+    {
+        PlayAction(nCnt);
+    }
 
     // 各頂点を更新（角度も反映）（ゲージ系は、別で頂点情報を調整済み）
     CScene2D::SetColor(m_col);
@@ -166,7 +166,7 @@ void CUI::Update(void)
             m_bUse = false;
         }
     }
-    
+
     // 使用フラグがないなら終了処理（上記の使用フラグをfalseに以外にも、セッターからfalseにできるためこの手法）
     if (!m_bUse)
     {
@@ -989,11 +989,11 @@ void CUI::PlayActionRot(int nNum)
             m_fRotAngle += m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE];
         }
 
-        // 角度の調整
-        if (m_fRotAngle > D3DXToRadian(180.0f) || m_fRotAngle < D3DXToRadian(-180.0f))
-        {
-            m_fRotAngle *= -1;
-        }
+        //// 角度の調整
+        //if (m_fRotAngle > D3DXToRadian(180.0f) || m_fRotAngle < D3DXToRadian(-180.0f))
+        //{
+        //    m_fRotAngle *= -1;
+        //}
 }
 
 //=========================================================

@@ -211,7 +211,6 @@
     <ClInclude Include="cliping_musk.h" />
     <ClInclude Include="custom.h" />
     <ClInclude Include="debug.h" />
-    <ClInclude Include="define.h" />
     <ClInclude Include="effect2d.h" />
     <ClInclude Include="effect3d.h" />
     <ClInclude Include="effectData.h" />

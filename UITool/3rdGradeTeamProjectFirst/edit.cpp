@@ -162,7 +162,7 @@ void CEdit::information(void)
     // トランスフォームの情報取得
     D3DXVECTOR3 pos = pUI->GetMemoryPos();
     D3DXVECTOR3 size = pUI->GetMemorySize();
-    float rot = pUI->GetRot();
+    float rot = D3DXToDegree( pUI->GetRot());// 取得した角度をデグリーに変換
 
     if (!m_IsOpen[FREME_INFO])
         return;
@@ -182,9 +182,9 @@ void CEdit::information(void)
     // 折りたたみボックス
     if (!ImGui::CollapsingHeader(u8"トランスフォーム"))
     {
-        ImGui::DragFloat2("POS", pos, 1, -600, 1500.0f);
-        ImGui::DragFloat2("SIZE", size, 1, 0.0f, 1500.0f);
-        ImGui::DragFloat("ROT", &rot, 1.0f, -180.0f, 180.0f);
+        ImGui::DragFloat2("POS", pos, 1, -600, 1500.0f);        // 位置の設定
+        ImGui::DragFloat2("SIZE", size, 1, 0.0f, 1500.0f);      // サイズの設定
+        ImGui::DragFloat("ROT", &rot, 1.0f, -180.0f, 180.0f);   // 角度の設定
     }
      
     // トランスフォームを反映
@@ -561,7 +561,7 @@ void CEdit::ActionRot(CUI::ActionInfo & Action)
     static float limit   = Action.afParam[3];    // 限界値
 
     // 回転速度
-    ImGui::DragFloat(u8"回転速度", &rot, 1.0f, 0, 360.0f);
+    ImGui::DragFloat(u8"回転速度", &rot, 1.0f, -180, 180.0f);
     if (ImGui::IsItemHovered())//ツールチップ
         ImGui::SetTooltip(u8"PARAM0：回転速度");
     Action.afParam[0] = rot;

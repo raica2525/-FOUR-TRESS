@@ -72,7 +72,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
     {
         return E_FAIL;
     }
-
+    
     // デバイスのプレゼンテーションパラメータの設定
     ZeroMemory(&d3dpp, sizeof(d3dpp));								// ワークをゼロクリア
     d3dpp.BackBufferCount = 1;							// バックバッファの数
