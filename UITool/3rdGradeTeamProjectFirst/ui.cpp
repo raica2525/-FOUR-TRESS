@@ -42,14 +42,13 @@ CUI::CUI(CScene::OBJTYPE objtype) :CScene2D(objtype)
     memset(m_aActionInfo->afParam, 0, sizeof(m_aActionInfo->afParam));
     memset(m_aActionInfo->afMemoryParam, 0, sizeof(m_aActionInfo->afMemoryParam));
     m_bUse = true;
-
     m_fRotAngle = 0.0f;
     m_col = DEFAULT_COLOR;
     m_bUseAdditiveSynthesis = false;
 
-    m_memoryPos = DEFAULT_VECTOR;                
+    m_memoryPos = DEFAULT_VECTOR;
     m_memorySize = DEFAULT_VECTOR;
-    m_fMemoryRotAngle = 0.0f;          
+    m_fMemoryRotAngle = 0.0f;
     m_memoryCol = DEFAULT_COLOR;
 
     m_bOneRoundAnim = false;
@@ -110,7 +109,6 @@ void CUI::Uninit(void)
 //=========================================================
 void CUI::Update(void)
 {
-
     // アニメーションを使うなら
     if (m_nAnimPattern > 1)
     {
@@ -275,6 +273,16 @@ CUI * CUI::GetAccessUI(int nNum)
     }
 
     return NULL;
+}
+
+//=========================================================
+// UIの要素を削除
+//=========================================================
+void CUI::EraseUI(int nUINum)
+{
+    // コンテナ内の要素を削除
+    m_pUI.erase(m_pUI.begin() + nUINum);
+    //m_pUI[nUINum] = nullptr;// nullポインタにする
 }
 
 //=========================================================
@@ -986,7 +994,7 @@ void CUI::PlayActionRot(int nNum)
         // 更新
         if (bUpdate)
         {
-            m_fRotAngle += m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE];
+            m_fRotAngle += D3DXToRadian(m_aActionInfo[nNum].afParam[PARAM_ROT_CHANGE_RATE]);
         }
 
         //// 角度の調整
@@ -1321,7 +1329,7 @@ std::string CUI::RotString(void)
         return "\0";
 
     std::ostringstream oss;
-    oss << "ROT  = " << m_fMemoryRotAngle << std::endl; 
+    oss << "ROT  = " << m_fMemoryRotAngle << std::endl; // デグリー表記で出力
 
     return oss.str();
 }
@@ -1335,8 +1343,6 @@ std::string CUI::ActionString(void)
     // デフォルト値のときはスキップ
 
     std::ostringstream oss;
-    //std::vector<std::ostringstream > action(MAX_ACTION);            // アクションの文字列
-    //std::vector<std::ostringstream > param(MAX_ACTION_PARAM);       // パラメータの文字列
 
     // アクションの数だけ繰り返し
     for (int nAction = 0; nAction < MAX_ACTION; nAction++)
@@ -1349,11 +1355,18 @@ std::string CUI::ActionString(void)
 
         // 文字列に変換
         oss << "ACTION" << nAction << " = " << m_aActionInfo[nAction].action << std::endl
-            << "LOCK = " << m_aActionInfo[nAction].bLock << std::endl
+            << "LOCK = " << m_aActionInfo[nAction].bLock << std::endl;
 
-            // パラメーターぶん繰り返し
-            << "PARAM" << 0 << " = " << m_aActionInfo[nAction].afMemoryParam[0] << std::endl
-            << "PARAM" << 1 << " = " << m_aActionInfo[nAction].afMemoryParam[1] << std::endl
+        // パラメーターぶん繰り返し
+        if (m_aActionInfo[nAction].action == 6)
+        {// 回転アクションのときのみ、最初のパラメーターをデグリーに変換する
+            oss << "PARAM" << 0 << " = " << D3DXToDegree(m_aActionInfo[nAction].afMemoryParam[0]) << std::endl;
+        }
+        else
+        {
+            oss << "PARAM" << 0 << " = " << m_aActionInfo[nAction].afMemoryParam[0] << std::endl;
+        }
+        oss << "PARAM" << 1 << " = " << m_aActionInfo[nAction].afMemoryParam[1] << std::endl
             << "PARAM" << 2 << " = " << m_aActionInfo[nAction].afMemoryParam[2] << std::endl
             << "PARAM" << 3 << " = " << m_aActionInfo[nAction].afMemoryParam[3] << std::endl
             << "PARAM" << 4 << " = " << m_aActionInfo[nAction].afMemoryParam[4] << std::endl

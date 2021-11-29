@@ -34,8 +34,6 @@ int						g_nCountFPS;
 #endif
 bool g_bDeviceChange = false;		//池田変更
 
-
-
 //=============================================================================
 // メイン関数
 // Author : 後藤慎之助
@@ -60,12 +58,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         0,
         0,
         hInstance,
-        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION)),  // アイコン
+        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_HAND)),  // アイコン
         LoadCursor(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
         MAKEINTRESOURCE(IDR_MENU1),                             // メニューの名前
         CLASS_NAME,
-        LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION))
+        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION))
     };
 
     RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };

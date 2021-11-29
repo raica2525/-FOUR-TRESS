@@ -255,7 +255,7 @@ void CScene2D::Draw(void)
 			}
 		}
     }
-
+    
     // テクスチャの設定 //池田変更
     for (int nCount = 0; nCount < m_nNumTexture; nCount++)
     {
@@ -315,6 +315,8 @@ void CScene2D::Draw(void)
 //=============================================================
 // シーン上の2Dポリゴンのテクスチャを割り当て
 // Author : 後藤慎之助、池田悠希
+// nNumTexture : テクスチャの番号
+// brend : ブレンド方法
 //=============================================================
 int CScene2D::BindTexture(const int nNumTexture, const BREND brend)
 {
@@ -331,6 +333,24 @@ int CScene2D::BindTexture(const int nNumTexture, const BREND brend)
     {
         m_nNumTexture = MAX_BREND_TEXTURE-1;
     }
+
+    return nCurrentNumTex;
+}
+
+//=============================================================
+// シーン上の2Dポリゴンのテクスチャを割り当て
+// nNumTexture : テクスチャの番号
+// nNum : 変更したいテクスチャの番号
+//=============================================================
+int CScene2D::BindTexture(const int nNumTexture, const int nNum)
+{
+    // 戻り値で、現在使っているテクスチャ数を返す用
+    int nCurrentNumTex = m_nNumTexture;
+
+    // テクスチャを持ってきて、ブレンドの方法を決めつつ現在使っているテクスチャ数を加算
+    CTexture *pTexture = CManager::GetTexture();
+    m_apTexture[nNum] = pTexture->GetInfo(nNumTexture)->pTexture;
+
     return nCurrentNumTex;
 }
 

@@ -64,6 +64,8 @@ public:
 
     //std::string TextureName(void);// テクスチャの名前
     int TextureCheck(int nTextureNum);// テクスチャのチェック
+    //char** ObjectList(void);         // UIの数取得
+
     //  Set関数
     void SetIsOpen(FREME freme, bool isOpen) { m_IsOpen[freme] = isOpen; }
 

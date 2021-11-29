@@ -149,7 +149,6 @@ void CEdit::Manual(void)
         ImGui::End();// 終わり
 }
 
-
 //=============================================================================
 //[information] 情報フレーム
 //=============================================================================
@@ -159,10 +158,13 @@ void CEdit::information(void)
     CUI* pUI = CUI::GetUI(m_UINum);
     assert(pUI);
 
+    int Textype = pUI->GetTexType();//テクスチャのタイプ取得
+    static int oldTexture = Textype;     // 変更前のテクスチャを保存
+
     // トランスフォームの情報取得
     D3DXVECTOR3 pos = pUI->GetMemoryPos();
     D3DXVECTOR3 size = pUI->GetMemorySize();
-    float rot = D3DXToDegree( pUI->GetRot());// 取得した角度をデグリーに変換
+    float rot = D3DXToDegree(pUI->GetRot());// 取得した角度をデグリーに変換
 
     if (!m_IsOpen[FREME_INFO])
         return;
@@ -172,11 +174,25 @@ void CEdit::information(void)
     // 折りたたみボックス
     if (!ImGui::CollapsingHeader(u8"基本情報"))
     {
-        static char str0[8] = "test";
-        ImGui::InputText(u8"UI名", str0, IM_ARRAYSIZE(str0));
+        // UI名を変更
+        //static char str0[8] = "test";
+        //ImGui::InputText(u8"UI名", str0, IM_ARRAYSIZE(str0));
 
-        static int e = 0;
-        ImGui::Combo(u8"使用テクスチャ", &e, u8"なし \0ゲージ \0拡縮 \0移動 \0透明度 \0色変え \0回転 \0テクスチャブレンド \0ループアニメーション \0テクスチャの描画位置指定 \0エフェクト発生");
+        // テクスチャの設定
+        Textype = TextureCheck(Textype);     // テクスチャが存在するかチェック
+        oldTexture = Textype;     // 変更前のテクスチャを保存
+        // エフェクト番号
+        ImGui::DragInt(u8"テクスチャ番号", &Textype, 1, 0, CTexture::GetnNumTexture());
+        if (ImGui::IsItemHovered()) // ツールチップ
+            ImGui::SetTooltip(u8"PARAM0：使用するテクスチャの番号");
+
+        Textype = TextureCheck(Textype);// テクスチャが存在するかチェック
+        pUI->SetTexType(Textype);       // テクスチャのセット
+        // 前回と変わっていたら変更
+        if (Textype != oldTexture)
+        {
+            pUI->BindTexture(Textype,0);
+        }
     }
 
     // 折りたたみボックス
@@ -186,14 +202,14 @@ void CEdit::information(void)
         ImGui::DragFloat2("SIZE", size, 1, 0.0f, 1500.0f);      // サイズの設定
         ImGui::DragFloat("ROT", &rot, 1.0f, -180.0f, 180.0f);   // 角度の設定
     }
-     
+
     // トランスフォームを反映
     pUI->SetPosition(pos);
     pUI->SetMemoryPos(pos);
     pUI->SetSize(size);
     pUI->SetMemorySize(size);
-    pUI->SetRot(D3DXToRadian( rot));
-    pUI->SetMemoryRot(D3DXToRadian(rot));
+    pUI->SetRot(D3DXToRadian(rot));
+    pUI->SetMemoryRot(rot);
 
     // 色の設定
     static D3DXCOLOR col = pUI->GetCol();
@@ -226,23 +242,50 @@ void CEdit::UIEdit(void)
     if (!m_IsOpen[FREME_OBJECT])    // フレームが閉じているときは生成しない
         return;
 
-    ImGui::Begin(u8"オブジェクト", &m_IsOpen[FREME_OBJECT]);
+    // メニューバー付きのフレームを生成
+    ImGui::Begin(u8"オブジェクト", &m_IsOpen[FREME_OBJECT], ImGuiWindowFlags_MenuBar);
 
-    const char* listbox_items[] = { u8"背景", u8"ロゴ", u8"Cherry", };
-    ImGui::ListBox("\0", &m_UINum, listbox_items, IM_ARRAYSIZE(listbox_items), 5);
-
-    // メニューバー（未完成）
+    // メニューバー
     if (ImGui::BeginMenuBar())
     {
-        if (ImGui::BeginMenu("Menu"))
+        // UIの追加
+        if (ImGui::MenuItem(u8"追加"))
         {
-            ImGui::MenuItem("(demo menu)", NULL, false, false);
-            if (ImGui::MenuItem("New")) {}
-            if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-            ImGui::EndMenu();
+            CUI::SetUI(CUI::Create());
+            std::cout << "追加" << std::endl;
+            m_UINum = CUI::GetUINum()-1;// 追加したUIの番号にする
         }
+
+        // UIの削除
+        if (ImGui::MenuItem(u8"削除"))
+        {// UIを1個以下にすることはできない
+            if (CUI::GetUINum() > 1)
+            {
+            CUI* pUI = CUI::GetUI(m_UINum);
+            pUI->Uninit();
+            CUI::EraseUI(m_UINum);
+            m_UINum = 0;
+            std::cout << m_UINum << "削除" << std::endl;
+            }
+        }
+
         ImGui::EndMenuBar();
     }
+
+    // UIが存在しているかチェック
+    if (!CUI::GetUI(m_UINum))
+    {
+        m_UINum = 0;
+        ImGui::End();
+        return;
+    }
+        ImGui::SliderInt(u8"オブジェクト選択", &m_UINum, 0, CUI::GetUINum() - 1);
+
+        // UIが存在しなかった場合
+        if (!CUI::GetUI(m_UINum))
+        {
+            m_UINum = 0;
+        }
 
     ImGui::End();// 終わり
 }
@@ -289,13 +332,7 @@ void CEdit::System(void)
     }
     // ツールチップ
     if (ImGui::IsItemHovered())
-        ImGui::SetTooltip(u8"モードを切り替えます");
-
-    static float vec4f[2] = {};
-    if (ImGui::CollapsingHeader(u8"折り畳み"))
-    {
-        ImGui::SliderFloat2("slider float2", vec4f, -600, 1500.0f);
-    }
+        ImGui::SetTooltip(u8"モードを切り替えます(未完成)");
 
     ImGui::End();// 終わり
 }
@@ -520,7 +557,7 @@ void CEdit::ActionColor(CUI::ActionInfo & Action)
 
     // 色の設定
     ImGui::ColorEdit3(u8"色の設定", col);
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())   // ツールチップ
         ImGui::SetTooltip(u8"PARAM0：Rの値 \n PARAM1：Gの値 \n PARAM2：Bの値");
     Action.afParam[0] = col.r;    // r
     Action.afParam[1] = col.g;    // g
@@ -528,13 +565,13 @@ void CEdit::ActionColor(CUI::ActionInfo & Action)
 
     // 動作設定
     ImGui::Combo(u8"動作設定", &nAction, u8"無制限 \0〇フレームまで \0〇フレームから \0〇値まで \0フレームリピート \0値リピート \0(〇フレームから)〇値に即座にする ");
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM3：動作設定");
     Action.afParam[3] = nAction;
 
     // フレーム
     ImGui::DragFloat(u8"フレーム", &fFrame, 1.0f, -600, 1500.0f);
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM4：フレーム");
     Action.afParam[4] = fFrame;
 
@@ -562,24 +599,24 @@ void CEdit::ActionRot(CUI::ActionInfo & Action)
 
     // 回転速度
     ImGui::DragFloat(u8"回転速度", &rot, 1.0f, -180, 180.0f);
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM0：回転速度");
     Action.afParam[0] = rot;
 
     ImGui::Combo(u8"動作設定", &nAction, u8"無制限 \0〇フレームまで \0〇フレームから \0〇値まで \0フレームリピート \0値リピート \0(〇フレームから)〇値に即座にする ");
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM1：動作設定");
     Action.afParam[1] = nAction;
 
     // フレーム数
     ImGui::DragFloat(u8"フレーム", &fFrame, 1.0f, -600, 1500.0f);
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM2：フレーム");
     Action.afParam[2] = fFrame;
 
     // 限界値
     ImGui::DragFloat(u8"限界値", &limit, 1.0f, 0, 256.0f);
-    if (ImGui::IsItemHovered())//ツールチップ
+    if (ImGui::IsItemHovered())     // ツールチップ
         ImGui::SetTooltip(u8"PARAM3：限界値");
     Action.afParam[3] = limit;
 }
@@ -714,7 +751,6 @@ void CEdit::ActionEmitEffect(CUI::ActionInfo & Action)
     TextureCheck(ntexture);// テクスチャが存在するかチェック
 
     // エフェクト番号
-    //ImGui::Combo(u8"テクスチャ番号", &ntexture, u8"無制限 \0〇フレームまで \0〇フレームから \0〇値まで \0フレームリピート \0値リピート \0(〇フレームから)〇値に即座にする ");
     ImGui::DragInt(u8"テクスチャ番号", &ntexture, 1, 0, CTexture::GetnNumTexture());
     if (ImGui::IsItemHovered())//ツールチップ
         ImGui::SetTooltip(u8"PARAM0：テクスチャ番号");
@@ -742,7 +778,6 @@ void CEdit::ActionEmitEffect(CUI::ActionInfo & Action)
     Action.afParam[4] = pos.y;
 }
 
-
 //=============================================================================
 //[TextureCheck] テクスチャのチェック
 // 引数
@@ -763,6 +798,24 @@ int CEdit::TextureCheck(int nTextureNum)
 }
 
 //=============================================================================
+//[ObjectList] オブジェクト一覧
+// 返り値: オブジェクトの一覧文字列
+//=============================================================================
+//char** CEdit::ObjectList(void)
+//{
+//    // UIの数を取得
+//    CUI::GetUINum();
+//    char* listbox_items[32];
+//
+//    for (size_t nCnt = 0; nCnt < CUI::GetUINum(); nCnt++)
+//    {
+//        listbox_items[nCnt] = "%d", nCnt;
+//    }
+//
+//    return &listbox_items[0];
+//}
+
+//=============================================================================
 //[TextureName] テクスチャ名取得
 // 引数
 // Action : 設定したいアクション
@@ -775,7 +828,7 @@ int CEdit::TextureCheck(int nTextureNum)
 //    // テクスチャ名を取得
 //    for (int nCnt = 0; nCnt < CTexture::GetnNumTexture(); nCnt++)
 //    {
-//        std::string strName = pTexture->CTexture::GetInfo(nCnt);
+//        //std::string strName = pTexture->CTexture::GetInfo(nCnt)->;
 //        oss << "\0";
 //    }
 //

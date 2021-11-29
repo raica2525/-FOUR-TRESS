@@ -51,7 +51,6 @@ CFile_Manager::~CFile_Manager()
     return pInstance;
 }
 
-
  //=============================================================================
  // [Read] ファイルの読み込み
  // 引数
@@ -94,7 +93,6 @@ CFile_Manager::~CFile_Manager()
              {
                  fgets(cReadText, sizeof(cReadText), pFile);
                  sscanf(cReadText, "%s", &cHeadText);
-
                  // cHeadTextがUISETの時
                  if (strcmp(cHeadText, "UISET") == 0)
                  {
@@ -349,6 +347,7 @@ CFile_Manager::~CFile_Manager()
                      // 表示するかどうかを設定
                      pUI->SetDisp(bDisp);
 
+                     // コンテナに追加
                      CUI::SetUI(pUI);
 #ifdef _DEBUG
                      pUI->SetReloadUI();
@@ -367,6 +366,88 @@ CFile_Manager::~CFile_Manager()
  }
 
  //=============================================================================
+ // [Read] ファイルの読み込み
+ // 引数
+ // 読み込むファイル名
+ //=============================================================================
+ void CFile_Manager::ReadFile(char * fileName)
+ {
+     std::ifstream file(fileName);  // 読み込むファイル
+     std::string line;              // 保存用変数
+     char del = ' ';// 区切り文字
+
+     while (std::getline(file, line))// ファイルを1行ずつ読み込む
+     {
+
+         int NamePos = line.find("]");// 文字列を探す
+         if (NamePos != std::string::npos)// 文字が見つかったら
+         {// 文字列を分割して出力
+             Split(line, del);
+         }
+     }
+ }
+
+ //==============================================================================
+ // [split] 文字列の分割
+ // 引数
+ //      str : 分割したい文字列
+ //      del : 区切り文字(分割する位置)
+ // 返り値 分割された文字列の最後
+ //==============================================================================
+ std::string CFile_Manager::Split(std::string str, char del)
+ {
+     int first = 0;
+     int last = str.find_first_of(del);
+
+     std::vector<std::string> result;
+
+     while (first<str.size())
+     {
+         std::string subStr(str, first, last - first);
+         result.push_back(subStr);
+
+         // 先頭と区切り文字の位置をずらす
+         first = last + 1;
+         last = str.find_first_of(del, first);
+
+         // 区切り文字が見つからなかったら
+         if (last == std::string::npos)
+         {
+             last = str.size();
+         }
+     }
+
+     return result[result.size() - 1];
+ }
+
+ //=============================================================================
+ // [ReadUIName] UI名の読み込み
+ //=============================================================================
+ void CFile_Manager::ReadUIName(std::ifstream file , std::string label)
+ {
+     std::string line;
+
+     char del = ' ';// 区切り文字
+
+     while (std::getline(file, line))// ファイルを1行ずつ読み込む
+     {
+         int NamePos = line.find(label);// 文字列を探す
+         if (NamePos != std::string::npos)// 文字が見つかったら
+         {// 文字列を分割して出力
+
+             std::cout << Split(line, del) << std::endl;
+
+         }
+     }
+ }
+ //=============================================================================
+ // [ParseFlloat3] ファイルの書き込み
+ //=============================================================================
+ void CFile_Manager::ParseFlloat3(std::string line, char del, float x, float y, float z)
+ {
+ }
+
+ //=============================================================================
  // [writing] ファイルの書き込み
  //=============================================================================
  void CFile_Manager::writing(void)
@@ -376,11 +457,12 @@ CFile_Manager::~CFile_Manager()
      pfile << "SCRIPT			# この行は絶対消さないこと！\n" << std::endl;
 
      std::string str;
-     for (int nCnt = 0; nCnt < 3; nCnt++)
+     int i =CUI::GetUINum();
+     for (int nCnt = 0; nCnt < CUI::GetUINum(); nCnt++)
      {
          CUI* pUI = CUI::GetUI(nCnt);// UIのインスタンス取得
 
-                                           // UIの情報を文字列で取得
+         // UIの情報を文字列で取得
          if (pUI != NULL)
          {
              str = pUI->fileString();
@@ -389,5 +471,4 @@ CFile_Manager::~CFile_Manager()
      }
 
      pfile << std::endl << "END_SCRIPT		# この行は絶対消さないこと！\n" << std::endl;
-
  }

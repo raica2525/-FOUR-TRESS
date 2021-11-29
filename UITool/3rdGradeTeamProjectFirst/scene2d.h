@@ -54,6 +54,7 @@ public:
     virtual void Update(void);
     virtual void Draw(void);
     int BindTexture(const int nNumTexture, const BREND brend = BREND_NORMAL);                                   // テクスチャを割り当てる
+    int BindTexture(const int nNumTexture, const int nNum);                                   // テクスチャを割り当てる
     void SetVertex(void);                                                                                       // 頂点座標を設定
     void SetRotVertex(float fAngle);                                                                            // 回転する頂点座標を設定
     void SetVisualVertex(D3DXVECTOR3 posVisual, D3DXVECTOR3 sizeVisual);                                        // 見かけ上の頂点座標を設定

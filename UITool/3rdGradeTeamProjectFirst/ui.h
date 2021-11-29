@@ -168,7 +168,7 @@ public:
     void Uninit(void);
     void Update(void);
     void Draw(void);
-    static CUI *Create(int nTexType, D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRotAngle, D3DXCOLOR col,
+    static CUI *Create(int nTexType = 0, D3DXVECTOR3 pos = {SCREEN_WIDTH/2.0f,SCREEN_HEIGHT/2.0f, 0.0f}, D3DXVECTOR3 size = { 100.0f,100.0f,0.0f }, int nRotAngle = 0, D3DXCOLOR col = DEFAULT_COLOR,
         bool bFrontText = false, bool bUseAddiveSynthesis = false, int nAlphaTestBorder = 0, bool bUseZBuffer = false,
         D3DXVECTOR3 collisionPos = DEFAULT_VECTOR, D3DXVECTOR3 collisionSize = DEFAULT_VECTOR);
 
@@ -184,14 +184,17 @@ public:
     bool GetDisp(void) { return m_bDisp; }
 
     // 編集用
-    static bool& GetPreview(void) { return IsPreview; }
-    static CUI* GetUI(int nNum) { return m_pUI[nNum]; }// UIの情報
+    static bool& GetPreview(void) { return IsPreview; }     // プレビューモードか
+    static CUI* GetUI(int nNum) { return m_pUI[nNum]; }     // UIの情報
     D3DXVECTOR3 GetMemoryPos(void) { return m_memoryPos; }  // 記憶用位置
     D3DXVECTOR3 GetMemorySize(void) { return m_memorySize; }// 記憶用大きさ
     D3DXCOLOR GetMemoryCol(void) { return m_memoryCol; }    // 記憶用色
-    float GetRot(void) { return m_fRotAngle; }// 角度
+    float GetRot(void) { return m_fRotAngle; }              // 角度
     float GetMemoryRot(void) { return m_fMemoryRotAngle; }
+    int GetTexType(void) { return m_nTexType; }
+    static std::size_t GetUINum(void) { return m_pUI.size(); }     // UIの要素数
 
+    static void EraseUI(int nUINum);// コンテナの要素も削除
     /*========================================================
     // セッター
     //======================================================*/
@@ -216,6 +219,7 @@ public:
     void SetRot(float rot) { m_fRotAngle = rot; }               // 角度
     void SetMemoryRot(float rot) { m_fMemoryRotAngle = rot; }         // 記憶用角度
     void SetMemoryCol(D3DXCOLOR col) { m_memoryCol = col; }
+    void SetTexType(int nNum) { m_nTexType = nNum; }
 
     /*========================================================
     // アクション
@@ -255,7 +259,6 @@ private:
     int m_nTexType;                             // 使うテクスチャの種類
     ActionInfo m_aActionInfo[MAX_ACTION];       // 動きの状態
     bool m_bUse;                                // 使用するかどうか
-
     float m_fRotAngle;                          // 回転角度
     D3DXCOLOR m_col;                            // 色
     bool m_bUseAdditiveSynthesis;               // 加算合成にするかどうか
