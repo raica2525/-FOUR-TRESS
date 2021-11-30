@@ -47,8 +47,6 @@
 #define MAX_SPD 2700.0f
 #define MAX_WEI 4100.0f
 
-#define SHADOW_POS_Y 2.0f
-
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -71,13 +69,9 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_bUseKeyboard = false;
     m_AIlevel = AI_LEVEL_NONE;
     m_pAI = NULL;
-    m_pUI_HP = NULL;
-    m_pUI_HP_red = NULL;
     m_pUI_SP = NULL;
-    memset(m_apUI_Stock, 0, sizeof(m_apUI_Stock));
     m_pUI_Playable = NULL;
     m_pNumArray_SP = NULL;
-    m_pEffect3d_Shadow = NULL;
     m_pUI_Custom_Atk = NULL;
     m_pUI_Custom_Def = NULL;
     m_pUI_Custom_Spd = NULL;
@@ -93,24 +87,12 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nIdxCreate = PLAYER_1;
     m_nIdxControlAndColor = PLAYER_1;
     m_nPoint = 0;
-    m_nStock = 0;
     m_startPos = DEFAULT_VECTOR;
     m_startRot = DEFAULT_VECTOR;
 
-    m_move = DEFAULT_VECTOR;
-    m_moveOld = DEFAULT_VECTOR;
     m_exFlag = EX_FLAG_NONE;
-    m_attackState = ATTACK_STATE_NONE;
-
-    m_nCntAttackTime = 0;
     m_bGround = true;
-
     m_bDisp = true;
-    m_nCntTakeDamageTime = 0;
-    m_fLife = 0.0f;
-    m_fLife_red = 0.0f;
-    m_bUsedLuckyGuard = false;
-    m_damageState = DAMAGE_STATE_NONE;
 
     m_nCntLandingTime = 0;
     m_bGroundOld = true;
@@ -125,27 +107,18 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nModelPosDefDown = 0;
 
     m_nCntPressJump = 0;
-    m_bDiveCheck = false;
-    m_bDiving = false;
     m_bUsedSecondJump = false;
-    m_bSquat = false;
     m_nCntStartGlide = 0;
 
-    m_nCntSwingCharge = 0;
-    m_bUseAvoidMultipleHits = false;
-    m_bHitAttackThisFrame = false;
-    m_nCntStopTime = 0;
+    memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     m_nCntAttackAnimTime = 0;
 
     m_spShot = SP_SHOT_HEAL;
     m_fSpGaugeCurrent = 0.0f;
     m_fSpGaugeMax = 0.0f;
 
-    m_collisionSizeDeffence = D3DXVECTOR2(0.0f, 0.0f);
-
     m_pClipingMusk = NULL;
     m_nNumWep = 0;
-    m_nCntStopRedLifeTime = 0;
     m_rank = RANK_1;
     m_hipPosOld = DEFAULT_VECTOR;
 
@@ -157,7 +130,16 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     // 特殊能力対応周り
     //===================================
     m_bUsedThreeJump = false;
-    m_nSwingChargeMax = 0;
+
+    //===================================    
+    // Secondで追加したメンバ変数
+    //===================================
+    m_role = ROLE_WARRIOR;
+    m_fNextGainSpGauge = 0.0f;
+    m_attackState = ATTACK_STATE_NONE;
+    m_nCntStopTime = 0;
+    m_nCntAttackTime = 0;
+    m_fCurrentEnergy = 0.0f;
 }
 
 //=============================================================================
@@ -209,15 +191,14 @@ void CPlayer::LoadCustom(void)
     const int PARTS_LIST_DOWN = 2;         // パーツリスト_下半身
     const int PARTS_LIST_WEP = 3;          // パーツリスト_武器
 
-                                           // 反映させるメンバ変数を一回初期化
+    // 反映させるメンバ変数を一回初期化
     m_fAtk = 0.0f;
     m_fDef = 0.0f;
     m_fSpd = 0.0f;
     m_fWei = 0.0f;
     m_exFlag = EX_FLAG_NONE;
-    m_collisionSizeDeffence = D3DXVECTOR2(0.0f, 0.0f);
+    D3DXVECTOR2 collisionSizeDefence = D3DXVECTOR2(0.0f, 0.0f);
     memset(m_afParam, 0, sizeof(m_afParam));
-    m_nSwingChargeMax = ATTACK_SWING_CHARGE_MAX_FRAME_NORMAL;
 
     // カスタマイズデータのファイルを開く
     switch (m_nIdxControlAndColor)
@@ -287,11 +268,11 @@ void CPlayer::LoadCustom(void)
                 m_voiceSet = (int)pModelData->GetPartsList(nPartsListType)->afParam[6];
 
                 // 防御当たり判定の更新
-                if (m_collisionSizeDeffence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
                 {
-                    m_collisionSizeDeffence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
                 }
-                m_collisionSizeDeffence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
             }
             else if (nCntPartsList == PARTS_LIST_UP)
             {
@@ -310,29 +291,7 @@ void CPlayer::LoadCustom(void)
                 BindParts(PARTS_RHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[3]);
                 BindParts(PARTS_LSHOULDER, (int)pModelData->GetPartsList(nPartsListType)->afParam[4]);
                 BindParts(PARTS_LARM, (int)pModelData->GetPartsList(nPartsListType)->afParam[5]);
-                // 左手に武器を持っているパーツの、カスタマイズ画面での例外処理
-                if (CManager::GetMode() == CManager::MODE_RESULT)
-                {
-                    switch ((int)pModelData->GetPartsList(nPartsListType)->afParam[6])
-                    {
-                    case 51:
-                        BindParts(PARTS_LHAND, 43);
-                        break;
-                    case 75:
-                        BindParts(PARTS_LHAND, 84);
-                        break;
-                    case 93:
-                        BindParts(PARTS_LHAND, 117);
-                        break;
-                    default:
-                        BindParts(PARTS_LHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
-                        break;
-                    }
-                }
-                else
-                {
-                    BindParts(PARTS_LHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
-                }
+                BindParts(PARTS_LHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
 
                 // カスタマイズパーツ番号を取得
                 m_anNumCustomParts[CUSTOM_PARTS_UP] = nPartsListType;
@@ -341,11 +300,11 @@ void CPlayer::LoadCustom(void)
                 m_nModelPosDefUp = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
 
                 // 防御当たり判定の更新
-                if (m_collisionSizeDeffence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
                 {
-                    m_collisionSizeDeffence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
                 }
-                m_collisionSizeDeffence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
             }
             else if (nCntPartsList == PARTS_LIST_DOWN)
             {
@@ -373,11 +332,11 @@ void CPlayer::LoadCustom(void)
                 m_nModelPosDefDown = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
 
                 // 防御当たり判定の更新
-                if (m_collisionSizeDeffence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
                 {
-                    m_collisionSizeDeffence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
                 }
-                m_collisionSizeDeffence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
             }
             else if (nCntPartsList == PARTS_LIST_WEP)
             {
@@ -419,16 +378,10 @@ void CPlayer::LoadCustom(void)
     }
 
     // 体力を決定
-    m_fLife = m_fDef;
-    m_fLife_red = m_fDef;
-
-    // 溜め短縮のフラグがONなら、反映
-    if (IS_BITON(m_exFlag, EX_FLAG_FAST_CHARGE))
-    {
-        m_nSwingChargeMax = ATTACK_SWING_CHARGE_MAX_FRAME_FAST;
-    }
+    SetUpLife(m_fDef);
 
     // キャラクターに反映
+    CCharacter::SetCollisionSizeDefence(collisionSizeDefence);
     CCharacter::LoadModelData(m_nModelPosDefUp, m_nModelPosDefDown);
     CCharacter::Init(CCharacter::GetPos(), DEFAULT_SCALE);
 }
@@ -615,18 +568,27 @@ void CPlayer::Update(void)
     // 1F前の腰の位置を記憶
     m_hipPosOld = GetPartsPos(PARTS_HIP);
 
-    // 赤ゲージのカウントダウン
-    if (m_nCntStopRedLifeTime > 0)
+    // 攻撃をリセットするフラグが立っているなら
+    if (GetResetAttack())
     {
-        m_nCntStopRedLifeTime--;
+        ResetAttack();
+        SetResetAttack(false);
+    }
+
+    // 負傷していないor起き上がり中は、無敵
+    DAMAGE_STATE damageState = GetDamageState();
+    if (damageState == DAMAGE_STATE_NONE || damageState == DAMAGE_STATE_STAND_UP && GetTakeDamageTime() <= PLAYER_TAKE_DAMAGE_STAND_UP_INVINCIBLE_FRAME)
+    {
+        SetInvincible(false);
+    }
+    else
+    {
+        SetInvincible(true);
     }
 
     // マネキンモードでないなら
     if (!m_bMannequin)
     {
-        // このフレーム中に攻撃を当てたかどうかを初期化
-        m_bHitAttackThisFrame = false;
-
         // 表示しているなら
         if (m_bDisp)
         {
@@ -646,25 +608,7 @@ void CPlayer::Update(void)
             if (m_nCntStopTime <= 0)
             {
                 // 負傷時間があるなら、カウンタを下げる
-                if (m_nCntTakeDamageTime > 0)
-                {
-                    m_nCntTakeDamageTime--;
-
-                    // 負傷終了時に状態を戻す
-                    if (m_nCntTakeDamageTime == 0)
-                    {
-                        // ダウンからの起き上がり以外は、ダメージ状態を解除
-                        if (m_damageState != DAMAGE_STATE_BIG)
-                        {
-                            m_damageState = DAMAGE_STATE_NONE;
-                        }
-                        else
-                        {
-                            m_damageState = DAMAGE_STATE_STAND_UP;
-                            m_nCntTakeDamageTime = PLAYER_TAKE_DAMAGE_STAND_UP_FRAME;
-                        }
-                    }
-                }
+                CntDownTakeDamageTime();
 
                 // 攻撃のクールタイム
                 if (m_nCntAttackTime > 0)
@@ -701,68 +645,50 @@ void CPlayer::Update(void)
             }
             else
             {
-                //// カメラの振動
-                //CBall*pBall = CGame::GetBall();
-                //if (pBall)
-                //{
-                //    if (pBall->GetSpeed() < BALL_SHOOT_BIG_HIT_SPEED)
-                //    {
-                //        CManager::GetCamera()->CCamera::SetShake(SHAKE_VALUE_SHOOT_BALL_SMALL, false);
-                //    }
-                //    else if (pBall->GetSpeed() >= BALL_SHOOT_BIG_HIT_SPEED && pBall->GetSpeed() < BALL_SHOOT_ULTRA_HIT_SPEED)
-                //    {
-                //        CManager::GetCamera()->CCamera::SetShake(SHAKE_VALUE_SHOOT_BALL_BIG, false);
-                //    }
-                //    else if (pBall->GetSpeed() >= BALL_SHOOT_ULTRA_HIT_SPEED)
-                //    {
-                //        CManager::GetCamera()->CCamera::SetShake(SHAKE_VALUE_SHOOT_BALL_ULTRA, false);
-                //    }
-                //}
-
                 // 硬直時間をカウント
                 m_nCntStopTime--;
 
-                // 必殺技処理（ゲージ満タン時にXボタン押したら）
-                if (m_fSpGaugeCurrent >= m_fSpGaugeMax)
-                {
-                    if (m_controlInput.bTriggerX)
-                    {
-                        EmitSpShot();
-                    }
-                }
+                //// 必殺技処理（ゲージ満タン時にXボタン押したら）
+                //if (m_fSpGaugeCurrent >= m_fSpGaugeMax)
+                //{
+                //    if (m_controlInput.bTriggerX)
+                //    {
+                //        EmitSpShot();
+                //    }
+                //}
 
-                // ここでボールを放つ
-                if (m_nCntStopTime == 0)
-                {
-                    // 位置を取得
-                    D3DXVECTOR3 pos = DEFAULT_VECTOR;
-                    pos = GetPos();
+                //// ここでボールを放つ
+                //if (m_nCntStopTime == 0)
+                //{
+                //    // 位置を取得
+                //    D3DXVECTOR3 pos = DEFAULT_VECTOR;
+                //    pos = GetPos();
 
-                    // 最初の接触ではないためfalse
-                    AttackUpdate(pos, false);
-                }
+                //    // 最初の接触ではないためfalse
+                //    AttackUpdate(pos, false);
+                //}
 
-                // アタックアニメーションカウンタ（変なポーズで止まらないための最低保証）
-                if (m_nCntAttackAnimTime > 0)
-                {
-                    // アニメーションカウントダウン
-                    m_nCntAttackAnimTime--;
+                //// アタックアニメーションカウンタ（変なポーズで止まらないための最低保証）
+                //if (m_nCntAttackAnimTime > 0)
+                //{
+                //    // アニメーションカウントダウン
+                //    m_nCntAttackAnimTime--;
 
-                    // 攻撃時間もカウントダウン
-                    m_nCntAttackTime--;
+                //    // 攻撃時間もカウントダウン
+                //    m_nCntAttackTime--;
 
-                    // 攻撃終了時にメンバ変数を戻す（念のため）
-                    if (m_nCntAttackTime == 0)
-                    {
-                        ResetAttack();
-                    }
+                //    // 攻撃終了時にメンバ変数を戻す（念のため）
+                //    if (m_nCntAttackTime == 0)
+                //    {
+                //        ResetAttack();
+                //    }
 
-                    // 攻撃モーションにするかどうか
-                    AttackMotion();
+                //    // 攻撃モーションにするかどうか
+                //    AttackMotion();
 
-                    // アニメーションの最低保証
-                    CCharacter::Update();
-                }
+                //    // アニメーションの最低保証
+                //    CCharacter::Update();
+                //}
             }
         }
         else
@@ -781,16 +707,26 @@ void CPlayer::Update(void)
     }
 
     // 吹っ飛ばされエフェクトは、画面内で吹っ飛ばされているなら出す
-    if (m_damageState == DAMAGE_STATE_BLOWN)
+    if (GetDamageState() == DAMAGE_STATE_BLOWN)
     {
         if (m_nCntStopTime <= 0)
         {
             D3DXVECTOR3 hipPos = GetPartsPos(PARTS_HIP);
-            if (hipPos.y > -500.0f)
+            if (hipPos.y > -500.0f) // 画面外対応
             {
                 CEffect3D::Emit(CEffectData::TYPE_BLOWN, hipPos, m_hipPosOld);
             }
         }
+    }
+
+    // 体力が0になったら
+    if (GetLife() <= 0.0f && m_bDisp)
+    {
+        // KO音（各自の処理は、各自のクラス内で書く）
+        CManager::SoundPlay(CSound::LABEL_SE_KO);
+
+        m_fSpGaugeCurrent = 0.0f;
+        m_bDisp = false;
     }
 }
 
@@ -1031,26 +967,6 @@ void CPlayer::UpdateMannequin(void)
 //=============================================================================
 void CPlayer::UpdateGameUI(void)
 {
-    // 影の位置を更新
-    D3DXVECTOR3 hipPos = CCharacter::GetPartsPos(PARTS_HIP);
-    m_pEffect3d_Shadow->SetPos(D3DXVECTOR3(hipPos.x, SHADOW_POS_Y, hipPos.z));
-
-    // HPゲージ、赤ゲージを更新
-    m_pUI_HP->SetLeftToRightGauge(m_fDef, m_fLife);
-    if (m_fLife_red > m_fLife && m_nCntStopRedLifeTime <= 0)
-    {
-        // 赤ゲージ停止時間が終わってから、更新する
-        const float LIFE_DOWN_SPD = 6.0f;
-        m_fLife_red -= LIFE_DOWN_SPD;
-    }
-
-    // 赤ゲージは、現在の体力を下回らない
-    if (m_fLife_red < m_fLife)
-    {
-        m_fLife_red = m_fLife;
-    }
-    m_pUI_HP_red->SetLeftToRightGauge(m_fDef, m_fLife_red);
-
     // SPゲージとパーセント数値を更新
     D3DXVECTOR3 spGaugeSize = m_pUI_SP->GetMemorySize();
     spGaugeSize.x *= m_fSpGaugeCurrent / m_fSpGaugeMax;
@@ -1074,22 +990,6 @@ void CPlayer::UpdateGameUI(void)
         }
     }
 
-    // ストックを表示/非表示
-    for (int nCnt = 0; nCnt < PLAYER_MAX_STOCK; nCnt++)
-    {
-        if (m_apUI_Stock[nCnt])
-        {
-            if (nCnt < m_nStock)
-            {
-                m_apUI_Stock[nCnt]->CUI::SetCol(DEFAULT_COLOR);
-            }
-            else
-            {
-                m_apUI_Stock[nCnt]->CUI::SetCol(DEFAULT_COLOR_NONE);
-            }
-        }
-    }
-
     //// 即死のHPとボールの速さ関係なら、HPゲージを点滅
     //float fDamage = CGame::GetBall()->GetSpeed() * PLAYER_TAKE_DAMAGE_RATE_FROM_BALL;
     //D3DXCOLOR col = m_pUI_HP->GetCol();
@@ -1110,9 +1010,10 @@ void CPlayer::UpdateGameUI(void)
     //}
 
     // 何Pかの表示の位置更新（しゃがみ、もしくはダウンか起き上がり中なら表示の位置を下げる）
-    float fSizeY = m_collisionSizeDeffence.y;
-    if (m_bSquat ||
-        m_damageState == DAMAGE_STATE_BIG || m_damageState == DAMAGE_STATE_STAND_UP)
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+    float fSizeY = collisionSizeDefence.y;
+    DAMAGE_STATE damageState = GetDamageState();
+    if (damageState == DAMAGE_STATE_BIG || damageState == DAMAGE_STATE_STAND_UP)
     {
         fSizeY *= PLAYER_SQUAT_CUT_COLLISION_SIZE;
     }
@@ -1133,13 +1034,14 @@ void CPlayer::DeadMove(void)
         pos = GetPos();
 
         // 移動量制御
-        m_move.x *= PLAYER_CONTROL_MOVE_DEATH;
+        D3DXVECTOR3 move = GetMove();
+        move.x *= PLAYER_CONTROL_MOVE_DEATH;
 
         // 移動量と位置を結びつける
-        pos += m_move;
+        pos += move;
 
         // 重力
-        m_move.y -= PLAYER_TAKE_DAMAGE_BLOWN_GRAVITY;
+        move.y -= PLAYER_TAKE_DAMAGE_BLOWN_GRAVITY;
 
         // 見えないところで止めておく
         if (pos.y < PLAYER_DEATH_STOP_POS_Y)
@@ -1147,8 +1049,9 @@ void CPlayer::DeadMove(void)
             pos.y = PLAYER_DEATH_STOP_POS_Y;
         }
 
-        // 位置を反映
+        // 位置、移動量を反映
         SetPos(pos);
+        SetMove(move);
 
         // 吹っ飛ばされモーション
         GetAnimation()->SetAnimation(ANIM_BLOWN);
@@ -1170,8 +1073,6 @@ void CPlayer::DeadMove(void)
 void CPlayer::ResetOnGround(void)
 {
     m_nCntPressJump = 0;
-    m_bDiveCheck = true;
-    m_bDiving = false;
     m_bUsedSecondJump = false;
     m_bUsedThreeJump = false;
     m_nCntStartGlide = 0;
@@ -1186,8 +1087,7 @@ void CPlayer::ResetAttack(void)
     m_nCntAttackTime = 0;
     m_nCntAttackAnimTime = 0;
     m_attackState = ATTACK_STATE_NONE;
-    m_nCntSwingCharge = 0;
-    m_bUseAvoidMultipleHits = false;
+    memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
 }
 
 //=============================================================================
@@ -1200,23 +1100,20 @@ void CPlayer::Respawn(void)
     SetPos(m_startPos);
     SetRot(m_startRot);
     m_bDisp = true;
-    m_fLife = m_fDef;
-    m_fLife_red = m_fDef;
+    SetUpLife(m_fDef);
 
     // 既存のリセット関数
     ResetOnGround();
     ResetAttack();
 
     // メンバ変数のリセット
-    m_move = DEFAULT_VECTOR;
+    SetMove(DEFAULT_VECTOR);
     m_nCntLandingTime = 0;
     m_bGroundOld = false;
-    m_bSquat = false;
     m_nCntStopTime = 0;
 
-    m_nCntTakeDamageTime = 0;
-    m_bUsedLuckyGuard = false;
-    m_damageState = DAMAGE_STATE_NONE;
+    SetTakeDamageTime(0);
+    SetDamageState(DAMAGE_STATE_NONE);
 
     m_fSpGaugeCurrent = 0.0f;
 }
@@ -1243,15 +1140,9 @@ void CPlayer::Draw(void)
     // 表示するなら、描画
     if (m_bDisp)
     {
-        // 影
-        if (m_pEffect3d_Shadow)
-        {
-            m_pEffect3d_Shadow->CBillboard::Draw();
-        }
-
         // クリッピングマスク
         LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-        if (m_pClipingMusk != NULL)
+        if (m_pClipingMusk)
         {
             m_pClipingMusk->Draw();
             //ステンシルの設定
@@ -1269,7 +1160,7 @@ void CPlayer::Draw(void)
         CCharacter::Draw();
 
         // クリッピングマスクの後処理
-        if (m_pClipingMusk != NULL)
+        if (m_pClipingMusk)
         {
             //ステンシル無効化
             pDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
@@ -1290,7 +1181,7 @@ void CPlayer::Draw(void)
 // インスタンス生成
 // Author : 後藤慎之助
 //=============================================================================
-CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, int nIdxCreate, int nIdxControlAndColor,
+CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate, int nIdxControlAndColor,
     AI_LEVEL AIlevel, bool bUseKeyboard)
 {
     // メモリ確保
@@ -1301,6 +1192,7 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
     pPlayer->CCharacter::SetPos(pos);
     pPlayer->CCharacter::SetRot(rot);
     pPlayer->CCharacter::SetRotDest(rot);
+    pPlayer->CCharacter::SetHPDisp(nIdxControlAndColor);
 
     // 読み込む種類の設定
     pPlayer->m_nIdxControlAndColor = nIdxControlAndColor;
@@ -1311,7 +1203,6 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
     // 結びつけるメンバ変数の初期化
     pPlayer->m_startPos = pos;
     pPlayer->m_startRot = rot;
-    pPlayer->m_nStock = nStock;
     pPlayer->m_nIdxCreate = nIdxCreate;
     pPlayer->m_AIlevel = AIlevel;
     pPlayer->m_bUseKeyboard = bUseKeyboard;
@@ -1319,11 +1210,7 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
     {
         pPlayer->m_pAI = CAi::Create(pPlayer);
     }
-
-    // 影を生成
-    pPlayer->m_pEffect3d_Shadow = CEffect3D::Create(CEffectData::TYPE_SHADOW, D3DXVECTOR3(pos.x, SHADOW_POS_Y, pos.z));
-    pPlayer->m_pEffect3d_Shadow->SetSize(D3DXVECTOR3(pPlayer->m_collisionSizeDeffence.x, pPlayer->m_collisionSizeDeffence.x, 0.0f));
-    pPlayer->m_pEffect3d_Shadow->SetDisp(false);
+    pPlayer->SetUseControllerEffectByTakeDamage(pPlayer->GetUseControllerEffect());
 
     // UIを生成
     D3DXCOLOR playableCol = DEFAULT_COLOR;
@@ -1369,21 +1256,12 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
         nTexTypePlayable = 28;
         break;
     }
-    // HPゲージ
+    // HPゲージ（キャラクターに移行しました）
     const float UI_SIZE_X = 294.0f; // ここの値を、UIの大体の横幅に合わせる
-    const float UI_FRAME_SIZE_X = 220.0f;
-    const float UI_FRAME_SIZE_Y = 28.0f;
-    const float UI_BAR_SIZE_X = 204.0f;
-    const float UI_BAR_SIZE_Y = 20.0f;
     const float SPACE_SIZE = (SCREEN_WIDTH - (UI_SIZE_X * CGame::GetNumAllPlayer())) / (CGame::GetNumAllPlayer() + 1);
-    const float FIRST_UI_POS_X = SPACE_SIZE + (UI_SIZE_X / 2);
+    const float FIRST_UI_POS_X = SPACE_SIZE + (UI_SIZE_X / 2.0f);
     const float NEXT_UI_POS_X = UI_SIZE_X + SPACE_SIZE;
     float fDigitPosX = FIRST_UI_POS_X + (NEXT_UI_POS_X * (float)pPlayer->m_nIdxCreate);
-    CUI::Create(17, D3DXVECTOR3(fDigitPosX + 50.0f, 80.0f, 0.0f), D3DXVECTOR3(UI_FRAME_SIZE_X, UI_FRAME_SIZE_Y, 0.0f), 0, DEFAULT_COLOR);
-    pPlayer->m_pUI_HP_red = CUI::Create(88, D3DXVECTOR3(fDigitPosX + 50.0f, 80.0f, 0.0f), D3DXVECTOR3(UI_BAR_SIZE_X, UI_BAR_SIZE_Y, 0.0f), 0, DEFAULT_COLOR);
-    pPlayer->m_pUI_HP_red->SetActionInfo(0, CUI::ACTION_GAUGE, false);
-    pPlayer->m_pUI_HP = CUI::Create(18, D3DXVECTOR3(fDigitPosX + 50.0f, 80.0f, 0.0f), D3DXVECTOR3(UI_BAR_SIZE_X, UI_BAR_SIZE_Y, 0.0f), 0, DEFAULT_COLOR);
-    pPlayer->m_pUI_HP->SetActionInfo(0, CUI::ACTION_GAUGE, false);
 
     // 必殺ゲージ
     CUI::Create(76, D3DXVECTOR3(fDigitPosX - 80.0f, 60.0f, 0.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f), 0, DEFAULT_COLOR);
@@ -1391,14 +1269,6 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nStock, in
     CUI::Create(86, D3DXVECTOR3(fDigitPosX - 57.5f, 60.0f, 0.0f), D3DXVECTOR3(20.0f, 20.0f, 0.0f), 0, DEFAULT_COLOR);
     pPlayer->m_pNumArray_SP = CNumberArray::Create(12, D3DXVECTOR3(fDigitPosX - 87.5f, 60.0f, 0.0f), 15.0f,
         DEFAULT_COLOR, 0, false);
-
-    // ストック
-    for (int nCntStock = 0; nCntStock < pPlayer->m_nStock; nCntStock++)
-    {
-        const float STOCK_SIZE_X = 36.0f;
-        float fStockDigitPosX = 47.5f + ((STOCK_SIZE_X / 2) * nCntStock);  // -ゲージの半分の大きさ+ストックの半分の大きさ+(ストックの大きさ*何番目のストックか)
-        pPlayer->m_apUI_Stock[nCntStock] = CUI::Create(19, D3DXVECTOR3(fDigitPosX + fStockDigitPosX, 98.5f, 0.0f), D3DXVECTOR3(STOCK_SIZE_X, 24.0f, 0.0f), 0, DEFAULT_COLOR);
-    }
 
     // Player表示
     CUI::Create(nTexTypePlayer, D3DXVECTOR3(fDigitPosX + 10.0f, 50.0f, 0.0f), D3DXVECTOR3(82.5f, 54.0f, 0.0f), 0, DEFAULT_COLOR);
@@ -1552,99 +1422,43 @@ CPlayer * CPlayer::CreateInResult(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCont
 //=============================================================================
 void CPlayer::Movement(float fSpeed)
 {
-    // 位置を取得
+    // 位置、移動量、負傷状態を取得
     D3DXVECTOR3 pos = DEFAULT_VECTOR;
+    D3DXVECTOR3 move = DEFAULT_VECTOR;
+    DAMAGE_STATE damageState = GetDamageState();
     pos = GetPos();
+    move = GetMove();
 
     // 1F前の位置を記憶
     SetPosOld(pos);
 
     // 1F前の移動量を記憶
-    m_moveOld = m_move;
+    SetMoveOld(move);
 
-    // 横の移動量制御
-    if (m_move.x != 0.0f)
-    {
-        // 制御の割合を、状況によって変える
-        float fControlMoveRate = PLAYER_CONTROL_MOVE_ON_GROUND;
-
-        // 負傷していないなら
-        if (m_damageState == DAMAGE_STATE_NONE)
-        {
-            // 空中なら
-            if (!m_bGround)
-            {
-                fControlMoveRate = PLAYER_CONTROL_MOVE_IN_AIR;
-            }
-        }
-        else
-        {
-            fControlMoveRate = PLAYER_CONTROL_MOVE_TAKE_DAMAGE;
-        }
-
-        // しゃがんでいるなら
-        if (m_bSquat)
-        {
-            fControlMoveRate = PLAYER_CONTROL_MOVE_SQUAT;
-        }
-
-        // 移動量制御
-        m_move.x *= fControlMoveRate;
-    }
-
-    // 奥行きの移動量制御
-    if (m_move.z != 0.0f)
-    {
-        // 制御の割合を、状況によって変える
-        float fControlMoveRate = PLAYER_CONTROL_MOVE_ON_GROUND;
-
-        // 負傷していないなら
-        if (m_damageState == DAMAGE_STATE_NONE)
-        {
-            // 空中なら
-            if (!m_bGround)
-            {
-                fControlMoveRate = PLAYER_CONTROL_MOVE_IN_AIR;
-            }
-        }
-        else
-        {
-            fControlMoveRate = PLAYER_CONTROL_MOVE_TAKE_DAMAGE;
-        }
-
-        // しゃがんでいるなら
-        if (m_bSquat)
-        {
-            fControlMoveRate = PLAYER_CONTROL_MOVE_SQUAT;
-        }
-
-        // 移動量制御
-        m_move.z *= fControlMoveRate;
-    }
+    // 横と奥行きの移動量制御
+    ControlMove(move.x, m_bGround);
+    ControlMove(move.z, m_bGround);
 
     // モーションをまずは待機にする
     GetAnimation()->SetAnimation(ANIM_IDLE);
 
-    // しゃがみ状態をリセット
-    m_bSquat = false;
-
     // プレイヤー移動処理
-    Control(fSpeed);
+    Control(fSpeed, move);
 
     // 移動量と位置を結びつける
-    pos += m_move;
+    pos += move;
 
     // 地面より上なら
     if (pos.y > 0.0f)
     {
         // 重力
         float fGravity = PLAYER_BASE_MINIMUM_GRAVITY + (m_fWei * PLAYER_ADD_BASE_GRAVITY_RATE);
-        if (m_damageState == DAMAGE_STATE_BLOWN)
+        if (damageState == DAMAGE_STATE_BLOWN)
         {
             // 吹っ飛ばされ中は固定値
             fGravity = PLAYER_TAKE_DAMAGE_BLOWN_GRAVITY;
         }
-        m_move.y -= fGravity;
+        move.y -= fGravity;
 
         // 地面にいない
         m_bGround = false;
@@ -1653,42 +1467,19 @@ void CPlayer::Movement(float fSpeed)
     {
         // 地面にいるなら、重力をかけないでジャンプ可能、急降下のチェックも復活、二段ジャンプも復活
         pos.y = 0.0f;
-        m_move.y = 0.0f;
+        move.y = 0.0f;
         m_bGround = true;
-    }
-
-    // マップ制限
-    CGame::MAP_LIMIT mapLimit = CGame::GetMapLimit();
-    if (pos.x - m_collisionSizeDeffence.x < -mapLimit.fWidth)
-    {
-        pos.x = -mapLimit.fWidth + m_collisionSizeDeffence.x;
-    }
-    else if (pos.x + m_collisionSizeDeffence.x > mapLimit.fWidth)
-    {
-        pos.x = mapLimit.fWidth - m_collisionSizeDeffence.x;
-    }
-    if (pos.z + m_collisionSizeDeffence.x > mapLimit.fWidth)
-    {
-        pos.z = mapLimit.fWidth - m_collisionSizeDeffence.x;
-    }
-    else if (pos.z - m_collisionSizeDeffence.x < -mapLimit.fWidth)
-    {
-        pos.z = -mapLimit.fWidth + m_collisionSizeDeffence.x;
     }
 
     //====================================================
     // 攻撃処理
-    // 攻撃がヒットしていないなら、攻撃の判定等を更新
-    if (!m_bUseAvoidMultipleHits)
-    {
-        AttackUpdate(pos, true); // bFirestCollisionのtrueは、ここが最初の接触になりうるから
-    }
+    AttackUpdate(pos, move);
 
     // 攻撃の生成
-    AttackGenerator(pos);
+    AttackGenerator();
 
     // ジャンプ
-    Jump();
+    Jump(move);
 
     // 移動モーションの管理
     MoveMotion();
@@ -1700,47 +1491,48 @@ void CPlayer::Movement(float fSpeed)
     //====================================================
     // 防御処理
     // 負傷中の更新
-    DamageUpdate(pos);
-
-    // このフレームに攻撃がヒットしていないかつ、投げ状態以外かつ、負傷していないor起き上がり中に、ボールが当たったかどうか
-    if (!m_bHitAttackThisFrame && m_attackState != ATTACK_STATE_THROW)
-    {
-        if (m_damageState == DAMAGE_STATE_NONE || m_damageState == DAMAGE_STATE_STAND_UP && m_nCntTakeDamageTime <= PLAYER_TAKE_DAMAGE_STAND_UP_INVINCIBLE_FRAME)
-        {
-            CollisionBall(pos);
-        }
-    }
+    DamageUpdate(pos, move);
 
     // 負傷モーションにするかどうか
     DamageMotion();
     //====================================================
 
-    //// 回転制御
-    //// 地面にいて、負傷していない状態かつ、攻撃状態がなしかチャージなら
-    //if (m_bGround)
-    //{
-    //    if (m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE ||
-    //        m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_SWING_CHARGE)
-    //    {
-    //        RotControl();
-    //    }
-    //}
+    // 回転制御
     RotControl();
 
-    // 位置を反映
+    // マップ制限（いずれブロックを用いた制限に変える）
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+    CGame::MAP_LIMIT mapLimit = CGame::GetMapLimit();
+    if (pos.x - collisionSizeDefence.x < -mapLimit.fWidth)
+    {
+        pos.x = -mapLimit.fWidth + collisionSizeDefence.x;
+    }
+    else if (pos.x + collisionSizeDefence.x > mapLimit.fWidth)
+    {
+        pos.x = mapLimit.fWidth - collisionSizeDefence.x;
+    }
+    if (pos.z + collisionSizeDefence.x > mapLimit.fWidth)
+    {
+        pos.z = mapLimit.fWidth - collisionSizeDefence.x;
+    }
+    else if (pos.z - collisionSizeDefence.x < -mapLimit.fWidth)
+    {
+        pos.z = -mapLimit.fWidth + collisionSizeDefence.x;
+    }
+
+    // 位置、移動量を反映
     SetPos(pos);
+    SetMove(move);
 
     // 1F前、ジャンプできたかどうかを記録
     m_bGroundOld = m_bGround;
 
 #ifdef COLLISION_TEST
-    if (!m_bHitAttackThisFrame && m_attackState != ATTACK_STATE_THROW)
+    bool bIsInvincible = GetInvincible();
+    if (!bIsInvincible)
     {
-        if (m_damageState == DAMAGE_STATE_NONE || m_damageState == DAMAGE_STATE_STAND_UP && m_nCntTakeDamageTime <= PLAYER_TAKE_DAMAGE_STAND_UP_INVINCIBLE_FRAME)
-        {
-            D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSizeDeffence.x, m_collisionSizeDeffence.y, m_collisionSizeDeffence.x);
-            CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
-        }
+        D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
+        CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
     }
 #endif // COLLISION_TEST
 }
@@ -1755,7 +1547,8 @@ void CPlayer::MoveMotion(void)
     if (!m_bGroundOld && m_bGround)
     {
         // 着地の砂煙（当たり判定の分、砂煙が広がる）
-        CEffect3D::Emit(CEffectData::TYPE_GROUND_SMOKE, GetPos(), GetPos(), m_collisionSizeDeffence.x);
+        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+        CEffect3D::Emit(CEffectData::TYPE_GROUND_SMOKE, GetPos(), GetPos(), collisionSizeDefence.x);
 
         // 着地時間を設定
         m_nCntLandingTime = PLAYER_LANDING_TIME;
@@ -1767,12 +1560,6 @@ void CPlayer::MoveMotion(void)
 
         // モーションを着地にする
         GetAnimation()->SetAnimation(ANIM_LANDING);
-    }
-
-    // しゃがみモーションにするかどうか
-    if (m_bSquat)
-    {
-        GetAnimation()->SetAnimation(ANIM_SQUAT);
     }
 
     // 滑空のカウンタ
@@ -1812,291 +1599,10 @@ void CPlayer::MoveMotion(void)
 }
 
 //=============================================================================
-// ボールに当たったかどうか
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::CollisionBall(D3DXVECTOR3 playerPos)
-{
-    //// ボールとの当たり判定
-    //CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BALL);
-    //for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BALL); nCntScene++)
-    //{
-    //    // 中身があるなら
-    //    if (pScene != NULL)
-    //    {
-    //        // 次のシーンを記憶
-    //        CScene*pNextScene = pScene->GetNextScene();
-
-    //        // ボールにキャスト
-    //        CBall *pBall = (CBall*)pScene;
-
-    //        // 当たり判定を使用するなら
-    //        if (pBall->GetUseCollision())
-    //        {
-    //            // 位置を取得
-    //            D3DXVECTOR3 ballPos = pBall->GetPos();
-
-    //            // 自分以外の誰かが撃ったなら
-    //            if (pBall->GetWhoShooting() != m_nIdxCreate && pBall->GetWhoShooting() != BALL_NOT_ANYONE)
-    //            {
-    //                // 自分の当たり判定の大きさを決定
-    //                D3DXVECTOR3 playerSize = m_collisionSizeDeffence;
-
-    //                // しゃがんでいるか、起き上がり中なら縦の当たり判定を削る
-    //                if (m_bSquat ||
-    //                    m_damageState == DAMAGE_STATE_STAND_UP && m_nCntTakeDamageTime <= PLAYER_TAKE_DAMAGE_STAND_UP_INVINCIBLE_FRAME)
-    //                {
-    //                    playerSize.y *= PLAYER_SQUAT_CUT_COLLISION_SIZE;
-    //                }
-
-    //                // 当たっているなら
-    //                if (IsCollisionToRotationRect(playerPos, playerSize,
-    //                    pBall->GetCornerPos(0), pBall->GetCornerPos(1), pBall->GetCornerPos(2), pBall->GetCornerPos(3))
-    //                    || IsCollisionRectangle3D(&playerPos, &pBall->GetCollisionPos(),
-    //                        &playerSize, &BALL_COLLISION_SIZE))
-    //                {
-    //                    // ダメージを計算（ラッキーガード発生可能性あり）
-    //                    float fDamage = pBall->GetSpeed() * PLAYER_TAKE_DAMAGE_RATE_FROM_BALL;
-    //                    TakeDamage(fDamage, pBall->GetWhoShooting(), pBall->GetPos(), pBall->GetPosOld(), true);
-    //                }
-    //            }
-    //        }
-
-    //        // 次のシーンにする
-    //        pScene = pNextScene;
-    //    }
-    //    else
-    //    {
-    //        // 中身がないなら、そこで処理を終える
-    //        break;
-    //    }
-    //}
-}
-
-//=============================================================================
-// ダメージを受ける
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseLuckyGuard)
-{
-    // 生存しているなら
-    if (m_bDisp)
-    {
-        // 赤ゲージ硬直時間を設定
-        if (m_nCntStopRedLifeTime <= 0)
-        {
-            const int STOP_RED_TIME = 60;
-            m_nCntStopRedLifeTime = STOP_RED_TIME;
-        }
-
-        // 攻撃状態をリセット
-        ResetAttack();
-
-        // 変数宣言
-        D3DXVECTOR3 playerPos = GetPos();       // 位置を取得
-        float fKnockbackValue = 0.0f;           // ノックバック量
-        bool bUseLuckyGuardThisFrame = false;   // このフレーム中にラッキーガードが成立したかどうか
-
-                                                // 相殺処理かどうか
-                                                // 相殺処理でないなら、ラッキーガードを使う攻撃かどうか
-        if (bUseLuckyGuard)
-        {
-            // ラッキーガードを使っていないor必殺技バリア使用後なら
-            if (!m_bUsedLuckyGuard || m_bSpBarrier)
-            {
-                // 乱数の結果で、ラッキーガード
-                int nRandNum = GetRandNum(PLAYER_LUCKY_GUARD_MAX, 1);
-
-                // ファーストヒットガード適用中か必殺技バリア使用後なら、次の一撃を必ずガード
-                if (IS_BITON(m_exFlag, EX_FLAG_FIRST_HIT_GUARD) || m_bSpBarrier)
-                {
-                    nRandNum = 0;
-                    if (m_bSpBarrier)
-                    {
-                        m_bSpBarrier = false;
-                    }
-                }
-
-                // 最大防御よりも乱数の結果が下回ったら、ラッキーガード
-                if (nRandNum <= (int)m_fDef)
-                {
-                    // ラッキーガードエフェクト発生
-                    CEffect3D::Emit(CEffectData::TYPE_LUCKY_GUARD_FIRST, playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f),
-                        playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f));
-                    CEffect3D::Emit(CEffectData::TYPE_LUCKY_GUARD_SECOND, playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f),
-                        playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f));
-                    CEffect3D::Emit(CEffectData::TYPE_LUCKY_GUARD_SECOND, playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f),
-                        playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f));
-
-                    bUseLuckyGuardThisFrame = true;
-                    m_bUsedLuckyGuard = true;
-                    fDamage = 1.0f;                                         // 1ダメージは受ける
-                    fKnockbackValue = PLAYER_KNOCK_BACK_LUCKY_GUARD;        // 専用のノックバック量
-                    m_nCntStopTime = 30;                                    // ボールを打ち上げる(ボールがなくなったので硬直のみ)
-                    CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));         // 波発生
-                    CManager::SoundPlay(CSound::LABEL_SE_OFFSET);           // 相殺音
-                }
-            }
-        }
-
-        // ダメージやボールとの位置関係によって、どの負傷状態かを設定
-        D3DXVECTOR3 playerRot = GetRot();   // 向きを取得
-        float fJudgmentDamage = fDamage;    // 最終的にやられモーションがどうなるかの判断に用いるダメージ
-
-                                            // 背中向きなら、判定に使うダメージが2倍
-        if (playerPos.x < damageOldPos.x)
-        {
-            if (playerRot.y == PLAYER_ROT_LEFT)
-            {
-                fJudgmentDamage *= 2.0f;
-            }
-        }
-        else
-        {
-            if (playerRot.y == PLAYER_ROT_RIGHT)
-            {
-                fJudgmentDamage *= 2.0f;
-            }
-        }
-
-        // 負傷状態の判定
-        int nEffectFrame = PLAYER_TAKE_DAMAGE_SMALL_EFFECT_FRAME;   // 振動フレーム
-        if (fJudgmentDamage < PLAYER_TAKE_DAMAGE_BORDER_DAMAGE)
-        {
-            m_damageState = DAMAGE_STATE_SMALL;
-
-            // このフレーム中にラッキーガード以外で
-            if (!bUseLuckyGuardThisFrame)
-            {
-                // 小やられ時間
-                m_nCntTakeDamageTime = PLAYER_TAKE_DAMAGE_SMALL_FRAME;
-
-                // 空中では少しのけぞり
-                if (!m_bGround)
-                {
-                    fKnockbackValue = PLAYER_KNOCK_BACK_SMALL_IN_AIR;
-                }
-            }
-            else
-            {
-                // ラッキーガードなら、少し長い時間
-                m_nCntTakeDamageTime = PLAYER_TAKE_DAMAGE_LUCKY_GUARD_FRAME;
-            }
-        }
-        else
-        {
-            // 吹っ飛ばされ状態は、移動量がなくなって地面につくまで続く
-            m_damageState = DAMAGE_STATE_BLOWN;
-            fKnockbackValue = PLAYER_KNOCK_BACK_BIG;
-
-            // 大きい振動
-            nEffectFrame = PLAYER_TAKE_DAMAGE_BIG_EFFECT_FRAME;
-        }
-
-        // ダメージを受ける
-        m_fLife -= fDamage;
-
-        // ダメージを表示
-        if (fDamage > 0)
-        {
-            D3DXVECTOR3 dispDamagePos = ConvertScreenPos(playerPos);
-            CNumberArray::Create(12, dispDamagePos, NUMBER_SIZE_X_DAMAGE, D3DXCOLOR(0.933f, 0.427f, 0.513f, 1.0f), (int)fDamage, false, true);
-
-            // ラッキーガード以上のダメージで、ヒットエフェクト
-            if (fDamage > 1.0f)
-            {
-                // もしダメージの位置と、1F前のダメージの位置が同じなら、ダメージの位置をプレイヤーの位置にする
-                D3DXVECTOR3 hitEffectPos = damagePos;
-                if (damagePos == damageOldPos)
-                {
-                    hitEffectPos = playerPos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y * 0.5f, 0.0f);
-                }
-                CEffect3D::Emit(CEffectData::TYPE_HIT_BALL, hitEffectPos, damageOldPos);
-            }
-        }
-
-        // 体力がなくなったら
-        if (m_fLife <= 0.0f)
-        {
-            // 死亡時の振動
-            nEffectFrame = PLAYER_TAKE_DAMAGE_DEATH_EFFECT_FRAME;
-
-            // KO音
-            CManager::SoundPlay(CSound::LABEL_SE_KO);
-
-            // 死亡表示に
-            m_fLife = 0.0f;
-            m_fSpGaugeCurrent = 0.0f;
-            m_bDisp = false;
-
-            // 死亡用ノックバック
-            fKnockbackValue = PLAYER_KNOCK_BACK_DEATH_X;
-            m_move.y = PLAYER_KNOCK_BACK_DEATH_Y;
-
-            // ストックを減らす
-            m_nStock--;
-
-            // ストックがあるかどうか
-            if (m_nStock > 0)
-            {
-                // やられたプレイヤーがまだ誰もいないなら
-                if (CGame::GetNumDefeatPlayer() == 0)
-                {
-                    // 最下位のプレイヤーにする
-                    CGame::SetWorstPlayer(m_nIdxCreate);
-                }
-
-                // やられたプレイヤー人数を増やす
-                CGame::SetAddNumDefeatPlayer(m_nIdxControlAndColor);
-            }
-            else
-            {
-                // 死んだプレイヤー人数を増やす
-                CGame::SetAddNumDeathPlayer(m_nIdxControlAndColor);
-            }
-
-            // ボールにやられたなら、ボールも少しだけ止める（ボールでしかラッキーガードは発動しないため代用）
-            m_nCntStopTime = PLAYER_DEATH_STOP_FRAME;
-            if (bUseLuckyGuard)
-            {
-                //CGame::GetBall()->SetStopTime(PLAYER_DEATH_STOP_FRAME);
-            }
-        }
-        else
-        {
-            // ラッキーガード以上のダメージで
-            if (fDamage > 1.0f)
-            {
-                // ダメージ音
-                CManager::SoundPlay(CSound::LABEL_SE_DAMAGE);
-            }
-        }
-
-        // 攻撃の方を向き、ノックバックさせる
-        if (playerPos.x < damageOldPos.x)
-        {
-            SetRot(D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f));
-            m_move.x = -fKnockbackValue;
-        }
-        else
-        {
-            SetRot(D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f));
-            m_move.x = fKnockbackValue;
-        }
-
-        // コントローラの振動
-        if (GetUseControllerEffect())
-        {
-            CManager::GetInputJoypad()->StartEffect(m_nIdxControlAndColor, nEffectFrame);
-        }
-    }
-}
-
-//=============================================================================
 // プレイヤーの移動制御
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::Control(float fSpeed)
+void CPlayer::Control(float fSpeed, D3DXVECTOR3& move)
 {
     // 向き
     D3DXVECTOR3 rot = GetRot();
@@ -2105,7 +1611,7 @@ void CPlayer::Control(float fSpeed)
     if (!m_bGround || m_attackState == ATTACK_STATE_NONE)
     {
         // 負傷していない状態かつ、着地中でもないなら
-        if (m_damageState == DAMAGE_STATE_NONE && m_nCntLandingTime <= 0)
+        if (GetDamageState() == DAMAGE_STATE_NONE && m_nCntLandingTime <= 0)
         {
             // スティックが倒れているなら移動
             if (m_controlInput.bTiltedLeftStick)
@@ -2119,8 +1625,8 @@ void CPlayer::Control(float fSpeed)
                     //}
 
                     // 移動量に代入
-                    m_move.x = sinf(m_controlInput.fLeftStickAngle)*fSpeed;
-                    m_move.z = cosf(m_controlInput.fLeftStickAngle)*fSpeed;
+                    move.x = sinf(m_controlInput.fLeftStickAngle)*fSpeed;
+                    move.z = cosf(m_controlInput.fLeftStickAngle)*fSpeed;
 
                     // モーションを歩きにする
                     GetAnimation()->SetAnimation(ANIM_MOVE);
@@ -2131,27 +1637,27 @@ void CPlayer::Control(float fSpeed)
                 else
                 {
                     // 空中移動は、徐々に加算
-                    m_move.x += sinf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
-                    m_move.z += cosf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
+                    move.x += sinf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
+                    move.z += cosf(m_controlInput.fLeftStickAngle)*fSpeed / PLAYER_CONTROL_MOVE_ADD_RATE_IN_AIR;
                 }
             }
 
             // 最大速度を超えないようにする
-            if (m_move.x > fSpeed)
+            if (move.x > fSpeed)
             {
-                m_move.x = fSpeed;
+                move.x = fSpeed;
             }
-            else if (m_move.x < -fSpeed)
+            else if (move.x < -fSpeed)
             {
-                m_move.x = -fSpeed;
+                move.x = -fSpeed;
             }
-            if (m_move.z > fSpeed)
+            if (move.z > fSpeed)
             {
-                m_move.z = fSpeed;
+                move.z = fSpeed;
             }
-            else if (m_move.z < -fSpeed)
+            else if (move.z < -fSpeed)
             {
-                m_move.z = -fSpeed;
+                move.z = -fSpeed;
             }
         }
     }
@@ -2161,78 +1667,141 @@ void CPlayer::Control(float fSpeed)
 // ジャンプの処理
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::Jump(void)
+void CPlayer::Jump(D3DXVECTOR3& move)
 {
-    // 投げ中以外で
-    if (m_attackState != ATTACK_STATE_THROW)
+    // 防御当たり判定の大きさ、負傷状態を取得
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+    DAMAGE_STATE damageState = GetDamageState();
+
+    // Aプレス
+    if (m_controlInput.bPressA)
     {
-        // Aプレス
-        if (m_controlInput.bPressA)
+        // 負傷していない状態なら（攻撃中でも距離は伸ばせる）
+        if (damageState == DAMAGE_STATE_NONE)
         {
-            // 負傷していない状態なら（攻撃中でも距離は伸ばせる）
-            if (m_damageState == DAMAGE_STATE_NONE)
+            // ジャンプのカウンタが0より大きく、加算カウンタ中なら
+            if (m_nCntPressJump > 0 && m_nCntPressJump <= PLAYER_JUMP_ADD_FRAME)
             {
-                // ジャンプのカウンタが0より大きく、加算カウンタ中なら
-                if (m_nCntPressJump > 0 && m_nCntPressJump <= PLAYER_JUMP_ADD_FRAME)
+                // ジャンプのカウンタ加算
+                m_nCntPressJump++;
+
+                // ジャンプ量加算
+                move.y += PLAYER_BASE_MINIMUM_GRAVITY + (m_fWei * PLAYER_ADD_BASE_GRAVITY_RATE);
+            }
+            else if (m_nCntPressJump > PLAYER_JUMP_ADD_FRAME && m_nCntPressJump <= PLAYER_JUMP_KEEP_FRAME)
+            {
+                // 滞空
+                if (move.y <= 0.0f)
                 {
                     // ジャンプのカウンタ加算
                     m_nCntPressJump++;
 
-                    // ジャンプ量加算
-                    m_move.y += PLAYER_BASE_MINIMUM_GRAVITY + (m_fWei * PLAYER_ADD_BASE_GRAVITY_RATE);
-                }
-                else if (m_nCntPressJump > PLAYER_JUMP_ADD_FRAME && m_nCntPressJump <= PLAYER_JUMP_KEEP_FRAME)
-                {
-                    // 滞空
-                    if (m_move.y <= 0.0f)
-                    {
-                        // ジャンプのカウンタ加算
-                        m_nCntPressJump++;
-
-                        m_move.y = 0.0f;
-                    }
+                    move.y = 0.0f;
                 }
             }
         }
-        else
-        {
-            // ジャンプのカウンタをリセット
-            m_nCntPressJump = 0;
-        }
+    }
+    else
+    {
+        // ジャンプのカウンタをリセット
+        m_nCntPressJump = 0;
+    }
 
-        // Aトリガー（ジャンプ生成のイメージ）
-        if (m_controlInput.bTriggerA)
+    // Aトリガー（ジャンプ生成のイメージ）
+    if (m_controlInput.bTriggerA)
+    {
+        // 負傷していない状態かつ、攻撃状態がなしなら
+        if (damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE)
         {
-            // 負傷していない状態かつ、攻撃状態がなしかチャージなら
-            if (m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE ||
-                m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_SWING_CHARGE)
+            // 地面にいるなら
+            if (m_bGround)
             {
-                // 地面にいるなら
-                if (m_bGround)
+                // 向きによって、砂埃の向きを変える
+                if (GetRot().y == PLAYER_ROT_LEFT)
                 {
-                    // 向きによって、砂埃の向きを変える
-                    if (GetRot().y == PLAYER_ROT_LEFT)
+                    // ジャンプの砂煙
+                    CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
+                }
+                else
+                {
+                    // ジャンプの砂煙
+                    CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
+                }
+
+                // ジャンプ音
+                CManager::SoundPlay(CSound::LABEL_SE_JUMP);
+
+                // ジャンプの初期量
+                move.y = PLAYER_JUMP_FIRST_RATE;
+
+                // 滑空までのカウンタを設定
+                m_nCntStartGlide = PLAYER_FIRST_JUMP_MOTION_TO_GLIDE;
+
+                // 地面にいないことに
+                m_bGround = false;
+
+                // 念のため着地時間をリセット
+                m_nCntLandingTime = 0;
+
+                // ジャンプのカウンタ加算
+                m_nCntPressJump++;
+            }
+            else
+            {
+                // 特殊能力:三段ジャンプ
+                if (IS_BITON(m_exFlag, EX_FLAG_THREE_JUMP))
+                {
+                    // 地面にいなく、三段ジャンプをしていなく、二段ジャンプ後なら
+                    if (!m_bUsedThreeJump && m_bUsedSecondJump)
                     {
-                        // ジャンプの砂煙
-                        CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
+                        // 多段ジャンプの空気の輪と砂煙（当たり判定の半分の大きさ）
+                        CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_AIR_RING, GetPos(), GetPos(), collisionSizeDefence.x * 0.5f);
+                        CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_SMOKE, GetPos(), GetPos());
+
+                        // ジャンプ音
+                        CManager::SoundPlay(CSound::LABEL_SE_JUMP);
+
+                        // 1Fだけ向きを変えることができる
+                        RotControl();
+
+                        // ジャンプの初期量
+                        move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
+
+                        // 滑空までのカウンタを設定
+                        m_nCntStartGlide = PLAYER_NEXT_JUMP_MOTION_TO_GLIDE;
+
+                        // 三段ジャンプを使ったフラグをtrueに
+                        m_bUsedThreeJump = true;
+
+                        // 念のため着地時間をリセット
+                        m_nCntLandingTime = 0;
+
+                        // ジャンプのカウンタ加算
+                        m_nCntPressJump++;
                     }
-                    else
-                    {
-                        // ジャンプの砂煙
-                        CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
-                    }
+                }
+
+                // 地面にいなく、二段ジャンプをしていないなら
+                if (!m_bUsedSecondJump)
+                {
+                    // 多段ジャンプの空気の輪と砂煙（当たり判定の半分の大きさ）
+                    CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_AIR_RING, GetPos(), GetPos(), collisionSizeDefence.x * 0.5f);
+                    CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_SMOKE, GetPos(), GetPos());
 
                     // ジャンプ音
                     CManager::SoundPlay(CSound::LABEL_SE_JUMP);
 
+                    // 1Fだけ向きを変えることができる
+                    RotControl();
+
                     // ジャンプの初期量
-                    m_move.y = PLAYER_JUMP_FIRST_RATE;
+                    move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
 
                     // 滑空までのカウンタを設定
-                    m_nCntStartGlide = PLAYER_FIRST_JUMP_MOTION_TO_GLIDE;
+                    m_nCntStartGlide = PLAYER_NEXT_JUMP_MOTION_TO_GLIDE;
 
-                    // 地面にいないことに
-                    m_bGround = false;
+                    // 二段ジャンプを使ったフラグをtrueに
+                    m_bUsedSecondJump = true;
 
                     // 念のため着地時間をリセット
                     m_nCntLandingTime = 0;
@@ -2240,772 +1809,9 @@ void CPlayer::Jump(void)
                     // ジャンプのカウンタ加算
                     m_nCntPressJump++;
                 }
-                else
-                {
-                    // 多段ジャンプは、チャージ中にできない
-                    if (m_nCntSwingCharge <= 0)
-                    {
-                        // 特殊能力:三段ジャンプ
-                        if (IS_BITON(m_exFlag, EX_FLAG_THREE_JUMP))
-                        {
-                            // 地面にいなく、三段ジャンプをしていなく、二段ジャンプ後なら
-                            if (!m_bUsedThreeJump && m_bUsedSecondJump)
-                            {
-                                // 多段ジャンプの空気の輪と砂煙（当たり判定の半分の大きさ）
-                                CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_AIR_RING, GetPos(), GetPos(), m_collisionSizeDeffence.x * 0.5f);
-                                CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_SMOKE, GetPos(), GetPos());
-
-                                // ジャンプ音
-                                CManager::SoundPlay(CSound::LABEL_SE_JUMP);
-
-                                // 1Fだけ向きを変えることができる
-                                RotControl();
-
-                                // ジャンプの初期量
-                                m_move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
-
-                                // 滑空までのカウンタを設定
-                                m_nCntStartGlide = PLAYER_NEXT_JUMP_MOTION_TO_GLIDE;
-
-                                // 三段ジャンプを使ったフラグをtrueに
-                                m_bUsedThreeJump = true;
-
-                                // 念のため着地時間をリセット
-                                m_nCntLandingTime = 0;
-
-                                // ジャンプのカウンタ加算
-                                m_nCntPressJump++;
-
-                                // 急降下中なら急降下をリセット
-                                if (m_bDiving)
-                                {
-                                    m_bDiving = false;
-                                    m_bDiveCheck = true;
-                                }
-                            }
-                        }
-
-                        // 地面にいなく、二段ジャンプをしていないなら
-                        if (!m_bUsedSecondJump)
-                        {
-                            // 多段ジャンプの空気の輪と砂煙（当たり判定の半分の大きさ）
-                            CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_AIR_RING, GetPos(), GetPos(), m_collisionSizeDeffence.x * 0.5f);
-                            CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_SMOKE, GetPos(), GetPos());
-
-                            // ジャンプ音
-                            CManager::SoundPlay(CSound::LABEL_SE_JUMP);
-
-                            // 1Fだけ向きを変えることができる
-                            RotControl();
-
-                            // ジャンプの初期量
-                            m_move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
-
-                            // 滑空までのカウンタを設定
-                            m_nCntStartGlide = PLAYER_NEXT_JUMP_MOTION_TO_GLIDE;
-
-                            // 二段ジャンプを使ったフラグをtrueに
-                            m_bUsedSecondJump = true;
-
-                            // 念のため着地時間をリセット
-                            m_nCntLandingTime = 0;
-
-                            // ジャンプのカウンタ加算
-                            m_nCntPressJump++;
-
-                            // 急降下中なら急降下をリセット
-                            if (m_bDiving)
-                            {
-                                m_bDiving = false;
-                                m_bDiveCheck = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // 急降下の判定が有効なら
-        if (m_bDiveCheck)
-        {
-            // 負傷していない状態なら（チャージ中でも急降下できる）
-            if (m_damageState == DAMAGE_STATE_NONE)
-            {
-                // 下入力で、急降下の成功/失敗判定
-                if (STICK_DOWN(m_controlInput.fLeftStickAngle))
-                {
-                    // ジャンプを押していないなら成功
-                    if (m_nCntPressJump <= 0)
-                    {
-                        // 地面にいないなら
-                        if (!m_bGround)
-                        {
-                            D3DXVECTOR3 headPos = GetPartsPos(PARTS_HEAD);
-                            CEffect3D::Create(CEffectData::TYPE_DIVING, headPos);
-                            m_bDiving = true;
-                        }
-                    }
-                    else
-                    {
-                        m_bDiveCheck = false;
-                    }
-                }
-            }
-        }
-
-        // 急降下中なら
-        if (m_bDiving)
-        {
-            m_move.y -= (PLAYER_BASE_MINIMUM_GRAVITY + (m_fWei * PLAYER_ADD_BASE_GRAVITY_RATE))* PLAYER_DIVE_SPEED_RATE;
-        }
-    }
-}
-
-//=============================================================================
-// 攻撃更新処理
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::AttackUpdate(D3DXVECTOR3 pos, bool bFirstCollision)
-{
-    // 負傷していない状態かつ、攻撃中なら
-    if (m_damageState == DAMAGE_STATE_NONE
-        && m_attackState != ATTACK_STATE_NONE)
-    {
-        // 種類によって条件分け
-        int nCntAttackEndFrame = 0; // 攻撃が終わるフレーム数
-        switch (m_attackState)
-        {
-            // スイングのチャージ
-        case ATTACK_STATE_SWING_CHARGE:
-            SwingCharge();
-            break;
-
-            // スイング
-        case ATTACK_STATE_SWING:
-            nCntAttackEndFrame = ATTACK_SWING_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                Swing(pos, bFirstCollision);
-            }
-            break;
-
-            // スマッシュ
-        case ATTACK_STATE_SMASH:
-            nCntAttackEndFrame = ATTACK_SMASH_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                Smash(pos, bFirstCollision);
-            }
-            break;
-
-            // スパイク
-        case ATTACK_STATE_SPIKE:
-            nCntAttackEndFrame = ATTACK_SPIKE_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                Spike(pos, bFirstCollision);
-            }
-            break;
-
-            // キャッチの構え
-        case ATTACK_STATE_CATCH_READY:
-            nCntAttackEndFrame = ATTACK_CATCH_READY_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                CatchReady(pos);
-            }
-            break;
-
-            // バント
-        case ATTACK_STATE_BUNT:
-            nCntAttackEndFrame = ATTACK_BUNT_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                Bunt(pos);
-            }
-            break;
-
-            // 吸収
-        case ATTACK_STATE_ABSORB:
-            nCntAttackEndFrame = ATTACK_ABSORB_END_FRAME;
-            if (m_nCntAttackTime > nCntAttackEndFrame)
-            {
-                Absorb(pos);
-            }
-            break;
-        }
-    }
-}
-
-//=============================================================================
-// 攻撃発生処理
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::AttackGenerator(D3DXVECTOR3 pos)
-{
-    // 負傷していない状態かつ、攻撃中でないなら
-    if (m_damageState == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE)
-    {
-        // 地上にいるなら
-        if (m_bGround)
-        {
-            // 通常攻撃ボタンを押したら、スイングのみ
-            if (m_controlInput.bTriggerX)
-            {
-                // スイングのチャージ状態（当たっているならチャージなしで撃つ）
-                m_attackState = ATTACK_STATE_SWING_CHARGE;
-                Swing(pos, true);
-            }
-            else if (m_controlInput.bTriggerY)
-            {
-                // キャッチができるなら
-                if (IS_BITOFF(m_exFlag, EX_FLAG_DONT_CATCH))
-                {
-                    // キャッチの構え
-                    m_attackState = ATTACK_STATE_CATCH_READY;
-                    m_nCntAttackTime = ATTACK_CATCH_READY_WHOLE_FRAME;
-                    CatchReady(pos);
-                }
-            }
-            else if (m_controlInput.bTriggerB)
-            {
-                // 素振り音
-                CManager::SoundPlay(CSound::LABEL_SE_SWISH);
-
-                // バント
-                m_attackState = ATTACK_STATE_BUNT;
-                m_nCntAttackTime = ATTACK_BUNT_WHOLE_FRAME;
-                Bunt(pos);
-            }
-        }
-        else
-        {
-            // 通常攻撃ボタンを押したら
-            if (m_controlInput.bTriggerX)
-            {
-                // 空中にいるなら、スティックの角度によって技が異なる
-                if (m_controlInput.bTiltedLeftStick)
-                {
-                    if (STICK_UP(m_controlInput.fLeftStickAngle))
-                    {
-                        // 上はスイングになる
-                        m_attackState = ATTACK_STATE_SWING_CHARGE;
-                        Swing(pos, true);
-                    }
-                    else if (STICK_RIGHT(m_controlInput.fLeftStickAngle) || STICK_LEFT(m_controlInput.fLeftStickAngle))
-                    {
-                        // 素振り音
-                        CManager::SoundPlay(CSound::LABEL_SE_SWISH);
-
-                        // 左右はスマッシュ(この時のみ、向きを空中でも変えれる)
-                        m_attackState = ATTACK_STATE_SMASH;
-                        m_nCntAttackTime = ATTACK_SMASH_WHOLE_FRAME;
-                        m_nCntAttackAnimTime = PLAYER_ATTACK_ANIM_MIN_FRAME;
-                        RotControl();
-                        Smash(pos, true);
-                    }
-                    else if (STICK_DOWN(m_controlInput.fLeftStickAngle))
-                    {
-                        // 素振り音
-                        CManager::SoundPlay(CSound::LABEL_SE_SWISH);
-
-                        // 下はスパイク
-                        m_attackState = ATTACK_STATE_SPIKE;
-                        m_nCntAttackTime = ATTACK_SPIKE_WHOLE_FRAME;
-                        m_nCntAttackAnimTime = PLAYER_ATTACK_ANIM_MIN_FRAME;
-                        Spike(pos, true);
-                    }
-                }
-                else
-                {
-                    // 倒れていないならスイング
-                    m_attackState = ATTACK_STATE_SWING_CHARGE;
-                    Swing(pos, true);
-                }
-            }
-            else if (m_controlInput.bTriggerY)
-            {
-                // キャッチができるなら
-                if (IS_BITOFF(m_exFlag, EX_FLAG_DONT_CATCH))
-                {
-                    // キャッチの構え(この時のみ、向きを空中でも変えれる)
-                    m_attackState = ATTACK_STATE_CATCH_READY;
-                    m_nCntAttackTime = ATTACK_CATCH_READY_WHOLE_FRAME;
-                    RotControl();
-                    CatchReady(pos);
-                }
-            }
-            else if (m_controlInput.bTriggerB)
-            {
-                // 素振り音
-                CManager::SoundPlay(CSound::LABEL_SE_SWISH);
-
-                // バント
-                m_attackState = ATTACK_STATE_BUNT;
-                m_nCntAttackTime = ATTACK_BUNT_WHOLE_FRAME;
-                Bunt(pos);
             }
         }
     }
-}
-
-//=============================================================================
-// スイングのチャージ
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::SwingCharge(void)
-{
-    // スイングボタンから指を離したか、最大チャージに達したら
-    if (m_controlInput.bReleaseX || m_nCntSwingCharge >= m_nSwingChargeMax)
-    {
-        // 素振り音
-        CManager::SoundPlay(CSound::LABEL_SE_SWISH);
-
-        // スイングのクールタイム等決定
-        m_attackState = ATTACK_STATE_SWING;
-        m_nCntAttackTime = ATTACK_SWING_WHOLE_FRAME;
-        m_nCntAttackAnimTime = PLAYER_ATTACK_ANIM_MIN_FRAME;
-    }
-
-    // スイングボタンを押し続けたら
-    if (m_controlInput.bPressX)
-    {
-        // チャージカウンタアップ
-        m_nCntSwingCharge++;
-    }
-    else
-    {
-        // 何らかの拍子でスイングボタンを離したのに、スイングに移行できていないなら、チャージカウンタをリセット
-        if (m_attackState != ATTACK_STATE_SWING)
-        {
-            m_nCntSwingCharge = 0;
-        }
-    }
-
-    // チャージエフェクト
-    if (m_nCntSwingCharge >= ATTACK_SWING_CHARGE_EMIT_EFFECT_FRAME)
-    {
-        D3DXVECTOR3 pos = GetPos();
-        D3DXVECTOR3 rot = GetRot();
-        if (rot.y == PLAYER_ROT_LEFT)
-        {
-            CEffect3D::Emit(CEffectData::TYPE_CHARGE_SWING_LEFT, pos, pos);
-        }
-        else if (rot.y == PLAYER_ROT_RIGHT)
-        {
-            CEffect3D::Emit(CEffectData::TYPE_CHARGE_SWING_RIGHT, pos, pos);
-        }
-        D3DXVECTOR3 wepPos = GetPartsPos(PARTS_WEP);
-        CEffect3D::Create(CEffectData::TYPE_CHARGE_LIGHT, wepPos);
-    }
-}
-
-//=============================================================================
-// スイング
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::Swing(D3DXVECTOR3 playerPos, bool bFirstCollision)
-{
-    // 変数宣言
-    D3DXVECTOR3 playerRot = CCharacter::GetRot();                   // プレイヤーの向いている向き
-    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                          // ずらす位置
-    D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                         // 攻撃発生位置
-    const float ATTACK_EMIT_DISTANCE = m_collisionSizeDeffence.x * 2;    // 攻撃発生距離
-    const float ATTACK_RADIUS = 250.0f;                                  // 攻撃の大きさ
-    const float ATTACK_HEIGHT = 100.0f;                                  // 攻撃の高さ
-    float fFinalPower = 0.0f;                                       // 最終的な攻撃力
-
-    // 攻撃発生位置をずらす
-    slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
-    slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
-    //slidePos.x = (m_collisionSizeAttack.x * 0.5f) + (m_collisionSizeDeffence.x * 0.25f);
-    //attackSize.x = m_collisionSizeAttack.x + (m_collisionSizeDeffence.x * 0.5f);
-    //attackSize.y = m_collisionSizeDeffence.y;
-
-    // 攻撃発生位置を決める
-    attackPos = playerPos + slidePos;
-
-    // 攻撃力を考慮（チャージ時間で基礎威力がわずかに上がる）
-    fFinalPower = (ATTACK_SWING_BASE_POWER + ATTACK_SWING_CHARGE_ATTACK_RATE * m_nCntSwingCharge)
-        + m_fAtk * ATTACK_SWING_ADD_BASE_POWER_RATE;
-
-    //// 最大チャージでスマッシュと同等の威力に変わる
-    //float fMaxChargePower = 0.0f;
-    //if (m_nCntSwingCharge >= m_nSwingChargeMax)
-    //{
-    //    CBall* pBall = CGame::GetBall();
-    //    fMaxChargePower = ATTACK_SMASH_BASE_POWER + m_fAtk * ATTACK_SMASH_ADD_BASE_POWER_RATE;
-    //    fMaxChargePower *= pBall->GetSpeed() * ATTACK_SMASH_SPEED_RATE;
-    //}
-
-    //// 大きい力のほうを使う
-    //if (fFinalPower < fMaxChargePower)
-    //{
-    //    fFinalPower = fMaxChargePower;
-    //}
-
-    // ボールに当たったかどうか（最大チャージなら即打ち）
-    //int flag = CBall::SHOOT_FLAG_NONE;
-    //if (m_nCntSwingCharge >= m_nSwingChargeMax)
-    //{
-    //    BITON(flag, CBall::SHOOT_FLAG_QUICK);
-    //}
-    if (IsAttackEnemy(attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), DEFAULT_VECTOR, fFinalPower, bFirstCollision, 0))
-    {
-        // 当たっていたら即座にスイングに（初回の当たり判定時のみ）
-        if (bFirstCollision)
-        {
-            m_attackState = ATTACK_STATE_SWING;
-            m_nCntAttackTime = ATTACK_SWING_WHOLE_FRAME;
-            m_nCntAttackAnimTime = PLAYER_ATTACK_ANIM_MIN_FRAME;
-        }
-    }
-
-#ifdef COLLISION_TEST
-    CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
-#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// スマッシュ
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::Smash(D3DXVECTOR3 playerPos, bool bFirstCollision)
-{
-//    // 変数宣言
-//    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;  // ずらす位置
-//    D3DXVECTOR3 attackPos = DEFAULT_VECTOR; // 攻撃発生位置
-//    D3DXVECTOR3 attackSize = DEFAULT_VECTOR;// 攻撃の大きさ
-//    D3DXVECTOR3 moveAngle = DEFAULT_VECTOR; // 攻撃の移動角度
-//    float fAttackAngle = 0.0f;              // 攻撃の角度
-//    float fFinalPower = 0.0f;               // 最終的な攻撃力
-//
-//    //                                        // 自分の大きさによって変えるもの
-//    //slidePos.x = (m_collisionSizeAttack.x * 0.5f) + (m_collisionSizeDeffence.x * 0.25f);
-//    //attackSize.x = m_collisionSizeAttack.x + (m_collisionSizeDeffence.x * 0.5f);
-//    //slidePos.y = (m_collisionSizeAttack.y * 0.5f) + (m_collisionSizeDeffence.y * 0.25f);
-//    //attackSize.y = m_collisionSizeAttack.y + (m_collisionSizeDeffence.y * 0.5f);
-//
-//    // スマッシュの攻撃角度は固定
-//    fAttackAngle = m_afParam[PARAM_SMASH];
-//
-//    // プレイヤーの向きが左向きなら、攻撃発生位置と飛ばす方向を逆に
-//    D3DXVECTOR3 rot = GetRot();
-//    if (rot.y == PLAYER_ROT_LEFT)
-//    {
-//        slidePos.x *= -1;
-//        fAttackAngle *= -1;
-//    }
-//
-//    // 攻撃発生位置を決める
-//    attackPos = playerPos + slidePos;
-//
-//    // 飛ばす方向を決定
-//    moveAngle.x = sinf(D3DXToRadian(fAttackAngle));
-//    moveAngle.y = cosf(D3DXToRadian(fAttackAngle));
-//
-//    // 攻撃力を考慮（ボールの速さも関係あり）
-//    //CBall* pBall = CGame::GetBall();
-//    fFinalPower = ATTACK_SMASH_BASE_POWER + m_fAtk * ATTACK_SMASH_ADD_BASE_POWER_RATE;
-//    //fFinalPower *= pBall->GetSpeed() * ATTACK_SMASH_SPEED_RATE;
-//
-//    // 必ず最大チャージ以上の威力が出る
-//    float fMaxChargePower = (ATTACK_SWING_BASE_POWER + ATTACK_SWING_CHARGE_ATTACK_RATE * ATTACK_SWING_CHARGE_MAX_FRAME_NORMAL)
-//        + m_fAtk * ATTACK_SWING_ADD_BASE_POWER_RATE;
-//    if (fFinalPower < fMaxChargePower)
-//    {
-//        fFinalPower = fMaxChargePower;
-//    }
-//
-//    // ボールに当たったかどうか
-//    //int flag = CBall::SHOOT_FLAG_NONE;
-//    IsAttackBall(attackPos, attackSize, moveAngle, fFinalPower, bFirstCollision, 0);
-//
-//#ifdef COLLISION_TEST
-//    CDebug::Create(attackPos, attackSize, CDebug::TYPE_MOMENT);
-//#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// スパイク
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::Spike(D3DXVECTOR3 playerPos, bool bFirstCollision)
-{
-//    // 変数宣言
-//    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;  // ずらす位置
-//    D3DXVECTOR3 attackPos = DEFAULT_VECTOR; // 攻撃発生位置
-//    D3DXVECTOR3 attackSize = DEFAULT_VECTOR;// 攻撃の大きさ
-//    D3DXVECTOR3 moveAngle = DEFAULT_VECTOR; // 攻撃の移動角度
-//    float fAttackAngle = 0.0f;              // 攻撃の角度
-//    float fFinalPower = 0.0f;               // 最終的な攻撃力
-//
-//    //                                        // 自分の大きさによって変えるもの
-//    //slidePos.y = -((m_collisionSizeAttack.y * 0.5f) + (m_collisionSizeDeffence.y * 0.25f));
-//    //attackSize.y = m_collisionSizeAttack.y + (m_collisionSizeDeffence.y * 0.5f);
-//    //attackSize.x = m_collisionSizeDeffence.x * ATTACK_SPIKE_SIZE_RATE_X;
-//
-//    // プレイヤーの向きを考慮
-//    D3DXVECTOR3 rot = GetRot();
-//    if (rot.y == PLAYER_ROT_RIGHT)
-//    {
-//        // スティックの角度によって、攻撃角度を変える
-//        if (m_controlInput.bTiltedLeftStick)
-//        {
-//            if (STICK_SPIKE_RIGHT(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = m_afParam[PARAM_SPIKE_RIGHT];
-//            }
-//            else if (STICK_SPIKE_LEFT(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = m_afParam[PARAM_SPIKE_LEFT];
-//            }
-//            else if (STICK_SPIKE_VERTICAL(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = 180.0f;
-//            }
-//        }
-//        else
-//        {
-//            // スティックが倒れていないなら、攻撃角度はニュートラル
-//            fAttackAngle = 180.0f;
-//        }
-//    }
-//    else if (rot.y == PLAYER_ROT_LEFT)
-//    {
-//        // スティックの角度によって、攻撃角度を変える
-//        if (m_controlInput.bTiltedLeftStick)
-//        {
-//            if (STICK_SPIKE_RIGHT(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = -m_afParam[PARAM_SPIKE_LEFT];
-//            }
-//            else if (STICK_SPIKE_LEFT(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = -m_afParam[PARAM_SPIKE_RIGHT];
-//            }
-//            else if (STICK_SPIKE_VERTICAL(m_controlInput.fLeftStickAngle))
-//            {
-//                fAttackAngle = 180.0f;
-//            }
-//        }
-//        else
-//        {
-//            // スティックが倒れていないなら、攻撃角度はニュートラル
-//            fAttackAngle = 180.0f;
-//        }
-//    }
-//
-//    // 攻撃発生位置を決める
-//    attackPos = playerPos + slidePos;
-//
-//    // 飛ばす方向を決定
-//    moveAngle.x = sinf(D3DXToRadian(fAttackAngle));
-//    moveAngle.y = cosf(D3DXToRadian(fAttackAngle));
-//
-//    // 攻撃力を考慮
-//    fFinalPower = ATTACK_SPIKE_BASE_POWER + m_fAtk * ATTACK_SPIKE_ADD_BASE_POWER_RATE;
-//
-//    // ボールに当たったかどうか
-//    //int flag = CBall::SHOOT_FLAG_NONE;
-//    IsAttackBall(attackPos, attackSize, moveAngle, fFinalPower, bFirstCollision, 0);
-//
-//#ifdef COLLISION_TEST
-//    CDebug::Create(attackPos, attackSize, CDebug::TYPE_MOMENT);
-//#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// キャッチの構え
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::CatchReady(D3DXVECTOR3 playerPos)
-{
-//    // 変数宣言
-//    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;  // ずらす位置
-//    D3DXVECTOR3 attackPos = DEFAULT_VECTOR; // 攻撃発生位置
-//    D3DXVECTOR3 attackSize = DEFAULT_VECTOR;// 攻撃の大きさ
-//
-//    //                                        // 自分の大きさによって変えるもの（キャッチで武器は考慮しない）
-//    //slidePos.x = m_collisionSizeDeffence.x * ATTACK_CATCH_READY_SLIDE_POS_X_RATE;
-//    //attackSize.x = slidePos.x * 2.0f;
-//    //attackSize.y = m_collisionSizeDeffence.y;
-//
-//    // プレイヤーの向きが左向きなら、攻撃発生位置を逆に
-//    D3DXVECTOR3 rot = GetRot();
-//    if (rot.y == PLAYER_ROT_LEFT)
-//    {
-//        slidePos.x *= -1;
-//    }
-//
-//    // 攻撃発生位置を決める
-//    attackPos = playerPos + slidePos;
-//
-//    // ボールに当たったかどうか（投げのフラグをONに）
-//    //int flag = CBall::SHOOT_FLAG_NONE;
-//    //BITON(flag, CBall::SHOOT_FLAG_THROW);
-//    if (IsAttackBall(attackPos, attackSize, DEFAULT_VECTOR, 0.0f, true, 0))
-//    {
-//        // コントローラの振動
-//        if (GetUseControllerEffect())
-//        {
-//            CManager::GetInputJoypad()->StartEffect(m_nIdxControlAndColor, ATTACK_CATCH_READY_EFFECT_FRAME);
-//        }
-//
-//        // キャッチ音
-//        CManager::SoundPlay(CSound::LABEL_SE_CATCH);
-//
-//        // 当たっていたら即座に投げに
-//        m_attackState = ATTACK_STATE_THROW;
-//
-//        // 投げのクールタイム決定
-//        m_nCntAttackTime = ATTACK_THROW_WHOLE_FRAME;
-//    }
-//
-//#ifdef COLLISION_TEST
-//    CDebug::Create(attackPos, attackSize, CDebug::TYPE_MOMENT);
-//#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// バント
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::Bunt(D3DXVECTOR3 playerPos)
-{
-//    // 変数宣言
-//    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;  // ずらす位置
-//    D3DXVECTOR3 attackPos = DEFAULT_VECTOR; // 攻撃発生位置
-//    D3DXVECTOR3 attackSize = DEFAULT_VECTOR;// 攻撃の大きさ
-//    D3DXVECTOR3 moveAngle = DEFAULT_VECTOR; // 攻撃の移動角度
-//    float fAttackAngle = 0.0f;              // 攻撃の角度
-//
-//    //                                        // 自分の大きさによって変えるもの
-//    //slidePos.x = (m_collisionSizeAttack.x * 0.5f) + (m_collisionSizeDeffence.x * 0.25f);
-//    //attackSize.x = m_collisionSizeAttack.x + (m_collisionSizeDeffence.x * 0.5f);
-//    //attackSize.y = m_collisionSizeDeffence.y;
-//
-//    // スティックの角度によって、攻撃角度を変える
-//    if (m_controlInput.bTiltedLeftStick)
-//    {
-//        if (STICK_RIGHT(m_controlInput.fLeftStickAngle))
-//        {
-//            fAttackAngle = ATTACK_BUNT_ANGLE;
-//        }
-//        else if (STICK_LEFT(m_controlInput.fLeftStickAngle))
-//        {
-//            fAttackAngle = -ATTACK_BUNT_ANGLE;
-//        }
-//        else if (STICK_DOWN(m_controlInput.fLeftStickAngle))
-//        {
-//            fAttackAngle = 180.0f;
-//        }
-//    }
-//
-//    // プレイヤーの向きが左向きなら、攻撃発生位置と飛ばす方向を逆に
-//    D3DXVECTOR3 rot = GetRot();
-//    if (rot.y == PLAYER_ROT_LEFT)
-//    {
-//        slidePos.x *= -1;
-//    }
-//
-//    // 攻撃発生位置を決める
-//    attackPos = playerPos + slidePos;
-//
-//    // 飛ばす方向を決定
-//    moveAngle.x = sinf(D3DXToRadian(fAttackAngle));
-//    moveAngle.y = cosf(D3DXToRadian(fAttackAngle));
-//
-//    // ボールに当たったかどうか（バントのフラグをON）
-//    //int flag = CBall::SHOOT_FLAG_NONE;
-//    //BITON(flag, CBall::SHOOT_FLAG_BUNT);
-//    IsAttackBall(attackPos, attackSize, moveAngle, 0.0f, true, 0);
-//
-//#ifdef COLLISION_TEST
-//    CDebug::Create(attackPos, attackSize, CDebug::TYPE_MOMENT);
-//#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// 吸収
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::Absorb(D3DXVECTOR3 playerPos)
-{
-//    // 変数宣言
-//    D3DXVECTOR3 slidePos = DEFAULT_VECTOR;  // ずらす位置
-//    D3DXVECTOR3 attackPos = DEFAULT_VECTOR; // 攻撃発生位置
-//    D3DXVECTOR3 attackSize = DEFAULT_VECTOR;// 攻撃の大きさ
-//
-//    //                                        // 吸収の大きさは、自分の防御当たり判定の平均に割合をかけたもの
-//    //float fSize = (m_collisionSizeDeffence.x + m_collisionSizeDeffence.y) * 0.5f * ATTACK_ABSORB_SIZE_RATE;
-//    //attackSize.x = fSize;
-//    //attackSize.y = fSize;
-//
-//    // プレイヤーの向きが左向きなら、攻撃発生位置を逆に
-//    D3DXVECTOR3 rot = GetRot();
-//    if (rot.y == PLAYER_ROT_LEFT)
-//    {
-//        slidePos.x *= -1;
-//    }
-//
-//    // 攻撃発生位置を決める
-//    attackPos = playerPos + slidePos;
-//
-//    // ボールに当たったかどうか（吸収のフラグをONに）
-//    //int flag = CBall::SHOOT_FLAG_NONE;
-//    //BITON(flag, CBall::SHOOT_FLAG_ABSORB);
-//    IsAttackBall(attackPos, attackSize, DEFAULT_VECTOR, 0.0f, false, 0); // 常に最初の接触ではなく、相殺に勝つ
-//
-//#ifdef COLLISION_TEST
-//    CDebug::Create(attackPos, attackSize, CDebug::TYPE_MOMENT);
-//#endif // COLLISION_TEST
-}
-
-//=============================================================================
-// 敵に攻撃が当たったかどうかのチェック
-// Author : 後藤慎之助
-//=============================================================================
-bool CPlayer::IsAttackEnemy(D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, D3DXVECTOR3 moveAngle, float fPower, bool bFirstCollision, int flag)
-{
-    // 当たったかどうか
-    bool bHit = false;
-
-    // 敵との当たり判定
-    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
-    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
-    {
-        // 中身があるなら
-        if (pScene)
-        {
-            // 次のシーンを記憶
-            CScene*pNextScene = pScene->GetNextScene();
-
-            // 敵にキャスト
-            CEnemy *pEnemy = (CEnemy*)pScene;
-
-            // 当たっているなら
-            if (IsCollisionCylinder(attackPos, attackSize, pEnemy->GetPos(),pEnemy->GetCollisionSizeDeffence()))
-            {
-                // 仮に消す
-                pEnemy->Uninit();
-
-                // 当たった
-                bHit = true;
-
-                // 多段ヒット回避用のフラグ
-                m_bUseAvoidMultipleHits = true;
-
-                // このフレーム中に攻撃が当たったかどうかのフラグ（主に最終局面で攻撃と防御の当たり判定を同時に発生させたとき用）
-                m_bHitAttackThisFrame = true;
-            }
-
-            // 次のシーンにする
-            pScene = pNextScene;
-        }
-    }
-
-    return bHit;
 }
 
 //=============================================================================
@@ -3064,108 +1870,78 @@ void CPlayer::LeaveWepAfterimage(void)
 }
 
 //=============================================================================
-// 攻撃モーションの管理
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::AttackMotion(void)
-{
-    // 攻撃状態に応じて、モーションを決める
-    switch (m_attackState)
-    {
-    case ATTACK_STATE_SWING_CHARGE:
-        GetAnimation()->SetAnimation(ANIM_SWING_CHARGE);
-        break;
-    case ATTACK_STATE_SWING:
-        LeaveWepAfterimage();
-        GetAnimation()->SetAnimation(ANIM_SWING);
-        break;
-    case ATTACK_STATE_SMASH:
-        LeaveWepAfterimage();
-        GetAnimation()->SetAnimation(ANIM_SMASH);
-        break;
-    case ATTACK_STATE_SPIKE:
-        GetAnimation()->SetAnimation(ANIM_SPIKE);
-        break;
-    case ATTACK_STATE_BUNT:
-        GetAnimation()->SetAnimation(ANIM_BUNT);
-        break;
-    case ATTACK_STATE_CATCH_READY:
-        GetAnimation()->SetAnimation(ANIM_CATCH_READY);
-        break;
-    case ATTACK_STATE_THROW:
-        GetAnimation()->SetAnimation(ANIM_THROW);
-        m_move *= ATTACK_THROW_SLOW_SPEED_RATE; // 投げてるときはスローな移動
-        break;
-    case ATTACK_STATE_ABSORB:
-        GetAnimation()->SetAnimation(ANIM_ABSORB);
-        break;
-    }
-}
-
-//=============================================================================
 // 負傷の更新処理
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::DamageUpdate(D3DXVECTOR3 pos)
+void CPlayer::DamageUpdate(D3DXVECTOR3 pos, D3DXVECTOR3& move)
 {
-    switch (m_damageState)
+    // 負傷状態、負傷時間を取得
+    DAMAGE_STATE damageState = GetDamageState();
+    int nTakeDamageTime = GetTakeDamageTime();
+
+    switch (damageState)
     {
     case DAMAGE_STATE_BLOWN:
         // 吹っ飛ばされからダウンへの遷移
         if (m_bGround)
         {
             // 地面にいてかつ、速度が落ちているなら
-            if (fabsf(m_move.x) < PLAYER_KNOCK_BACK_STOP_BORDER)
+            if (fabsf(move.x) < KNOCK_BACK_STOP_BORDER)
             {
-                m_move.x = 0.0f;
-                m_damageState = DAMAGE_STATE_BIG;
-                m_nCntTakeDamageTime = PLAYER_TAKE_DAMAGE_BIG_FRAME;
+                move.x = 0.0f;
+                damageState = DAMAGE_STATE_BIG;
+                nTakeDamageTime = TAKE_DAMAGE_BIG_FRAME;
             }
         }
         else
         {
             // 空中の速度を最低限保持する
-            if (fabsf(m_move.x) < PLAYER_KNOCK_BACK_STOP_BORDER)
+            if (fabsf(move.x) < KNOCK_BACK_STOP_BORDER)
             {
-                if (m_move.x > 0.0f)
+                if (move.x > 0.0f)
                 {
-                    m_move.x = PLAYER_KNOCK_BACK_STOP_BORDER;
+                    move.x = KNOCK_BACK_STOP_BORDER;
                 }
                 else
                 {
-                    m_move.x = -PLAYER_KNOCK_BACK_STOP_BORDER;
+                    move.x = -KNOCK_BACK_STOP_BORDER;
                 }
             }
         }
         break;
     case DAMAGE_STATE_BIG:
         // 起き上がり可能時間なら
-        if (m_nCntTakeDamageTime <= PLAYER_TAKE_DAMAGE_START_QUICK_STAND_UP)
+        if (nTakeDamageTime <= PLAYER_TAKE_DAMAGE_START_QUICK_STAND_UP)
         {
             // 即起き上がりor吸収起き上がりアピール
             if (m_controlInput.bTiltedLeftStick)
             {
-                m_damageState = DAMAGE_STATE_STAND_UP;
-                m_nCntTakeDamageTime = PLAYER_TAKE_DAMAGE_STAND_UP_FRAME;
+                damageState = DAMAGE_STATE_STAND_UP;
+                nTakeDamageTime = PLAYER_TAKE_DAMAGE_STAND_UP_FRAME;
             }
             else if (m_controlInput.bTriggerX)
             {
                 // 吸収エフェクト
-                CEffect3D::Emit(CEffectData::TYPE_ABSORB, pos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y / 2, 0.0f),
-                    pos + D3DXVECTOR3(0.0f, m_collisionSizeDeffence.y / 2, 0.0f), m_collisionSizeDeffence.x);
+                D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+                CEffect3D::Emit(CEffectData::TYPE_ABSORB, pos + D3DXVECTOR3(0.0f, collisionSizeDefence.y / 2.0f, 0.0f),
+                    pos + D3DXVECTOR3(0.0f, collisionSizeDefence.y / 2.0f, 0.0f), collisionSizeDefence.x);
 
                 // ダメージ状態のリセット
-                m_damageState = DAMAGE_STATE_NONE;
-                m_nCntTakeDamageTime = 0;
+                damageState = DAMAGE_STATE_NONE;
+                nTakeDamageTime = 0;
 
-                // 吸収
-                m_attackState = ATTACK_STATE_ABSORB;
-                m_nCntAttackTime = ATTACK_ABSORB_WHOLE_FRAME;
-                Absorb(pos);
+                //// 共通起き上がり攻撃をいれる場所
+                //m_attackState = ATTACK_STATE_ABSORB;
+                //m_nCntAttackTime = ATTACK_ABSORB_WHOLE_FRAME;
+                //Absorb(pos);
             }
         }
         break;
     }
+
+    // 負傷状態、負傷時間を更新
+    SetDamageState(damageState);
+    SetTakeDamageTime(nTakeDamageTime);
 }
 
 //=============================================================================
@@ -3175,7 +1951,8 @@ void CPlayer::DamageUpdate(D3DXVECTOR3 pos)
 void CPlayer::DamageMotion(void)
 {
     // 負傷状態に応じて、モーションを決める
-    switch (m_damageState)
+    DAMAGE_STATE damageState = GetDamageState();
+    switch (damageState)
     {
     case DAMAGE_STATE_SMALL:
         GetAnimation()->SetAnimation(ANIM_DAMAGE_SMALL);
@@ -3196,19 +1973,10 @@ void CPlayer::DamageMotion(void)
 // 必殺ゲージ上昇処理
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::GainSpGauge(bool bExAdd)
+void CPlayer::GainSpGauge(void)
 {
-    // 必殺技ゲージ上昇量を出す
-    float fGainSpGauge = ATTACK_SP_GAUGE_BASE_GAIN + m_fAtk * ATTACK_SP_GAUGE_ADD_BASE_GAIN_RATE;
-
-    // キャッチなどの更に倍率が高くなる行動なら
-    if (bExAdd)
-    {
-        fGainSpGauge *= ATTACK_SP_GAUGE_EX_ADD_RATE;
-    }
-
     // 現在のゲージに足す
-    m_fSpGaugeCurrent += fGainSpGauge;
+    m_fSpGaugeCurrent += m_fNextGainSpGauge;
 
     // 最大値を上回らないようにする
     if (m_fSpGaugeCurrent > m_fSpGaugeMax)
@@ -3223,27 +1991,27 @@ void CPlayer::GainSpGauge(bool bExAdd)
 //=============================================================================
 void CPlayer::ResetStatusEveryRound(void)
 {
-    // 生存しているなら
-    if (m_bDisp)
-    {
-        // ラウンドリジェネ
-        if (IS_BITON(m_exFlag, EX_FLAG_ROUND_HEAL))
-        {
-            // 最大HPなら、エフェクトも回復もない
-            if (m_fLife != m_fDef)
-            {
-                // 回復
-                const float HEAL_VALUE = 0.0011f;
-                m_fLife += m_fDef * HEAL_VALUE;
+    //// 生存しているなら
+    //if (m_bDisp)
+    //{
+    //    // ラウンドリジェネ
+    //    if (IS_BITON(m_exFlag, EX_FLAG_ROUND_HEAL))
+    //    {
+    //        // 最大HPなら、エフェクトも回復もない
+    //        if (m_fLife != m_fDef)
+    //        {
+    //            // 回復
+    //            const float HEAL_VALUE = 0.0011f;
+    //            m_fLife += m_fDef * HEAL_VALUE;
 
-                // 回復の上限
-                if (m_fLife > m_fDef)
-                {
-                    m_fLife = m_fDef;
-                }
-            }
-        }
-    }
+    //            // 回復の上限
+    //            if (m_fLife > m_fDef)
+    //            {
+    //                m_fLife = m_fDef;
+    //            }
+    //        }
+    //    }
+    //}
 
     // 必殺ゲージ
     if (IS_BITOFF(m_exFlag, EX_FLAG_SAVE_SP_GAUGE))
@@ -3256,11 +2024,31 @@ void CPlayer::ResetStatusEveryRound(void)
     {
         m_bSpBarrier = false;
     }
+}
 
-    // ラッキーガード（ファーストヒットガードのキャラのみリセット）
-    if (IS_BITON(m_exFlag, EX_FLAG_FIRST_HIT_GUARD))
+//=============================================================================
+// エナジーを得る処理
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::GainEnergy(const float fEnergy)
+{
+    // 最大持ち運びエナジー量
+    float fMaxEnergy = 0.0f;
+    switch (m_role)
     {
-        m_bUsedLuckyGuard = false;
+    case ROLE_CARRIER:
+        fMaxEnergy = 80.0f;
+        break;
+    default:
+        fMaxEnergy = 50.0f;
+        break;
+    }
+
+    // エナジー加算
+    m_fCurrentEnergy += fEnergy;
+    if (m_fCurrentEnergy > fMaxEnergy)
+    {
+        m_fCurrentEnergy = fMaxEnergy;
     }
 }
 
@@ -3282,7 +2070,6 @@ bool CPlayer::GetUseControllerEffect(void)
 
     return bUseControllerEffect;
 }
-
 
 //=============================================================================
 // クリッピングマスクを適用

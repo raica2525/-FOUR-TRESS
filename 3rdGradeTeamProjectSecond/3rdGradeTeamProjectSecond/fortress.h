@@ -34,26 +34,13 @@ public:
     CFortress();
     ~CFortress();
 
-    // 列挙型宣言(モーション)
-    typedef enum
-    {
-        ANIM_IDLE = 0,      // 待機
-        ANIM_WARN,          // 威嚇
-        ANIM_MAX,           // 最大数
-    }ANIMATION;
-
     // 列挙型宣言
     typedef enum
     {
-        PARTS_FIGHTER = 0,
-        PARTS_RIGHT_WING_0,
-        PARTS_RIGHT_WING_1,
-        PARTS_RIGHT_WING_2,
-        PARTS_RIGHT_WING_3,
-        PARTS_LEFT_WING_0,
-        PARTS_LEFT_WING_1,
-        PARTS_LEFT_WING_2,
-        PARTS_LEFT_WING_3,
+        PARTS_BODY = 0,         // 車体
+        PARTS_CANNON_CENTER,    // 砲台中心
+        PARTS_SEAT,             // 座席
+        PARTS_FIRE_POS,         // 発射位置
         PARTS_MAX,
     }PARTS;
 
@@ -66,16 +53,13 @@ public:
     //=============================
     // ゲッター
     //=============================
-    D3DXVECTOR2 GetCollisionSizeDeffence(void) { return m_collisionSizeDeffence; }
 
     //=============================
     // セッター
     //=============================
 
 private:
-    D3DXVECTOR2 m_collisionSizeDeffence;     // 防御衝突サイズ
     float m_fSpeed;                          // 速さ
-    float m_fLife;                           // 体力
 
     bool m_bSearchRoad;                      // 道を探しているかどうか
     D3DXVECTOR3 m_moveAngle;                 // 移動の向き

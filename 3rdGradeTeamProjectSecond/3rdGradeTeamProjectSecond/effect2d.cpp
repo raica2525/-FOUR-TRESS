@@ -213,7 +213,7 @@ void CEffect2D::Update(void)
             // プレイヤーのポインタがあるなら、場所を追従
             if (m_pPlayer)
             {
-                pos = ConvertScreenPos(m_pPlayer->GetPos() + D3DXVECTOR3(0.0f, m_pPlayer->GetCollisionSizeDeffence().y / 2, 0.0f));
+                pos = ConvertScreenPos(m_pPlayer->GetPos() + D3DXVECTOR3(0.0f, m_pPlayer->GetCollisionSizeDefence().y / 2.0f, 0.0f));
             }
 
             // 位置、大きさ、色を反映
@@ -422,7 +422,7 @@ CEffect2D* CEffect2D::Create(const int nType, D3DXVECTOR3 pos, float fScatterAng
     // 飛散角度が既に設定されているエフェクトなら、置き換える
     if (pCreateInfo->nScatterAngle > 0)
     {
-        fScatterAngle = ((float)pCreateInfo->nScatterAngle / EFFECT_FLOATING_POINT) * 2;
+        fScatterAngle = ((float)pCreateInfo->nScatterAngle / EFFECT_FLOATING_POINT) * 2.0f;
     }
 
     // メモリを確保出来たら

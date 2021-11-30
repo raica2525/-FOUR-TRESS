@@ -47,25 +47,25 @@ HRESULT CResult::Init(void)
     // UIを生成
     CUI::Place(CUI::SET_RESULT);
 
-    // プレイヤー生成
-    for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
-    {
-        switch (nCntPlayer)
-        {
-        case CPlayer::RANK_1:
-            CPlayer::CreateInResult(D3DXVECTOR3(250.0f, 200.0f, -1200.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_1);
-            break;
-        case CPlayer::RANK_2:
-            CPlayer::CreateInResult(D3DXVECTOR3(-640.0f, 100.0f, -600.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_2);
-            break;
-        case CPlayer::RANK_3:
-            CPlayer::CreateInResult(D3DXVECTOR3(-325.0f, 25.0f, -310.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_3);
-            break;
-        case CPlayer::RANK_4:
-            CPlayer::CreateInResult(D3DXVECTOR3(125.0f, -40.0f, -100.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_4);
-            break;
-        }
-    }
+    //// プレイヤー生成
+    //for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
+    //{
+    //    switch (nCntPlayer)
+    //    {
+    //    case CPlayer::RANK_1:
+    //        CPlayer::CreateInResult(D3DXVECTOR3(250.0f, 200.0f, -1200.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_1);
+    //        break;
+    //    case CPlayer::RANK_2:
+    //        CPlayer::CreateInResult(D3DXVECTOR3(-640.0f, 100.0f, -600.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_2);
+    //        break;
+    //    case CPlayer::RANK_3:
+    //        CPlayer::CreateInResult(D3DXVECTOR3(-325.0f, 25.0f, -310.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_3);
+    //        break;
+    //    case CPlayer::RANK_4:
+    //        CPlayer::CreateInResult(D3DXVECTOR3(125.0f, -40.0f, -100.0f), DEFAULT_VECTOR, CGame::GetPlayerRank(nCntPlayer), CPlayer::RANK_4);
+    //        break;
+    //    }
+    //}
 
     // カメラのロックオン場所を変える
     CManager::GetCamera()->CCamera::ResetCamera(DEFAULT_VECTOR, CAMERA_DEFAULT_ROT, CCamera::SETTING_CUSTOM);

@@ -43,6 +43,7 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_bUseDraw = false;
 
     m_bHitErase = true;
+    m_pEffect3d_Shadow = NULL;
 }
 
 //=============================================================================
@@ -74,6 +75,12 @@ HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CBullet::Uninit(void)
 {
+    // 影を消す
+    if (m_pEffect3d_Shadow)
+    {
+        m_pEffect3d_Shadow->SetDontUse();
+    }
+
     CScene3D::Uninit();
 }
 
@@ -90,19 +97,30 @@ void CBullet::Update(void)
     }
 
     // 位置、大きさを取得
-    D3DXVECTOR3 pos = GetPos();
+    D3DXVECTOR3 myPos = GetPos();
 
     // 1F前の位置を結びつける
-    m_posOld = pos;
+    m_posOld = myPos;
 
     // 移動量を位置に結びつける
-    pos += m_moveAngle * m_fSpeed;
+    myPos += m_moveAngle * m_fSpeed;
 
     // 当たり判定を設定
-    Collision(pos);
+    Collision(myPos);
 
     // 位置を設定
-    SetPos(pos);
+    SetPos(myPos);
+
+#ifdef COLLISION_TEST
+    D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
+    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 119);
+#endif // COLLISION_TEST
+
+    // 影の位置を更新
+    if (m_pEffect3d_Shadow)
+    {
+        m_pEffect3d_Shadow->SetPos(D3DXVECTOR3(myPos.x, SHADOW_POS_Y, myPos.z));
+    }
 
     // ライフがなくなった、または使用フラグがなくなったら、消滅
     m_nLife--;
@@ -110,11 +128,6 @@ void CBullet::Update(void)
     {
         Uninit();
     }
-
-#ifdef COLLISION_TEST
-    D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
-    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 119);
-#endif // COLLISION_TEST
 }
 
 //=============================================================================
@@ -123,6 +136,12 @@ void CBullet::Update(void)
 //=============================================================================
 void CBullet::Draw(void)
 {
+    // 影
+    if (m_pEffect3d_Shadow)
+    {
+        m_pEffect3d_Shadow->CBillboard::Draw();
+    }
+
     // 描画するなら
     if (m_bUseDraw)
     {
@@ -145,7 +164,7 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, floa
     pBullet->SetRot(rot);
 
     // 初期化
-    pBullet->SetupInfoByType(fStrength);
+    pBullet->SetupInfoByType(fStrength, pos);
     pBullet->Init(pos, DEFAULT_SCALE);
 
     // 引数を結びつけておく
@@ -179,13 +198,10 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 CPlayer *pPlayer = (CPlayer*)pScene;
 
                 // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDeffence()))
+                if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
                 {
-                    // 当たった
-                    bHit = true;
-
                     // プレイヤーにダメージ
-                    pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, true);
+                    bHit = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);;
                 }
 
                 // 次のシーンにする
@@ -193,27 +209,15 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
             }
         }
 
-        pScene = CScene::GetTopScene(CScene::OBJTYPE_FORTRESS);
-        for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_FORTRESS); nCntScene++)
+        // 移動要塞を取得
+        CFortress *pFortress = CGame::GetFortress();
+        if (pFortress)
         {
-            // 中身があるなら
-            if (pScene)
+            // 当たっているなら
+            if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
             {
-                // 次のシーンを記憶
-                CScene*pNextScene = pScene->GetNextScene();
-
-                // 移動要塞にキャスト
-                CFortress *pFortress = (CFortress*)pScene;
-
-                // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDeffence()))
-                {
-                    // 当たった
-                    bHit = true;
-                }
-
-                // 次のシーンにする
-                pScene = pNextScene;
+                // 移動要塞にダメージ
+                bHit = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
             }
         }
     }
@@ -234,10 +238,10 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 CEnemy *pEnemy = (CEnemy*)pScene;
 
                 // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDeffence()))
+                if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                 {
-                    // 当たった
-                    bHit = true;
+                    // 敵にダメージ
+                    bHit = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
                 }
 
                 // 次のシーンにする

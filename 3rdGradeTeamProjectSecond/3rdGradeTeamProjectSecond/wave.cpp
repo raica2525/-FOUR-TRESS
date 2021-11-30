@@ -69,10 +69,10 @@ HRESULT CWave::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     //円形のステンシル生成用ポリゴン
     m_apVtxBuff[0]->Lock(0, 0, (void**)&pVtx, 0);
     // 頂点情報を設定
-    pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)m_size.y / 2, 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)m_size.y / 2, 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
     //テクスチャ座標の設定
     pVtx[0].tex[0] = D3DXVECTOR2(0, 0);
     pVtx[1].tex[0] = D3DXVECTOR2(1, 0);
@@ -98,10 +98,10 @@ HRESULT CWave::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     m_apVtxBuff[1]->Lock(0, 0, (void**)&pVtx, 0);
     // 頂点情報を設定
 
-    pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)m_size.y / 2, 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)m_size.y / 2, 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
     //テクスチャ座標の設定
     for (int nCount = 0; nCount < NUM_VERTEX; nCount++)
     {
@@ -162,10 +162,10 @@ void CWave::Update(void)
             m_size.x /= TEX_DIV_RATE;
             m_size.y /= TEX_DIV_RATE;
 
-            pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-            pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-            pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)m_size.y / 2, 0.0f);
-            pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)m_size.y / 2, 0.0f);
+            pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+            pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+            pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
+            pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
 
             m_size.x *= TEX_DIV_RATE;
             m_size.y *= TEX_DIV_RATE;
@@ -176,10 +176,10 @@ void CWave::Update(void)
             }
         }
 
-        pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-        pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)-m_size.y / 2, 0.0f);
-        pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2, (float)m_size.y / 2, 0.0f);
-        pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2, (float)m_size.y / 2, 0.0f);
+        pVtx[0].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+        pVtx[1].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)-m_size.y / 2.0f, 0.0f);
+        pVtx[2].pos = m_pos + D3DXVECTOR3((float)-m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
+        pVtx[3].pos = m_pos + D3DXVECTOR3((float)m_size.x / 2.0f, (float)m_size.y / 2.0f, 0.0f);
 
         m_apVtxBuff[nCount]->Unlock();
     }

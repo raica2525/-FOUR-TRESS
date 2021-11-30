@@ -154,12 +154,12 @@ void CCamera::Shake(void)
         cameraPos.y += m_fShakeValue;
         break;
     case SHAKE_PHASE_5:
-        cameraPos.x += m_fShakeValue / 2;
-        cameraPos.y += m_fShakeValue / 2;
+        cameraPos.x += m_fShakeValue / 2.0f;
+        cameraPos.y += m_fShakeValue / 2.0f;
         break;
     case SHAKE_PHASE_6:
-        cameraPos.x -= m_fShakeValue / 2;
-        cameraPos.y -= m_fShakeValue / 2;
+        cameraPos.x -= m_fShakeValue / 2.0f;
+        cameraPos.y -= m_fShakeValue / 2.0f;
         break;
     }
 
@@ -290,7 +290,7 @@ void CCamera::Update(void)
         CPlayer *pPlayer = CGame::GetPlayer(0);
         if (pPlayer)
         {
-            m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDeffence().y / 2, 0.0f);
+            m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDefence().y / 2.0f, 0.0f);
             m_posRDest = m_pos;
         }
 
@@ -315,71 +315,71 @@ void CCamera::Update(void)
 
     case STATE_FINISH_EACH:
     {
-        // カウンタ加算
-        m_nCntState++;
+        //// カウンタ加算
+        //m_nCntState++;
 
-        if (m_nCntState < CAMERA_FINISH_NEXT_PLAYER_FRAME)
-        {
-            // 最初は敗者にロックオン
-            CPlayer *pLoser = NULL;
-            for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
-            {
-                CPlayer *pPlayer = CGame::GetPlayer(nCntPlayer);
-                if (pPlayer)
-                {
-                    // 敗者を記憶
-                    if (pPlayer->GetIdxControlAndColor() == CGame::GetPlayerRankInThisRound(CPlayer::RANK_2))
-                    {
-                        pLoser = pPlayer;
-                    }
-                }
-            }
+        //if (m_nCntState < CAMERA_FINISH_NEXT_PLAYER_FRAME)
+        //{
+        //    // 最初は敗者にロックオン
+        //    CPlayer *pLoser = NULL;
+        //    for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
+        //    {
+        //        CPlayer *pPlayer = CGame::GetPlayer(nCntPlayer);
+        //        if (pPlayer)
+        //        {
+        //            // 敗者を記憶
+        //            if (pPlayer->GetIdxControlAndColor() == CGame::GetPlayerRankInThisRound(CPlayer::RANK_2))
+        //            {
+        //                pLoser = pPlayer;
+        //            }
+        //        }
+        //    }
 
-            // 敗者が存在するなら
-            if (pLoser)
-            {
-                m_fPhi += CAMERA_FINISH_ROT_SPEED;
-                m_pos = pLoser->GetPos() + D3DXVECTOR3(0.0f, pLoser->GetCollisionSizeDeffence().y / 2, 0.0f);
-                m_posRDest = m_pos;
-            }
-        }
-        else
-        {
-            // 次に勝者へロックオン
-            CPlayer *pWinner = NULL;
-            for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
-            {
-                CPlayer *pPlayer = CGame::GetPlayer(nCntPlayer);
-                if (pPlayer)
-                {
-                    // 勝者を記憶
-                    if (pPlayer->GetIdxControlAndColor() == CGame::GetPlayerRankInThisRound(CPlayer::RANK_1))
-                    {
-                        pWinner = pPlayer;
-                    }
-                }
-            }
+        //    // 敗者が存在するなら
+        //    if (pLoser)
+        //    {
+        //        m_fPhi += CAMERA_FINISH_ROT_SPEED;
+        //        m_pos = pLoser->GetPos() + D3DXVECTOR3(0.0f, pLoser->GetCollisionSizeDefence().y / 2.0f, 0.0f);
+        //        m_posRDest = m_pos;
+        //    }
+        //}
+        //else
+        //{
+        //    // 次に勝者へロックオン
+        //    CPlayer *pWinner = NULL;
+        //    for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
+        //    {
+        //        CPlayer *pPlayer = CGame::GetPlayer(nCntPlayer);
+        //        if (pPlayer)
+        //        {
+        //            // 勝者を記憶
+        //            if (pPlayer->GetIdxControlAndColor() == CGame::GetPlayerRankInThisRound(CPlayer::RANK_1))
+        //            {
+        //                pWinner = pPlayer;
+        //            }
+        //        }
+        //    }
 
-            // 敗者が存在するなら
-            if (pWinner)
-            {
-                m_fPhi -= CAMERA_FINISH_ROT_SPEED;
-                m_pos = pWinner->GetPos() + D3DXVECTOR3(0.0f, pWinner->GetCollisionSizeDeffence().y / 2, 0.0f);
-                m_posRDest = m_pos;
-            }
-        }
+        //    // 敗者が存在するなら
+        //    if (pWinner)
+        //    {
+        //        m_fPhi -= CAMERA_FINISH_ROT_SPEED;
+        //        m_pos = pWinner->GetPos() + D3DXVECTOR3(0.0f, pWinner->GetCollisionSizeDefence().y / 2.0f, 0.0f);
+        //        m_posRDest = m_pos;
+        //    }
+        //}
 
-        //// カメラと自身の距離
-        //m_fDistance = CAMERA_LOCK_ON_OFFSET;
+        ////// カメラと自身の距離
+        ////m_fDistance = CAMERA_LOCK_ON_OFFSET;
 
-        // 位置の目的地を更新(球面座標の公式)
-        m_posVDest.x = m_fDistance * (sin(m_fTheta) * cos(m_fPhi)) + m_pos.x;
-        m_posVDest.y = (m_fDistance / 2.0f) * cos(m_fTheta) + m_pos.y;
-        m_posVDest.z = m_fDistance * (sin(m_fTheta) * sin(m_fPhi)) + m_pos.z;
+        //// 位置の目的地を更新(球面座標の公式)
+        //m_posVDest.x = m_fDistance * (sin(m_fTheta) * cos(m_fPhi)) + m_pos.x;
+        //m_posVDest.y = (m_fDistance / 2.0f) * cos(m_fTheta) + m_pos.y;
+        //m_posVDest.z = m_fDistance * (sin(m_fTheta) * sin(m_fPhi)) + m_pos.z;
 
-        // カメラの位置と注視点を更新
-        m_posR += (m_posRDest - m_posR) * CAMERA_MOVE_RATE;
-        m_posV += (m_posVDest - m_posV) * CAMERA_MOVE_RATE;
+        //// カメラの位置と注視点を更新
+        //m_posR += (m_posRDest - m_posR) * CAMERA_MOVE_RATE;
+        //m_posV += (m_posVDest - m_posV) * CAMERA_MOVE_RATE;
 
         break;
     }

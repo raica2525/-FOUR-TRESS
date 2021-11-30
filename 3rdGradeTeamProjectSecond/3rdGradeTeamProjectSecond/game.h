@@ -22,6 +22,7 @@ class CUI;
 class CEffect2D;
 class CNumberArray;
 class CText;
+class CFortress;
 
 //*****************************************************************************
 // マクロ定義
@@ -74,12 +75,12 @@ public:
     void BlowMomentMakeSureReset(void);   // 一撃の瞬間時、念のためリセットするもの
     void JudgmentFinish(void);  // 勝敗判定
 
-                                /*========================================================
-                                // セッター
-                                //======================================================*/
-    static void SetNextGameInDebug(TYPE gameType, int nNumPlayer, int nNumStock, bool bUseKeyboard = false)
+    /*========================================================
+    // セッター
+    //======================================================*/
+    static void SetNextGameInDebug(TYPE gameType, int nNumPlayer, bool bUseKeyboard = false)
     {
-        m_type = gameType;  m_nNumAllPlayer = nNumPlayer; m_nNumStock = nNumStock; m_bUseKeyboard = bUseKeyboard;
+        m_type = gameType;  m_nNumAllPlayer = nNumPlayer; m_bUseKeyboard = bUseKeyboard;
     }   // デバッグメニューで、次のゲームを設定
     static void SetNextGameInCustom(TYPE gameType, int nNumPlayer)
     {
@@ -87,21 +88,8 @@ public:
     }   // カスタマイズ画面で、次のゲームを設定
     static void SetIdxPlayer(int nNum, int nIdxPlayer) { m_anMemoryIdxPlayer[nNum] = nIdxPlayer; }  // プレイヤーのインデックス
     static void SetAILevel(int nNum, CPlayer::AI_LEVEL level) { m_aMemoryAILevel[nNum] = level; }   // AIレベル
-    static void SetAddNumDefeatPlayer(int nIdxPlayer) { SetPlayerRankInThisRound(nIdxPlayer); m_nNumDefeatPlayer++; }                       // やられたプレイヤー人数を増やす
-    static void SetWorstPlayer(int player) { m_nWhoWorstPlayer = player; }                  // ワーストのプレイヤーを決める
-    static void SetAddNumDeathPlayer(int nIdxPlayer) { SetPlayerRankInThisRound(nIdxPlayer); m_anPlayerRank[m_nNumAllPlayer - m_nNumDeathPlayer - 1] = nIdxPlayer; m_nNumDeathPlayer++; } // 死んだプレイヤー番号を記憶し、カウント
     static void SetQuitPause(void) { m_state = STATE_BUTTLE; m_bStopObjUpdate = false; }    // ポーズ状態をやめる
-    static void SetStock(int nStock) { m_nNumStock = nStock; }
     static void SetUseKeyboard(bool bUseKeyboard) { m_bUseKeyboard = bUseKeyboard; }
-    static void SetPlayerRankInThisRound(int nIdxPlayer)
-    {
-        int nRank = GetNumCurrentDispPlayer() - 1;
-        if (nRank < CPlayer::RANK_1)
-        {
-            nRank = CPlayer::RANK_2;    // 念のため、不正な配列を参照しないようにする
-        }
-        m_anPlayerRankInThisRound[nRank] = nIdxPlayer;
-    }
     static void SetSpPlayer(CPlayer *pPlayer) { m_bCurrentSpShot = true; m_pSpPlayer = pPlayer; }
     static void SetCurrentSpShot(bool bStopUpdate) { m_bCurrentSpShot = bStopUpdate; }
 
@@ -111,22 +99,16 @@ public:
     static STATE GetState(void) { return m_state; }                                 // ゲームの状態を取得
     static CPlayer* GetPlayer(const int nNum) { return m_apPlayer[nNum]; }          // プレイヤーを取得
     static int GetNumAllPlayer(void) { return m_nNumAllPlayer; }                    // 全体プレイヤー人数を取得
-    static int GetNumDefeatPlayer(void) { return m_nNumDefeatPlayer; }              // やられたプレイヤー人数を取得
-    static int GetWhoWorstPlayer(void) { return m_nWhoWorstPlayer; }                // ワーストのプレイヤーを取得
-    static int GetNumDeathPlayer(void) { return m_nNumDeathPlayer; }                // 死んだプレイヤー人数を取得
     static MAP_LIMIT GetMapLimit(void) { return m_mapLimit; }                       // マップ制限を取得
     static TYPE GetType(void) { return m_type; }                                    // ゲーム種類を取得
     static bool GetStopObjUpdate(void) { return m_bStopObjUpdate; }                 // オブジェクトのアップデートを止めるかどうか
-    static int GetNumCurrentDispPlayer(void) { return (m_nNumAllPlayer - m_nNumDeathPlayer - m_nNumDefeatPlayer); } // 現在生きているプレイヤー人数を取得
     static CEffect2D* GetNega(void) { return m_pEffect2d_Nega; }                    // 反転合成のエフェクトを取得
     static CEffect2D* GetPosi(void) { return m_pEffect2d_Posi; }                    // 反転合成を戻すためのエフェクトを取得
     static bool GetUseKeyboard(void) { return m_bUseKeyboard; }                     // キーボードを使うかどうか取得
-    static int GetStock(void) { return m_nNumStock; }                               // ストック数を取得
-    static int GetPlayerRank(int nIdx) { return m_anPlayerRank[nIdx]; }             // プレイヤーの順位を取得
-    static int GetPlayerRankInThisRound(int nIdx) { return m_anPlayerRankInThisRound[nIdx]; }  // 現ラウンドのプレイヤーの順位を取得
     static CPlayer*GetSpPlayer(void) { return m_pSpPlayer; }
     static bool GetCurrentSpShot(void) { return m_bCurrentSpShot; }
     static CText *GetSpText(void) { return m_pSpText; }
+    static CFortress *GetFortress(void) { return m_pFortress; }
 
     /*========================================================
     // 便利な関数
@@ -134,28 +116,31 @@ public:
     static float GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);        // 一番近いプレイヤーへの角度を求める
     static D3DXVECTOR3  GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);   // 一番近いプレイヤーの位置を求める
     static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ
+    static int GetEnemyIdx(void) 
+    { 
+        m_nEnemyIdx++;
+        if (m_nEnemyIdx >= ENEMY_IDX_MAX)
+        {
+            m_nEnemyIdx = 0;
+        }
+        return m_nEnemyIdx;
+    }
 
 private:
 
     static bool m_bStopObjUpdate;                          // オブジェクトのアップデートを止めるかどうか
     static CPlayer *m_apPlayer[MAX_PLAYER];                // プレイヤーのポインタ
-    static int m_anPlayerRank[MAX_PLAYER];                 // プレイヤーのランキング（配列の若い順から1位、2位、、、）
-    static int m_anPlayerRankInThisRound[MAX_PLAYER];      // このラウンド内のプレイヤーのランキング（配列の若い順から1位、2位、、、）
     static CPause *m_pPause;                               // ポーズのポインタ
     static CEffect2D *m_pEffect2d_Nega;                    // 反転合成へのポインタ
     static CEffect2D *m_pEffect2d_Posi;                    // 反転合成を戻すためのポインタ
 
     static TYPE m_type;                                    // ゲーム種類
     static int m_nNumAllPlayer;                            // 全体プレイヤー人数
-    static int m_nNumStock;                                // ストック数
     static bool m_bUseKeyboard;                            // キーボードを使うかどうか
     static int m_anMemoryIdxPlayer[MAX_PLAYER];            // プレイヤーのインデックスを記憶
     static CPlayer::AI_LEVEL m_aMemoryAILevel[MAX_PLAYER]; // AIレベルを記憶
     static STATE m_state;                                  // 状態
     static MAP_LIMIT m_mapLimit;                           // マップ制限
-    static int m_nNumDefeatPlayer;                         // やられたプレイヤー人数
-    static int m_nWhoWorstPlayer;                          // ワーストのプレイヤー
-    static int m_nNumDeathPlayer;                          // 死んだプレイヤー人数
 
     static CPlayer *m_pSpPlayer;                           // ストライクシュートプレイヤーのポインタ
     static bool m_bCurrentSpShot;                          // 現在ストライクシュートを撃っているかどうか
@@ -163,6 +148,9 @@ private:
 
     int m_nCntGameTime;                                    // ゲーム時間のカウンタ
     bool m_bFirestRound;                                   // 最初のラウンドかどうか
+
+    static CFortress *m_pFortress;                         // 移動要塞のポインタ
+    static int m_nEnemyIdx;                                // 敵のインデックス
 };
 
 #endif

@@ -74,10 +74,10 @@ HRESULT CNumber::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);	//この書式は変えないこと
 
                                                 // 頂点座標の設定（右回りで設定する）
-    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), +(m_size.y / 2), 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), +(m_size.y / 2), 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
 
     // rhwの設定（値は1.0で設定する）
     pVtx[0].rhw = 1.0f;
@@ -176,10 +176,10 @@ bool CNumber::Update(void)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);	// この書式は変えないこと
 
                                                 // 頂点座標の設定
-    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), +(m_size.y / 2), 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), +(m_size.y / 2), 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
 
     // 頂点カラーを設定（0.0f～1.0fの値で設定する）
     pVtx[0].col = m_col;

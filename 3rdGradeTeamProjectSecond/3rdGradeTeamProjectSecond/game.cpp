@@ -50,27 +50,24 @@
 bool CGame::m_bStopObjUpdate = false;
 
 CPlayer *CGame::m_apPlayer[] = {};
-int CGame::m_anPlayerRank[] = {};
-int CGame::m_anPlayerRankInThisRound[] = {};
 CPause *CGame::m_pPause = NULL;
 CEffect2D *CGame::m_pEffect2d_Nega = NULL;
 CEffect2D *CGame::m_pEffect2d_Posi = NULL;
 
 CGame::TYPE CGame::m_type = TYPE_TRAINING;
 int CGame::m_nNumAllPlayer = 0;
-int CGame::m_nNumStock = 3; // 初期のストック数は3個
 bool CGame::m_bUseKeyboard = true;
 int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
 CGame::STATE CGame::m_state = STATE_ROUND_START;
 CGame::MAP_LIMIT CGame::m_mapLimit = {};
-int CGame::m_nNumDefeatPlayer = 0;
-int CGame::m_nWhoWorstPlayer = PLAYER_1;
-int CGame::m_nNumDeathPlayer = 0;
 
 CPlayer *CGame::m_pSpPlayer = NULL;
 bool CGame::m_bCurrentSpShot = false;
 CText *CGame::m_pSpText = NULL;
+
+CFortress *CGame::m_pFortress = NULL;
+int CGame::m_nEnemyIdx = 0;
 
 //=============================================================================
 // ゲームのコンストラクタ
@@ -83,8 +80,6 @@ CGame::CGame()
     m_pSpText = NULL;
 
     memset(m_apPlayer, 0, sizeof(m_apPlayer));
-    memset(m_anPlayerRank, 0, sizeof(m_anPlayerRank));
-    memset(m_anPlayerRankInThisRound, 0, sizeof(m_anPlayerRankInThisRound));
     m_pPause = NULL;
     m_pEffect2d_Nega = NULL;
     m_pEffect2d_Posi = NULL;
@@ -98,9 +93,6 @@ CGame::CGame()
     //memset(m_anMemoryIdxPlayer, 0, sizeof(m_anMemoryIdxPlayer));
     //memset(m_aMemoryAILevel, 0, sizeof(m_aMemoryAILevel));
     m_state = STATE_ROUND_START;
-    m_nNumDefeatPlayer = 0;
-    m_nWhoWorstPlayer = PLAYER_1;
-    m_nNumDeathPlayer = 0;
 
     // 仮でマップ制限をつけている
     m_mapLimit.fHeight = GAME_LIMIT_HEIGHT;
@@ -108,6 +100,9 @@ CGame::CGame()
 
     m_nCntGameTime = 0;
     m_bFirestRound = true;
+
+    m_pFortress = NULL;
+    m_nEnemyIdx = 0;
 }
 
 //=============================================================================
@@ -135,7 +130,6 @@ HRESULT CGame::Init(void)
     if (m_type == TYPE_TRAINING)
     {
         m_nNumAllPlayer = 1; // トレーニングは1人固定
-        m_nNumStock = 3;     // トレーニングは3ストック固定
     }
 
     // ステージのモデルを生成
@@ -159,43 +153,43 @@ HRESULT CGame::Init(void)
     case 1:
         fSplitXRate = SPLIT_RATE_UNDER_3;
         player1Pos.x *= -fSplitXRate;
-        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
         break;
     case 2:
         fSplitXRate = SPLIT_RATE_UNDER_3;
         player1Pos.x *= -fSplitXRate;
         player2Pos.x *= fSplitXRate;
-        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
-        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f), m_nNumStock,
+        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
             1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
         break;
     case 3:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2;
+        player1Pos.x *= -fSplitXRate * 2.0f;
         player2Pos.x *= -fSplitXRate;
         player3Pos.x *= fSplitXRate;
-        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
-        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
-        m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f), m_nNumStock,
+        m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
             2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2]);
         break;
     case 4:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2;
+        player1Pos.x *= -fSplitXRate * 2.0f;
         player2Pos.x *= -fSplitXRate;
         player3Pos.x *= fSplitXRate;
-        player4Pos.x *= fSplitXRate * 2;
-        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        player4Pos.x *= fSplitXRate * 2.0f;
+        m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
-        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f), m_nNumStock,
+        m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
-        m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f), m_nNumStock,
+        m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
             2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2]);
-        m_apPlayer[3] = CPlayer::CreateInGame(player4Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f), m_nNumStock,
+        m_apPlayer[3] = CPlayer::CreateInGame(player4Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
             3, m_anMemoryIdxPlayer[3], m_aMemoryAILevel[3]);
         break;
     }
@@ -227,27 +221,33 @@ HRESULT CGame::Init(void)
     CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
     CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
 
-    // 仮の敵配置
-    D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
-    bool bNextParagraph = false;
-    for (int nCnt = 1; nCnt < 26; nCnt++)
-    {
-        if (bNextParagraph)
-        {
-            enemyPos.x = -2000.0f;
-            bNextParagraph = false;
-        }
+    //// 仮の敵配置
+    //D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
+    //bool bNextParagraph = false;
+    //for (int nCnt = 1; nCnt < 26; nCnt++)
+    //{
+    //    if (bNextParagraph)
+    //    {
+    //        enemyPos.x = -2000.0f;
+    //        bNextParagraph = false;
+    //    }
 
-        CEnemy::Create(CEnemy::TYPE_SPIDER, enemyPos);
+    //    CEnemy::Create(CEnemy::TYPE_SPIDER, enemyPos);
 
-        if (nCnt % 5 == 0)
-        {
-            enemyPos.z += 1000.0f;
-            bNextParagraph = true;
-        }
-        
-        enemyPos.x += 1000.0f;
-    }
+    //    if (nCnt % 5 == 0)
+    //    {
+    //        enemyPos.z += 1000.0f;
+    //        bNextParagraph = true;
+    //    }
+    //    
+    //    enemyPos.x += 1000.0f;
+    //}
+    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(-1000.0f, 1000.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(0.0f, 0.0f, 1500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER);
+    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(1000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS);
+    CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
 
     // 仮の道生成
     D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
@@ -266,9 +266,9 @@ HRESULT CGame::Init(void)
         CRoad::Create(roadPos, rot);
     }
 
-    // 仮の移動要塞生成
-    CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
-
+    // 移動要塞生成
+    m_pFortress = CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
+    
     return S_OK;
 }
 
@@ -359,8 +359,8 @@ void CGame::RoundStart(void)
     // リスポーン処理
     for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
     {
-        // 生存していないかつ、ストックが1以上あるなら
-        if (!m_apPlayer[nCntPlayer]->GetDisp() && m_apPlayer[nCntPlayer]->GetStock() > 0)
+        // 生存していないなら
+        if (!m_apPlayer[nCntPlayer]->GetDisp())
         {
             m_apPlayer[nCntPlayer]->Respawn();
         }
@@ -472,31 +472,31 @@ void CGame::InButtle(void)
     switch (m_type)
     {
     case TYPE_ARENA:
-        // アリーナモードで1人残ったら
-        if (m_nNumDefeatPlayer >= m_nNumAllPlayer - m_nNumDeathPlayer - 1)
-        {
-            // その残った人を、1位にする
-            for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
-            {
-                if (m_apPlayer[nCntPlayer]->GetDisp())
-                {
-                    m_anPlayerRank[CPlayer::RANK_1] = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
-                    m_anPlayerRankInThisRound[CPlayer::RANK_1] = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
-                }
-            }
+        //// アリーナモードで1人残ったら
+        //if (m_nNumDefeatPlayer >= m_nNumAllPlayer - m_nNumDeathPlayer - 1)
+        //{
+        //    // その残った人を、1位にする
+        //    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+        //    {
+        //        if (m_apPlayer[nCntPlayer]->GetDisp())
+        //        {
+        //            m_anPlayerRank[CPlayer::RANK_1] = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
+        //            m_anPlayerRankInThisRound[CPlayer::RANK_1] = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
+        //        }
+        //    }
 
-            // 一撃の瞬間へ
-            m_state = STATE_BLOW_MOMENT;
+        //    // 一撃の瞬間へ
+        //    m_state = STATE_BLOW_MOMENT;
 
-            // 更新を止めておく
-            m_bStopObjUpdate = true;
+        //    // 更新を止めておく
+        //    m_bStopObjUpdate = true;
 
-            // 勝者と敗者の注視へ
-            CManager::GetCamera()->SetState(CCamera::STATE_FINISH_EACH);
+        //    // 勝者と敗者の注視へ
+        //    CManager::GetCamera()->SetState(CCamera::STATE_FINISH_EACH);
 
-            // このフレームはポーズをさせないため、関数を抜ける
-            return;
-        }
+        //    // このフレームはポーズをさせないため、関数を抜ける
+        //    return;
+        //}
         break;
     }
 
@@ -645,47 +645,47 @@ void CGame::JudgmentFinish(void)
         // カウンタをリセット
         m_nCntGameTime = 0;
 
-        // 死んだプレイヤーが全体のプレイヤー-1に達したら
-        if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
-        {
-            // リザルトに移行
-            CFade::SetFade(CManager::MODE_RESULT);
-        }
-        else
-        {
-            // やられたプレイヤー人数をリセット
-            m_nNumDefeatPlayer = 0;
+        //// 死んだプレイヤーが全体のプレイヤー-1に達したら
+        //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
+        //{
+        //    // リザルトに移行
+        //    CFade::SetFade(CManager::MODE_RESULT);
+        //}
+        //else
+        //{
+        //    // やられたプレイヤー人数をリセット
+        //    m_nNumDefeatPlayer = 0;
 
-            // もう一度ラウンド開始へ
-            m_state = STATE_ROUND_START;
-        }
+        //    // もう一度ラウンド開始へ
+        //    m_state = STATE_ROUND_START;
+        //}
     }
     else if (m_nCntGameTime == FADE_IN_FINISH_TELOP)
     {
-        // 死んだプレイヤーが全体のプレイヤー-1に達したら
-        if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
-        {
-            // SE
-            CManager::SoundPlay(CSound::LABEL_SE_FINISH);
+        //// 死んだプレイヤーが全体のプレイヤー-1に達したら
+        //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
+        //{
+        //    // SE
+        //    CManager::SoundPlay(CSound::LABEL_SE_FINISH);
 
-            // フィニッシュ
-            CUI *pTelopBg = CUI::GetAccessUI(6);
-            CUI *pTelop = CUI::GetAccessUI(7);
-            if (pTelopBg)
-            {
-                pTelopBg->SetActionReset(0);
-                pTelopBg->SetActionLock(0, false);
-                pTelopBg->SetActionReset(2);
-            }
-            if (pTelop)
-            {
-                pTelop->SetActionReset(0);
-                pTelop->SetActionLock(0, false);
-                pTelop->SetActionReset(1);
-                pTelop->SetActionLock(1, false);
-                pTelop->SetActionReset(2);
-            }
-        }
+        //    // フィニッシュ
+        //    CUI *pTelopBg = CUI::GetAccessUI(6);
+        //    CUI *pTelop = CUI::GetAccessUI(7);
+        //    if (pTelopBg)
+        //    {
+        //        pTelopBg->SetActionReset(0);
+        //        pTelopBg->SetActionLock(0, false);
+        //        pTelopBg->SetActionReset(2);
+        //    }
+        //    if (pTelop)
+        //    {
+        //        pTelop->SetActionReset(0);
+        //        pTelop->SetActionLock(0, false);
+        //        pTelop->SetActionReset(1);
+        //        pTelop->SetActionLock(1, false);
+        //        pTelop->SetActionReset(2);
+        //    }
+        //}
     }
 }
 

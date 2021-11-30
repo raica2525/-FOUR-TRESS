@@ -27,9 +27,7 @@
 //=============================================================================
 CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
 {
-    m_collisionSizeDeffence = D3DXVECTOR2(0.0f, 0.0f);
     m_fSpeed = 0.0f;
-    m_fLife = 0.0f;
 
     m_bSearchRoad = true;
     m_moveAngle = DEFAULT_VECTOR;
@@ -51,21 +49,19 @@ CFortress::~CFortress()
 HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // 初期設定
-    m_collisionSizeDeffence = D3DXVECTOR2(950.0f, 450.0f);
+    SetCollisionSizeDefence(D3DXVECTOR2(950.0f, 450.0f));
     m_fSpeed = 2.5f;
-    m_fLife = 1000.0f;
+    SetUpLife(1000.0f);
+    SetUseKnockBack(false);
     // パーツ数を設定、モデルをバインド、アニメーションをバインド
     CCharacter::SetPartNum(PARTS_MAX);
-    CCharacter::BindParts(PARTS_FIGHTER, 33);
-    CCharacter::BindParts(PARTS_RIGHT_WING_0, 34);
-    CCharacter::BindParts(PARTS_RIGHT_WING_1, 35);
-    CCharacter::BindParts(PARTS_RIGHT_WING_2, 36);
-    CCharacter::BindParts(PARTS_RIGHT_WING_3, 37);
-    CCharacter::BindParts(PARTS_LEFT_WING_0, 38);
-    CCharacter::BindParts(PARTS_LEFT_WING_1, 39);
-    CCharacter::BindParts(PARTS_LEFT_WING_2, 40);
-    CCharacter::BindParts(PARTS_LEFT_WING_3, 41);
-    CCharacter::LoadModelData("./data/ANIMATION/motion_UFO.txt");
+    CCharacter::BindParts(PARTS_BODY, 55);
+    CCharacter::BindParts(PARTS_CANNON_CENTER, 50);
+    CCharacter::BindParts(PARTS_SEAT, 50);
+    CCharacter::BindParts(PARTS_FIRE_POS, 50);
+    CCharacter::SetDontUseAnimation();
+    CCharacter::LoadModelData("./data/ANIMATION/motion_fortress.txt");
+    CCharacter::SetDontUseAnimation();
 
     // キャラクターに反映
     CCharacter::Init(pos, DEFAULT_SCALE);
@@ -88,6 +84,9 @@ void CFortress::Uninit(void)
 //=============================================================================
 void CFortress::Update(void)
 {
+    // 負傷時間があるなら、カウンタを下げる
+    CntDownTakeDamageTime();
+
     // 位置を取得
     D3DXVECTOR3 myPos = GetPos();
     
@@ -107,7 +106,8 @@ void CFortress::Update(void)
     CCharacter::Update();
 
 #ifdef COLLISION_TEST
-    D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSizeDeffence.x, m_collisionSizeDeffence.y, m_collisionSizeDeffence.x);
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+    D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
 }
@@ -206,7 +206,7 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
             if (fDistanceToTargetRoad < SEARCH_NEXT_ROAD_DISTANCE)
             {
                 m_bSearchRoad = true;
-                m_pTargetRoad->SetPast(true);
+                m_pTargetRoad->SetPast(true);   // 道を通り過ぎたことにする
             }
         }
     }

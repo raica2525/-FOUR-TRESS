@@ -342,10 +342,10 @@ void CScene2D::SetVertex(void)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);	// この書式は変えないこと
 
                                                 // 頂点座標の設定
-    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), +(m_size.y / 2), 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2), +(m_size.y / 2), 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3(+(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
 
     //頂点データをアンロックする
     m_pVtxBuff->Unlock();
@@ -367,28 +367,28 @@ void CScene2D::SetRotVertex(float fAngle)
     //==========================================================================================================
     // 画像を、画像の中心を軸に回転させる
     // 左上の頂点
-    vertex1.x = -(m_size.x / 2)*cosf(fAngle)
-        - (-(m_size.y / 2))*sinf(fAngle);
-    vertex1.y = -(m_size.x / 2)*sinf(fAngle)
-        + (-(m_size.y / 2))*cosf(fAngle);
+    vertex1.x = -(m_size.x / 2.0f)*cosf(fAngle)
+        - (-(m_size.y / 2.0f))*sinf(fAngle);
+    vertex1.y = -(m_size.x / 2.0f)*sinf(fAngle)
+        + (-(m_size.y / 2.0f))*cosf(fAngle);
 
     // 右上の頂点
-    vertex2.x = (m_size.x / 2)*cosf(fAngle)
-        - (-(m_size.y / 2))*sinf(fAngle);
-    vertex2.y = (m_size.x / 2)*sinf(fAngle)
-        + (-(m_size.y / 2))*cosf(fAngle);
+    vertex2.x = (m_size.x / 2.0f)*cosf(fAngle)
+        - (-(m_size.y / 2.0f))*sinf(fAngle);
+    vertex2.y = (m_size.x / 2.0f)*sinf(fAngle)
+        + (-(m_size.y / 2.0f))*cosf(fAngle);
 
     // 左下の頂点
-    vertex3.x = -(m_size.x / 2)*cosf(fAngle)
-        - (m_size.y / 2)*sinf(fAngle);
-    vertex3.y = -(m_size.x / 2)*sinf(fAngle)
-        + (m_size.y / 2)*cosf(fAngle);
+    vertex3.x = -(m_size.x / 2.0f)*cosf(fAngle)
+        - (m_size.y / 2.0f)*sinf(fAngle);
+    vertex3.y = -(m_size.x / 2.0f)*sinf(fAngle)
+        + (m_size.y / 2.0f)*cosf(fAngle);
 
     // 右下の頂点
-    vertex4.x = (m_size.x / 2)*cosf(fAngle)
-        - (m_size.y / 2)*sinf(fAngle);
-    vertex4.y = (m_size.x / 2)*sinf(fAngle)
-        + (m_size.y / 2)*cosf(fAngle);
+    vertex4.x = (m_size.x / 2.0f)*cosf(fAngle)
+        - (m_size.y / 2.0f)*sinf(fAngle);
+    vertex4.y = (m_size.x / 2.0f)*sinf(fAngle)
+        + (m_size.y / 2.0f)*cosf(fAngle);
     //==========================================================================================================
 
     // 頂点情報へのポインタ
@@ -419,10 +419,10 @@ void CScene2D::SetVisualVertex(D3DXVECTOR3 posVisual, D3DXVECTOR3 sizeVisual)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);	// この書式は変えないこと
 
                                                 // 頂点座標の設定
-    pVtx[0].pos = posVisual + D3DXVECTOR3(-(sizeVisual.x / 2), -(sizeVisual.y / 2), 0.0f);
-    pVtx[1].pos = posVisual + D3DXVECTOR3(+(sizeVisual.x / 2), -(sizeVisual.y / 2), 0.0f);
-    pVtx[2].pos = posVisual + D3DXVECTOR3(-(sizeVisual.x / 2), +(sizeVisual.y / 2), 0.0f);
-    pVtx[3].pos = posVisual + D3DXVECTOR3(+(sizeVisual.x / 2), +(sizeVisual.y / 2), 0.0f);
+    pVtx[0].pos = posVisual + D3DXVECTOR3(-(sizeVisual.x / 2.0f), -(sizeVisual.y / 2.0f), 0.0f);
+    pVtx[1].pos = posVisual + D3DXVECTOR3(+(sizeVisual.x / 2.0f), -(sizeVisual.y / 2.0f), 0.0f);
+    pVtx[2].pos = posVisual + D3DXVECTOR3(-(sizeVisual.x / 2.0f), +(sizeVisual.y / 2.0f), 0.0f);
+    pVtx[3].pos = posVisual + D3DXVECTOR3(+(sizeVisual.x / 2.0f), +(sizeVisual.y / 2.0f), 0.0f);
 
     //頂点データをアンロックする
     m_pVtxBuff->Unlock();
@@ -871,10 +871,10 @@ void CScene2D::SetLeftToRightGauge(float fMax, float fNow, int nTex)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
     // 頂点座標の設定(左に揃えてから、右に伸ばすイメージ)
-    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2) + (m_size.x * fWeight), -(m_size.y / 2), 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2), +(m_size.y / 2), 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2) + (m_size.x * fWeight), +(m_size.y / 2), 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f) + (m_size.x * fWeight), -(m_size.y / 2.0f), 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3(-(m_size.x / 2.0f) + (m_size.x * fWeight), +(m_size.y / 2.0f), 0.0f);
 
     // テクスチャ座標を更新
     pVtx[0].tex[nTex] = D3DXVECTOR2(0.0f, 0.0f);
@@ -901,10 +901,10 @@ void CScene2D::SetRightToLeftGauge(float fMax, float fNow, int nTex)
     m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
     // 頂点座標の設定(右に揃えてから、左に伸ばすイメージ)
-    pVtx[0].pos = m_pos + D3DXVECTOR3((m_size.x / 2) - (m_size.x * fWeight), -(m_size.y / 2), 0.0f);
-    pVtx[1].pos = m_pos + D3DXVECTOR3((m_size.x / 2), -(m_size.y / 2), 0.0f);
-    pVtx[2].pos = m_pos + D3DXVECTOR3((m_size.x / 2) - (m_size.x * fWeight), +(m_size.y / 2), 0.0f);
-    pVtx[3].pos = m_pos + D3DXVECTOR3((m_size.x / 2), +(m_size.y / 2), 0.0f);
+    pVtx[0].pos = m_pos + D3DXVECTOR3((m_size.x / 2.0f) - (m_size.x * fWeight), -(m_size.y / 2.0f), 0.0f);
+    pVtx[1].pos = m_pos + D3DXVECTOR3((m_size.x / 2.0f), -(m_size.y / 2.0f), 0.0f);
+    pVtx[2].pos = m_pos + D3DXVECTOR3((m_size.x / 2.0f) - (m_size.x * fWeight), +(m_size.y / 2.0f), 0.0f);
+    pVtx[3].pos = m_pos + D3DXVECTOR3((m_size.x / 2.0f), +(m_size.y / 2.0f), 0.0f);
 
     // テクスチャ座標を更新
     pVtx[0].tex[nTex] = D3DXVECTOR2((1.0f - fWeight), 0.0f);

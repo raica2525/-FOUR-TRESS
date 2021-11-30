@@ -41,6 +41,7 @@ public:
     void SetCol(D3DXCOLOR col) { m_col = col; }
     void SetColChangeRate(D3DXCOLOR colChangeRate) { m_colChangeRate = colChangeRate; }
     void SetDisp(bool bDisp) { m_bDisp = bDisp; }
+    void SetDontUse(void) { m_bUse = false; }
 
 private:
     int m_nTexType;                 // 使うテクスチャの種類
@@ -71,5 +72,6 @@ private:
     bool m_bRepeat;                 // テクスチャ情報保持用（updateで毎回取得するのを防ぐ）
 
     bool m_bDisp;                   // 表示するかどうか
+    bool m_bUse;                    // 使用するかどうか
 };
 #endif

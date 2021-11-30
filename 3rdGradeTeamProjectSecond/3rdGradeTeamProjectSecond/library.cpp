@@ -22,10 +22,10 @@ bool IsOutScreen2D(const D3DXVECTOR3 *pPos, const D3DXVECTOR3 *pSize)
     bool bOutScreen = false;    // 画面外かどうか
 
                                 // 画面の端から出ているかどうか
-    if (pPos->x < -(pSize->x / 2) ||
-        pPos->x > SCREEN_WIDTH + pSize->x / 2 ||
-        pPos->y < -(pSize->y / 2) ||
-        pPos->y > SCREEN_HEIGHT + pSize->y / 2)
+    if (pPos->x < -(pSize->x / 2.0f) ||
+        pPos->x > SCREEN_WIDTH + pSize->x / 2.0f ||
+        pPos->y < -(pSize->y / 2.0f) ||
+        pPos->y > SCREEN_HEIGHT + pSize->y / 2.0f)
     {
         // 画面外のフラグをtrueに
         bOutScreen = true;
@@ -44,10 +44,10 @@ bool IsOutGame2D(const D3DXVECTOR3 * pPos, const D3DXVECTOR3 * pSize)
     bool bOutGame = false;    // ゲーム外かどうか
 
                               // 画面の端から2倍のところから出ているかどうか
-    if (pPos->x < -SCREEN_WIDTH - (pSize->x / 2) ||
-        pPos->x >(SCREEN_WIDTH * 2) + pSize->x / 2 ||
-        pPos->y < -SCREEN_HEIGHT - (pSize->y / 2) ||
-        pPos->y >(SCREEN_HEIGHT * 2) + pSize->y / 2)
+    if (pPos->x < -SCREEN_WIDTH - (pSize->x / 2.0f) ||
+        pPos->x >(SCREEN_WIDTH * 2) + pSize->x / 2.0f ||
+        pPos->y < -SCREEN_HEIGHT - (pSize->y / 2.0f) ||
+        pPos->y >(SCREEN_HEIGHT * 2) + pSize->y / 2.0f)
     {
         // ゲーム外のフラグをtrueに
         bOutGame = true;
@@ -66,40 +66,40 @@ bool IsSteyInScreen2D(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pSize)
     bool bScreenEdge = false;    // 画面端かどうか
 
                                  // 画面の左
-    if (pPos->x < pSize->x / 2)
+    if (pPos->x < pSize->x / 2.0f)
     {
         // とどまらせる
-        pPos->x = pSize->x / 2;
+        pPos->x = pSize->x / 2.0f;
 
         // 画面端のフラグをtrueに
         bScreenEdge = true;
     }
 
     // 画面の右
-    if (pPos->x > SCREEN_WIDTH - pSize->x / 2)
+    if (pPos->x > SCREEN_WIDTH - pSize->x / 2.0f)
     {
         // とどまらせる
-        pPos->x = SCREEN_WIDTH - pSize->x / 2;
+        pPos->x = SCREEN_WIDTH - pSize->x / 2.0f;
 
         // 画面端のフラグをtrueに
         bScreenEdge = true;
     }
 
     // 画面の上
-    if (pPos->y < pSize->y / 2)
+    if (pPos->y < pSize->y / 2.0f)
     {
         // とどまらせる
-        pPos->y = pSize->y / 2;
+        pPos->y = pSize->y / 2.0f;
 
         // 画面端のフラグをtrueに
         bScreenEdge = true;
     }
 
     // 画面の下
-    if (pPos->y > SCREEN_HEIGHT - pSize->y / 2)
+    if (pPos->y > SCREEN_HEIGHT - pSize->y / 2.0f)
     {
         // とどまらせる
-        pPos->y = SCREEN_HEIGHT - pSize->y / 2;
+        pPos->y = SCREEN_HEIGHT - pSize->y / 2.0f;
 
         // 画面端のフラグをtrueに
         bScreenEdge = true;
@@ -118,10 +118,10 @@ bool IsCollisionRectangle2D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, c
     bool bHit = false;    // 当たったかどうか
 
                           // 二つのものの当たり判定を計算
-    if (pPos1->x - pSize1->x / 2 <= pPos2->x + pSize2->x / 2 &&
-        pPos1->x + pSize1->x / 2 >= pPos2->x - pSize2->x / 2 &&
-        pPos1->y - pSize1->y / 2 <= pPos2->y + pSize2->y / 2 &&
-        pPos1->y + pSize1->y / 2 >= pPos2->y - pSize2->y / 2)
+    if (pPos1->x - pSize1->x / 2.0f <= pPos2->x + pSize2->x / 2.0f &&
+        pPos1->x + pSize1->x / 2.0f >= pPos2->x - pSize2->x / 2.0f &&
+        pPos1->y - pSize1->y / 2.0f <= pPos2->y + pSize2->y / 2.0f &&
+        pPos1->y + pSize1->y / 2.0f >= pPos2->y - pSize2->y / 2.0f)
     {
         // 当たったフラグをtrueに
         bHit = true;
@@ -139,10 +139,10 @@ bool IsCollisionRectangle3D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, c
     // 変数宣言
     bool bHit = false;  // 当たったかどうか
 
-    D3DXVECTOR3 box1Max = D3DXVECTOR3(pSize1->x / 2, pSize1->y, pSize1->z / 2) + *pPos1;    //ぶつかる側の最大値
-    D3DXVECTOR3 box1Min = D3DXVECTOR3(-pSize1->x / 2, 0.0f, -pSize1->z / 2) + *pPos1;       //ぶつかる側の最小値
-    D3DXVECTOR3 box2Max = D3DXVECTOR3(pSize2->x / 2, pSize2->y, pSize2->z / 2) + *pPos2;    //ぶつかられる側の最大値
-    D3DXVECTOR3 box2Min = D3DXVECTOR3(-pSize2->x / 2, 0.0f, -pSize2->z / 2) + *pPos2;       //ぶつかられる側の最小値
+    D3DXVECTOR3 box1Max = D3DXVECTOR3(pSize1->x / 2.0f, pSize1->y, pSize1->z / 2.0f) + *pPos1;    //ぶつかる側の最大値
+    D3DXVECTOR3 box1Min = D3DXVECTOR3(-pSize1->x / 2.0f, 0.0f, -pSize1->z / 2.0f) + *pPos1;       //ぶつかる側の最小値
+    D3DXVECTOR3 box2Max = D3DXVECTOR3(pSize2->x / 2.0f, pSize2->y, pSize2->z / 2.0f) + *pPos2;    //ぶつかられる側の最大値
+    D3DXVECTOR3 box2Min = D3DXVECTOR3(-pSize2->x / 2.0f, 0.0f, -pSize2->z / 2.0f) + *pPos2;       //ぶつかられる側の最小値
 
                                                                                             // 当たり判定を計算
     if (box1Max.y > box2Min.y&&
@@ -169,10 +169,10 @@ BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 * pPos1, D3DXVECTOR3 * pPos1Old, c
     blockHitInfo.hitSurface = HIT_SURFACE_NONE;
     blockHitInfo.pos = *pPos1;
 
-    D3DXVECTOR3 box1Max = D3DXVECTOR3(pSize1->x / 2, pSize1->y, pSize1->z / 2) + *pPos1;      //ぶつかる側の最大値
-    D3DXVECTOR3 box1Min = D3DXVECTOR3(-pSize1->x / 2, 0.0f, -pSize1->z / 2) + *pPos1;         //ぶつかる側の最小値
-    D3DXVECTOR3 box2Max = D3DXVECTOR3(pSize2->x / 2, pSize2->y, pSize2->z / 2) + *pPos2;      //ぶつかられる側の最大値
-    D3DXVECTOR3 box2Min = D3DXVECTOR3(-pSize2->x / 2, 0.0f, -pSize2->z / 2) + *pPos2;         //ぶつかられる側の最小値
+    D3DXVECTOR3 box1Max = D3DXVECTOR3(pSize1->x / 2.0f, pSize1->y, pSize1->z / 2.0f) + *pPos1;      //ぶつかる側の最大値
+    D3DXVECTOR3 box1Min = D3DXVECTOR3(-pSize1->x / 2.0f, 0.0f, -pSize1->z / 2.0f) + *pPos1;         //ぶつかる側の最小値
+    D3DXVECTOR3 box2Max = D3DXVECTOR3(pSize2->x / 2.0f, pSize2->y, pSize2->z / 2.0f) + *pPos2;      //ぶつかられる側の最大値
+    D3DXVECTOR3 box2Min = D3DXVECTOR3(-pSize2->x / 2.0f, 0.0f, -pSize2->z / 2.0f) + *pPos2;         //ぶつかられる側の最小値
 
                                                                                               // 当たり判定を計算
     if (box1Max.y > box2Min.y&&
@@ -183,7 +183,7 @@ BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 * pPos1, D3DXVECTOR3 * pPos1Old, c
         box1Min.z < box2Max.z)
     {
         if (box1Max.y > box2Min.y&&
-            pPos1Old->y + pSize1->y / 2 < box2Min.y)
+            pPos1Old->y + pSize1->y / 2.0f < box2Min.y)
         {// Y軸の下
             blockHitInfo.hitSurface = HIT_SURFACE_BOTTOM;
             blockHitInfo.pos.y = box2Min.y - pSize1->y;
@@ -195,28 +195,28 @@ BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 * pPos1, D3DXVECTOR3 * pPos1Old, c
             blockHitInfo.pos.y = box2Max.y;
         }
         if (box1Max.x > box2Min.x&&
-            pPos1Old->x + pSize1->x / 2 <= box2Min.x)
+            pPos1Old->x + pSize1->x / 2.0f <= box2Min.x)
         {// X軸の左
             blockHitInfo.hitSurface = HIT_SURFACE_LEFT;
-            blockHitInfo.pos.x = box2Min.x - pSize1->x / 2;
+            blockHitInfo.pos.x = box2Min.x - pSize1->x / 2.0f;
         }
         if (box1Min.x < box2Max.x&&
-            pPos1Old->x - pSize1->x / 2 >= box2Max.x)
+            pPos1Old->x - pSize1->x / 2.0f >= box2Max.x)
         {// X軸の右
             blockHitInfo.hitSurface = HIT_SURFACE_RIGHT;
-            blockHitInfo.pos.x = box2Max.x + pSize1->x / 2;
+            blockHitInfo.pos.x = box2Max.x + pSize1->x / 2.0f;
         }
         if (box1Max.z > box2Min.z&&
-            pPos1Old->z + pSize1->z / 2 <= box2Min.z)
+            pPos1Old->z + pSize1->z / 2.0f <= box2Min.z)
         {// Z軸の手前
             blockHitInfo.hitSurface = HIT_SURFACE_FRONT;
-            blockHitInfo.pos.z = box2Min.z - pSize1->z / 2;
+            blockHitInfo.pos.z = box2Min.z - pSize1->z / 2.0f;
         }
         if (box1Min.z < box2Max.z&&
-            pPos1Old->z - pSize1->z / 2 >= box2Max.z)
+            pPos1Old->z - pSize1->z / 2.0f >= box2Max.z)
         {// Z軸の奥
             blockHitInfo.hitSurface = HIT_SURFACE_BACK;
-            blockHitInfo.pos.z = box2Max.z + pSize1->z / 2;
+            blockHitInfo.pos.z = box2Max.z + pSize1->z / 2.0f;
         }
     }
 
@@ -232,8 +232,8 @@ bool IsCollisionCircle2D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXV
     // 距離を求める
     float fDistance = sqrtf(powf(pos1.x - pos2.x, 2.0f) + powf(pos1.y - pos2.y, 2.0f));
 
-    // 2つの半径を足したものを求める
-    float fSumRadius = (fSize1 + fSize2) / 2;
+    // 二つの半径を足したものを求める
+    float fSumRadius = (fSize1 + fSize2) / 2.0f;
 
     return (fDistance <= fSumRadius);
 }
@@ -247,7 +247,7 @@ bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXV
     // 距離を求める
     float fDistance = sqrtf(powf(pos1.x - pos2.x, 2.0f) + powf(pos1.z - pos2.z, 2.0f));
 
-    // 2つの半径を足したものを求める
+    // 2.0fつの半径を足したものを求める
     float fSumRadius = (fSize1 + fSize2) / 2.0f;
 
     return (fDistance <= fSumRadius);
@@ -378,7 +378,7 @@ bool IsCollisionSide2D(const D3DXVECTOR3 r1, const D3DXVECTOR3 r2, const D3DXVEC
 {
     float t1, t2;
 
-    // 2点r1-r2を通る直線に対し、p1、p2がどの位置にあるか計算する
+    // 二点r1-r2を通る直線に対し、p1、p2がどの位置にあるか計算する
     t1 = (r1.x - r2.x)*(p1.y - r1.y) + (r1.y - r2.y)*(r1.x - p1.x);
     t2 = (r1.x - r2.x)*(p2.y - r1.y) + (r1.y - r2.y)*(r1.x - p2.x);
 
@@ -398,10 +398,10 @@ bool IsCollisionSide2D(const D3DXVECTOR3 r1, const D3DXVECTOR3 r2, const D3DXVEC
 bool IsCollisionToRotationRect(const D3DXVECTOR3 myCenter, const D3DXVECTOR3 mySize, const D3DXVECTOR3 targetPos1, const D3DXVECTOR3 targetPos2, const D3DXVECTOR3 targetPos3, const D3DXVECTOR3 targetPos4)
 {
     // 自分側の四つ角の位置を出す(左上、左下、右下、右上の順)
-    D3DXVECTOR3 myPos1 = myCenter + D3DXVECTOR3(-mySize.x / 2, mySize.y, 0.0f);
-    D3DXVECTOR3 myPos2 = myCenter + D3DXVECTOR3(-mySize.x / 2, 0.0f, 0.0f);
-    D3DXVECTOR3 myPos3 = myCenter + D3DXVECTOR3(mySize.x / 2, 0.0f, 0.0f);
-    D3DXVECTOR3 myPos4 = myCenter + D3DXVECTOR3(mySize.x / 2, mySize.y, 0.0f);
+    D3DXVECTOR3 myPos1 = myCenter + D3DXVECTOR3(-mySize.x / 2.0f, mySize.y, 0.0f);
+    D3DXVECTOR3 myPos2 = myCenter + D3DXVECTOR3(-mySize.x / 2.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 myPos3 = myCenter + D3DXVECTOR3(mySize.x / 2.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 myPos4 = myCenter + D3DXVECTOR3(mySize.x / 2.0f, mySize.y, 0.0f);
 
     // 衝突判定を行う
     // 自分四角辺 [0]-[1] と対象四角辺 [0]-[1]、[1]-[2]、[2]-[3]、[3]-[0]
@@ -480,4 +480,23 @@ D3DXVECTOR3 ConvertScreenPos(const D3DXVECTOR3 convertPos)
         0.0f);
 
     return screenPos;
+}
+
+//===========================================
+// 円の内側かどうかXZ
+// Author : 後藤慎之助
+//===========================================
+bool IsInsideCircleXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos, const float fInsideDistance)
+{
+    // 距離計算
+    float fDistance = sqrtf(
+        powf((myPos.x - targetPos.x), 2) +
+        powf((myPos.z - targetPos.z), 2));
+
+    if (fDistance < fInsideDistance)
+    {
+        return true;
+    }
+
+    return false;
 }

@@ -80,28 +80,28 @@ HRESULT CPause::Init(void)
 
                                                 // 頂点座標の設定（右回りで設定する）
                                                 // 背景
-    pVtx[0].pos = PAUSE_BG_POS + D3DXVECTOR3(-(SCREEN_WIDTH / 2), -(SCREEN_HEIGHT / 2), 0.0f);
-    pVtx[1].pos = PAUSE_BG_POS + D3DXVECTOR3(+(SCREEN_WIDTH / 2), -(SCREEN_HEIGHT / 2), 0.0f);
-    pVtx[2].pos = PAUSE_BG_POS + D3DXVECTOR3(-(SCREEN_WIDTH / 2), +(SCREEN_HEIGHT / 2), 0.0f);
-    pVtx[3].pos = PAUSE_BG_POS + D3DXVECTOR3(+(SCREEN_WIDTH / 2), +(SCREEN_HEIGHT / 2), 0.0f);
+    pVtx[0].pos = PAUSE_BG_POS + D3DXVECTOR3(-(SCREEN_WIDTH / 2.0f), -(SCREEN_HEIGHT / 2.0f), 0.0f);
+    pVtx[1].pos = PAUSE_BG_POS + D3DXVECTOR3(+(SCREEN_WIDTH / 2.0f), -(SCREEN_HEIGHT / 2.0f), 0.0f);
+    pVtx[2].pos = PAUSE_BG_POS + D3DXVECTOR3(-(SCREEN_WIDTH / 2.0f), +(SCREEN_HEIGHT / 2.0f), 0.0f);
+    pVtx[3].pos = PAUSE_BG_POS + D3DXVECTOR3(+(SCREEN_WIDTH / 2.0f), +(SCREEN_HEIGHT / 2.0f), 0.0f);
 
     // コンティニュー
-    pVtx[4].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[5].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[6].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[7].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
+    pVtx[4].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[5].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[6].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[7].pos = PAUSE_CONTINUE_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
 
     // リトライ
-    pVtx[8].pos = PAUSE_RETRY_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[9].pos = PAUSE_RETRY_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[10].pos = PAUSE_RETRY_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[11].pos = PAUSE_RETRY_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
+    pVtx[8].pos = PAUSE_RETRY_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[9].pos = PAUSE_RETRY_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[10].pos = PAUSE_RETRY_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[11].pos = PAUSE_RETRY_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
 
     // やめる
-    pVtx[12].pos = PAUSE_QUIT_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[13].pos = PAUSE_QUIT_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), -(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[14].pos = PAUSE_QUIT_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
-    pVtx[15].pos = PAUSE_QUIT_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2), +(PAUSE_MENU_SIZE_Y / 2), 0.0f);
+    pVtx[12].pos = PAUSE_QUIT_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[13].pos = PAUSE_QUIT_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), -(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[14].pos = PAUSE_QUIT_POS + D3DXVECTOR3(-(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
+    pVtx[15].pos = PAUSE_QUIT_POS + D3DXVECTOR3(+(PAUSE_MENU_SIZE_X / 2.0f), +(PAUSE_MENU_SIZE_Y / 2.0f), 0.0f);
 
     for (int nCnt = 0; nCnt < TYPE_MAX; nCnt++)
     {

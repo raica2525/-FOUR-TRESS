@@ -208,15 +208,16 @@ void CAi::Thinking(void)
                 GetWaitTime();
                 break;
             case CPlayer::AI_LEVEL_3:
-                // 現在のプレイヤー人数によって場合分け
-                if (CGame::GetNumCurrentDispPlayer() > 2)
-                {
-                    GetAvoidTime();
-                }
-                else
-                {
-                    GetAssaultTime();
-                }
+                //// 現在のプレイヤー人数によって場合分け
+                //if (CGame::GetNumCurrentDispPlayer() > 2)
+                //{
+                //    GetAvoidTime();
+                //}
+                //else
+                //{
+                //    GetAssaultTime();
+                //}
+                GetAssaultTime();
                 break;
             }
         }
@@ -247,15 +248,16 @@ void CAi::Thinking(void)
                 GetAvoidTime();
                 break;
             case CPlayer::AI_LEVEL_3:
-                // 現在のプレイヤー人数によって場合分け
-                if (CGame::GetNumCurrentDispPlayer() > 2)
-                {
-                    GetAssaultTime();
-                }
-                else
-                {
-                    GetAvoidTime();
-                }
+                //// 現在のプレイヤー人数によって場合分け
+                //if (CGame::GetNumCurrentDispPlayer() > 2)
+                //{
+                //    GetAssaultTime();
+                //}
+                //else
+                //{
+                //    GetAvoidTime();
+                //}
+                GetAssaultTime();
                 break;
             }
         }

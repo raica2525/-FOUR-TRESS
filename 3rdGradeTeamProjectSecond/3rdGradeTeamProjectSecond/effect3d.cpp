@@ -52,6 +52,7 @@ CEffect3D::CEffect3D(CScene::OBJTYPE objtype) :CBillboard(objtype)
     m_bRepeat = false;
 
     m_bDisp = true;
+    m_bUse = true;
 }
 
 //=============================================================================
@@ -204,8 +205,14 @@ void CEffect3D::Update(void)
     CBillboard::SetRotAngle(fRotAngle);
     CBillboard::Update();
 
-    // 透明、大きさがないなら終了処理
+    // 透明、大きさがないなら、使用フラグをfalseに
     if (m_col.a <= 0.0f || size.x < 0.0f || size.y < 0.0f)
+    {
+        m_bUse = false;
+    }
+
+    // 使用フラグがfalseなら終了処理（影はここから消す）
+    if (!m_bUse)
     {
         Uninit();
     }
@@ -385,7 +392,7 @@ CEffect3D* CEffect3D::Create(const int nType, D3DXVECTOR3 pos, float fScatterAng
     // 飛散角度が既に設定されているエフェクトなら、置き換える
     if (pCreateInfo->nScatterAngle > 0)
     {
-        fScatterAngle = ((float)pCreateInfo->nScatterAngle / EFFECT_FLOATING_POINT) * 2;
+        fScatterAngle = ((float)pCreateInfo->nScatterAngle / EFFECT_FLOATING_POINT) * 2.0f;
     }
 
     // メモリを確保出来たら

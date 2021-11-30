@@ -167,7 +167,7 @@ HRESULT CCustom::Init(void)
     CUI *pStock = CUI::GetAccessUI(SELECT_STOCK);
     if (pStock)
     {
-        pStock->SetTexturePlace(CGame::GetStock() - 1, PLAYER_MAX_STOCK);
+        pStock->SetTexturePlace(3, PLAYER_MAX_STOCK);   // ストックが消えたことによる仮の処理
     }
 
     // BGMを再生
@@ -448,23 +448,23 @@ void CCustom::MoveCursor(void)
 void CCustom::RimitMoveCursor(D3DXVECTOR3& cursorPos)
 {
     // 横
-    if (cursorPos.x - (CURSOR_VISUAL_SIZE_SIDE / 2) < 0.0f)
+    if (cursorPos.x - (CURSOR_VISUAL_SIZE_SIDE / 2.0f) < 0.0f)
     {
-        cursorPos.x = (CURSOR_VISUAL_SIZE_SIDE / 2);
+        cursorPos.x = (CURSOR_VISUAL_SIZE_SIDE / 2.0f);
     }
-    else if (cursorPos.x + (CURSOR_VISUAL_SIZE_SIDE / 2) > SCREEN_WIDTH)
+    else if (cursorPos.x + (CURSOR_VISUAL_SIZE_SIDE / 2.0f) > SCREEN_WIDTH)
     {
-        cursorPos.x = SCREEN_WIDTH - (CURSOR_VISUAL_SIZE_SIDE / 2);
+        cursorPos.x = SCREEN_WIDTH - (CURSOR_VISUAL_SIZE_SIDE / 2.0f);
     }
 
     // 縦
-    if (cursorPos.y + (CURSOR_VISUAL_SIZE_SIDE / 2) > SCREEN_HEIGHT)
+    if (cursorPos.y + (CURSOR_VISUAL_SIZE_SIDE / 2.0f) > SCREEN_HEIGHT)
     {
-        cursorPos.y = SCREEN_HEIGHT - (CURSOR_VISUAL_SIZE_SIDE / 2);
+        cursorPos.y = SCREEN_HEIGHT - (CURSOR_VISUAL_SIZE_SIDE / 2.0f);
     }
-    else if (cursorPos.y - (CURSOR_VISUAL_SIZE_SIDE / 2) < 0.0f)
+    else if (cursorPos.y - (CURSOR_VISUAL_SIZE_SIDE / 2.0f) < 0.0f)
     {
-        cursorPos.y = (CURSOR_VISUAL_SIZE_SIDE / 2);
+        cursorPos.y = (CURSOR_VISUAL_SIZE_SIDE / 2.0f);
     }
 }
 
@@ -765,15 +765,15 @@ void CCustom::ClickSelect(int nNumWho, CUI* pSelectUI, D3DXVECTOR3 cursorPos)
 
             case CLICK_TYPE_STOCK:
             {
-                CManager::SoundPlay(CSound::LABEL_SE_SELECT);
-                // ストックを取得し、加算し、反映
-                int nStock = CGame::GetStock() + 1;
-                if (nStock > PLAYER_MAX_STOCK)
-                {
-                    nStock = 1;
-                }
-                pSelectUI->SetTexturePlace(nStock - 1, PLAYER_MAX_STOCK);
-                CGame::SetStock(nStock);
+                //CManager::SoundPlay(CSound::LABEL_SE_SELECT);
+                //// ストックを取得し、加算し、反映
+                //int nStock = CGame::GetStock() + 1;
+                //if (nStock > PLAYER_MAX_STOCK)
+                //{
+                //    nStock = 1;
+                //}
+                //pSelectUI->SetTexturePlace(nStock - 1, PLAYER_MAX_STOCK);
+                //CGame::SetStock(nStock);
             }
             break;
 

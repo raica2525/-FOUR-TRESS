@@ -108,9 +108,6 @@
     <ClCompile Include="player_custom.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
-    <ClCompile Include="player_sp.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="ui.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
@@ -202,6 +199,12 @@
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
     <ClCompile Include="block.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="player_role.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
   </ItemGroup>
@@ -345,6 +348,9 @@
       <Filter>ヘッダー ファイル\Obj_h</Filter>
     </ClInclude>
     <ClInclude Include="block.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
       <Filter>ヘッダー ファイル\Obj_h</Filter>
     </ClInclude>
   </ItemGroup>

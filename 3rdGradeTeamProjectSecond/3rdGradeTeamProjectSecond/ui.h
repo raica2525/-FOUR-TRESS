@@ -188,9 +188,9 @@ public:
         D3DXVECTOR3 collisionPos = DEFAULT_VECTOR, D3DXVECTOR3 collisionSize = DEFAULT_VECTOR);
     static void Place(SET set);     // 外部ファイルからUIの配置
 
-                                    /*========================================================
-                                    // ゲッター
-                                    //======================================================*/
+    /*========================================================
+    // ゲッター
+    //======================================================*/
     D3DXCOLOR GetCol(void) { return m_col; }
     D3DXVECTOR3 GetCollisionPos(void) { return m_collisionPos; }
     D3DXVECTOR3 GetCollisionSize(void) { return m_collisionSize; }
@@ -228,9 +228,9 @@ public:
     void PlayActionLoopAnim(int nNum);   // ループアニメーションアクション
     void PlayActionEmitEffect(int nNum); // エフェクト発生アクション
 
-                                         /*========================================================
-                                         // アクション用の共通処理
-                                         //======================================================*/
+    /*========================================================
+    // アクション用の共通処理
+    //======================================================*/
     void RimitToValue(const float fChangeRate, float& fCurrentValue, const float fDestValue, bool& bUpdate);
     void RimitRepeatValue(float& fChangeRate, const float fMemoryValue, const float fCurrentValue, const float fDestValue, bool& bUpdate);
 
@@ -249,7 +249,7 @@ private:
     float m_fMemoryRotAngle;                    // 記憶用角度
     D3DXCOLOR m_memoryCol;                      // 記憶用色
 
-                                                //int m_nCntAnimTime;                       // アニメーション用カウンタ（effect3dから持ってきた際に削除、scene2dに元々あるため）
+    //int m_nCntAnimTime;                       // アニメーション用カウンタ（effect3dから持ってきた際に削除、scene2dに元々あるため）
     bool m_bOneRoundAnim;                       // アニメーションが一周したかどうか
     int m_nAnimParagraph;                       // テクスチャ情報保持用（updateで毎回取得するのを防ぐ）
     int m_nAnimPattern;                         // テクスチャ情報保持用（updateで毎回取得するのを防ぐ）

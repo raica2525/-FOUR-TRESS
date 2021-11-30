@@ -105,31 +105,31 @@ void CBillboard::Update(void)
     //==========================================================================================================
     //画像を、画像の中心を軸に回転させる
     //左上の頂点
-    vertex1.x = -(m_size.x / 2)*cosf(m_fRotAngle)
-        - ((m_size.y / 2))*sinf(m_fRotAngle);
-    vertex1.y = -(m_size.x / 2)*sinf(m_fRotAngle)
-        + ((m_size.y / 2))*cosf(m_fRotAngle);
+    vertex1.x = -(m_size.x / 2.0f)*cosf(m_fRotAngle)
+        - ((m_size.y / 2.0f))*sinf(m_fRotAngle);
+    vertex1.y = -(m_size.x / 2.0f)*sinf(m_fRotAngle)
+        + ((m_size.y / 2.0f))*cosf(m_fRotAngle);
     vertex1.z = 0.0f;
 
     //右上の頂点
-    vertex2.x = (m_size.x / 2)*cosf(m_fRotAngle)
+    vertex2.x = (m_size.x / 2.0f)*cosf(m_fRotAngle)
         - ((m_size.y / 2))*sinf(m_fRotAngle);
-    vertex2.y = (m_size.x / 2)*sinf(m_fRotAngle)
-        + ((m_size.y / 2))*cosf(m_fRotAngle);
+    vertex2.y = (m_size.x / 2.0f)*sinf(m_fRotAngle)
+        + ((m_size.y / 2.0f))*cosf(m_fRotAngle);
     vertex2.z = 0.0f;
 
     //左下の頂点
-    vertex3.x = -(m_size.x / 2)*cosf(m_fRotAngle)
-        - (-(m_size.y / 2))*sinf(m_fRotAngle);
-    vertex3.y = -(m_size.x / 2)*sinf(m_fRotAngle)
-        + (-(m_size.y / 2))*cosf(m_fRotAngle);
+    vertex3.x = -(m_size.x / 2.0f)*cosf(m_fRotAngle)
+        - (-(m_size.y / 2.0f))*sinf(m_fRotAngle);
+    vertex3.y = -(m_size.x / 2.0f)*sinf(m_fRotAngle)
+        + (-(m_size.y / 2.0f))*cosf(m_fRotAngle);
     vertex3.z = 0.0f;
 
     //右下の頂点
-    vertex4.x = (m_size.x / 2)*cosf(m_fRotAngle)
-        - (-(m_size.y / 2))*sinf(m_fRotAngle);
-    vertex4.y = (m_size.x / 2)*sinf(m_fRotAngle)
-        + (-(m_size.y / 2))*cosf(m_fRotAngle);
+    vertex4.x = (m_size.x / 2.0f)*cosf(m_fRotAngle)
+        - (-(m_size.y / 2.0f))*sinf(m_fRotAngle);
+    vertex4.y = (m_size.x / 2.0f)*sinf(m_fRotAngle)
+        + (-(m_size.y / 2.0f))*cosf(m_fRotAngle);
     vertex4.z = 0.0f;
     //==========================================================================================================
 

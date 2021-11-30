@@ -21,131 +21,131 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [2] エックスの腰
+# [2] 汎用プレイヤーの腰
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 2
-	NAME = data/MODEL/x/00_bodyD.x
+	NAME = data/MODEL/player1/00_bodyD.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [3] エックスの胸部
+# [3] 汎用プレイヤーの胸部
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 3
-	NAME = data/MODEL/x/01_bodyU.x
+	NAME = data/MODEL/player1/01_bodyU.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [4] エックスの頭
+# [4] 汎用プレイヤーの頭
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 4
-	NAME = data/MODEL/x/02_head.x
+	NAME = data/MODEL/player1/02_head.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [5] エックスの右肩
+# [5] 汎用プレイヤーの右肩
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 5
-	NAME = data/MODEL/x/03_armUR.x
+	NAME = data/MODEL/player1/03_armUR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [6] エックスの右腕
+# [6] 汎用プレイヤーの右腕
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 6
-	NAME = data/MODEL/x/04_armDR.x
+	NAME = data/MODEL/player1/04_armDR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [7] エックスの右手
+# [7] 汎用プレイヤーの右手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 7
-	NAME = data/MODEL/x/05_handR.x
+	NAME = data/MODEL/player1/05_handR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [8] エックスの左肩
+# [8] 汎用プレイヤーの左肩
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 8
-	NAME = data/MODEL/x/06_armUL.x
+	NAME = data/MODEL/player1/06_armUL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [9] エックスの左腕
+# [9] 汎用プレイヤーの左腕
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 9
-	NAME = data/MODEL/x/07_armDL.x
+	NAME = data/MODEL/player1/07_armDL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [10] エックスの左手
+# [10] 汎用プレイヤーの左手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 10
-	NAME = data/MODEL/x/08_handL.x
+	NAME = data/MODEL/player1/08_handL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [11] エックスの右腿
+# [11] 汎用プレイヤーの右腿
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 11
-	NAME = data/MODEL/x/09_legUR.x
+	NAME = data/MODEL/player1/09_legUR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [12] エックスの右脚
+# [12] 汎用プレイヤーの右脚
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 12
-	NAME = data/MODEL/x/10_legDR.x
+	NAME = data/MODEL/player1/10_legDR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [13] エックスの右足
+# [13] 汎用プレイヤーの右足
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 13
-	NAME = data/MODEL/x/11_footR.x
+	NAME = data/MODEL/player1/11_footR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [14] エックスの左腿
+# [14] 汎用プレイヤーの左腿
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 14
-	NAME = data/MODEL/x/12_legUL.x
+	NAME = data/MODEL/player1/12_legUL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [15] エックスの左脚
+# [15] 汎用プレイヤーの左脚
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 15
-	NAME = data/MODEL/x/13_legDL.x
+	NAME = data/MODEL/player1/13_legDL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [16] エックスの左足
+# [16] 汎用プレイヤーの左足
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 16
-	NAME = data/MODEL/x/14_footL.x
+	NAME = data/MODEL/player1/14_footL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [17] エックスの武器(錆びた槍)
+# [17] ウォーリアーの大剣
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 17
-	NAME = data/MODEL/x/15_weapon.x
+	NAME = data/MODEL/player1/15_weapon.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -349,107 +349,107 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [43] イカロスの武器無し左手
+# [43] アーミー体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 43
-	NAME = data/MODEL/icarus/08_handL.x
+	NAME = data/MODEL/army/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [44] イカロスの右腿
+# [44] アーミー右手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 44
-	NAME = data/MODEL/icarus/09_legUR.x
+	NAME = data/MODEL/army/01_handR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [45] イカロスの右脚
+# [45] アーミー左手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 45
-	NAME = data/MODEL/icarus/10_legDR.x
+	NAME = data/MODEL/army/02_handL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [46] イカロスの右足
+# [46] カミカゼ体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 46
-	NAME = data/MODEL/icarus/11_footR.x
+	NAME = data/MODEL/kamikaze/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [47] イカロスの左腿
+# [47] カミカゼ左腕
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 47
-	NAME = data/MODEL/icarus/12_legUL.x
+	NAME = data/MODEL/kamikaze/01_armL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [48] イカロスの左脚
+# [48] カミカゼ右腕
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 48
-	NAME = data/MODEL/icarus/13_legDL.x
+	NAME = data/MODEL/kamikaze/02_armR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [49] イカロスの左足
+# [49] カミカゼ爆弾
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 49
-	NAME = data/MODEL/icarus/14_footL.x
+	NAME = data/MODEL/kamikaze/03_bomb.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [50] イカロスの武器(剣)
+# [50] 箱
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 50
-	NAME = data/MODEL/icarus/15_weapon.x
+	NAME = data/MODEL/kamikaze/04_cube.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [51] イカロスの武器持ち左手
+# [51] キャノン体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 51
-	NAME = data/MODEL/icarus/08_weaponhandL.x
+	NAME = data/MODEL/cannon/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [52] レンジャーの腰
+# [52] 単5電池
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 52
-	NAME = data/MODEL/ranger/00_bodyD.x
+	NAME = data/MODEL/battery05.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [53] レンジャーの胸部
+# [53] 単3電池
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 53
-	NAME = data/MODEL/ranger/01_bodyU.x
+	NAME = data/MODEL/battery03.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [54] レンジャーの頭
+# [54] 単1電池
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 54
-	NAME = data/MODEL/ranger/02_head.x
+	NAME = data/MODEL/battery01.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [55] レンジャーの右肩
+# [55] 移動要塞
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 55
-	NAME = data/MODEL/ranger/03_armUR.x
+	NAME = data/MODEL/fortress/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
