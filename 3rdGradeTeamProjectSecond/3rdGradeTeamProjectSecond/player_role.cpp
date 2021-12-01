@@ -274,11 +274,16 @@ void CPlayer::RideFortress(void)
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)
     {
-        // 当たっているなら
-        if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+        // 誰も座っていないなら
+        if (!pFortress->GetNowWhoRiding())
         {
-            // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
-            m_attackState = ATTACK_STATE_SIT_DOWN;
+            // 当たっているなら
+            if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            {
+                // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
+                m_attackState = ATTACK_STATE_SIT_DOWN;
+                pFortress->SetNowWhoRiding(true);
+            }
         }
     }
 }
@@ -483,5 +488,11 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     if (m_controlInput.bTriggerB)
     {
         ResetAttack();
+
+        // 移動要塞側のフラグを戻す
+        if (pFortress)
+        {
+            pFortress->SetNowWhoRiding(false);
+        }
     }
 }

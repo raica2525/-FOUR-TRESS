@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx9.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="mode.cpp">
+      <Filter>ソースファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="tool.cpp">
+      <Filter>ソースファイル\Mode</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>ソースファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="effectData.cpp">
+      <Filter>ソースファイル\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="effect3d.cpp">
+      <Filter>ソースファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="billboard.cpp">
+      <Filter>ソースファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソースファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソースファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="effecttool.cpp">
+      <Filter>ソースファイル\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="grid.cpp">
+      <Filter>ソースファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse.cpp">
+      <Filter>ソースファイル\Sys</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx9.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="effectData.h">
+      <Filter>ヘッダーファイル\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>ヘッダーファイル\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="mode.h">
+      <Filter>ヘッダーファイル\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>ヘッダーファイル\Mode</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダーファイル\Sys</Filter>
+    </ClInclude>
+    <ClInclude Include="billboard.h">
+      <Filter>ヘッダーファイル\ObjParent</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダーファイル\ObjParent</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダーファイル\ObjParent</Filter>
+    </ClInclude>
+    <ClInclude Include="effect3d.h">
+      <Filter>ヘッダーファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="grid.h">
+      <Filter>ヘッダーファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="effecttool.h">
+      <Filter>ヘッダーファイル\Imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{6ed3d701-75ac-4519-9ea5-d03fabb797d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{471e5273-ff26-42dc-9328-1e06762be1fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\Imgui">
+      <UniqueIdentifier>{e9404c1d-2e3f-42fe-8069-a80fe763b039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\Imgui">
+      <UniqueIdentifier>{38fd3f50-d4f4-464a-bf79-9acfe1d28ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\Data">
+      <UniqueIdentifier>{332dd163-ed8d-49a7-a0f2-0dc4d6b53c45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\Mode">
+      <UniqueIdentifier>{bf0fcbfe-a0fd-4f6f-8111-5d696fec35b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\Obj">
+      <UniqueIdentifier>{9dc872f9-382a-4ee3-b5d3-8f6eb53289a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\Data">
+      <UniqueIdentifier>{2dca3976-01bf-4cc2-99a3-eb7c30c72835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\Mode">
+      <UniqueIdentifier>{9acd0e9b-f920-4e08-aa1e-8407edf8dbec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\Sys">
+      <UniqueIdentifier>{cd8c9c82-971e-4c65-9b5a-86bda991bd0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\ObjParent">
+      <UniqueIdentifier>{b9c9375e-6dfd-44b9-a574-3114587a6c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\Obj">
+      <UniqueIdentifier>{3ee94cea-3900-495d-a046-ca5a5d15d0d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\Sys">
+      <UniqueIdentifier>{cce03bd7-fee5-4000-b626-6f441dbf3e02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\ObjParent">
+      <UniqueIdentifier>{6b04b533-4b25-4e5a-bc83-7b2c42c65d98}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

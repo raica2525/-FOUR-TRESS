@@ -344,8 +344,8 @@ float GetDistance2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
 
     // ãóó£ÇãÅÇﬂÇÈ
     fDistance = sqrtf(
-        powf((myPos.x - targetPos.x), 2) +
-        powf((myPos.y - targetPos.y), 2));
+        powf((myPos.x - targetPos.x), 2.0f) +
+        powf((myPos.y - targetPos.y), 2.0f));
 
     return fDistance;
 }
@@ -490,8 +490,8 @@ bool IsInsideCircleXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos, cons
 {
     // ãóó£åvéZ
     float fDistance = sqrtf(
-        powf((myPos.x - targetPos.x), 2) +
-        powf((myPos.z - targetPos.z), 2));
+        powf((myPos.x - targetPos.x), 2.0f) +
+        powf((myPos.z - targetPos.z), 2.0f));
 
     if (fDistance < fInsideDistance)
     {

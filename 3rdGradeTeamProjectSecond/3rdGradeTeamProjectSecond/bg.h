@@ -33,7 +33,8 @@ public:
     // カラーフェーズ
     typedef enum
     {
-        COLOR_PHASE_R_DOWN = 0,
+        COLOR_PHASE_NONE = 0,
+        COLOR_PHASE_R_DOWN,
         COLOR_PHASE_R_UP,
         COLOR_PHASE_G_DOWN,
         COLOR_PHASE_G_UP,
@@ -47,7 +48,7 @@ public:
     void Uninit(void);
     void Update(void);
     void Draw(void);
-    static CBg *Create(int nModelType, D3DXVECTOR3 pos);
+    static CBg *Create(int nModelType, D3DXVECTOR3 pos, COLOR_PHASE colorPhase = COLOR_PHASE_NONE);
 
 private:
     int m_nModelType;       // 使うモデルの種類

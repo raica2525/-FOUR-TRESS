@@ -18,7 +18,7 @@ CBg::CBg() :CScene3D(CScene::OBJTYPE_BG)
 {
     m_nModelType = 0;
     m_col = DEFAULT_COLOR;
-    m_colPhase = COLOR_PHASE_G_UP;
+    m_colPhase = COLOR_PHASE_NONE;
 }
 
 //=============================================================================
@@ -63,61 +63,57 @@ void CBg::Uninit(void)
 //=============================================================================
 void CBg::Update(void)
 {
-    // ステージの線なら、色を変える
-    if (m_nModelType == 83)
+    const float COLOR_CHANGE_RATE = 0.01f;
+    switch (m_colPhase)
     {
-        const float COLOR_CHANGE_RATE = 0.01f;
-        switch (m_colPhase)
+    case COLOR_PHASE_R_DOWN:
+        m_col.r -= COLOR_CHANGE_RATE;
+        if (m_col.r <= 0.0f)
         {
-        case COLOR_PHASE_R_DOWN:
-            m_col.r -= COLOR_CHANGE_RATE;
-            if (m_col.r <= 0.0f)
-            {
-                m_col.r = 0.0f;
-                m_colPhase = COLOR_PHASE_B_UP;
-            }
-            break;
-        case COLOR_PHASE_G_DOWN:
-            m_col.g -= COLOR_CHANGE_RATE;
-            if (m_col.g <= 0.0f)
-            {
-                m_col.g = 0.0f;
-                m_colPhase = COLOR_PHASE_R_UP;
-            }
-            break;
-        case COLOR_PHASE_B_DOWN:
-            m_col.b -= COLOR_CHANGE_RATE;
-            if (m_col.b <= 0.0f)
-            {
-                m_col.b = 0.0f;
-                m_colPhase = COLOR_PHASE_G_UP;
-            }
-            break;
-        case COLOR_PHASE_R_UP:
-            m_col.r += COLOR_CHANGE_RATE;
-            if (m_col.r >= 1.0f)
-            {
-                m_col.r = 1.0f;
-                m_colPhase = COLOR_PHASE_B_DOWN;
-            }
-            break;
-        case COLOR_PHASE_G_UP:
-            m_col.g += COLOR_CHANGE_RATE;
-            if (m_col.g >= 1.0f)
-            {
-                m_col.g = 1.0f;
-                m_colPhase = COLOR_PHASE_R_DOWN;
-            }
-            break;
-        case COLOR_PHASE_B_UP:
-            m_col.b += COLOR_CHANGE_RATE;
-            if (m_col.b >= 1.0f)
-            {
-                m_col.b = 1.0f;
-                m_colPhase = COLOR_PHASE_G_DOWN;
-            }
-            break;
+            m_col.r = 0.0f;
+            m_colPhase = COLOR_PHASE_B_UP;
         }
+        break;
+    case COLOR_PHASE_G_DOWN:
+        m_col.g -= COLOR_CHANGE_RATE;
+        if (m_col.g <= 0.0f)
+        {
+            m_col.g = 0.0f;
+            m_colPhase = COLOR_PHASE_R_UP;
+        }
+        break;
+    case COLOR_PHASE_B_DOWN:
+        m_col.b -= COLOR_CHANGE_RATE;
+        if (m_col.b <= 0.0f)
+        {
+            m_col.b = 0.0f;
+            m_colPhase = COLOR_PHASE_G_UP;
+        }
+        break;
+    case COLOR_PHASE_R_UP:
+        m_col.r += COLOR_CHANGE_RATE;
+        if (m_col.r >= 1.0f)
+        {
+            m_col.r = 1.0f;
+            m_colPhase = COLOR_PHASE_B_DOWN;
+        }
+        break;
+    case COLOR_PHASE_G_UP:
+        m_col.g += COLOR_CHANGE_RATE;
+        if (m_col.g >= 1.0f)
+        {
+            m_col.g = 1.0f;
+            m_colPhase = COLOR_PHASE_R_DOWN;
+        }
+        break;
+    case COLOR_PHASE_B_UP:
+        m_col.b += COLOR_CHANGE_RATE;
+        if (m_col.b >= 1.0f)
+        {
+            m_col.b = 1.0f;
+            m_colPhase = COLOR_PHASE_G_DOWN;
+        }
+        break;
     }
 }
 
@@ -127,8 +123,8 @@ void CBg::Update(void)
 //=============================================================================
 void CBg::Draw(void)
 {
-    // ステージの線なら、色を反映させる
-    if (m_nModelType == 83)
+    // カラーフェーズがあるなら、色を反映させる
+    if (m_colPhase != COLOR_PHASE_NONE)
     {
         CScene3D::Draw(true, true, m_col);
     }
@@ -142,7 +138,7 @@ void CBg::Draw(void)
 // インスタンス生成処理
 // Author : 後藤慎之助
 //=============================================================================
-CBg * CBg::Create(int nModelType, D3DXVECTOR3 pos)
+CBg * CBg::Create(int nModelType, D3DXVECTOR3 pos, COLOR_PHASE colorPhase)
 {
     // ポインタを用意
     CBg *pBg = NULL;
@@ -152,9 +148,10 @@ CBg * CBg::Create(int nModelType, D3DXVECTOR3 pos)
 
     // 先に種類を結びつけておく
     pBg->m_nModelType = nModelType;
+    pBg->m_colPhase = colorPhase;
 
     // ステージの線の場合、最初の色を変える
-    if (nModelType == 83)
+    if (colorPhase == COLOR_PHASE_G_UP)
     {
         pBg->m_col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
     }

@@ -32,6 +32,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_bSearchRoad = true;
     m_moveAngle = DEFAULT_VECTOR;
     m_pTargetRoad = NULL;
+    m_bNowWhoRiding = false;
 }
 
 //=============================================================================
@@ -171,8 +172,8 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
 
                     // 距離計算
                     float fCurrentDistance = sqrtf(
-                        powf((myPos.x - roadPos.x), 2) +
-                        powf((myPos.z - roadPos.z), 2));
+                        powf((myPos.x - roadPos.x), 2.0f) +
+                        powf((myPos.z - roadPos.z), 2.0f));
 
                     // 距離が今キープしているものより近いなら、移動の向きを更新
                     if (fKeepDistance > fCurrentDistance)
@@ -200,8 +201,8 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
         {
             D3DXVECTOR3 targetRoadPos = m_pTargetRoad->GetPos();
             float fDistanceToTargetRoad = sqrtf(
-                powf((myPos.x - targetRoadPos.x), 2) +
-                powf((myPos.z - targetRoadPos.z), 2));
+                powf((myPos.x - targetRoadPos.x), 2.0f) +
+                powf((myPos.z - targetRoadPos.z), 2.0f));
             const float SEARCH_NEXT_ROAD_DISTANCE = 25.0f;
             if (fDistanceToTargetRoad < SEARCH_NEXT_ROAD_DISTANCE)
             {

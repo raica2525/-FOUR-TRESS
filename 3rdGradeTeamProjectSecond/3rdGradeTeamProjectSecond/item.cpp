@@ -283,8 +283,8 @@ void CItem::MoveTowardPlayer(D3DXVECTOR3 myPos)
 
     // 距離を測る
     float fDistance = sqrtf(
-        powf((targetPos.x - myPos.x), 2) +
-        powf((targetPos.z - myPos.z), 2));
+        powf((targetPos.x - myPos.x), 2.0f) +
+        powf((targetPos.z - myPos.z), 2.0f));
 
     // 高さの差を測る
     float fHeight = fabsf((targetPos.y) - myPos.y);
@@ -336,8 +336,8 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 
                 // 距離計算
                 float fCurrentDistance = sqrtf(
-                    powf((myPos.x - playerPos.x), 2) +
-                    powf((myPos.z - playerPos.z), 2));
+                    powf((myPos.x - playerPos.x), 2.0f) +
+                    powf((myPos.z - playerPos.z), 2.0f));
 
                 // 距離が今キープしているものより近いなら、キープする
                 if (fKeepDistance > fCurrentDistance)

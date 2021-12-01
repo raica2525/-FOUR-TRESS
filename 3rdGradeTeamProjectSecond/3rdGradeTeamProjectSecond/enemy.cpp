@@ -281,8 +281,8 @@ void CEnemy::Appear(void)
 
                     // 距離計算
                     float fCurrentDistance = sqrtf(
-                        powf((myPos.x - playerPos.x), 2) +
-                        powf((myPos.z - playerPos.z), 2));
+                        powf((myPos.x - playerPos.x), 2.0f) +
+                        powf((myPos.z - playerPos.z), 2.0f));
 
                     // 距離が今キープしているものより近いなら、向きを更新
                     if (fKeepDistance > fCurrentDistance)

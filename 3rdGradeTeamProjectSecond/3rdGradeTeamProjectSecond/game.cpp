@@ -134,7 +134,7 @@ HRESULT CGame::Init(void)
 
     // ステージのモデルを生成
     //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
-    CBg::Create(83, DEFAULT_VECTOR);    // ステージ1の線は83
+    CBg::Create(83, DEFAULT_VECTOR, CBg::COLOR_PHASE_G_UP);
 
     // UIを生成
     CUI::Place(CUI::SET_GAME);
@@ -269,6 +269,11 @@ HRESULT CGame::Init(void)
     // 移動要塞生成
     m_pFortress = CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
     
+    // 背景生成
+    CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+    CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+    CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+
     return S_OK;
 }
 
@@ -720,8 +725,8 @@ float CGame::GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
 
             // 距離を求める
             float fSecondDistance = sqrtf(
-                powf((myPos.x - otherPlayerPos.x), 2) +
-                powf((myPos.y - otherPlayerPos.y), 2));
+                powf((myPos.x - otherPlayerPos.x), 2.0f) +
+                powf((myPos.y - otherPlayerPos.y), 2.0f));
 
             // 距離の比較と、対象の位置を更新
             if (fFirstDistance > fSecondDistance)
@@ -768,8 +773,8 @@ D3DXVECTOR3 CGame::GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
 
             // 距離を求める
             float fSecondDistance = sqrtf(
-                powf((myPos.x - otherPlayerPos.x), 2) +
-                powf((myPos.y - otherPlayerPos.y), 2));
+                powf((myPos.x - otherPlayerPos.x), 2.0f) +
+                powf((myPos.y - otherPlayerPos.y), 2.0f));
 
             // 距離の比較と、対象の位置を更新
             if (fFirstDistance > fSecondDistance)

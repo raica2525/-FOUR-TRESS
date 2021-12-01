@@ -453,11 +453,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [56] レンジャーの右腕
+# [56] ブロック1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 56
-	NAME = data/MODEL/ranger/04_armDR.x
+	NAME = data/MODEL/block1.x
 END_MODEL_DATASET
 
 #---------------------------------------

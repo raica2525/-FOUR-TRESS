@@ -1,0 +1,168 @@
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# テクスチャの情報（リロード不可、起動前に前もって追加しておく）
+#------------------------------------------------------------------------------
+#---------------------------------------
+# [0] パーティクル（一粒）
+#---------------------------------------
+TEXTURESET
+	TYPE = 0
+	NAME = data/TEXTURE/000_particle001.png
+END_TEXTURESET
+
+#---------------------------------------
+# [1] アニメーションのある煙
+#---------------------------------------
+TEXTURESET
+	TYPE = 1
+	NAME = data/TEXTURE/001_explosion001.png
+	PATTERN = 8
+	SPEED = 2
+END_TEXTURESET
+
+#---------------------------------------
+# [2] パーティクル（細かめ）
+#---------------------------------------
+TEXTURESET
+	TYPE = 2
+	NAME = data/TEXTURE/002_particle002.png
+END_TEXTURESET
+
+#---------------------------------------
+# [3}] 波のドーナッツ
+#---------------------------------------
+TEXTURESET
+	TYPE = 3
+	NAME = data/TEXTURE/003_Donuts.png
+END_TEXTURESET
+
+#---------------------------------------
+# [4] 衝撃波
+#---------------------------------------
+TEXTURESET
+	TYPE = 4
+	NAME = data/TEXTURE/004_shock.png
+END_TEXTURESET
+
+#---------------------------------------
+# [5] jpgダブルドーナッツ
+#---------------------------------------
+TEXTURESET
+    TYPE = 5
+    NAME = data/TEXTURE/005_DoubleDonuts.jpg
+END_TEXTURESET
+
+#---------------------------------------
+# [6] jpgパーティクル
+#---------------------------------------
+TEXTURESET
+    TYPE = 6
+    NAME = data/TEXTURE/006_particle003.jpg
+END_TEXTURESET
+
+#---------------------------------------
+# [7] 細長パーティクル
+#---------------------------------------
+TEXTURESET
+    TYPE = 7
+    NAME = data/TEXTURE/007_particle004.png
+END_TEXTURESET
+
+#---------------------------------------
+# [8] 細長パーティクル
+#---------------------------------------
+TEXTURESET
+    TYPE = 8
+    NAME = data/TEXTURE/008_particle004.png
+END_TEXTURESET
+
+#---------------------------------------
+# [9] ちょっと欠けた輪
+#---------------------------------------
+TEXTURESET
+    TYPE = 9
+    NAME = data/TEXTURE/009_lackring.png
+END_TEXTURESET
+
+#---------------------------------------
+# [10] 煙
+#---------------------------------------
+TEXTURESET
+    TYPE = 10
+    NAME = data/TEXTURE/010_smoke.png
+END_TEXTURESET
+
+#---------------------------------------
+# [11] 煙
+#---------------------------------------
+TEXTURESET
+    TYPE = 11
+    NAME = data/TEXTURE/011_ring.png
+END_TEXTURESET
+
+#---------------------------------------
+# [12] 線
+#---------------------------------------
+TEXTURESET
+    TYPE = 12
+    NAME = data/TEXTURE/012_line.png
+END_TEXTURESET
+
+#---------------------------------------
+# [13] 煙2
+#---------------------------------------
+TEXTURESET
+    TYPE = 13
+    NAME = data/TEXTURE/013_WhiteSmoke.png
+END_TEXTURESET
+
+#---------------------------------------
+# [14] ビカッ
+#---------------------------------------
+TEXTURESET
+    TYPE = 14
+    NAME = data/TEXTURE/014_suddenfalllight.png
+END_TEXTURESET
+
+#---------------------------------------
+# [15] 鳥の羽
+#---------------------------------------
+TEXTURESET
+    TYPE = 15
+    NAME = data/TEXTURE/015_feather.png
+END_TEXTURESET
+
+#---------------------------------------
+# [16] キラキラ
+#---------------------------------------
+TEXTURESET
+    TYPE = 16
+    NAME = data/TEXTURE/016_kirakira.png
+END_TEXTURESET
+
+#---------------------------------------
+# [17] 飛び散る光
+#---------------------------------------
+TEXTURESET
+    TYPE = 17
+    NAME = data/TEXTURE/017_gamestartline.png
+END_TEXTURESET
+
+#---------------------------------------
+# [18] 紙
+#---------------------------------------
+TEXTURESET
+    TYPE = 18
+    NAME = data/TEXTURE/018_confetti.png
+END_TEXTURESET
+
+#---------------------------------------
+# [19] 光
+#---------------------------------------
+TEXTURESET
+    TYPE = 19
+    NAME = data/TEXTURE/019_strikeshotbg.png
+END_TEXTURESET
+
+END_SCRIPT		# この行は絶対消さないこと！

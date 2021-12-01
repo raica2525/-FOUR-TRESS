@@ -51,19 +51,22 @@ public:
     static CFortress *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot = DEFAULT_VECTOR);        // 生成処理
 
     //=============================
-    // ゲッター
-    //=============================
-
-    //=============================
     // セッター
     //=============================
+    void SetNowWhoRiding(bool bRiding) { m_bNowWhoRiding = bRiding; }
+
+    //=============================
+    // ゲッター
+    //=============================
+    bool GetNowWhoRiding(void) { return m_bNowWhoRiding; }
 
 private:
-    float m_fSpeed;                          // 速さ
+    float m_fSpeed;             // 速さ
 
-    bool m_bSearchRoad;                      // 道を探しているかどうか
-    D3DXVECTOR3 m_moveAngle;                 // 移動の向き
-    CRoad* m_pTargetRoad;                    // 目標の道
+    bool m_bSearchRoad;         // 道を探しているかどうか
+    D3DXVECTOR3 m_moveAngle;    // 移動の向き
+    CRoad* m_pTargetRoad;       // 目標の道
+    bool m_bNowWhoRiding;       // 誰か今乗っているかどうか
 
     //=============================
     // このクラス内でのみ使う処理
