@@ -135,12 +135,9 @@ void CPlayer::AttackGenerator(void)
                     break;
                 }
             }
-            else if (m_controlInput.bTriggerY)
-            {
-                // 必殺技等を使うならここに書く
-            }
             else if (m_controlInput.bTriggerB)
             {
+                // 移動要塞に乗る
                 RideFortress();
             }
         }
@@ -167,12 +164,9 @@ void CPlayer::AttackGenerator(void)
                     break;
                 }
             }
-            else if (m_controlInput.bTriggerY)
-            {
-                // 必殺技等を使うならここに書く
-            }
             else if (m_controlInput.bTriggerB)
             {
+                // 移動要塞に乗る
                 RideFortress();
             }
         }
@@ -484,15 +478,32 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
         SetRot(pFortress->GetRot());
     }
 
-    // 降りる処理
-    if (m_controlInput.bTriggerB)
+    // 電力消費攻撃
+    if (m_controlInput.bTriggerX)
     {
-        ResetAttack();
-
-        // 移動要塞側のフラグを戻す
         if (pFortress)
         {
-            pFortress->SetNowWhoRiding(false);
+            pFortress->SetAttackPhase(true);
+        }
+    }
+    else if (m_controlInput.bTriggerB)
+    {
+        // 攻撃フェーズ中は降りられない
+        if (pFortress)
+        {
+            if (!pFortress->GetAttackPhase())
+            {
+                // 降りる処理（攻撃周りをリセット）
+                ResetAttack();
+
+                // 移動要塞側の座っているフラグを戻す
+                pFortress->SetNowWhoRiding(false);
+            }
+        }
+        else
+        {
+            // 移動要塞がないなら、強制で降りる
+            ResetAttack();
         }
     }
 }

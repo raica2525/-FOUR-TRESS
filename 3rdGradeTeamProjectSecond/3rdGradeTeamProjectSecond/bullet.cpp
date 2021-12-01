@@ -179,9 +179,6 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, floa
 //=============================================================================
 void CBullet::Collision(D3DXVECTOR3 bulletPos)
 {
-    // このフレーム内で当たったかどうか
-    bool bHit = false;
-
     // プレイヤー、移動要塞との当たり判定
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PLAYER))
     {
@@ -200,8 +197,12 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 // 当たっているなら
                 if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
                 {
-                    // プレイヤーにダメージ
-                    bHit = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);;
+                    // ダメージ
+                    bool bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                    if (bDamaged && m_bHitErase)
+                    {
+                        m_nLife = NOT_EXIST;
+                    }
                 }
 
                 // 次のシーンにする
@@ -216,8 +217,12 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
             // 当たっているなら
             if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
             {
-                // 移動要塞にダメージ
-                bHit = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                // ダメージ
+                bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                if (bDamaged && m_bHitErase)
+                {
+                    m_nLife = NOT_EXIST;
+                }
             }
         }
     }
@@ -240,23 +245,17 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 // 当たっているなら
                 if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                 {
-                    // 敵にダメージ
-                    bHit = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                    // ダメージ
+                    bool bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                    if (bDamaged && m_bHitErase)
+                    {
+                        m_nLife = NOT_EXIST;
+                    }
                 }
 
                 // 次のシーンにする
                 pScene = pNextScene;
             }
-        }
-    }
-
-    // 当たったなら
-    if (bHit)
-    {
-        // 消す弾なら、消す
-        if (m_bHitErase)
-        {
-            m_nLife = NOT_EXIST;
         }
     }
 }

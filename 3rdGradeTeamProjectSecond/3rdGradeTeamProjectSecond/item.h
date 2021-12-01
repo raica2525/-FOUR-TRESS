@@ -40,7 +40,7 @@ public:
     void Draw(void);                                    // 描画処理
     static CItem *Create(int type, D3DXVECTOR3 pos, float fEnergy = 0.0f);    // 生成処理
 
-                                                                                                                                                  // アイテムの種類
+    // アイテムの種類                                                                                                                                               // アイテムの種類
     typedef enum
     {
         TYPE_DENTI_5 = 0,   // 単5電池

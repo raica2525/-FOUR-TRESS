@@ -21,6 +21,17 @@
 #include "debug.h"
 #include "bullet.h"
 
+//========================================
+// マクロ定義
+//========================================
+// 必要チャージ量
+#define CHARGE_VALUE_LV1 50.0f
+#define CHARGE_VALUE_LV2 100.0f
+#define CHARGE_VALUE_LV3 150.0f
+
+// 発射までのチャージ時間
+#define CHARGE_FIRE_FRAME 90
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -33,6 +44,10 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_moveAngle = DEFAULT_VECTOR;
     m_pTargetRoad = NULL;
     m_bNowWhoRiding = false;
+
+    m_fChargeValue = 0.0f;
+    m_bAttackPhase = false;
+    m_nCntTime = 0;
 }
 
 //=============================================================================
@@ -100,6 +115,9 @@ void CFortress::Update(void)
     // 位置を設定
     SetPos(myPos);
 
+    // 攻撃フェーズの処理
+    AttackPhase();
+
     // 向きを調整
     RotControl();
 
@@ -126,7 +144,7 @@ void CFortress::Draw(void)
 // 生成処理
 // Author : 後藤慎之助
 //=============================================================================
-CFortress * CFortress::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CFortress *CFortress::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
     // メモリ確保
     CFortress *pFortress = NULL;
@@ -140,6 +158,30 @@ CFortress * CFortress::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
     pFortress->Init(pos, DEFAULT_SCALE);
 
     return pFortress;
+}
+
+//=============================================================================
+// 攻撃リセット処理
+// Author : 後藤慎之助
+//=============================================================================
+void CFortress::ResetAttack(void)
+{
+    m_nCntTime = 0;
+    m_fChargeValue = 0.0f;
+    m_bAttackPhase = false;
+}
+
+//=============================================================================
+// チャージ量加算
+// Author : 後藤慎之助
+//=============================================================================
+void CFortress::AddChargeValue(const float fChargeValue)
+{
+    m_fChargeValue += fChargeValue;
+    if (m_fChargeValue > CHARGE_VALUE_LV3)
+    {
+        m_fChargeValue = CHARGE_VALUE_LV3;
+    }
 }
 
 //=============================================================================
@@ -209,6 +251,52 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
                 m_bSearchRoad = true;
                 m_pTargetRoad->SetPast(true);   // 道を通り過ぎたことにする
             }
+        }
+    }
+}
+
+//=============================================================================
+// 攻撃フェーズの処理
+// Author : 後藤慎之助
+//=============================================================================
+void CFortress::AttackPhase(void)
+{
+    // 攻撃フェーズになっているなら
+    if (m_bAttackPhase)
+    {
+        // もしチャージ量がLv1にすら達していないなら、関数を抜ける
+        if (m_fChargeValue < CHARGE_VALUE_LV1)
+        {
+            // ここでまだチャージされていない旨を表示するUIを生成
+
+            m_bAttackPhase = false;
+            return;
+        }
+
+        // カウンタを加算
+        m_nCntTime++;
+
+        // 一定カウンタで、攻撃
+        if (m_nCntTime >= CHARGE_FIRE_FRAME)
+        {
+            // チャージ状況に応じて変える
+            D3DXVECTOR3 firePos = GetPartsPos(PARTS_FIRE_POS);
+            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+            if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
+            {
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle);
+            }
+            else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
+            {
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle);
+            }
+            else if (m_fChargeValue >= CHARGE_VALUE_LV3)
+            {
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle);
+            }
+
+            // 攻撃状態をリセット
+            ResetAttack();
         }
     }
 }

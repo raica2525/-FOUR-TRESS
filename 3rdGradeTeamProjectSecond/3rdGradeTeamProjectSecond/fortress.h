@@ -50,15 +50,21 @@ public:
     void Draw(void);                                                                    // 描画処理
     static CFortress *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot = DEFAULT_VECTOR);        // 生成処理
 
+    void ResetAttack(void);
+    void AddChargeValue(const float fChargeValue);
+
     //=============================
     // セッター
     //=============================
     void SetNowWhoRiding(bool bRiding) { m_bNowWhoRiding = bRiding; }
+    void SetAttackPhase(bool bAttackPhase) { m_bAttackPhase = bAttackPhase; }
 
     //=============================
     // ゲッター
     //=============================
     bool GetNowWhoRiding(void) { return m_bNowWhoRiding; }
+    bool GetAttackPhase(void) { return m_bAttackPhase; }
+    float GetChargeValue(void) { return m_fChargeValue; }
 
 private:
     float m_fSpeed;             // 速さ
@@ -68,10 +74,15 @@ private:
     CRoad* m_pTargetRoad;       // 目標の道
     bool m_bNowWhoRiding;       // 誰か今乗っているかどうか
 
+    float m_fChargeValue;       // チャージ量
+    bool m_bAttackPhase;        // 攻撃フェーズかどうか
+    int m_nCntTime;             // 時間をカウント
+
     //=============================
     // このクラス内でのみ使う処理
     //=============================
     void SearchRoad(D3DXVECTOR3 myPos);
+    void AttackPhase(void);
 };
 
 #endif

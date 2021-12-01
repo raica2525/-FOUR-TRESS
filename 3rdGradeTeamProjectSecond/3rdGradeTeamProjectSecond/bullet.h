@@ -42,7 +42,10 @@ public:
     // 弾の種類
     typedef enum
     {
-        TYPE_ARMY_ATTACK = 0,           // アーミーの攻撃
+        TYPE_ARMY_ATTACK = 0,   // アーミーの攻撃
+        TYPE_THUNDER,           // 雷
+        TYPE_RAILGUN_LV2,       // 電磁砲lv2
+        TYPE_RAILGUN_LV3,       // 電磁砲lv3
     }TYPE;
 
     // 何に当たるかのフラグ

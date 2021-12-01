@@ -509,7 +509,8 @@ private:
     void AttackGenerator(void);                 // 攻撃発生処理
     void AttackMotion(void);                    // 攻撃モーションの管理
     bool IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, float fPower, int flag = 0);   // 攻撃の当たり判定
-    void RideFortress(void);
+    void RideFortress(void);                    // 移動要塞に乗り込む処理
+    void SendEnergyForFortress(void);   // 移動要塞にエナジーを送る処理
 
     //===================================    
     // 攻撃系

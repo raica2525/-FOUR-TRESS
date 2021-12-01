@@ -33,6 +33,7 @@
 #include "modelEffect.h"
 #include "number_array.h"
 #include "enemy.h"
+#include "fortress.h"
 
 //========================================
 // マクロ定義
@@ -1527,6 +1528,9 @@ void CPlayer::Movement(float fSpeed)
     // 1F前、ジャンプできたかどうかを記録
     m_bGroundOld = m_bGround;
 
+    // 移動要塞にエナジーを送る処理
+    SendEnergyForFortress();
+
 #ifdef COLLISION_TEST
     bool bIsInvincible = GetInvincible();
     if (!bIsInvincible)
@@ -2092,5 +2096,28 @@ void CPlayer::ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     if (!m_pClipingMusk)
     {
         m_pClipingMusk = CClipingMusk::Create(pos, size);
+    }
+}
+
+//=============================================================================
+// 移動要塞にエナジーを送る処理
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::SendEnergyForFortress(void)
+{
+    // 移動要塞が存在するなら
+    CFortress*pFortress = CGame::GetFortress();
+    if (pFortress)
+    {
+        // 当たっているなら
+        if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+        {
+            // エナジーを送る
+            if (m_fCurrentEnergy > 0.0f)
+            {
+                pFortress->AddChargeValue(m_fCurrentEnergy);
+                m_fCurrentEnergy = 0.0f;
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@
 #include "pause.h"
 #include "player.h"
 #include "camera.h"
+#include "fortress.h"
 
 //========================================
 // 静的メンバ変数宣言
@@ -369,6 +370,7 @@ void CRenderer::GameDebugData(void)
 
     // 最初のプレイヤーの能力を取得
     CPlayer* pPlayer = CGame::GetPlayer(0);
+    CFortress* pFortress = CGame::GetFortress();
     //CBall* pBall = CGame::GetBall();
 
     // プレイヤー1がいないなら関数を抜ける
@@ -383,7 +385,12 @@ void CRenderer::GameDebugData(void)
     //    (int)pPlayer->GetSwingCharge(),
     //    (int)pBall->GetSpeed(), pBall->GetWhoShooting(), pBall->GetWhoAbsorbing(), pBall->GetStopTime(),
     //    CGame::GetNumAllPlayer(), CGame::GetNumDefeatPlayer(), CGame::GetWhoWorstPlayer(), CGame::GetNumDeathPlayer());
-    wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
+
+    //// デフォルト
+    //wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
+
+    // デフォルト
+    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue());
 
     // テキスト描画
     m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
