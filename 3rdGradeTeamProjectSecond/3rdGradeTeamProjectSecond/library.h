@@ -54,6 +54,7 @@ bool IsSteyInScreen2D(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pSize);
 bool IsCollisionRectangle2D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
 bool IsCollisionRectangle3D(const D3DXVECTOR3 *pPos1, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
 BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos1Old, const D3DXVECTOR3*pPos2, const D3DXVECTOR3*pSize1, const D3DXVECTOR3*pSize2);
+HIT_SURFACE IsBlockCollisionXZ(D3DXVECTOR3 &pos1, const D3DXVECTOR3 posOld1, const D3DXVECTOR3 pos2, const D3DXVECTOR3 size1, const D3DXVECTOR3 size2);
 bool IsCollisionCircle2D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
 bool IsCollisionCircle3D(const D3DXVECTOR3 pos1, const float fSize1, const D3DXVECTOR3 pos2, const float fSize2);
 bool IsCollisionCylinder(const D3DXVECTOR3 pos1, const D3DXVECTOR2 size1, const D3DXVECTOR3 pos2, const D3DXVECTOR2 size2);

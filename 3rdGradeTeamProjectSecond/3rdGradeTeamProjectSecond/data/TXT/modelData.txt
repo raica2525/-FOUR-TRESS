@@ -461,59 +461,59 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [57] レンジャーの右手
+# [57] ゴールゲート
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 57
-	NAME = data/MODEL/ranger/05_handR.x
+	NAME = data/MODEL/goal.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [58] レンジャーの左肩
+# [58] コマンダーの体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 58
-	NAME = data/MODEL/ranger/06_armUL.x
+	NAME = data/MODEL/commander/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [59] レンジャーの左腕
+# [59] コマンダーの花びら1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 59
-	NAME = data/MODEL/ranger/07_armDL.x
+	NAME = data/MODEL/commander/01_petal01.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [60] レンジャーの左手
+# [60] コマンダーの花びら2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 60
-	NAME = data/MODEL/ranger/08_handL.x
+	NAME = data/MODEL/commander/02_petal02.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [61] レンジャーの右腿
+# [61] コマンダーの花びら3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 61
-	NAME = data/MODEL/ranger/09_legUR.x
+	NAME = data/MODEL/commander/03_petal03.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [62] レンジャーの右脚
+# [62] コマンダーの花びら4
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 62
-	NAME = data/MODEL/ranger/10_legDR.x
+	NAME = data/MODEL/commander/04_petal04.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [63] レンジャーの右足
+# [63] コマンダーの花びら5
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 63
-	NAME = data/MODEL/ranger/11_footR.x
+	NAME = data/MODEL/commander/05_petal05.x
 END_MODEL_DATASET
 
 #---------------------------------------

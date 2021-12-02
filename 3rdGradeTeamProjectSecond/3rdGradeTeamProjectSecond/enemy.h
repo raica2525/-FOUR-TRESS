@@ -48,6 +48,7 @@ public:
         TYPE_ARMY,          // アーミー
         TYPE_KAMIKAZE,      // カミカゼ
         TYPE_CANNON,        // キャノン
+        TYPE_COMMANDER,     // コマンダー
     }TYPE;
 
     //=========================
@@ -132,6 +133,26 @@ public:
         CANNON_PARTS_MAX,
     }CANNON_PARTS;
 
+    //=========================
+    // コマンダー
+    //=========================
+    typedef enum
+    {
+        COMMANDER_ANIM_IDLE = 0,      // 待機
+        COMMANDER_ANIM_SPAWN_ENEMY,   // 敵生成
+    }COMMANDER_ANIMATION;
+    typedef enum
+    {
+        COMMANDER_PARTS_BODY = 0,
+        COMMANDER_PARTS_PETAL1,
+        COMMANDER_PARTS_PETAL2,
+        COMMANDER_PARTS_PETAL3,
+        COMMANDER_PARTS_PETAL4,
+        COMMANDER_PARTS_PETAL5,
+        COMMANDER_PARTS_SPAWN_POS,
+        COMMANDER_PARTS_MAX,
+    }COMMANDER_PARTS;
+
     HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // 初期化処理
     void Uninit(void);                                                                  // 終了処理
     void Update(void);                                                                  // 更新処理
@@ -175,6 +196,7 @@ private:
     // このクラス内でのみ使う処理
     //=============================
     void Appear(void);
+    void SquashedByFortress(D3DXVECTOR3 myPos);
 };
 
 #endif

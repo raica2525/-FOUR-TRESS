@@ -1501,25 +1501,8 @@ void CPlayer::Movement(float fSpeed)
     // 回転制御
     RotControl();
 
-    // マップ制限（いずれブロックを用いた制限に変える）
-    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-    CGame::MAP_LIMIT mapLimit = CGame::GetMapLimit();
-    if (pos.x - collisionSizeDefence.x < -mapLimit.fWidth)
-    {
-        pos.x = -mapLimit.fWidth + collisionSizeDefence.x;
-    }
-    else if (pos.x + collisionSizeDefence.x > mapLimit.fWidth)
-    {
-        pos.x = mapLimit.fWidth - collisionSizeDefence.x;
-    }
-    if (pos.z + collisionSizeDefence.x > mapLimit.fWidth)
-    {
-        pos.z = mapLimit.fWidth - collisionSizeDefence.x;
-    }
-    else if (pos.z - collisionSizeDefence.x < -mapLimit.fWidth)
-    {
-        pos.z = -mapLimit.fWidth + collisionSizeDefence.x;
-    }
+    // マップ制限
+    MapLimit(pos);
 
     // 位置、移動量を反映
     SetPos(pos);
@@ -1535,6 +1518,7 @@ void CPlayer::Movement(float fSpeed)
     bool bIsInvincible = GetInvincible();
     if (!bIsInvincible)
     {
+        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
         D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
         CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
     }

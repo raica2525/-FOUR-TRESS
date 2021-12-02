@@ -223,6 +223,56 @@ BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 * pPos1, D3DXVECTOR3 * pPos1Old, c
     return blockHitInfo;
 }
 
+//===========================================
+// ブロックの当たり判定XZ
+// Author : 後藤慎之助
+//===========================================
+HIT_SURFACE IsBlockCollisionXZ(D3DXVECTOR3 &pos1, const D3DXVECTOR3 posOld1, const D3DXVECTOR3 pos2, const D3DXVECTOR3 size1, const D3DXVECTOR3 size2)
+{
+    // 当たった面の情報
+    HIT_SURFACE hitSurface = HIT_SURFACE_NONE;
+
+    // 当たり判定の情報を整理
+    D3DXVECTOR3 box1Max = D3DXVECTOR3(size1.x / 2.0f, size1.y, size1.z / 2.0f) + pos1;      // ぶつかる側の最大値
+    D3DXVECTOR3 box1Min = D3DXVECTOR3(-size1.x / 2.0f, 0.0f, -size1.z / 2.0f) + pos1;       // ぶつかる側の最小値
+    D3DXVECTOR3 box2Max = D3DXVECTOR3(size2.x / 2.0f, size2.y, size2.z / 2.0f) + pos2;      // ぶつかられる側の最大値
+    D3DXVECTOR3 box2Min = D3DXVECTOR3(-size2.x / 2.0f, 0.0f, -size2.z / 2.0f) + pos2;       // ぶつかられる側の最小値
+
+    // 当たり判定を計算
+    if (box1Max.x > box2Min.x&&
+        box1Min.x < box2Max.x&&
+        box1Max.z > box2Min.z&&
+        box1Min.z < box2Max.z)
+    {
+        if (box1Max.x > box2Min.x&&
+            posOld1.x + size1.x / 2.0f <= box2Min.x)
+        {// X軸の左
+            hitSurface = HIT_SURFACE_LEFT;
+            pos1.x = box2Min.x - size1.x / 2.0f;
+        }
+        if (box1Min.x < box2Max.x&&
+            posOld1.x - size1.x / 2.0f >= box2Max.x)
+        {// X軸の右
+            hitSurface = HIT_SURFACE_RIGHT;
+            pos1.x = box2Max.x + size1.x / 2.0f;
+        }
+        if (box1Max.z > box2Min.z&&
+            posOld1.z + size1.z / 2.0f <= box2Min.z)
+        {// Z軸の手前
+            hitSurface = HIT_SURFACE_FRONT;
+            pos1.z = box2Min.z - size1.z / 2.0f;
+        }
+        if (box1Min.z < box2Max.z&&
+            posOld1.z - size1.z / 2.0f >= box2Max.z)
+        {// Z軸の奥
+            hitSurface = HIT_SURFACE_BACK;
+            pos1.z = box2Max.z + size1.z / 2.0f;
+        }
+    }
+
+    return hitSurface;
+}
+
 //=============================================================================
 // 円の当たり判定2D
 // Author : 後藤慎之助

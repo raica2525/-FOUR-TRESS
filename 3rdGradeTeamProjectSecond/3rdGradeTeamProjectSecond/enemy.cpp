@@ -88,8 +88,6 @@ void CEnemy::Update(void)
     // 負傷時間があるなら、カウンタを下げる
     CntDownTakeDamageTime();
 
-    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-
     // 出現していないなら、出現処理
     if (m_appearState != APPEAR_STATE_EXIST)
     {
@@ -104,6 +102,7 @@ void CEnemy::Update(void)
         }
 
         // 位置、移動量、負傷状態を取得
+        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
         D3DXVECTOR3 myPos = DEFAULT_VECTOR;
         D3DXVECTOR3 move = DEFAULT_VECTOR;
         myPos = GetPos();
@@ -149,20 +148,7 @@ void CEnemy::Update(void)
         }
 
         // 移動要塞に踏みつぶされるかどうか
-        if (m_bSquashedByFortress)
-        {
-            // 移動要塞を取得
-            CFortress *pFortress = CGame::GetFortress();
-            if (pFortress)
-            {
-                // 当たっているなら
-                if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
-                {
-                    // HP0に
-                    TakeDamage(5000.0f,myPos,pFortress->GetPos());
-                }
-            }
-        }
+        SquashedByFortress(myPos);
 
         // 位置、移動量を反映
         SetPos(myPos);
@@ -319,5 +305,28 @@ void CEnemy::Appear(void)
         SetRotY(fAngleToTarget);
         m_appearState = APPEAR_STATE_EXIST;
         SetInvincible(false);
+    }
+}
+
+//=============================================================================
+// 移動要塞に踏みつぶされるかどうかの処理
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
+{
+    if (m_bSquashedByFortress)
+    {
+        // 移動要塞を取得
+        CFortress *pFortress = CGame::GetFortress();
+        if (pFortress)
+        {
+            // 当たっているなら
+            D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+            if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            {
+                // HP0に
+                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos());
+            }
+        }
     }
 }

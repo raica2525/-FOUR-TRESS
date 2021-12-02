@@ -18,6 +18,7 @@
 //================================================
 // マクロ定義
 //================================================
+#define FORTRESS_CRUSH_DAMAGE 5000.0f
 
 //================================================
 // 前方宣言
@@ -78,11 +79,14 @@ private:
     bool m_bAttackPhase;        // 攻撃フェーズかどうか
     int m_nCntTime;             // 時間をカウント
 
+    bool m_bDisp;               // 表示しているかどうか
+
     //=============================
     // このクラス内でのみ使う処理
     //=============================
     void SearchRoad(D3DXVECTOR3 myPos);
     void AttackPhase(void);
+    bool CollisionWall(D3DXVECTOR3 myPos);
 };
 
 #endif

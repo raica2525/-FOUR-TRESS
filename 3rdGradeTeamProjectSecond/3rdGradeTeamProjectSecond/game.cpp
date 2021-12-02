@@ -31,6 +31,7 @@
 #include "enemy.h"
 #include "road.h"
 #include "fortress.h"
+#include "block.h"
 
 //========================================
 // マクロ定義
@@ -248,6 +249,7 @@ HRESULT CGame::Init(void)
     CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
     CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
     CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(2000.0f, 0.0f, 3000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
 
     // 仮の道生成
     D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
@@ -270,9 +272,13 @@ HRESULT CGame::Init(void)
     m_pFortress = CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
     
     // 背景生成
-    CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+    //CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+    //CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+    //CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
+
+    // ブロック生成
+    CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), D3DXVECTOR3(5000.0f, 500.0f, 500.0f), DEFAULT_VECTOR);
+    CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(5000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 5000.0f), MODEL_DIRECT_LEFT);
 
     return S_OK;
 }

@@ -85,6 +85,7 @@ public:
     bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType = 20);   // ダメージを受ける
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
     void ControlMove(float& fMove, bool bGround = true);          // 移動量制御
+    void MapLimit(D3DXVECTOR3 &pos);                              // マップ制限
 
     /*========================================================
     // セッター

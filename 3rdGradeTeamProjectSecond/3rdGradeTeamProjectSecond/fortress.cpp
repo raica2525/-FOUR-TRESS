@@ -20,6 +20,8 @@
 #include "modelEffect.h"
 #include "debug.h"
 #include "bullet.h"
+#include "block.h"
+#include "fade.h"
 
 //========================================
 // マクロ定義
@@ -48,6 +50,8 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_fChargeValue = 0.0f;
     m_bAttackPhase = false;
     m_nCntTime = 0;
+
+    m_bDisp = true;
 }
 
 //=============================================================================
@@ -115,8 +119,12 @@ void CFortress::Update(void)
     // 位置を設定
     SetPos(myPos);
 
-    // 攻撃フェーズの処理
-    AttackPhase();
+    // 壁に当たったかどうか
+    if (!CollisionWall(myPos))
+    {
+        // 攻撃フェーズの処理
+        AttackPhase();
+    }
 
     // 向きを調整
     RotControl();
@@ -129,6 +137,18 @@ void CFortress::Update(void)
     D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
+
+    // ライフがなくなったら
+    if (GetLife() <= 0.0f)
+    {
+        // ここで、ゴールゲートを破壊できているなら、勝ち判定を優先
+
+        // 非表示に
+        m_bDisp = false;
+
+        // 仮にリザルトに移行
+        CFade::SetFade(CManager::MODE_RESULT);
+    }
 }
 
 //=============================================================================
@@ -137,7 +157,10 @@ void CFortress::Update(void)
 //=============================================================================
 void CFortress::Draw(void)
 {
-    CCharacter::Draw();
+    if (m_bDisp)
+    {
+        CCharacter::Draw();
+    }
 }
 
 //=============================================================================
@@ -299,4 +322,42 @@ void CFortress::AttackPhase(void)
             ResetAttack();
         }
     }
+}
+
+//=============================================================================
+// 壁に当たったかどうかの処理
+// Author : 後藤慎之助
+//=============================================================================
+bool CFortress::CollisionWall(D3DXVECTOR3 myPos)
+{
+    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
+    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
+    {
+        // 中身があるなら
+        if (pScene)
+        {
+            // 次のシーンを記憶
+            CScene*pNextScene = pScene->GetNextScene();
+
+            // ブロックにキャスト
+            CBlock *pBlock = (CBlock*)pScene;
+
+            // 当たっているなら
+            D3DXVECTOR2 collisionSize = GetCollisionSizeDefence();
+            D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSize.x, collisionSize.y, collisionSize.x);
+            D3DXVECTOR3 blockPos = pBlock->GetPos();
+            if (IsCollisionRectangle3D(&myPos, &blockPos,
+                &myCubeSize, &pBlock->GetCollisionSize()))
+            {
+                // 致死ダメージ
+                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, blockPos);
+                return true;
+            }
+
+            // 次のシーンにする
+            pScene = pNextScene;
+        }
+    }
+
+    return false;
 }

@@ -91,6 +91,22 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::LoadModelData("./data/ANIMATION/motion_cannon.txt");
         CCharacter::SetDontUseAnimation();
         break;
+    case TYPE_COMMANDER:
+        // 固有の情報
+        SetCollisionSizeDefence(D3DXVECTOR2(500.0f, 200.0f));
+        m_fSpeed = 5.0f;
+        fHP = 500.0f;
+        // パーツ数を設定、モデルをバインド、アニメーションをバインド
+        CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
+        CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);
+        CCharacter::BindParts(COMMANDER_PARTS_PETAL1, 59);
+        CCharacter::BindParts(COMMANDER_PARTS_PETAL2, 60);
+        CCharacter::BindParts(COMMANDER_PARTS_PETAL3, 61);
+        CCharacter::BindParts(COMMANDER_PARTS_PETAL4, 62);
+        CCharacter::BindParts(COMMANDER_PARTS_PETAL5, 63);
+        CCharacter::BindParts(COMMANDER_PARTS_SPAWN_POS, 50);
+        CCharacter::LoadModelData("./data/ANIMATION/motion_commander.txt");
+        break;
     }
 
     // 強さを反映

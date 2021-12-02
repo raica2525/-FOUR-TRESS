@@ -131,7 +131,7 @@ void CTitle::Update(void)
                 || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_Y))
             {
                 // 仮にカスタマイズ画面に移行
-                CFade::SetFade(CManager::MODE_CUSTOM);
+                CFade::SetFade(CManager::MODE_GAME);
 
                 // SE
                 CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);

@@ -50,6 +50,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 5000.0f;
         m_bUseDraw = true;  // 仮
         m_bHitErase = false;// 貫通
+        m_bBreakGoalGate = true;    // ゴールゲートを壊せる
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -62,6 +63,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 10000.0f;
         m_bUseDraw = true;  // 仮
         m_bHitErase = false;// 貫通
+        m_bBreakGoalGate = true;    // ゴールゲートを壊せる
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;

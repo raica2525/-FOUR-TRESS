@@ -83,6 +83,7 @@ private:
 
     bool m_bHitErase;               // 当たった時に消すかどうか
     CEffect3D *m_pEffect3d_Shadow;  // 影へのポインタ
+    bool m_bBreakGoalGate;          // ゴールゲートを壊すかどうか
 
     //=============================
     // 種類ごとの処理

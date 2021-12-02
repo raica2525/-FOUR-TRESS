@@ -65,6 +65,12 @@
 #define DEFAULT_ALPHATEST_BORDER_2D 50
 #define DEFAULT_ALPHATEST_BORDER_3D 100
 
+// 3Dモデルの向き
+#define MODEL_DIRECT_FRONT D3DXVECTOR3(0.0f, 0.0f, 0.0f)
+#define MODEL_DIRECT_LEFT D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f)
+#define MODEL_DIRECT_BACK D3DXVECTOR3(0.0f, D3DXToRadian(180.0f), 0.0f)
+#define MODEL_DIRECT_RIGHT D3DXVECTOR3(0.0f, D3DXToRadian(-90.0f), 0.0f)
+
 // プレイヤーの番号
 #define MAX_PLAYER 4     // つなぐコントローラーの最大数
 #define PLAYER_1 (0)     // プレイヤーのコントローラー番号 (1P)

@@ -21,6 +21,7 @@
 #include "debug.h"
 #include "enemy.h"
 #include "fortress.h"
+#include "block.h"
 
 //=============================================================================
 // コンストラクタ
@@ -44,6 +45,7 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
 
     m_bHitErase = true;
     m_pEffect3d_Shadow = NULL;
+    m_bBreakGoalGate = false;
 }
 
 //=============================================================================
@@ -248,6 +250,40 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                     // ダメージ
                     bool bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
                     if (bDamaged && m_bHitErase)
+                    {
+                        m_nLife = NOT_EXIST;
+                    }
+                }
+
+                // 次のシーンにする
+                pScene = pNextScene;
+            }
+        }
+    }
+
+    // ブロックとの当たり判定
+    if (IS_BITOFF(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK))
+    {
+        CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
+        for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
+        {
+            // 中身があるなら
+            if (pScene)
+            {
+                // 次のシーンを記憶
+                CScene*pNextScene = pScene->GetNextScene();
+
+                // ブロックにキャスト
+                CBlock *pBlock = (CBlock*)pScene;
+
+                // 当たっているなら
+                D3DXVECTOR3 myCubeSize = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
+                if (IsCollisionRectangle3D(&bulletPos, &pBlock->GetPos(),
+                    &myCubeSize, &pBlock->GetCollisionSize()))
+                {
+                    // ダメージ
+                    pBlock->TakeDamage(m_bBreakGoalGate);
+                    if (m_bHitErase)
                     {
                         m_nLife = NOT_EXIST;
                     }
