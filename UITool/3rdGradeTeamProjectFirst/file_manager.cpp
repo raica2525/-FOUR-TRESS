@@ -112,7 +112,7 @@ CFile_Manager::~CFile_Manager()
                      bool bShaveTex = false;                             // 端の1ピクセル削るかどうか
                      bool bDisp = true;                                  // 表示するかどうか
                      int nIndexAction = 0;                               // アクションのインデックス    
-                     CUI::ActionInfo aActionInfo[MAX_ACTION] = {};            // アクションの情報
+                     CUI::ActionInfo aActionInfo[MAX_ACTION] = {};       // アクションの情報
                      memset(aActionInfo, 0, sizeof(aActionInfo));
                      memset(aActionInfo->afParam, 0, sizeof(aActionInfo->afParam));
 
@@ -324,6 +324,9 @@ CFile_Manager::~CFile_Manager()
 
                      // 生成（アクションの情報も結びつける）
                      CUI* pUI = CUI::Create(nTexType, pos, size, nRot, col, bFrontText, bAddBrend, nAlphaTestBorder, bUseZBuffer, collisionPos, collisionSize);
+                     // コンテナに追加
+                     CUI::SetUI(pUI);
+
                      for (int nCnt = 0; nCnt < MAX_ACTION; nCnt++)
                      {
                          pUI->SetActionInfo(nCnt, aActionInfo[nCnt].action, aActionInfo[nCnt].bLock,
@@ -346,9 +349,6 @@ CFile_Manager::~CFile_Manager()
 
                      // 表示するかどうかを設定
                      pUI->SetDisp(bDisp);
-
-                     // コンテナに追加
-                     CUI::SetUI(pUI);
 #ifdef _DEBUG
                      pUI->SetReloadUI();
 #endif
@@ -445,6 +445,7 @@ CFile_Manager::~CFile_Manager()
  //=============================================================================
  void CFile_Manager::ParseFlloat3(std::string line, char del, float x, float y, float z)
  {
+
  }
 
  //=============================================================================

@@ -40,30 +40,30 @@ bool g_bDeviceChange = false;		//池田変更
 //=============================================================================
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-#ifdef _DEBUG
-     //コンソールを作成する
-    AllocConsole();
-    // 標準入出力に割り当てる
-    FILE* fp = NULL;
-    // 現在のコード
-    freopen_s(&fp, "CONOUT$", "w", stdout);
-    printf("%s", "起動中\n");
-#endif // _DEBUG
+//#ifdef _DEBUG
+//     //コンソールを作成する
+//    AllocConsole();
+//    // 標準入出力に割り当てる
+//    FILE* fp = NULL;
+//    // 現在のコード
+//    freopen_s(&fp, "CONOUT$", "w", stdout);
+//    printf("%s", "起動中\n");
+//#endif // _DEBUG
 
     WNDCLASSEX wcex =
     {
         sizeof(WNDCLASSEX),
-        CS_HREDRAW | CS_VREDRAW,
+        CS_HREDRAW | CS_VREDRAW,//ウィンドウのスタイル
         WndProc,
         0,
         0,
         hInstance,
-        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_HAND)),  // アイコン
+        LoadIcon(hInstance, "test.ico"),  // アイコン
         LoadCursor(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
         MAKEINTRESOURCE(IDR_MENU1),                             // メニューの名前
         CLASS_NAME,
-        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_APPLICATION))
+        LoadIcon(hInstance, "test.ico")
     };
 
     RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -92,6 +92,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         NULL,
         hInstance,
         NULL);
+
+
 
     // 乱数の初期化
     srand((unsigned int)time(NULL));

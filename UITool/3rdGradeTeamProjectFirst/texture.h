@@ -31,7 +31,7 @@ public:
     // テクスチャ情報（外部ファイル内で未設定のものが多いので、明示的に初期化する）
     typedef struct
     {
-        LPDIRECT3DTEXTURE9 pTexture;
+        LPDIRECT3DTEXTURE9 pTexture;// テクスチャのポインタ
         int nParagraph;
         int nPattern;
         int nSpeed;

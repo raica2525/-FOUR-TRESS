@@ -73,24 +73,22 @@ void CEdit::Init(HWND hWnd)
     ImGui_ImplWin32_Init(hWnd);
     ImGui_ImplDX9_Init(CManager::GetRenderer()->GetDevice());
 
-    m_hwnd = hWnd;
+    m_hwnd = hWnd;// ウィンドウハンドルを保存
     m_UINum = 0;
 
     static TCHAR strFile[MAX_PATH], strCustom[256] = TEXT("Before files\0*.*\0\0");
 
     // 構造体初期化
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = m_hwnd;
-    ofn.lpstrFilter = TEXT("Text files {*.txt}\0*.txt\0")
-        TEXT("HTML files {*.htm}\0*.htm;*.html\0")
-        TEXT("All files {*.*}\0*.*\0\0");
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFilter = TEXT("テキストファイル {*.txt}\0*.txt\0")
+        TEXT("全てのファイル {*.*}\0*.*\0\0");
     ofn.lpstrCustomFilter = strCustom;
     ofn.nMaxCustFilter = 256;
     ofn.nFilterIndex = 0;
     ofn.lpstrFile = strFile;
     ofn.nMaxFile = MAX_PATH;
-    ofn.Flags = OFN_FILEMUSTEXIST;
-
+    ofn.Flags = OFN_CREATEPROMPT | OFN_NONETWORKBUTTON;
 }
 
 //=============================================================================
@@ -315,7 +313,10 @@ void CEdit::System(void)
     {
         // ファイル選択ダイアログを表示
         std::cout << "参照を選択" << std::endl;
-        GetOpenFileName(&ofn);// ダイアログ表示
+        if (GetOpenFileName(&ofn))// ダイアログ表示
+        {
+            SetActiveWindow(m_hwnd);// ウィンドウのアクティブ状態を戻す
+        }
                               // ファイルの読み込み
                               //CFile_Manager::GetInstance()->CFile_Manager::Read(ofn.lpstrFile);
         std::cout << ofn.lpstrFile << std::endl;
