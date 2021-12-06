@@ -113,8 +113,9 @@ public:
     /*========================================================
     // 便利な関数
     //======================================================*/
-    static float GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);        // 一番近いプレイヤーへの角度を求める
-    static D3DXVECTOR3  GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos);   // 一番近いプレイヤーの位置を求める
+    static float GetAngleToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);    // 一番近いプレイヤーへの角度を求める
+    static D3DXVECTOR3 GetPosToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);// 一番近いプレイヤーの位置を求める
+    static CPlayer *GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
     static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ
     static int GetEnemyIdx(void) 
     { 

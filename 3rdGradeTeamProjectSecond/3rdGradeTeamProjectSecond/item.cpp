@@ -314,49 +314,17 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
     m_fSpeed = 0.0f;
 
     // プレイヤーを探す
-    float fKeepDistance = 99999.9f; // キープしている距離
-    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
-    CPlayer *pKeepPlayer = NULL;
-    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
-    {
-        // 中身があるなら
-        if (pScene)
-        {
-            // 次のシーンを記憶
-            CScene*pNextScene = pScene->GetNextScene();
-
-            // プレイヤーにキャスト
-            CPlayer *pPlayer = (CPlayer*)pScene;
-
-            // 生存しているなら
-            if (pPlayer->GetDisp())
-            {
-                // プレイヤーの位置
-                D3DXVECTOR3 playerPos = pPlayer->GetPos();
-
-                // 距離計算
-                float fCurrentDistance = sqrtf(
-                    powf((myPos.x - playerPos.x), 2.0f) +
-                    powf((myPos.z - playerPos.z), 2.0f));
-
-                // 距離が今キープしているものより近いなら、キープする
-                if (fKeepDistance > fCurrentDistance)
-                {
-                    fKeepDistance = fCurrentDistance;
-                    pKeepPlayer = pPlayer;
-                }
-            }
-
-            // 次のシーンにする
-            pScene = pNextScene;
-        }
-    }
+    float fKeepDistance = 0.0f;
+    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
 
     // キープしている距離が、近いとみなす値なら
     if (fKeepDistance <= ITEM_CLOSE_PLAYER_DISTANCE)
     {
         // プレイヤーを結びつける
-        m_pTargetPlayer = pKeepPlayer;
+        if (pKeepPlayer)
+        {
+            m_pTargetPlayer = pKeepPlayer;
+        }
     }
     else
     {

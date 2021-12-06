@@ -20,15 +20,13 @@
 //================================================
 #define CHARCTER_PARTS_MAX 18    // キャラクターのパーツの最大数
 
-#define TAKE_DAMAGE_BORDER_DAMAGE 500.0f             // 小やられか大やられの境目ダメージ
+#define TAKE_DAMAGE_BORDER_DAMAGE 120.0f             // 小やられか大やられの境目ダメージ（ゴーレムの薙ぎ払い）
 #define TAKE_DAMAGE_SMALL_FRAME 30                   // 負傷小フレーム数
 #define TAKE_DAMAGE_BIG_FRAME 180                    // 負傷大フレーム数
 #define TAKE_DAMAGE_LUCKY_GUARD_FRAME 40             // 負傷ラッキーガードフレーム数
 #define KNOCK_BACK_SMALL 10.0f                       // ノックバック量（負傷小）
 #define KNOCK_BACK_BIG 22.5f                         // ノックバック量（負傷大）
-#define KNOCK_BACK_LUCKY_GUARD 25.0f                 // ノックバック量（ラッキーガード）
-#define KNOCK_BACK_DEATH_X 25.0f                     // ノックバック量（死亡時X）
-#define KNOCK_BACK_DEATH_Y 12.5f                     // ノックバック量（死亡時Y）
+#define KNOCK_BACK_DEATH 30.0f                       // ノックバック量（死亡時）
 #define KNOCK_BACK_STOP_BORDER 7.5f                  // ノックバックが止まったとみなす境界値
 
 //================================================
@@ -118,9 +116,10 @@ public:
     void SetMove(D3DXVECTOR3 move) { m_move = move; }
     void SetTakeDamageTime(int nTime) { m_nCntTakeDamageTime = nTime; }
     void SetDamageState(DAMAGE_STATE damageState) { m_damageState = damageState; }
-    void SetResetAttack(bool bReset) { m_bIsAttackReset = bReset; }
+    void SetResetAttackByDamage(bool bReset) { m_bResetAttackByDamage = bReset; }
     void SetMoveOld(D3DXVECTOR3 moveOld) { m_moveOld = moveOld; }
     void SetUseKnockBack(bool bUse) { m_bUseKnockBack = bUse; }
+    void SetTurnSpeed(float fTurnSpeed) { m_fTurnSpeed = D3DXToRadian(fTurnSpeed); }
 
     void BindParts(int nPartsIndex, int nPartsType) { m_aPartsType[nPartsIndex] = nPartsType; }
 
@@ -150,7 +149,7 @@ public:
     }
     DAMAGE_STATE GetDamageState(void) { return m_damageState; }
     D3DXVECTOR3 GetMove(void) { return m_move; }
-    bool GetResetAttack(void) { return m_bIsAttackReset; }
+    bool GetResetAttackByDamage(void) { return m_bResetAttackByDamage; }
     D3DXVECTOR3 GetMoveOld(void) { return m_moveOld; }
     int GetTakeDamageTime(void) { return m_nCntTakeDamageTime; }
 
@@ -193,11 +192,12 @@ private:
     D3DXVECTOR3 m_move;                      // 移動量
     D3DXVECTOR3 m_moveOld;                   // 1F前の移動量
     bool m_bUseControllerEffectByTakeDamage; // コントローラーの振動を、ダメージを受けた時に使うか
+    float m_fTurnSpeed;                      // 振り向き速度
 
     //==============================
     // 攻撃周り
     //==============================
-    bool m_bIsAttackReset;                   // 攻撃をリセットするかどうか
+    bool m_bResetAttackByDamage;             // ダメージによって攻撃をリセットするかどうか
 
     //==============================
     // 防御周り

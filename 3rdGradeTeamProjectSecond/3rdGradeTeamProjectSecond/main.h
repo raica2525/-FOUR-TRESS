@@ -64,6 +64,7 @@
 #define DEFAULT_NOR (D3DXVECTOR3(0.0f,1.0f,0.0f))
 #define DEFAULT_ALPHATEST_BORDER_2D 50
 #define DEFAULT_ALPHATEST_BORDER_3D 100
+#define DEFAULT_TURN_SPEED D3DXToRadian(10.0f)
 
 // 3Dモデルの向き
 #define MODEL_DIRECT_FRONT D3DXVECTOR3(0.0f, 0.0f, 0.0f)
@@ -96,6 +97,7 @@
 
 // 0で初期化したくないとき用
 #define NOT_EXIST -1
+#define NOT_EXIST_F -1.0f
 
 // テキスト周り
 #define TEXT_EXIST_COLOR D3DCOLOR_RGBA(255, 255, 255, 255)

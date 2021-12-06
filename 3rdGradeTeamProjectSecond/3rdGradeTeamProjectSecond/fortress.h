@@ -59,6 +59,7 @@ public:
     //=============================
     void SetNowWhoRiding(bool bRiding) { m_bNowWhoRiding = bRiding; }
     void SetAttackPhase(bool bAttackPhase) { m_bAttackPhase = bAttackPhase; }
+    void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 
     //=============================
     // ÉQÉbÉ^Å[

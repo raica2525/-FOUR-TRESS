@@ -24,12 +24,11 @@
 class CScene
 {
 public:
-    // オブジェクトの種類(描画順)
+    // オブジェクトの種類(描画順)(透明オブジェクトは、なるべく後に描画する)
     typedef enum
     {
         OBJTYPE_NONE = 0,           // なし
         OBJTYPE_NONE_DRAW,          // 描画しない
-        OBJTYPE_BG,                 // 背景
         OBJTYPE_EFFECT3D_Z_NONE,    // エフェクト3D（Zバッファを無視）
         OBJTYPE_ROAD,               // 道
         OBJTYPE_FORTRESS,           // 移動要塞
@@ -40,6 +39,7 @@ public:
         OBJTYPE_MODEL_EFFECT,       // モデルエフェクト
         OBJTYPE_BLOCK,              // ブロック
         OBJTYPE_EFFECT3D,           // エフェクト3D
+        OBJTYPE_BG,                 // 背景
         OBJTYPE_EFFECT2D_BACK_UI,   // エフェクト2D（UIより後ろ）
         OBJTYPE_UI_BACK_TEXT,       // UI（テキストより後ろ）
         OBJTYPE_TEXT,               // テキスト

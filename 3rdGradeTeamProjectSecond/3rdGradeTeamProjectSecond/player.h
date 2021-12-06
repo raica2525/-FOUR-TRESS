@@ -52,7 +52,6 @@
 #define PLAYER_SP_GAUGE_MAX_EFFECT_INTERVAL 30              // SPゲージエフェクトのインターバル
 #define PLAYER_VICTORY_VOICE_FRAME 60                       // 勝利ボイスフレーム
 #define PLAYER_SP_WHOLE_FRAME 120                           // 必殺技全体フレーム
-#define PLAYER_TURN_SPEED D3DXToRadian(10.0f)                // 振り向きスピード
 
 // プレイヤーの防御周り
 #define PLAYER_MAX_STOCK 6                                  // ストックの最大数
@@ -353,6 +352,7 @@ public:
         ROLE_HUNTER,     // ハンター
         ROLE_CARRIER,    // キャリアー
         ROLE_TANK,       // タンク
+        ROLE_HEALER,     // ヒーラー
         ROLE_MAX
     }ROLE;
 
@@ -380,7 +380,6 @@ public:
     void LeaveWepAfterimage(void);                                                      // 武器の残像を残す
     void DamageUpdate(D3DXVECTOR3 pos, D3DXVECTOR3& move);                              // 負傷更新処理
     void DamageMotion(void);                                                            // 負傷モーションの管理
-    void GainSpGauge(void);                                                             // 必殺ゲージ上昇
 
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nNumTexture);					// クリッピングマスク適用 //池田追加
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size);									// テクスチャなしクリッピングマスク適用 //池田追加
@@ -496,7 +495,6 @@ private:
     // Secondで追加したメンバ変数
     //===================================
     int m_role;                 // 役割
-    float m_fNextGainSpGauge;   // 次に得る必殺ゲージの量
     ATTACK_STATE m_attackState; // 攻撃状態
     int m_nCntStopTime;         // 硬直時間のカウンタ
     int m_nCntAttackTime;       // 攻撃時間をカウント
@@ -518,16 +516,14 @@ private:
     void AtkWarriorGround1(D3DXVECTOR3& playerPos);
     void AtkWarriorGround2(D3DXVECTOR3& playerPos);
     void AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
-    void AtkWarriorSp(D3DXVECTOR3& playerPos);
     void AtkHunterGround(D3DXVECTOR3& playerPos);
     void AtkHunterSky(D3DXVECTOR3& playerPos);
-    void AtkHunterSp(D3DXVECTOR3& playerPos);
     void AtkCarrierGround(D3DXVECTOR3& playerPos);
     void AtkCarrierSky(D3DXVECTOR3& playerPos);
-    void AtkCarrierSp(D3DXVECTOR3& playerPos);
     void AtkTankGround(D3DXVECTOR3& playerPos);
     void AtkTankSky(D3DXVECTOR3& playerPos);
-    void AtkTankSp(D3DXVECTOR3& playerPos);
+    void AtkHealerGround(D3DXVECTOR3& playerPos);
+    void AtkHealerSky(D3DXVECTOR3& playerPos);
     void AtkSitDown(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
 };
 

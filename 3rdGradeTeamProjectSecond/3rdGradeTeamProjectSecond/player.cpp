@@ -48,6 +48,12 @@
 #define MAX_SPD 2700.0f
 #define MAX_WEI 4100.0f
 
+#define WARRIOR_LIFE 500.0f
+#define HUNTER_LIFE 290.0f
+#define CARRIER_LIFE 370.0f
+#define TANK_LIFE 850.0f
+#define HEALER_LIFE 350.0f
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -136,7 +142,6 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     // Secondで追加したメンバ変数
     //===================================
     m_role = ROLE_WARRIOR;
-    m_fNextGainSpGauge = 0.0f;
     m_attackState = ATTACK_STATE_NONE;
     m_nCntStopTime = 0;
     m_nCntAttackTime = 0;
@@ -379,7 +384,26 @@ void CPlayer::LoadCustom(void)
     }
 
     // 体力を決定
-    SetUpLife(m_fDef);
+    float fLife = 1.0f;
+    switch (m_role)
+    {
+    case ROLE_WARRIOR:
+        fLife = WARRIOR_LIFE;
+        break;
+    case ROLE_HUNTER:
+        fLife = HUNTER_LIFE;
+        break;
+    case ROLE_CARRIER:
+        fLife = CARRIER_LIFE;
+        break;
+    case ROLE_TANK:
+        fLife = TANK_LIFE;
+        break;
+    case ROLE_HEALER:
+        fLife = HEALER_LIFE;
+        break;
+    }
+    SetUpLife(fLife);
 
     // キャラクターに反映
     CCharacter::SetCollisionSizeDefence(collisionSizeDefence);
@@ -569,11 +593,11 @@ void CPlayer::Update(void)
     // 1F前の腰の位置を記憶
     m_hipPosOld = GetPartsPos(PARTS_HIP);
 
-    // 攻撃をリセットするフラグが立っているなら
-    if (GetResetAttack())
+    // ダメージによって攻撃をリセットするフラグが立っているなら
+    if (GetResetAttackByDamage())
     {
         ResetAttack();
-        SetResetAttack(false);
+        SetResetAttackByDamage(false);
     }
 
     // 負傷していないor起き上がり中は、無敵
@@ -1954,22 +1978,6 @@ void CPlayer::DamageMotion(void)
     case DAMAGE_STATE_BLOWN:
         GetAnimation()->SetAnimation(ANIM_BLOWN);
         break;
-    }
-}
-
-//=============================================================================
-// 必殺ゲージ上昇処理
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::GainSpGauge(void)
-{
-    // 現在のゲージに足す
-    m_fSpGaugeCurrent += m_fNextGainSpGauge;
-
-    // 最大値を上回らないようにする
-    if (m_fSpGaugeCurrent > m_fSpGaugeMax)
-    {
-        m_fSpGaugeCurrent = m_fSpGaugeMax;
     }
 }
 

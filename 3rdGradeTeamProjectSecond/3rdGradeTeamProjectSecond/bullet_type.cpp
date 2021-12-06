@@ -36,7 +36,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         m_nLife = 120;
-        m_fDamage = 500.0f;
+        m_fDamage = 50.0f;
         m_bUseDraw = true;  // 仮
         // モデルをバインド
         BindModelData(32);  // 仮にボール

@@ -517,43 +517,43 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [64] レンジャーの左腿
+# [64] ブロック1
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 64
-	NAME = data/MODEL/ranger/12_legUL.x
+	NAME = data/MODEL/block1.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [65] レンジャーの左脚
+# [65] ブロック2
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 65
-	NAME = data/MODEL/ranger/13_legDL.x
+	NAME = data/MODEL/block2.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [66] レンジャーの左足
+# [66] ブロック3
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 66
-	NAME = data/MODEL/ranger/14_footL.x
+	NAME = data/MODEL/block3.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [67] 錆騎士の腰
+# [67] ブロック4
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 67
-	NAME = data/MODEL/knight/00_bodyD.x
+	NAME = data/MODEL/block4.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [68] 錆騎士の胸部
+# [68] ブロック5
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 68
-	NAME = data/MODEL/knight/01_bodyU.x
+	NAME = data/MODEL/block5.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -677,11 +677,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [84] 錆騎士の武器無し左手
+# [84] 仮の板
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 84
-	NAME = data/MODEL/knight/08_handL.x
+	NAME = data/MODEL/stage_floor.x
 END_MODEL_DATASET
 
 #---------------------------------------

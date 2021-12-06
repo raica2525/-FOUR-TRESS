@@ -19,54 +19,33 @@
 // マクロ定義
 //========================================
 //==========================
-// ウォーリアー地上1
+// ウォーリアー地上
 //==========================
 // 基本ダメージ
-#define WARRIOR_GROUND1_BASE_DAMAGE 100.0f
-// 得られる必殺ゲージ量
-#define WARRIOR_GROUND1_GAIN_SP_GAUGE 100.0f
+#define WARRIOR_GROUND_BASE_DAMAGE 100.0f
 // 当たり判定周り
-#define WARRIOR_GROUND1_EMIT_DISTANCE 500.0f
-#define WARRIOR_GROUND1_RADIUS 350.0f
-#define WARRIOR_GROUND1_HEIGHT 150.0f
+#define WARRIOR_GROUND_EMIT_DISTANCE 350.0f
+#define WARRIOR_GROUND_RADIUS 450.0f
+#define WARRIOR_GROUND_HEIGHT 200.0f
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define WARRIOR_GROUND1_WHOLE_FRAME 30
-#define WARRIOR_GROUND1_START_FRAME (WARRIOR_GROUND1_WHOLE_FRAME - 5)
-#define WARRIOR_GROUND1_END_FRAME (WARRIOR_GROUND1_WHOLE_FRAME - 15)
+#define WARRIOR_GROUND_WHOLE_FRAME 30
+#define WARRIOR_GROUND_START_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 10)
+#define WARRIOR_GROUND_END_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 20)
 // 硬直フレーム
-#define WARRIOR_GROUND1_STOP_FRAME 3
+#define WARRIOR_GROUND_STOP_FRAME 5
 // その他
-#define WARRIOR_GROUND1_DUSH_SPEED 20.0f
-#define WARRIOR_GROUND1_COMBO_FRAME (WARRIOR_GROUND1_WHOLE_FRAME - 10)
-
-//==========================
-// ウォーリアー地上2
-//==========================
-// 基本ダメージ
-#define WARRIOR_GROUND2_BASE_DAMAGE 1000.0f
-// 得られる必殺ゲージ量
-#define WARRIOR_GROUND2_GAIN_SP_GAUGE 100.0f
-// 当たり判定の大きさ
-#define WARRIOR_GROUND2_EMIT_DISTANCE 500.0f
-#define WARRIOR_GROUND2_RADIUS 350.0f
-#define WARRIOR_GROUND2_HEIGHT 150.0f
-// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define WARRIOR_GROUND2_WHOLE_FRAME 30
-#define WARRIOR_GROUND2_START_FRAME (WARRIOR_GROUND2_WHOLE_FRAME - 5)
-#define WARRIOR_GROUND2_END_FRAME (WARRIOR_GROUND2_WHOLE_FRAME - 15)
-// 硬直フレーム
-#define WARRIOR_GROUND2_STOP_FRAME 3
-// その他
-#define WARRIOR_GROUND2_DUSH_SPEED 20.0f
-#define WARRIOR_GROUND2_COMBO_FRAME (WARRIOR_GROUND2_WHOLE_FRAME - 10)
+#define WARRIOR_GROUND_DUSH_SPEED 20.0f
+#define WARRIOR_GROUND_COMBO_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 15)
 
 //==========================
 // ウォーリアー空中
 //==========================
 // 基本ダメージ
-#define WARRIOR_SKY_BASE_DAMAGE 500.0f
-// 得られる必殺ゲージ量
-#define WARRIOR_SKY_GAIN_SP_GAUGE 100.0f
+#define WARRIOR_SKY_BASE_DAMAGE 300.0f
+// 当たり判定周り
+#define WARRIOR_SKY_EMIT_DISTANCE -500.0f
+#define WARRIOR_SKY_RADIUS 750.0f
+#define WARRIOR_SKY_HEIGHT 500.0f
 // 全体フレーム、攻撃発生フレーム
 #define WARRIOR_SKY_WHOLE_FRAME 9999
 #define WARRIOR_SKY_START_FRAME (WARRIOR_SKY_WHOLE_FRAME - 20)
@@ -120,8 +99,7 @@ void CPlayer::AttackGenerator(void)
                 switch (m_role)
                 {
                 case ROLE_WARRIOR:
-                    m_nCntAttackTime = WARRIOR_GROUND1_WHOLE_FRAME;
-                    m_fNextGainSpGauge = WARRIOR_GROUND1_GAIN_SP_GAUGE;
+                    m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
                     break;
                 case ROLE_HUNTER:
@@ -150,7 +128,6 @@ void CPlayer::AttackGenerator(void)
                 {
                 case ROLE_WARRIOR:
                     m_nCntAttackTime = WARRIOR_SKY_WHOLE_FRAME;
-                    m_fNextGainSpGauge = WARRIOR_SKY_GAIN_SP_GAUGE;
                     m_attackState = ATTACK_STATE_WARRIOR_SKY;
                     break;
                 case ROLE_HUNTER:
@@ -243,9 +220,6 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
 
                         // 多段ヒット回避用のフラグをtrueに
                         m_abUseAvoidMultipleHits[nIdx] = true;
-
-                        // Spゲージ上昇
-                        GainSpGauge();
                     }
                 }
             }
@@ -289,18 +263,18 @@ void CPlayer::RideFortress(void)
 void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 {
     // 攻撃発生フレームと終了フレームを考慮
-    if (m_nCntAttackTime <= WARRIOR_GROUND1_START_FRAME &&
-        m_nCntAttackTime >= WARRIOR_GROUND1_END_FRAME)
+    if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
+        m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
         // 変数宣言
         D3DXVECTOR3 playerRot = CCharacter::GetRot();                      // プレイヤーの向いている向き
         D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
         D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
         float fFinalPower = 0.0f;                                          // 最終的な攻撃力
-        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND1_EMIT_DISTANCE;  // 攻撃発生距離
-        const float ATTACK_RADIUS = WARRIOR_GROUND1_RADIUS;                // 攻撃の大きさ
-        const float ATTACK_HEIGHT = WARRIOR_GROUND1_HEIGHT;                // 攻撃の高さ
-        const float BASE_DAMAGE = WARRIOR_GROUND1_BASE_DAMAGE;             // 基本ダメージ
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // 攻撃発生距離
+        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // 攻撃の大きさ
+        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // 攻撃の高さ
+        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // 基本ダメージ
 
         // 攻撃発生位置をずらす
         slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
@@ -314,13 +288,13 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
-        playerPos.x += -sinf(rot.y)*WARRIOR_GROUND1_DUSH_SPEED;
-        playerPos.z += -cosf(rot.y)*WARRIOR_GROUND1_DUSH_SPEED;
+        playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
+        playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
         // 当たったかどうか
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
-            m_nCntStopTime = WARRIOR_GROUND1_STOP_FRAME;
+            m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
         }
 
 #ifdef COLLISION_TEST
@@ -329,13 +303,12 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
     }
 
     // 連続攻撃の判定
-    if (m_nCntAttackTime <= WARRIOR_GROUND1_COMBO_FRAME)
+    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
     {
         if (m_controlInput.bTriggerX)
         {
             ResetAttack();
-            m_nCntAttackTime = WARRIOR_GROUND2_WHOLE_FRAME;
-            m_fNextGainSpGauge = WARRIOR_GROUND2_GAIN_SP_GAUGE;
+            m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND2;
         }
     }
@@ -348,20 +321,20 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 {
     // 攻撃発生フレームと終了フレームを考慮
-    if (m_nCntAttackTime <= WARRIOR_GROUND2_START_FRAME &&
-        m_nCntAttackTime >= WARRIOR_GROUND2_END_FRAME)
+    if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
+        m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
         // 変数宣言
         D3DXVECTOR3 playerRot = CCharacter::GetRot();                      // プレイヤーの向いている向き
         D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
         D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
         float fFinalPower = 0.0f;                                          // 最終的な攻撃力
-        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND2_EMIT_DISTANCE;  // 攻撃発生距離
-        const float ATTACK_RADIUS = WARRIOR_GROUND2_RADIUS;                // 攻撃の大きさ
-        const float ATTACK_HEIGHT = WARRIOR_GROUND2_HEIGHT;                // 攻撃の高さ
-        const float BASE_DAMAGE = WARRIOR_GROUND2_BASE_DAMAGE;             // 基本ダメージ
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // 攻撃発生距離
+        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // 攻撃の大きさ
+        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // 攻撃の高さ
+        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // 基本ダメージ
 
-                                                                           // 攻撃発生位置をずらす
+        // 攻撃発生位置をずらす
         slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
         slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
 
@@ -373,13 +346,13 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
-        playerPos.x += -sinf(rot.y)*WARRIOR_GROUND2_DUSH_SPEED;
-        playerPos.z += -cosf(rot.y)*WARRIOR_GROUND2_DUSH_SPEED;
+        playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
+        playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
         // 当たったかどうか
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
-            m_nCntStopTime = WARRIOR_GROUND2_STOP_FRAME;
+            m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
         }
 
 #ifdef COLLISION_TEST
@@ -388,13 +361,12 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
     }
 
     // 連続攻撃の判定
-    if (m_nCntAttackTime <= WARRIOR_GROUND2_COMBO_FRAME)
+    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
     {
         if (m_controlInput.bTriggerX)
         {
             ResetAttack();
-            m_nCntAttackTime = WARRIOR_GROUND1_WHOLE_FRAME;
-            m_fNextGainSpGauge = WARRIOR_GROUND1_GAIN_SP_GAUGE;
+            m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
         }
     }
@@ -415,41 +387,37 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         {
             m_nCntAttackTime = WARRIOR_SKY_CHANCE_FRAME;
         }
-        else
-        {
-            // 防御当たり判定の大きさを取得
-            D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+        // 防御当たり判定の大きさを取得
+        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
 
-            // 変数宣言
-            D3DXVECTOR3 playerRot = CCharacter::GetRot();                      // プレイヤーの向いている向き
-            D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
-            D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
-            float fFinalPower = 0.0f;                                          // 最終的な攻撃力
-            const float ATTACK_EMIT_DISTANCE = collisionSizeDefence.y * 1.5f;  // 攻撃発生距離
-            const float ATTACK_RADIUS = 500.0f;                                // 攻撃の大きさ
-            const float ATTACK_HEIGHT = 200.0f;                                // 攻撃の高さ
-            const float BASE_DAMAGE = WARRIOR_SKY_BASE_DAMAGE;             // 基本ダメージ
+        // 変数宣言
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
+        float fFinalPower = 0.0f;                                          // 最終的な攻撃力
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_SKY_EMIT_DISTANCE;      // 攻撃発生距離
+        const float ATTACK_RADIUS = WARRIOR_SKY_RADIUS;                    // 攻撃の大きさ
+        const float ATTACK_HEIGHT = WARRIOR_SKY_HEIGHT;                    // 攻撃の高さ
+        const float BASE_DAMAGE = WARRIOR_SKY_BASE_DAMAGE;                 // 基本ダメージ
 
-                                                                           // 攻撃発生位置をずらす
-            slidePos.y -= ATTACK_EMIT_DISTANCE;
+        // 攻撃発生位置をずらす
+        slidePos.y += ATTACK_EMIT_DISTANCE;
 
-            // 攻撃発生位置を決める
-            attackPos = playerPos + slidePos;
+        // 攻撃発生位置を決める
+        attackPos = playerPos + slidePos;
 
-            // 攻撃力を考慮
-            fFinalPower = BASE_DAMAGE;
+        // 攻撃力を考慮
+        fFinalPower = BASE_DAMAGE;
 
-            // 落下
-            move.y -= WARRIOR_SKY_UP_VALUE;
+        // 落下
+        move.y -= WARRIOR_SKY_UP_VALUE;
 
 
-            // 当たったかどうか
-            IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
+        // 当たったかどうか
+        IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
 #ifdef COLLISION_TEST
-            CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
 #endif // COLLISION_TEST
-        }
     }
     else if (m_nCntAttackTime > WARRIOR_SKY_START_FRAME)
     {

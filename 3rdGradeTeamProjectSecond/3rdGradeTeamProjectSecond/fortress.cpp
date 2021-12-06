@@ -141,13 +141,19 @@ void CFortress::Update(void)
     // ライフがなくなったら
     if (GetLife() <= 0.0f)
     {
-        // ここで、ゴールゲートを破壊できているなら、勝ち判定を優先
+        SetLife(0.0f);
 
-        // 非表示に
-        m_bDisp = false;
+        // トレーニングでないなら
+        if (CGame::GetType() != CGame::TYPE_TRAINING)
+        {
+            // ここで、ゴールゲートを破壊できているなら、勝ち判定を優先
 
-        // 仮にリザルトに移行
-        CFade::SetFade(CManager::MODE_RESULT);
+            // 仮に非表示に
+            m_bDisp = false;
+
+            // 仮にリザルトに移行
+            CFade::SetFade(CManager::MODE_RESULT);
+        }
     }
 }
 
@@ -216,7 +222,7 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
     if (m_bSearchRoad)
     {
         // 道を探す
-        float fKeepDistance = 99999.9f; // 距離
+        float fKeepDistance = 999999.9f; // 距離
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ROAD);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ROAD); nCntScene++)
         {

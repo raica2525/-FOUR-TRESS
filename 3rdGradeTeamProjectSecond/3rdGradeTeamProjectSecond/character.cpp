@@ -71,8 +71,9 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
     m_move = DEFAULT_VECTOR;
     m_moveOld = DEFAULT_VECTOR;
     m_bUseControllerEffectByTakeDamage = false;
+    m_fTurnSpeed = DEFAULT_TURN_SPEED;
 
-    m_bIsAttackReset = false;
+    m_bResetAttackByDamage = false;
 
     m_bIsInvincible = false;
     m_nCntTakeDamageTime = 0;
@@ -515,7 +516,7 @@ void CCharacter::RotControl(void)
     // 目的の値に近づける
     if (fabsf(fRotMin) >= 0.0f)
     {
-        m_rot.y += (m_rotDest.y - m_rot.y) * PLAYER_TURN_SPEED;
+        m_rot.y += (m_rotDest.y - m_rot.y) * m_fTurnSpeed;
     }
 }
 
@@ -594,8 +595,7 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
             m_fLife = 0.0f;
 
             // 死亡用ノックバック
-            fKnockbackValue = KNOCK_BACK_DEATH_X;
-            m_move.y = KNOCK_BACK_DEATH_Y;
+            fKnockbackValue = KNOCK_BACK_DEATH;
         }
         else
         {
@@ -607,7 +607,7 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
         if (m_bUseKnockBack)
         {
             // 攻撃状態をリセット
-            m_bIsAttackReset = true;
+            m_bResetAttackByDamage = true;
 
             // 攻撃の方を向き、ノックバックさせる
             float fAngleToDamagePos = GetAngleToTargetXZ(damageOldPos, myPos);
@@ -630,7 +630,7 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
 }
 
 //=============================================================================
-// ダメージを受けている時間を数える処理
+// ダメージを受けている時間を数える処理（前作の名残でプレイヤーでしか使ってない処理有り）
 // Author : 後藤慎之助
 //=============================================================================
 void CCharacter::CntDownTakeDamageTime(void)

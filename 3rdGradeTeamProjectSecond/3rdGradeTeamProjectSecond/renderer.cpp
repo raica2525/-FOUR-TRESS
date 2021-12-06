@@ -242,7 +242,7 @@ void CRenderer::Draw(void)
     for (int nCount = 0; nCount < 2; nCount++)
     {
         // バックバッファ＆Ｚバッファ＆ステンシルバッファのクリア
-        m_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DCOLOR_RGBA(249, 102, 71, 255), 1.0f, 0);
+        m_pD3DDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL), D3DCOLOR_RGBA(5, 31, 41, 255), 1.0f, 0);
 
         // Direct3Dによる描画の開始
         if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -322,7 +322,7 @@ void CRenderer::Draw(void)
 void CRenderer::DrawDebugData(void)
 {
     RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-    char str[256];
+    char str[512];
 
     // モードによって、表示するものを変える
     CManager::MODE mode = CManager::GetMode();
@@ -330,7 +330,7 @@ void CRenderer::DrawDebugData(void)
     {
     case CManager::MODE_DEBUG_MENU:
         rect = { 200, 200, SCREEN_WIDTH, SCREEN_HEIGHT };
-        wsprintf(str, "●トレーニング\n●カスタマイズ\n●タイトル\n●アリーナ（2人（人VS人））\n●アリーナ（2人（人VSCOM（Level1）））\n●アリーナ（2人（人VSCOM（Level2）））\n●アリーナ（2人（人VSCOM（Level3）））\n●アリーナ（4人（人VSCOM（各Level）））\n●アリーナ（4人（全員人））");
+        wsprintf(str, "●デバッグステージ\n●カスタマイズ\n●タイトル\n●アリーナ（2人（人VS人））\n●アリーナ（2人（人VSCOM（Level1）））\n●アリーナ（2人（人VSCOM（Level2）））\n●アリーナ（2人（人VSCOM（Level3）））\n●アリーナ（4人（人VSCOM（各Level）））\n●アリーナ（4人（全員人））");
         m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
         break;
     case CManager::MODE_TITLE:

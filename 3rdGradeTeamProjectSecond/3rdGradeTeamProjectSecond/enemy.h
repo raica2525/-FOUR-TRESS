@@ -13,6 +13,7 @@
 #include "main.h"
 #include "character.h"
 #include "model.h"
+#include "player.h"
 
 //================================================
 // マクロ定義
@@ -50,6 +51,17 @@ public:
         TYPE_CANNON,        // キャノン
         TYPE_COMMANDER,     // コマンダー
     }TYPE;
+
+    // 基本状態
+    typedef enum
+    {
+        BASE_STATE_WAIT = 0,    // 待機
+        BASE_STATE_PATROL,      // 巡回
+        BASE_STATE_ATTACK,      // 攻撃
+        BASE_STATE_DAMAGE,      // ダメージ
+        BASE_STATE_PARALYSIS,   // 麻痺
+        BASE_STATE_DEATH,       // 死亡
+    }BASE_STATE;
 
     //=========================
     // 蜘蛛
@@ -158,11 +170,14 @@ public:
     void Update(void);                                                                  // 更新処理
     void Draw(void);                                                                    // 描画処理
     static CEnemy *Create(int type, D3DXVECTOR3 pos, float fStrength = 1.0f,
-        int appearState = APPEAR_STATE_EXIST);                  // 生成処理
+        int appearState = APPEAR_STATE_EXIST, float fSearchDistanceForAppear = 2000.0f, float fChargeValue = NOT_EXIST_F);// 生成処理
+
+    void DiscoveryPlayer(CPlayer *pPlayer);                                             // プレイヤー発見処理
 
     //=============================
     // セッター
     //=============================
+    void SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame = NOT_EXIST);    // 基本状態を変える処理
 
     //=============================
     // ゲッター
@@ -173,6 +188,7 @@ private:
     int m_type;                              // 種類
     float m_fSpeed;                          // 速さ
     float m_fStrength;                       // 強さ(基本1.0倍)
+    float m_fChargeValue;                    // チャージ量
 
     int m_nCntTime;                          // 時間を数える
     bool m_bSquashedByFortress;              // 要塞に踏みつぶされるかどうか
@@ -181,22 +197,47 @@ private:
     int m_appearState;                       // 出現状態
     bool m_bDeath;                           // やられているかどうか
     int m_nIdx;                              // 生成のインデックス
+    BASE_STATE m_baseState;                  // 基本状態
 
     int m_walkMotion;                        // 歩きモーション
     int m_attackMotion;                      // 攻撃モーション
     int m_damageMotion;                      // ダメージモーション
     int m_deathMotion;                       // 死亡モーション
 
+    float m_fSearchDistanceForAppear;        // 出現のための検知距離
+    D3DXVECTOR3 m_patrolCentralPos;          // 巡回の中心位置
+    D3DXVECTOR3 m_moveAngle;                 // 移動角度
+    int m_nPatrolDistance;                   // 巡回距離
+    int m_nCurrentStateEndFrame;             // 現在の状態が終わるフレーム数
+
+    bool m_bWarning;                         // 警戒中かどうか
+    float m_fDiscoveryPlayerDistance;        // プレイヤー発見距離
+    CPlayer *m_pTargetPlayer;                // 標的のプレイヤー
+    int m_setAnimationThisFrame;             // このフレーム内で、設定するアニメーション番号
+
+    bool m_bUseCommonAtkFollow;              // 追従攻撃を使用するかどうか
+
     //=============================
     // 種類ごとの処理
     //=============================
     void SetupInfoByType(void);
+    void AtkCommonFollow(D3DXVECTOR3& myPos);
+    void AtkArmy(D3DXVECTOR3& myPos);
 
     //=============================
     // このクラス内でのみ使う処理
     //=============================
     void Appear(void);
     void SquashedByFortress(D3DXVECTOR3 myPos);
+    void DeathOneFrame(D3DXVECTOR3 myPos);
+
+    //=============================
+    // AI系
+    //=============================
+    void WaitAI(D3DXVECTOR3& myPos);
+    void PatrolAI(D3DXVECTOR3& myPos);
+    void AttackAI(D3DXVECTOR3& myPos);
+    void DamageAI(void);
 };
 
 #endif

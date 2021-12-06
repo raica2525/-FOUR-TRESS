@@ -45,6 +45,8 @@
 #define FADE_OUT_TELOP 150             // テロップのフェードアウト開始フレーム
 #define FADE_IN_FINISH_TELOP 90        // フィニッシュテロップのフェードイン開始フレーム
 
+#define DISTANCE_INIT_VALUE 999999.9f  // 距離初期化値
+
 //=============================================================================
 // 静的メンバ変数宣言
 //=============================================================================
@@ -130,12 +132,28 @@ HRESULT CGame::Init(void)
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
     if (m_type == TYPE_TRAINING)
     {
-        m_nNumAllPlayer = 1; // トレーニングは1人固定
+        m_nNumAllPlayer = 1;                // トレーニングは1人固定
+        CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
+        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
+        m_pFortress->SetSpeed(0.0f);
+        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+
+        CBg::Create(66, D3DXVECTOR3(1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(66, D3DXVECTOR3(-1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(66, D3DXVECTOR3(3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(66, D3DXVECTOR3(-3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+
+        CBg::Create(67, D3DXVECTOR3(1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(67, D3DXVECTOR3(-1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
     }
 
     // ステージのモデルを生成
     //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
-    CBg::Create(83, DEFAULT_VECTOR, CBg::COLOR_PHASE_G_UP);
 
     // UIを生成
     CUI::Place(CUI::SET_GAME);
@@ -218,9 +236,9 @@ HRESULT CGame::Init(void)
         break;
     }
 
-    // 仮の見た目確認用モデル生成
-    CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
-    CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
+    //// 仮の見た目確認用モデル生成
+    //CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
+    //CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
 
     //// 仮の敵配置
     //D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
@@ -243,42 +261,39 @@ HRESULT CGame::Init(void)
     //    
     //    enemyPos.x += 1000.0f;
     //}
-    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(-1000.0f, 1000.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(0.0f, 0.0f, 1500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER);
-    CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(1000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS);
-    CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(2000.0f, 0.0f, 3000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(-1000.0f, 1000.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(0.0f, 0.0f, 1500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER);
+    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(1000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS);
+    //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    //CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    //CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
+    //CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(2000.0f, 0.0f, 3000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
 
-    // 仮の道生成
-    D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
-    for (int nCnt = 0; nCnt < 10; nCnt++)
-    {
-        D3DXVECTOR3 rot = DEFAULT_VECTOR;
-        if (nCnt < 5)
-        {
-            roadPos.z += 500.0f;
-        }
-        else
-        {
-            roadPos.x += 500.0f;
-            rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
-        }
-        CRoad::Create(roadPos, rot);
-    }
-
-    // 移動要塞生成
-    m_pFortress = CFortress::Create(D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f));
+    //// 仮の道生成
+    //D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
+    //for (int nCnt = 0; nCnt < 10; nCnt++)
+    //{
+    //    D3DXVECTOR3 rot = DEFAULT_VECTOR;
+    //    if (nCnt < 5)
+    //    {
+    //        roadPos.z += 500.0f;
+    //    }
+    //    else
+    //    {
+    //        roadPos.x += 500.0f;
+    //        rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
+    //    }
+    //    CRoad::Create(roadPos, rot);
+    //}
     
-    // 背景生成
+    //// 背景生成
     //CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
     //CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
     //CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
 
-    // ブロック生成
-    CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), D3DXVECTOR3(5000.0f, 500.0f, 500.0f), DEFAULT_VECTOR);
-    CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(5000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 5000.0f), MODEL_DIRECT_LEFT);
+    //// ブロック生成
+    //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), D3DXVECTOR3(5000.0f, 500.0f, 500.0f), DEFAULT_VECTOR);
+    //CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(5000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 5000.0f), MODEL_DIRECT_LEFT);
 
     return S_OK;
 }
@@ -482,6 +497,45 @@ void CGame::InButtle(void)
 {
     switch (m_type)
     {
+    case TYPE_TRAINING:
+    {
+        // 任意の敵を出現させるための位置
+        D3DXVECTOR3 spawnPos = DEFAULT_VECTOR;
+        const int SPAWN_RADIUS_MAX = 2750;
+        const int SPAWN_RADIUS_MIN = 500;
+        spawnPos.x = float(GetRandNum(SPAWN_RADIUS_MAX, SPAWN_RADIUS_MIN));
+        spawnPos.z = float(GetRandNum(SPAWN_RADIUS_MAX, SPAWN_RADIUS_MIN));
+        int nToggleX = GetRandNum(1, 0);
+        if (nToggleX == 1)
+        {
+            spawnPos.x *= -1.0f;
+        }
+        int nToggleZ = GetRandNum(1, 0);
+        if (nToggleZ == 1)
+        {
+            spawnPos.z *= -1.0f;
+        }
+
+        // キーボード操作
+        CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
+        if (pInputKeyboard->GetKeyboardTrigger(DIK_1))
+        {
+            CEnemy::Create(CEnemy::TYPE_ARMY, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_2))
+        {
+            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_3))
+        {
+            CEnemy::Create(CEnemy::TYPE_CANNON, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_4))
+        {
+            CEnemy::Create(CEnemy::TYPE_COMMANDER, spawnPos);
+        }
+    }
+        break;
     case TYPE_ARENA:
         //// アリーナモードで1人残ったら
         //if (m_nNumDefeatPlayer >= m_nNumAllPlayer - m_nNumDeathPlayer - 1)
@@ -704,15 +758,15 @@ void CGame::JudgmentFinish(void)
 // 一番近いプレイヤーへの角度を求める
 // Author : 後藤慎之助
 //========================================
-float CGame::GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
+float CGame::GetAngleToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer)
 {
     // 変数宣言
     float fAngle = 0.0f;                        // 返す角度
-    float fFirstDistance = 99999.9f;            // 距離
+    float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
     D3DXVECTOR3 targetPos = DEFAULT_VECTOR;     // 対象の位置
 
-                                                // 対象の位置を、自分の位置の真上へ一度決めておく
-    targetPos = D3DXVECTOR3(myPos.x, fFirstDistance, 0.0f);
+    // 対象の位置を、自分の位置の真上へ一度決めておく
+    targetPos = D3DXVECTOR3(myPos.x, fFirstDistance, myPos.z);
 
     // 距離が一番近いプレイヤーを決める（自分以外で）
     for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
@@ -732,7 +786,7 @@ float CGame::GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
             // 距離を求める
             float fSecondDistance = sqrtf(
                 powf((myPos.x - otherPlayerPos.x), 2.0f) +
-                powf((myPos.y - otherPlayerPos.y), 2.0f));
+                powf((myPos.z - otherPlayerPos.z), 2.0f));
 
             // 距離の比較と、対象の位置を更新
             if (fFirstDistance > fSecondDistance)
@@ -744,7 +798,7 @@ float CGame::GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
     }
 
     // 角度を求める
-    fAngle = atan2((targetPos.x - myPos.x), (targetPos.y - myPos.y));
+    fAngle = atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z));
 
     return fAngle;
 }
@@ -753,14 +807,14 @@ float CGame::GetAngleToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
 // 一番近いプレイヤーの位置を求める
 // Author : 後藤慎之助
 //========================================
-D3DXVECTOR3 CGame::GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
+D3DXVECTOR3 CGame::GetPosToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer)
 {
     // 変数宣言
-    float fFirstDistance = 99999.9f;            // 距離
+    float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
     D3DXVECTOR3 targetPos = DEFAULT_VECTOR;     // 対象の位置
 
-                                                // 対象の位置を、自分の位置の真上へ一度決めておく
-    targetPos = D3DXVECTOR3(myPos.x, fFirstDistance, 0.0f);
+    // 対象の位置を、自分の位置の真上へ一度決めておく
+    targetPos = D3DXVECTOR3(myPos.x, fFirstDistance, myPos.z);
 
     // 距離が一番近いプレイヤーを決める（自分以外で）
     for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
@@ -780,7 +834,7 @@ D3DXVECTOR3 CGame::GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
             // 距離を求める
             float fSecondDistance = sqrtf(
                 powf((myPos.x - otherPlayerPos.x), 2.0f) +
-                powf((myPos.y - otherPlayerPos.y), 2.0f));
+                powf((myPos.z - otherPlayerPos.z), 2.0f));
 
             // 距離の比較と、対象の位置を更新
             if (fFirstDistance > fSecondDistance)
@@ -792,6 +846,48 @@ D3DXVECTOR3 CGame::GetPosToClosestPlayer(int nIdxPlayer, D3DXVECTOR3 myPos)
     }
 
     return targetPos;
+}
+
+//========================================
+// 一番近いプレイヤーとの距離とポインタを得る
+// Author : 後藤慎之助
+//========================================
+CPlayer *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+{
+    // 変数宣言
+    CPlayer*pTargetPlayer = NULL;
+
+    // 距離が一番近いプレイヤーを決める（自分以外で）
+    fKeepDistance = DISTANCE_INIT_VALUE;
+    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+    {
+        // 自分以外で
+        if (nIdxPlayer == nCntPlayer)
+        {
+            continue;
+        }
+
+        // 生存しているなら
+        if (m_apPlayer[nCntPlayer]->GetDisp())
+        {
+            // 他のプレイヤーの位置
+            D3DXVECTOR3 otherPlayerPos = m_apPlayer[nCntPlayer]->GetPos();
+
+            // 距離を求める
+            float fSecondDistance = sqrtf(
+                powf((myPos.x - otherPlayerPos.x), 2.0f) +
+                powf((myPos.z - otherPlayerPos.z), 2.0f));
+
+            // 距離の比較と、対象のポインタを更新
+            if (fKeepDistance > fSecondDistance)
+            {
+                fKeepDistance = fSecondDistance;
+                pTargetPlayer = m_apPlayer[nCntPlayer];
+            }
+        }
+    }
+
+    return pTargetPlayer;
 }
 
 //========================================
