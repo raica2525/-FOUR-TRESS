@@ -67,6 +67,44 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
+    case TYPE_KAMIKAZE_EX:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 60;
+        m_fDamage = 300.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;// 貫通
+        bUseShadow = false; // 影を使用しない
+        break;
+    case TYPE_CANNON_ATTACK:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
+        m_fSpeed = 25.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        m_nLife = 120;
+        m_fDamage = 15.0f;
+        m_bUseDraw = true;
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_COMMANDER_ATTACK:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
+        m_fSpeed = 5.0f;
+        m_nLife = 999;
+        m_bUseDraw = true;
+        m_bUseCntTime = true;
+        m_fGravityValue = -0.1f;
+        m_fGravityLimit = -10.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
     }
 
     // 強さを反映

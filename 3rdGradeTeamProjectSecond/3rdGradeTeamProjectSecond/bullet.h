@@ -46,15 +46,19 @@ public:
         TYPE_THUNDER,           // 雷
         TYPE_RAILGUN_LV2,       // 電磁砲lv2
         TYPE_RAILGUN_LV3,       // 電磁砲lv3
+        TYPE_KAMIKAZE_EX,       // カミカゼの爆発
+        TYPE_CANNON_ATTACK,     // キャノンの攻撃
+        TYPE_COMMANDER_ATTACK,  // コマンダーの攻撃
     }TYPE;
 
     // 何に当たるかのフラグ
     typedef enum
     {
-        COLLISION_FLAG_NONE = 0,                      // なし
-        COLLISION_FLAG_ENEMY = 0x001 << 0,            // 敵に当たる
-        COLLISION_FLAG_PLAYER = 0x001 << 1,           // プレイヤーに当たる
-        COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,        // ブロックに当たらない
+        COLLISION_FLAG_NONE = 0,                    // なし
+        COLLISION_FLAG_ENEMY = 0x001 << 0,          // 敵に当たる
+        COLLISION_FLAG_PLAYER = 0x001 << 1,         // プレイヤーに当たる
+        COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,      // ブロックに当たらない
+        COLLISION_FLAG_REFLECT_BLOCK = 0x001 << 3,  // ブロックで跳ね返る
     }COLLISION_FLAG;
 
     //=============================
@@ -84,6 +88,11 @@ private:
     bool m_bHitErase;               // 当たった時に消すかどうか
     CEffect3D *m_pEffect3d_Shadow;  // 影へのポインタ
     bool m_bBreakGoalGate;          // ゴールゲートを壊すかどうか
+    bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // 多段ヒット回避を使うかどうか
+
+    float m_fGravityValue;          // 重力の値
+    float m_fGravityLimit;          // 重力制限
+    float m_fStrength;              // 強さ
 
     //=============================
     // 種類ごとの処理
@@ -93,7 +102,7 @@ private:
     //=============================
     // このクラス内でのみ使う処理
     //=============================
-    void Collision(D3DXVECTOR3 bulletPos);
+    void Collision(D3DXVECTOR3 &bulletPos);
 };
 
 #endif

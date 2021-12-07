@@ -13,6 +13,7 @@
 #include "main.h"
 #include "mode.h"
 #include "player.h"
+#include "library.h"
 
 //*****************************************************************************
 // 前方宣言
@@ -115,17 +116,20 @@ public:
     //======================================================*/
     static float GetAngleToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);    // 一番近いプレイヤーへの角度を求める
     static D3DXVECTOR3 GetPosToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);// 一番近いプレイヤーの位置を求める
-    static CPlayer *GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
+    static CCharacter *GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
+    static CCharacter *GetDistanceAndPointerToClosestPlayerOrFortress(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
+    static CCharacter *GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, float &fKeepDistance);
     static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ
-    static int GetEnemyIdx(void) 
+    static int GetCharacterIdx(void) 
     { 
-        m_nEnemyIdx++;
-        if (m_nEnemyIdx >= ENEMY_IDX_MAX)
+        m_nCharacterIdx++;
+        if (m_nCharacterIdx >= CHARACTER_IDX_MAX)
         {
-            m_nEnemyIdx = 0;
+            m_nCharacterIdx = 0;
         }
-        return m_nEnemyIdx;
+        return m_nCharacterIdx;
     }
+    static HIT_SURFACE MapLimit(D3DXVECTOR3 &pos, D3DXVECTOR3 posOld, D3DXVECTOR3 myCubeSize); // マップ制限
 
 private:
 
@@ -151,7 +155,7 @@ private:
     bool m_bFirestRound;                                   // 最初のラウンドかどうか
 
     static CFortress *m_pFortress;                         // 移動要塞のポインタ
-    static int m_nEnemyIdx;                                // 敵のインデックス
+    static int m_nCharacterIdx;                            // キャラクターのインデックス
 };
 
 #endif

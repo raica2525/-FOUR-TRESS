@@ -201,7 +201,7 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
 
             // 敵のインデックスを取得
             int nIdx = pEnemy->GetIdx();
-            if (nIdx < 0 || nIdx >= ENEMY_IDX_MAX)
+            if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
             {
                 return false;
             }

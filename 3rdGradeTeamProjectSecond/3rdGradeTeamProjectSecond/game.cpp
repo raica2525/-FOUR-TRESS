@@ -70,7 +70,7 @@ bool CGame::m_bCurrentSpShot = false;
 CText *CGame::m_pSpText = NULL;
 
 CFortress *CGame::m_pFortress = NULL;
-int CGame::m_nEnemyIdx = 0;
+int CGame::m_nCharacterIdx = 0;
 
 //=============================================================================
 // ゲームのコンストラクタ
@@ -105,7 +105,7 @@ CGame::CGame()
     m_bFirestRound = true;
 
     m_pFortress = NULL;
-    m_nEnemyIdx = 0;
+    m_nCharacterIdx = 0;
 }
 
 //=============================================================================
@@ -852,10 +852,10 @@ D3DXVECTOR3 CGame::GetPosToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer)
 // 一番近いプレイヤーとの距離とポインタを得る
 // Author : 後藤慎之助
 //========================================
-CPlayer *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+CCharacter *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
 {
     // 変数宣言
-    CPlayer*pTargetPlayer = NULL;
+    CCharacter*pTarget = NULL;
 
     // 距離が一番近いプレイヤーを決める（自分以外で）
     fKeepDistance = DISTANCE_INIT_VALUE;
@@ -882,12 +882,89 @@ CPlayer *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &f
             if (fKeepDistance > fSecondDistance)
             {
                 fKeepDistance = fSecondDistance;
-                pTargetPlayer = m_apPlayer[nCntPlayer];
+                pTarget = (CCharacter*)m_apPlayer[nCntPlayer];
             }
         }
     }
 
-    return pTargetPlayer;
+    return pTarget;
+}
+
+//========================================
+// 一番近いプレイヤーか移動要塞との距離とポインタを得る
+// Author : 後藤慎之助
+//========================================
+CCharacter *CGame::GetDistanceAndPointerToClosestPlayerOrFortress(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+{
+    // 変数宣言
+    CCharacter*pTarget = NULL;
+
+    // 距離が一番近いプレイヤーを決める（自分以外で）
+    fKeepDistance = DISTANCE_INIT_VALUE;
+    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+    {
+        // 自分以外で
+        if (nIdxPlayer == nCntPlayer)
+        {
+            continue;
+        }
+
+        // 生存しているなら
+        if (m_apPlayer[nCntPlayer]->GetDisp())
+        {
+            // 他のプレイヤーの位置
+            D3DXVECTOR3 otherPlayerPos = m_apPlayer[nCntPlayer]->GetPos();
+
+            // 距離を求める
+            float fSecondDistance = sqrtf(
+                powf((myPos.x - otherPlayerPos.x), 2.0f) +
+                powf((myPos.z - otherPlayerPos.z), 2.0f));
+
+            // 距離の比較と、対象のポインタを更新
+            if (fKeepDistance > fSecondDistance)
+            {
+                fKeepDistance = fSecondDistance;
+                pTarget = (CCharacter*)m_apPlayer[nCntPlayer];
+            }
+        }
+    }
+
+    // 距離が一番近いプレイヤーと移動要塞でどちらが近いか比べる
+    D3DXVECTOR3 fortressPos = m_pFortress->GetPos();
+    float fDistanceToFortress = sqrtf(
+        powf((myPos.x - fortressPos.x), 2.0f) +
+        powf((myPos.z - fortressPos.z), 2.0f));
+    if (fKeepDistance > fDistanceToFortress)
+    {
+        fKeepDistance = fDistanceToFortress;
+        pTarget = (CCharacter*)m_pFortress;
+    }
+
+    return pTarget;
+}
+
+//========================================
+// 一番近い移動要塞との距離とポインタを得る
+// Author : 後藤慎之助
+//========================================
+CCharacter *CGame::GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, float &fKeepDistance)
+{
+    // 変数宣言
+    CCharacter*pTarget = NULL;
+
+    // 距離が一番近い移動要塞が近いか比べる
+    fKeepDistance = DISTANCE_INIT_VALUE;
+    D3DXVECTOR3 fortressPos = m_pFortress->GetPos();
+    float fDistanceToFortress = sqrtf(
+        powf((myPos.x - fortressPos.x), 2.0f) +
+        powf((myPos.z - fortressPos.z), 2.0f));
+    if (fKeepDistance > fDistanceToFortress)
+    {
+        fKeepDistance = fDistanceToFortress;
+        pTarget = (CCharacter*)m_pFortress;
+    }
+
+    return pTarget;
 }
 
 //========================================
@@ -909,4 +986,39 @@ void CGame::SetBallGauge(int nMax, int nNow)
     {
         pBallGaugeL->SetRightToLeftGauge((float)nMax, (float)nNow);
     }
+}
+
+//=============================================================================
+// マップ制限処理
+// Author : 後藤慎之助
+//=============================================================================
+HIT_SURFACE CGame::MapLimit(D3DXVECTOR3 &pos, D3DXVECTOR3 posOld, D3DXVECTOR3 myCubeSize)
+{
+    HIT_SURFACE returnHitSurface = HIT_SURFACE_NONE;
+
+    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
+    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
+    {
+        // 中身があるなら
+        if (pScene)
+        {
+            // 次のシーンを記憶
+            CScene*pNextScene = pScene->GetNextScene();
+
+            // ブロックにキャスト
+            CBlock *pBlock = (CBlock*)pScene;
+
+            // マップ制限を反映
+            HIT_SURFACE hitSurface = IsBlockCollisionXZ(pos, posOld, pBlock->GetPos(), myCubeSize, pBlock->GetCollisionSize());
+            if (hitSurface != HIT_SURFACE_NONE)
+            {
+                returnHitSurface = hitSurface;
+            }
+
+            // 次のシーンにする
+            pScene = pNextScene;
+        }
+    }
+
+    return returnHitSurface;
 }

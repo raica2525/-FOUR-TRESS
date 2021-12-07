@@ -21,7 +21,7 @@
 // 前方宣言
 //================================================
 class CEffect3D;
-class CPlayer;
+class CCharacter;
 
 //================================================
 // クラス宣言
@@ -71,7 +71,7 @@ private:
     bool m_bUseDraw;                // 描画するかどうか
     CEffect3D *m_pEffect3d_Shadow;  // 影へのポインタ
     bool m_bGround;                 // 地面に着地したかどうか（着地したら、プレイヤーが吸収できる）
-    CPlayer *m_pTargetPlayer;       // ターゲットとなるプレイヤーのポインタ
+    CCharacter *m_pTarget;          // ターゲットのポインタ
 
     //=============================
     // このクラス内でのみ使う処理

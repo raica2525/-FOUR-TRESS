@@ -23,6 +23,10 @@
 #include "fortress.h"
 #include "block.h"
 
+//========================================
+// マクロ定義
+//========================================
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -46,6 +50,11 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_bHitErase = true;
     m_pEffect3d_Shadow = NULL;
     m_bBreakGoalGate = false;
+    memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
+
+    m_fGravityValue = 0.0f;
+    m_fGravityLimit = 0.0f;
+    m_fStrength = 0.0f;
 }
 
 //=============================================================================
@@ -105,7 +114,20 @@ void CBullet::Update(void)
     m_posOld = myPos;
 
     // 移動量を位置に結びつける
-    myPos += m_moveAngle * m_fSpeed;
+    if (m_fGravityValue == 0.0f)
+    {
+        myPos += m_moveAngle * m_fSpeed;
+    }
+    else
+    {
+        // 重力を使うなら
+        float fGravity = m_fGravityValue * m_nCntTime;
+        if (fGravity < m_fGravityLimit)
+        {
+            fGravity = m_fGravityLimit;
+        }
+        myPos += m_moveAngle * m_fSpeed + D3DXVECTOR3(0.0f, fGravity, 0.0f);
+    }
 
     // 当たり判定を設定
     Collision(myPos);
@@ -164,6 +186,7 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, floa
     // 先に結びつけておく
     pBullet->m_type = type;
     pBullet->SetRot(rot);
+    pBullet->m_fStrength = fStrength;
 
     // 初期化
     pBullet->SetupInfoByType(fStrength, pos);
@@ -179,7 +202,7 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, floa
 // 衝突処理
 // Author : 後藤慎之助
 //=============================================================================
-void CBullet::Collision(D3DXVECTOR3 bulletPos)
+void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 {
     // プレイヤー、移動要塞との当たり判定
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PLAYER))
@@ -196,14 +219,30 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 // プレイヤーにキャスト
                 CPlayer *pPlayer = (CPlayer*)pScene;
 
-                // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
+                // インデックスを取得
+                int nIdx = pPlayer->GetIdx();
+                if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
                 {
-                    // ダメージ
-                    bool bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);
-                    if (bDamaged && m_bHitErase)
+                    // 次のシーンにする
+                    pScene = pNextScene;
+                    continue;
+                }
+
+                // 多段ヒット回避用フラグがfalseなら
+                if (!m_abUseAvoidMultipleHits[nIdx])
+                {
+                    // 当たっているなら
+                    if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
                     {
-                        m_nLife = NOT_EXIST;
+                        // 多段ヒット回避用のフラグをtrueに
+                        m_abUseAvoidMultipleHits[nIdx] = true;
+
+                        // ダメージ
+                        bool bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                        if (bDamaged && m_bHitErase)
+                        {
+                            m_nLife = NOT_EXIST;
+                        }
                     }
                 }
 
@@ -216,14 +255,24 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
-            // 当たっているなら
-            if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            // インデックスを取得
+            int nIdx = pFortress->GetIdx();
+
+            // 多段ヒット回避用フラグがfalseなら
+            if (!m_abUseAvoidMultipleHits[nIdx])
             {
-                // ダメージ
-                bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
-                if (bDamaged && m_bHitErase)
+                // 当たっているなら
+                if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
                 {
-                    m_nLife = NOT_EXIST;
+                    // 多段ヒット回避用のフラグをtrueに
+                    m_abUseAvoidMultipleHits[nIdx] = true;
+
+                    // ダメージ
+                    bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                    if (bDamaged && m_bHitErase)
+                    {
+                        m_nLife = NOT_EXIST;
+                    }
                 }
             }
         }
@@ -244,14 +293,30 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 // 敵にキャスト
                 CEnemy *pEnemy = (CEnemy*)pScene;
 
-                // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
+                // インデックスを取得
+                int nIdx = pEnemy->GetIdx();
+                if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
                 {
-                    // ダメージ
-                    bool bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
-                    if (bDamaged && m_bHitErase)
+                    // 次のシーンにする
+                    pScene = pNextScene;
+                    continue;
+                }
+
+                // 多段ヒット回避用フラグがfalseなら
+                if (!m_abUseAvoidMultipleHits[nIdx])
+                {
+                    // 当たっているなら
+                    if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                     {
-                        m_nLife = NOT_EXIST;
+                        // 多段ヒット回避用のフラグをtrueに
+                        m_abUseAvoidMultipleHits[nIdx] = true;
+
+                        // ダメージ
+                        bool bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                        if (bDamaged && m_bHitErase)
+                        {
+                            m_nLife = NOT_EXIST;
+                        }
                     }
                 }
 
@@ -292,6 +357,55 @@ void CBullet::Collision(D3DXVECTOR3 bulletPos)
                 // 次のシーンにする
                 pScene = pNextScene;
             }
+        }
+    }
+
+    // ブロックで反射するかどうかの判定
+    if (IS_BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK))
+    {
+        CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
+        for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
+        {
+            // 中身があるなら
+            if (pScene)
+            {
+                // 次のシーンを記憶
+                CScene*pNextScene = pScene->GetNextScene();
+
+                // ブロックにキャスト
+                CBlock *pBlock = (CBlock*)pScene;
+
+                // 当たっているなら
+                D3DXVECTOR3 myCubeSize = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
+                HIT_SURFACE hitSurface = CGame::MapLimit(bulletPos, m_posOld, myCubeSize);
+
+                // 反射
+                switch (hitSurface)
+                {
+                case HIT_SURFACE_LEFT:
+                case HIT_SURFACE_RIGHT:
+                    m_moveAngle.x *= -1.0f;
+                    break;
+                case HIT_SURFACE_BACK:
+                case HIT_SURFACE_FRONT:
+                    m_moveAngle.z *= -1.0f;
+                    break;
+                }
+
+                // 次のシーンにする
+                pScene = pNextScene;
+            }
+        }
+    }
+
+    // コマンダーの攻撃は、床に接したときに敵を生成し、消す
+    if (m_type == TYPE_COMMANDER_ATTACK)
+    {
+        if (bulletPos.y <= 0.0f)
+        {
+            bulletPos.y = 0.0f;
+            m_nLife = NOT_EXIST;
+            CEnemy::Create(CEnemy::TYPE_ARMY, bulletPos);
         }
     }
 }

@@ -83,7 +83,6 @@ public:
     bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType = 20);   // ダメージを受ける
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
     void ControlMove(float& fMove, bool bGround = true);          // 移動量制御
-    void MapLimit(D3DXVECTOR3 &pos);                              // マップ制限
 
     /*========================================================
     // セッター
@@ -120,6 +119,8 @@ public:
     void SetMoveOld(D3DXVECTOR3 moveOld) { m_moveOld = moveOld; }
     void SetUseKnockBack(bool bUse) { m_bUseKnockBack = bUse; }
     void SetTurnSpeed(float fTurnSpeed) { m_fTurnSpeed = D3DXToRadian(fTurnSpeed); }
+    void SetDisp(bool bDisp) { m_bDisp = bDisp; }
+    void SetIdx(int nIdx) { m_nIdx = nIdx; }
 
     void BindParts(int nPartsIndex, int nPartsType) { m_aPartsType[nPartsIndex] = nPartsType; }
 
@@ -152,6 +153,8 @@ public:
     bool GetResetAttackByDamage(void) { return m_bResetAttackByDamage; }
     D3DXVECTOR3 GetMoveOld(void) { return m_moveOld; }
     int GetTakeDamageTime(void) { return m_nCntTakeDamageTime; }
+    bool GetDisp(void) { return m_bDisp; }
+    int GetIdx(void) { return m_nIdx; }
 
     // アニメーションを使用しない場合のセッター
     void SetDontUseAnimation(void) { m_bUseAnimation = false; }
@@ -195,9 +198,11 @@ private:
     float m_fTurnSpeed;                      // 振り向き速度
 
     //==============================
-    // 攻撃周り
+    // 攻撃,描画周り
     //==============================
     bool m_bResetAttackByDamage;             // ダメージによって攻撃をリセットするかどうか
+    bool m_bDisp;                            // 表示するかどうか
+    int m_nIdx;                              // 生成のインデックス
 
     //==============================
     // 防御周り

@@ -48,7 +48,9 @@
 #define MAX_SPD 2700.0f
 #define MAX_WEI 4100.0f
 
+// プレイヤーの基本情報
 #define WARRIOR_LIFE 500.0f
+#define WARRIOR_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
 #define HUNTER_LIFE 290.0f
 #define CARRIER_LIFE 370.0f
 #define TANK_LIFE 850.0f
@@ -99,7 +101,6 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
 
     m_exFlag = EX_FLAG_NONE;
     m_bGround = true;
-    m_bDisp = true;
 
     m_nCntLandingTime = 0;
     m_bGroundOld = true;
@@ -389,6 +390,7 @@ void CPlayer::LoadCustom(void)
     {
     case ROLE_WARRIOR:
         fLife = WARRIOR_LIFE;
+        collisionSizeDefence = WARRIOR_COLLISION_SIZE;
         break;
     case ROLE_HUNTER:
         fLife = HUNTER_LIFE;
@@ -615,7 +617,7 @@ void CPlayer::Update(void)
     if (!m_bMannequin)
     {
         // 表示しているなら
-        if (m_bDisp)
+        if (GetDisp())
         {
             // AIでないなら
             if (!m_pAI)
@@ -745,13 +747,13 @@ void CPlayer::Update(void)
     }
 
     // 体力が0になったら
-    if (GetLife() <= 0.0f && m_bDisp)
+    if (GetLife() <= 0.0f && GetDisp())
     {
         // KO音（各自の処理は、各自のクラス内で書く）
         CManager::SoundPlay(CSound::LABEL_SE_KO);
 
         m_fSpGaugeCurrent = 0.0f;
-        m_bDisp = false;
+        SetDisp(false);
     }
 }
 
@@ -779,7 +781,7 @@ void CPlayer::UpdateMannequin(void)
         }
 
         // 表示中なら
-        if (m_bDisp)
+        if (GetDisp())
         {
             // 入力処理
             Input();
@@ -1124,7 +1126,7 @@ void CPlayer::Respawn(void)
     // リスポーン
     SetPos(m_startPos);
     SetRot(m_startRot);
-    m_bDisp = true;
+    SetDisp(true);
     SetUpLife(m_fDef);
 
     // 既存のリセット関数
@@ -1163,7 +1165,7 @@ void CPlayer::Draw(void)
     }
 
     // 表示するなら、描画
-    if (m_bDisp)
+    if (GetDisp())
     {
         // クリッピングマスク
         LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
@@ -1399,7 +1401,7 @@ CPlayer * CPlayer::CreateInCustom(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCont
     // 結びつけるメンバ変数の初期化
     pPlayer->m_startPos = pos;
     pPlayer->m_startRot = rot;
-    pPlayer->m_bDisp = bDisp;
+    pPlayer->SetDisp(bDisp);
 
     // マネキンモードに
     pPlayer->m_bMannequin = true;
@@ -1526,7 +1528,9 @@ void CPlayer::Movement(float fSpeed)
     RotControl();
 
     // マップ制限
-    MapLimit(pos);
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+    D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
+    CGame::MapLimit(pos, GetPosOld(), myCubeSize);
 
     // 位置、移動量を反映
     SetPos(pos);
@@ -1542,7 +1546,6 @@ void CPlayer::Movement(float fSpeed)
     bool bIsInvincible = GetInvincible();
     if (!bIsInvincible)
     {
-        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
         D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
         CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
     }

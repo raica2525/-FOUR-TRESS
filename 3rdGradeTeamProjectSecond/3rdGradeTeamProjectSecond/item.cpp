@@ -53,7 +53,7 @@ CItem::CItem() :CScene3D(CScene::OBJTYPE_ITEM)
     m_bUseDraw = true;
     m_pEffect3d_Shadow = NULL;
     m_bGround = false;
-    m_pTargetPlayer = NULL;
+    m_pTarget = NULL;
 }
 
 //=============================================================================
@@ -146,9 +146,9 @@ void CItem::Update(void)
     else
     {
         // プレイヤーの方を追従（プレイヤーのポインタがないなら、プレイヤーを探す）
-        if (m_pTargetPlayer)
+        if (m_pTarget)
         {
-            if (m_pTargetPlayer->GetDisp())
+            if (m_pTarget->GetDisp())
             {
                 MoveTowardPlayer(myPos);
             }
@@ -271,7 +271,7 @@ void CItem::MoveTowardPlayer(D3DXVECTOR3 myPos)
     }
 
     // 変数宣言
-    D3DXVECTOR3 targetPos = m_pTargetPlayer->GetPos();
+    D3DXVECTOR3 targetPos = m_pTarget->GetPos();
     float fAngle = 0.0f;
 
     // 角度を求める
@@ -315,7 +315,7 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 
     // プレイヤーを探す
     float fKeepDistance = 0.0f;
-    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
+    CCharacter *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
 
     // キープしている距離が、近いとみなす値なら
     if (fKeepDistance <= ITEM_CLOSE_PLAYER_DISTANCE)
@@ -323,7 +323,7 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
         // プレイヤーを結びつける
         if (pKeepPlayer)
         {
-            m_pTargetPlayer = pKeepPlayer;
+            m_pTarget = pKeepPlayer;
         }
     }
     else

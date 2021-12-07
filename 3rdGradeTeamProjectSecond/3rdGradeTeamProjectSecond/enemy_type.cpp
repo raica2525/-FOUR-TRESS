@@ -32,10 +32,34 @@
 //===========================
 // アーミー
 //===========================
-#define ARMY_WHOLE_FRAME 80
-#define ARMY_FIRE_FRAME 60
-#define ARMY_WAIT_COUNT 30
-#define ARMY_FOLLOW_FRAME 60
+#define ARMY_WHOLE_FRAME 80     // 全体フレーム
+#define ARMY_FIRE_FRAME 60      // 発射フレーム
+#define ARMY_WAIT_COUNT 30      // 攻撃後の待機フレーム
+
+//===========================
+// カミカゼ
+//===========================
+#define KAMIKAZE_ATK_SPEED 10.0f // 攻撃中のスピード
+#define KAMIKAZE_WHOLE_FRAME 180 // 全体フレーム
+#define KAMIKAZE_TARGET_FRAME 2  // ターゲットを決めるフレーム
+
+//===========================
+// キャノン
+//===========================
+#define CANNON_WHOLE_FRAME 180       // 全体フレーム
+#define CANNON_FIRE_START_FRAME 60   // 発射開始フレーム
+#define CANNON_FIRE_INTERVAL_FRAME 6 // 発射間隔フレーム
+#define CANNON_FIRE_END_FRAME 120    // 発射終了フレーム
+#define CANNON_WAIT_COUNT 30         // 攻撃後の待機フレーム
+
+//===========================
+// コマンダー
+//===========================
+#define COMMANDER_WHOLE_FRAME 50     // 全体フレーム
+#define COMMANDER_FIRE_FRAME 30      // 発射フレーム
+#define COMMANDER_WAIT_COUNT 60      // 攻撃後の待機フレーム
+#define COMMANDER_ONCE_SPAWN 5       // 一度の生成個数
+#define COMMANDER_SPAWN_ANGLE_Y D3DXToRadian(80.0f) // 生成角度Y
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -47,7 +71,7 @@ void CEnemy::SetupInfoByType(void)
     CCharacter::SetHPDisp(CCharacter::HP_DISP_FOLLOW);  // HP表示は基本追従
     float fHP = 0.0f;
     m_nPatrolDistance = DEFAULT_PATROL_DISTANCE;
-    m_fDiscoveryPlayerDistance = DEFAULT_DISCOVERY_PLAYER_DISTANCE;
+    m_fDiscoveryTargetDistance = DEFAULT_DISCOVERY_PLAYER_DISTANCE;
     SetTurnSpeed(DEFAULT_ENEMY_TURN_SPEED);
 
     switch (m_type)
@@ -102,6 +126,7 @@ void CEnemy::SetupInfoByType(void)
         m_walkMotion = KAMIKAZE_ANIM_WALK;
         m_attackMotion = KAMIKAZE_ANIM_ATTACK;
         m_deathMotion = KAMIKAZE_ANIM_DEATH;
+        m_targetTrend = TARGET_TREND_FORTRESS;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(KAMIKAZE_PARTS_MAX);
         CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
@@ -118,7 +143,8 @@ void CEnemy::SetupInfoByType(void)
         fHP = 450.0f;
         m_fChargeValue = 10.0f;
         SetUseKnockBack(false);
-        SetTurnSpeed(1.0f);
+        SetTurnSpeed(1.2f);
+        m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(CANNON_PARTS_MAX);
         CCharacter::BindParts(CANNON_PARTS_BODY, 51);
@@ -132,6 +158,7 @@ void CEnemy::SetupInfoByType(void)
         m_fSpeed = 0.0f;
         fHP = 850.0f;
         m_fChargeValue = 20.0f;
+        m_attackMotion = COMMANDER_ANIM_SPAWN_ENEMY;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
         CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);
@@ -181,12 +208,89 @@ void CEnemy::AtkArmy(D3DXVECTOR3& myPos)
     if (m_nCntTime == ARMY_FIRE_FRAME)
     {
         // 発射フレーム
+        D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
+        D3DXVECTOR3 firePos = myPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
-        CBullet::Create(CBullet::TYPE_ARMY_ATTACK, GetPos(), moveAngle, m_fStrength);
+        CBullet::Create(CBullet::TYPE_ARMY_ATTACK, firePos, moveAngle, m_fStrength);
     }
     else if (m_nCntTime == ARMY_WHOLE_FRAME)
     {
         // 待機AIに
         SetBaseState(BASE_STATE_WAIT, ARMY_WAIT_COUNT);
+    }
+}
+
+//=============================================================================
+// カミカゼの攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
+{
+    // 位置に移動量を結びつける
+    myPos += m_moveAngle * KAMIKAZE_ATK_SPEED;
+
+    // 向きを調整
+    RotControl();
+
+    if (m_nCntTime >= KAMIKAZE_WHOLE_FRAME)
+    {
+        // 待機AIに
+        SetBaseState(BASE_STATE_WAIT, DEFAULT_FOLLOW_WAIT_FRAME);
+    }
+    else if (m_nCntTime == KAMIKAZE_TARGET_FRAME)
+    {
+        if (m_pTarget)
+        {
+            // 現在の位置と、目的地までの移動角度/向きを求める
+            D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+            float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+            m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
+            SetRotDestY(fDestAngle);
+        }
+    }
+}
+
+//=============================================================================
+// キャノンの攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::AtkCannon(D3DXVECTOR3& myPos)
+{
+    if (m_nCntTime >= CANNON_FIRE_START_FRAME && m_nCntTime <= CANNON_FIRE_END_FRAME)
+    {
+        // 発射フレーム
+        if (m_nCntTime % CANNON_FIRE_INTERVAL_FRAME == 0)
+        {
+            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+            CBullet::Create(CBullet::TYPE_CANNON_ATTACK, GetPartsPos(CANNON_PARTS_FIRE_CUBE), moveAngle, m_fStrength);
+        }
+    }
+    else if (m_nCntTime == CANNON_WHOLE_FRAME)
+    {
+        // 待機AIに
+        SetBaseState(BASE_STATE_WAIT, CANNON_WAIT_COUNT);
+    }
+}
+
+//=============================================================================
+// コマンダーの攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
+{
+    if (m_nCntTime == COMMANDER_FIRE_FRAME)
+    {
+        // 発射
+        for (int nCnt = 0; nCnt < COMMANDER_ONCE_SPAWN; nCnt++)
+        {
+            float fAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
+            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngle), COMMANDER_SPAWN_ANGLE_Y, -cosf(fAngle));
+            CBullet::Create(CBullet::TYPE_COMMANDER_ATTACK, GetPartsPos(COMMANDER_PARTS_SPAWN_POS), moveAngle, m_fStrength);
+        }
+    }
+    else if (m_nCntTime == COMMANDER_WHOLE_FRAME)
+    {
+        // 待機AIに
+        SetBaseState(BASE_STATE_WAIT, COMMANDER_WAIT_COUNT);
     }
 }

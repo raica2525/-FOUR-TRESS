@@ -62,11 +62,9 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_nCntTime = 0;
     m_bSquashedByFortress = true;
-    m_bDetectPlayer = false;
 
     m_appearState = APPEAR_STATE_EXIST;
     m_bDeath = false;
-    m_nIdx = 0;
     m_baseState = BASE_STATE_WAIT;
 
     m_walkMotion = 0;
@@ -81,11 +79,12 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
     m_nCurrentStateEndFrame = 0;
 
     m_bWarning = false;
-    m_fDiscoveryPlayerDistance = 0.0f;
-    m_pTargetPlayer = NULL;
+    m_fDiscoveryTargetDistance = 0.0f;
+    m_pTarget = NULL;
     m_setAnimationThisFrame = 0;
 
     m_bUseCommonAtkFollow = false;
+    m_targetTrend = TARGET_TREND_PLAYER;
 }
 
 //=============================================================================
@@ -191,7 +190,8 @@ void CEnemy::Update(void)
         SquashedByFortress(myPos);
 
         // マップ制限
-        MapLimit(myPos);
+        D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
+        CGame::MapLimit(myPos, GetPosOld(), myCubeSize);
 
         // 位置、移動量を反映
         SetPos(myPos);
@@ -263,8 +263,24 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
     }
     CItem::Create(dentiType, myPos, m_fChargeValue);
 
+    // カミカゼの場合、爆発を生み出す
+    if (m_type == TYPE_KAMIKAZE)
+    {
+        CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, m_fStrength);
+    }
+
     // 終了処理
     Uninit();
+}
+
+//=============================================================================
+// 再巡回処理
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::RePatrol(void)
+{
+    m_bWarning = false;
+    SetBaseState(BASE_STATE_PATROL);
 }
 
 //=============================================================================
@@ -304,9 +320,6 @@ CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearSta
     // 初期化
     pEnemy->Init(pos, DEFAULT_SCALE);
 
-    // インデックスを取得
-    pEnemy->m_nIdx = CGame::GetEnemyIdx();
-
     // 出現していないなら、無敵にしておく
     if (pEnemy->m_appearState != APPEAR_STATE_EXIST)
     {
@@ -323,10 +336,10 @@ CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearSta
 }
 
 //=============================================================================
-// プレイヤー発見処理
+// ターゲット発見処理
 // Author : 後藤慎之助
 //=============================================================================
-void CEnemy::DiscoveryPlayer(CPlayer *pPlayer)
+void CEnemy::DiscoveryTarget(CCharacter *pTarget)
 {
     // 警戒中でなかったら
     if (!m_bWarning)
@@ -338,10 +351,10 @@ void CEnemy::DiscoveryPlayer(CPlayer *pPlayer)
     // 警戒中に
     m_bWarning = true;
 
-    // プレイヤーを結びつける
-    if (pPlayer)
+    // ターゲットを結びつける
+    if (pTarget)
     {
-        m_pTargetPlayer = pPlayer;
+        m_pTarget = pTarget;
     }
 
     // ここで、ビックリマーク的なものを出す
@@ -490,21 +503,20 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
             if (m_bWarning)
             {
                 // ターゲットとの距離が遠いなら、追従
-                if (m_pTargetPlayer)
+                if (m_pTarget)
                 {
                     D3DXVECTOR3 myPos = GetPos();
-                    D3DXVECTOR3 targetPos = m_pTargetPlayer->GetPos();
+                    D3DXVECTOR3 targetPos = m_pTarget->GetPos();
                     float fCurrentDistance = sqrtf(
                         powf((myPos.x - targetPos.x), 2.0f) +
                         powf((myPos.z - targetPos.z), 2.0f));
-                    if (fCurrentDistance > m_fDiscoveryPlayerDistance)
+                    if (fCurrentDistance > m_fDiscoveryTargetDistance)
                     {
                         // 現在の位置と、目的地までの移動角度/向きを求める
-                        D3DXVECTOR3 myPos = GetPos();
                         float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
                         m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
                         SetRotDestY(fDestAngle);
-                        m_bUseCommonAtkFollow = true;
+                        m_bUseCommonAtkFollow = true;   // 共通の攻撃フラグを立てる
                     }
                 }
             }
@@ -549,12 +561,17 @@ void CEnemy::WaitAI(D3DXVECTOR3& myPos)
     // 警戒中なら、向きをターゲットに追従
     if (m_bWarning)
     {
-        if (m_pTargetPlayer)
+        if (m_pTarget)
         {
-            if (m_pTargetPlayer->GetDisp())
+            if (m_pTarget->GetDisp())
             {
-                SetRotDestY(GetAngleToTargetXZ(m_pTargetPlayer->GetPos(), myPos));
+                SetRotDestY(GetAngleToTargetXZ(m_pTarget->GetPos(), myPos));
                 RotControl();
+            }
+            else
+            {
+                // ターゲットがやられたなら、即座に警戒を解いて再巡回
+                RePatrol();
             }
         }
     }
@@ -596,12 +613,29 @@ void CEnemy::PatrolAI(D3DXVECTOR3& myPos)
     // 位置に移動量を結びつける
     myPos += m_moveAngle * m_fSpeed;
 
-    // プレイヤー発見処理
+    // ターゲット発見処理
     float fKeepDistance = 0.0f;
-    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
-    if (fKeepDistance <= m_fDiscoveryPlayerDistance)
+    CCharacter *pTarget = NULL;
+    switch (m_targetTrend)
     {
-        DiscoveryPlayer(pKeepPlayer);
+    case TARGET_TREND_PLAYER:
+        pTarget = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
+        break;
+    case TARGET_TREND_FORTRESS:
+        pTarget = CGame::GetDistanceAndPointerToClosestFortress(myPos, fKeepDistance);
+        break;
+    case TARGET_TREND_PLAYER_AND_FORTRESS:
+        pTarget = CGame::GetDistanceAndPointerToClosestPlayerOrFortress(myPos, fKeepDistance);
+        break;
+    }
+
+    // ターゲットとの距離が発見距離より小さいなら、発見処理へ
+    if (fKeepDistance <= m_fDiscoveryTargetDistance)
+    {
+        if (pTarget)
+        {
+            DiscoveryTarget(pTarget);
+        }
     }
 
     // 歩行モーションに
@@ -636,6 +670,15 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
         case TYPE_ARMY:
             AtkArmy(myPos);
             break;
+        case TYPE_KAMIKAZE:
+            AtkKamikaze(myPos);
+            break;
+        case TYPE_CANNON:
+            AtkCannon(myPos);
+            break;
+        case TYPE_COMMANDER:
+            AtkCommander(myPos);
+            break;
         }
 
         // 攻撃モーションに
@@ -655,8 +698,16 @@ void CEnemy::DamageAI(void)
     // ダメージモーションが終わるカウンタなら
     if (m_nCntTime >= m_nCurrentStateEndFrame)
     {
-        // 攻撃AIに
-        SetBaseState(BASE_STATE_ATTACK, WAIT_COUNT_AFTER_DAMAGE);
+        // ターゲットがいるなら攻撃AIに
+        if (m_pTarget)
+        {
+            SetBaseState(BASE_STATE_ATTACK, WAIT_COUNT_AFTER_DAMAGE);
+        }
+        else
+        {
+            // ターゲットがいないなら巡回へ
+            RePatrol();
+        }
     }
 
     // ダメージモーションに

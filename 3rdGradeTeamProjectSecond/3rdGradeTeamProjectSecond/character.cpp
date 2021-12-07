@@ -74,6 +74,8 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
     m_fTurnSpeed = DEFAULT_TURN_SPEED;
 
     m_bResetAttackByDamage = false;
+    m_bDisp = true;
+    m_nIdx = 0;
 
     m_bIsInvincible = false;
     m_nCntTakeDamageTime = 0;
@@ -147,6 +149,9 @@ HRESULT CCharacter::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
             CreateHPGauge();
         }
     }
+
+    // キャラクターのインデックスを取得
+    m_nIdx = CGame::GetCharacterIdx();
 
     return S_OK;
 }
@@ -695,33 +700,5 @@ void CCharacter::ControlMove(float& fMove, bool bGround)
 
         // 移動量制御
         fMove *= fControlMoveRate;
-    }
-}
-
-//=============================================================================
-// マップ制限処理
-// Author : 後藤慎之助
-//=============================================================================
-void CCharacter::MapLimit(D3DXVECTOR3 &pos)
-{
-    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
-    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
-    {
-        // 中身があるなら
-        if (pScene)
-        {
-            // 次のシーンを記憶
-            CScene*pNextScene = pScene->GetNextScene();
-
-            // ブロックにキャスト
-            CBlock *pBlock = (CBlock*)pScene;
-
-            // マップ制限を反映
-            D3DXVECTOR3 myCubeSize = D3DXVECTOR3(m_collisionSizeDefence.x, m_collisionSizeDefence.y, m_collisionSizeDefence.x);
-            IsBlockCollisionXZ(pos, m_posOld, pBlock->GetPos(), myCubeSize, pBlock->GetCollisionSize());
-
-            // 次のシーンにする
-            pScene = pNextScene;
-        }
     }
 }

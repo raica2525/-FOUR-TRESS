@@ -42,6 +42,14 @@ public:
         APPEAR_STATE_WAIT_PLAYER,     // プレイヤー接近時、出現
     }APPEAR_STATE;
 
+    // ターゲット傾向
+    typedef enum
+    {
+        TARGET_TREND_PLAYER = 0,            // プレイヤーを狙う
+        TARGET_TREND_FORTRESS,              // 移動要塞を狙う
+        TARGET_TREND_PLAYER_AND_FORTRESS,   // プレイヤーと移動要塞を狙う
+    }TARGET_TREND;
+
     // 敵の種類
     typedef enum
     {
@@ -172,7 +180,7 @@ public:
     static CEnemy *Create(int type, D3DXVECTOR3 pos, float fStrength = 1.0f,
         int appearState = APPEAR_STATE_EXIST, float fSearchDistanceForAppear = 2000.0f, float fChargeValue = NOT_EXIST_F);// 生成処理
 
-    void DiscoveryPlayer(CPlayer *pPlayer);                                             // プレイヤー発見処理
+    void DiscoveryTarget(CCharacter *pTarget);                                          // ターゲット発見処理
 
     //=============================
     // セッター
@@ -182,7 +190,6 @@ public:
     //=============================
     // ゲッター
     //=============================
-    int GetIdx(void) { return m_nIdx; }
 
 private:
     int m_type;                              // 種類
@@ -192,11 +199,9 @@ private:
 
     int m_nCntTime;                          // 時間を数える
     bool m_bSquashedByFortress;              // 要塞に踏みつぶされるかどうか
-    bool m_bDetectPlayer;                    // プレイヤーを見つけているかどうか
 
     int m_appearState;                       // 出現状態
     bool m_bDeath;                           // やられているかどうか
-    int m_nIdx;                              // 生成のインデックス
     BASE_STATE m_baseState;                  // 基本状態
 
     int m_walkMotion;                        // 歩きモーション
@@ -211,11 +216,12 @@ private:
     int m_nCurrentStateEndFrame;             // 現在の状態が終わるフレーム数
 
     bool m_bWarning;                         // 警戒中かどうか
-    float m_fDiscoveryPlayerDistance;        // プレイヤー発見距離
-    CPlayer *m_pTargetPlayer;                // 標的のプレイヤー
+    float m_fDiscoveryTargetDistance;        // ターゲット発見距離
+    CCharacter *m_pTarget;                   // 標的のキャラクター
     int m_setAnimationThisFrame;             // このフレーム内で、設定するアニメーション番号
 
     bool m_bUseCommonAtkFollow;              // 追従攻撃を使用するかどうか
+    TARGET_TREND m_targetTrend;              // ターゲット傾向
 
     //=============================
     // 種類ごとの処理
@@ -223,6 +229,9 @@ private:
     void SetupInfoByType(void);
     void AtkCommonFollow(D3DXVECTOR3& myPos);
     void AtkArmy(D3DXVECTOR3& myPos);
+    void AtkKamikaze(D3DXVECTOR3& myPos);
+    void AtkCannon(D3DXVECTOR3& myPos);
+    void AtkCommander(D3DXVECTOR3& myPos);
 
     //=============================
     // このクラス内でのみ使う処理
@@ -230,6 +239,7 @@ private:
     void Appear(void);
     void SquashedByFortress(D3DXVECTOR3 myPos);
     void DeathOneFrame(D3DXVECTOR3 myPos);
+    void RePatrol(void);
 
     //=============================
     // AI系

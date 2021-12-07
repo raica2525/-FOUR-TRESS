@@ -396,7 +396,6 @@ public:
     //======================================================*/
     void SetAddPoint(void) { m_nPoint++; }
     void SetSpGaugeCurrent(float fSpGauge) { m_fSpGaugeCurrent = fSpGauge; }
-    void SetDisp(bool bDisp) { m_bDisp = bDisp; }
     void ResetStatusEveryRound(void);   // 毎ラウンドリセットするステータス
     void SetDispAbility(bool bDisp) { m_bDispAbility = bDisp; }
     void SetCustomWeaponLook(void) { if (m_nCntAttackAnimTime <= 0)m_nCntAttackAnimTime = PLAYER_WEAPON_LOOK_FRAME; }
@@ -406,7 +405,6 @@ public:
     /*========================================================
     // ゲッター
     //======================================================*/
-    bool GetDisp(void) { return m_bDisp; }
     float GetAtk(void) { return m_fAtk; }
     float GetDef(void) { return m_fDef; }
     float GetSpd(void) { return m_fSpd; }
@@ -452,7 +450,6 @@ private:
 
     int m_exFlag;                            // 特殊能力フラグ
     bool m_bGround;                          // 地面にいるかどうか
-    bool m_bDisp;                            // 表示フラグ
 
     int m_nCntLandingTime;                   // 着地時間
     bool m_bGroundOld;                       // 1F前、地面にいたかどうか
@@ -470,7 +467,7 @@ private:
     bool m_bUsedSecondJump;                  // 二段ジャンプを使ったかどうか
     int m_nCntStartGlide;                    // 滑空が始まるまでのカウンタ
 
-    bool m_abUseAvoidMultipleHits[ENEMY_IDX_MAX]; // 多段ヒット回避を使うかどうか
+    bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // 多段ヒット回避を使うかどうか
     int m_nCntAttackAnimTime;                // 攻撃アニメーションの最低保証
 
     int m_spShot;                            // 必殺技
