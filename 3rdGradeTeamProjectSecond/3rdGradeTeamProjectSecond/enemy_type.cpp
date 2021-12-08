@@ -71,7 +71,7 @@ void CEnemy::SetupInfoByType(void)
     CCharacter::SetHPDisp(CCharacter::HP_DISP_FOLLOW);  // HP表示は基本追従
     float fHP = 0.0f;
     m_nPatrolDistance = DEFAULT_PATROL_DISTANCE;
-    m_fDiscoveryTargetDistance = DEFAULT_DISCOVERY_PLAYER_DISTANCE;
+    m_fDiscoveryTargetDistance = DEFAULT_DISCOVERY_PLAYER_DISTANCE;     // 主に攻撃周りの検知で使う
     SetTurnSpeed(DEFAULT_ENEMY_TURN_SPEED);
 
     switch (m_type)
@@ -103,7 +103,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_ARMY:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 150.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 300.0f));
         m_fSpeed = 5.0f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
@@ -119,7 +119,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_KAMIKAZE:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 150.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 325.0f));
         m_fSpeed = 5.0f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;
@@ -138,7 +138,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_CANNON:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(400.0f, 200.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(400.0f, 400.0f));
         m_fSpeed = 0.0f;
         fHP = 450.0f;
         m_fChargeValue = 10.0f;
@@ -154,7 +154,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_COMMANDER:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(500.0f, 200.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(600.0f, 400.0f));
         m_fSpeed = 0.0f;
         fHP = 850.0f;
         m_fChargeValue = 20.0f;

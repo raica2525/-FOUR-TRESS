@@ -49,6 +49,8 @@ public:
         TYPE_KAMIKAZE_EX,       // カミカゼの爆発
         TYPE_CANNON_ATTACK,     // キャノンの攻撃
         TYPE_COMMANDER_ATTACK,  // コマンダーの攻撃
+        TYPE_HUNTER_GROUND,     // ハンターの地上攻撃
+        TYPE_HUNTER_SKY,        // ハンターの空中攻撃
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -69,6 +71,7 @@ public:
     //=============================
     // セッター
     //=============================
+    void SetTargetPos(D3DXVECTOR3 targetPos) { m_targetPos = targetPos; }
 
 private:
     int m_type;                     // 種類
@@ -81,7 +84,6 @@ private:
     int m_nLife;                    // 寿命
     float m_fDamage;                // ダメージ
 
-    bool m_bUseCntTime;             // 時間経過で変化の起きる弾かどうか
     int m_nCntTime;                 // 生成されてからの時間を数える
     bool m_bUseDraw;                // 描画するかどうか
 
@@ -89,15 +91,16 @@ private:
     CEffect3D *m_pEffect3d_Shadow;  // 影へのポインタ
     bool m_bBreakGoalGate;          // ゴールゲートを壊すかどうか
     bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // 多段ヒット回避を使うかどうか
-
-    float m_fGravityValue;          // 重力の値
-    float m_fGravityLimit;          // 重力制限
     float m_fStrength;              // 強さ
+
+    D3DXVECTOR3 m_targetPos;        // ターゲットの位置
 
     //=============================
     // 種類ごとの処理
     //=============================
     void SetupInfoByType(float fStrength, const D3DXVECTOR3 pos);
+    void CommanderAttackMove(D3DXVECTOR3 &myPos);
+    void HunterSkyMove(D3DXVECTOR3 &myPos);
 
     //=============================
     // このクラス内でのみ使う処理

@@ -43,7 +43,6 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_nLife = 0;
     m_fDamage = 0;
 
-    m_bUseCntTime = false;
     m_nCntTime = 0;
     m_bUseDraw = false;
 
@@ -51,10 +50,9 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_pEffect3d_Shadow = NULL;
     m_bBreakGoalGate = false;
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
-
-    m_fGravityValue = 0.0f;
-    m_fGravityLimit = 0.0f;
     m_fStrength = 0.0f;
+
+    m_targetPos = DEFAULT_VECTOR;
 }
 
 //=============================================================================
@@ -101,32 +99,24 @@ void CBullet::Uninit(void)
 //=============================================================================
 void CBullet::Update(void)
 {
-    // 時間経過を利用する弾なら
-    if (m_bUseCntTime)
-    {
-        m_nCntTime++;
-    }
-
     // 位置、大きさを取得
     D3DXVECTOR3 myPos = GetPos();
 
     // 1F前の位置を結びつける
     m_posOld = myPos;
 
-    // 移動量を位置に結びつける
-    if (m_fGravityValue == 0.0f)
+    // 移動量を位置に結びつける(種類ごとの動き)
+    switch (m_type)
     {
+    case TYPE_COMMANDER_ATTACK:
+        CommanderAttackMove(myPos);
+        break;
+    case TYPE_HUNTER_SKY:
+        HunterSkyMove(myPos);
+        break;
+    default:
         myPos += m_moveAngle * m_fSpeed;
-    }
-    else
-    {
-        // 重力を使うなら
-        float fGravity = m_fGravityValue * m_nCntTime;
-        if (fGravity < m_fGravityLimit)
-        {
-            fGravity = m_fGravityLimit;
-        }
-        myPos += m_moveAngle * m_fSpeed + D3DXVECTOR3(0.0f, fGravity, 0.0f);
+        break;
     }
 
     // 当たり判定を設定
@@ -348,10 +338,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 {
                     // ダメージ
                     pBlock->TakeDamage(m_bBreakGoalGate);
-                    if (m_bHitErase)
-                    {
-                        m_nLife = NOT_EXIST;
-                    }
+                    m_nLife = NOT_EXIST;    // ブロックは貫通出来ない
                 }
 
                 // 次のシーンにする
@@ -385,10 +372,12 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 case HIT_SURFACE_LEFT:
                 case HIT_SURFACE_RIGHT:
                     m_moveAngle.x *= -1.0f;
+                    memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
                     break;
                 case HIT_SURFACE_BACK:
                 case HIT_SURFACE_FRONT:
                     m_moveAngle.z *= -1.0f;
+                    memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
                     break;
                 }
 
@@ -398,13 +387,15 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         }
     }
 
-    // コマンダーの攻撃は、床に接したときに敵を生成し、消す
-    if (m_type == TYPE_COMMANDER_ATTACK)
+    // 床に当たったら消す
+    if (bulletPos.y < 0.0f)
     {
-        if (bulletPos.y <= 0.0f)
+        bulletPos.y = 0.0f;
+        m_nLife = NOT_EXIST;
+
+        // コマンダーの弾なら、敵を生成
+        if (m_type == TYPE_COMMANDER_ATTACK)
         {
-            bulletPos.y = 0.0f;
-            m_nLife = NOT_EXIST;
             CEnemy::Create(CEnemy::TYPE_ARMY, bulletPos);
         }
     }

@@ -149,19 +149,19 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [18] スパイダーの体
+# [18] ハンターの顔
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 18
-	NAME = data/MODEL/spider/00_body.x
+	NAME = data/MODEL/player2/02_head.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [19] スパイダーの腹
+# [19] ハンターの弓
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 19
-	NAME = data/MODEL/spider/01_stomach.x
+	NAME = data/MODEL/player2/15_weapon.x
 END_MODEL_DATASET
 
 #---------------------------------------

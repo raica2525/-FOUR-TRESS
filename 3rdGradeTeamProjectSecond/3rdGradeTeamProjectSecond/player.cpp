@@ -43,17 +43,41 @@
 #define CUSTOM_SPD_COLOR D3DXCOLOR(0.156f, 0.56f, 0.854f, 1.0f)
 #define CUSTOM_WEI_COLOR D3DXCOLOR(1.0f, 0.501f, 0.0f, 1.0f)
 
+// 最大量（昔のまま）
 #define MAX_ATK 2250.0f
 #define MAX_DEF 2000.0f
 #define MAX_SPD 2700.0f
 #define MAX_WEI 4100.0f
 
-// プレイヤーの基本情報
+//=======================
+// ウォーリアー
+//=======================
 #define WARRIOR_LIFE 500.0f
 #define WARRIOR_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define WARRIOR_SPD 840.0f
+#define WARRIOR_WEI 3060.0f
+
+//=======================
+// ハンター
+//=======================
 #define HUNTER_LIFE 290.0f
+#define HUNTER_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define HUNTER_SPD 940.0f
+#define HUNTER_WEI 3060.0f
+
+//=======================
+// キャリアー
+//=======================
 #define CARRIER_LIFE 370.0f
+
+//=======================
+// タンク
+//=======================
 #define TANK_LIFE 850.0f
+
+//=======================
+// ヒーラー
+//=======================
 #define HEALER_LIFE 350.0f
 
 //=============================================================================
@@ -142,7 +166,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     //===================================    
     // Secondで追加したメンバ変数
     //===================================
-    m_role = ROLE_WARRIOR;
+    m_role = 0;
     m_attackState = ATTACK_STATE_NONE;
     m_nCntStopTime = 0;
     m_nCntAttackTime = 0;
@@ -168,7 +192,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
     // アニメーションを読み込む
     //CCharacter::LoadModelData("./data/ANIMATION/motion_player.txt");  // 座標・親子関係の読み込みと、アニメーションの読み込みを分けた
-    CCharacter::SetAnimFilePass("./data/ANIMATION/motion_player.txt");
+    //CCharacter::SetAnimFilePass("./data/ANIMATION/motion_player.txt");// 今回のゲームはカスタマイズしないため、LoadCustom内に移住
 
     // プレイアブルキャラの設定を読み込む
     LoadCustom();
@@ -205,176 +229,176 @@ void CPlayer::LoadCustom(void)
     m_fWei = 0.0f;
     m_exFlag = EX_FLAG_NONE;
     D3DXVECTOR2 collisionSizeDefence = D3DXVECTOR2(0.0f, 0.0f);
-    memset(m_afParam, 0, sizeof(m_afParam));
+    //memset(m_afParam, 0, sizeof(m_afParam));
 
-    // カスタマイズデータのファイルを開く
-    switch (m_nIdxControlAndColor)
-    {
-    case PLAYER_1:
-        pFile = fopen("data/TXT/custom1.txt", "r");
-        break;
-    case PLAYER_2:
-        pFile = fopen("data/TXT/custom2.txt", "r");
-        break;
-    case PLAYER_3:
-        pFile = fopen("data/TXT/custom3.txt", "r");
-        break;
-    case PLAYER_4:
-        pFile = fopen("data/TXT/custom4.txt", "r");
-        break;
-    }
+    //// カスタマイズデータのファイルを開く
+    //switch (m_nIdxControlAndColor)
+    //{
+    //case PLAYER_1:
+    //    pFile = fopen("data/TXT/custom1.txt", "r");
+    //    break;
+    //case PLAYER_2:
+    //    pFile = fopen("data/TXT/custom2.txt", "r");
+    //    break;
+    //case PLAYER_3:
+    //    pFile = fopen("data/TXT/custom3.txt", "r");
+    //    break;
+    //case PLAYER_4:
+    //    pFile = fopen("data/TXT/custom4.txt", "r");
+    //    break;
+    //}
 
-    // 開けたら
-    if (pFile != NULL)
-    {
-        for (int nCntPartsList = 0; nCntPartsList < MAX_PARTS; nCntPartsList++)
-        {
-            // 読み込み
-            fscanf(pFile, "%d", &nPartsListType);
+    //// 開けたら
+    //if (pFile != NULL)
+    //{
+    //    for (int nCntPartsList = 0; nCntPartsList < MAX_PARTS; nCntPartsList++)
+    //    {
+    //        // 読み込み
+    //        fscanf(pFile, "%d", &nPartsListType);
 
-            // 基本4能力
-            m_fAtk += pModelData->GetPartsList(nPartsListType)->fAtk * pModelData->GetPartsRate(nCntPartsList)->fAtkRate;
-            m_fDef += pModelData->GetPartsList(nPartsListType)->fDef * pModelData->GetPartsRate(nCntPartsList)->fDefRate;
-            m_fSpd += pModelData->GetPartsList(nPartsListType)->fSpd * pModelData->GetPartsRate(nCntPartsList)->fSpdRate;
-            m_fWei += pModelData->GetPartsList(nPartsListType)->fWei * pModelData->GetPartsRate(nCntPartsList)->fWeiRate;
+    //        // 基本4能力
+    //        m_fAtk += pModelData->GetPartsList(nPartsListType)->fAtk * pModelData->GetPartsRate(nCntPartsList)->fAtkRate;
+    //        m_fDef += pModelData->GetPartsList(nPartsListType)->fDef * pModelData->GetPartsRate(nCntPartsList)->fDefRate;
+    //        m_fSpd += pModelData->GetPartsList(nPartsListType)->fSpd * pModelData->GetPartsRate(nCntPartsList)->fSpdRate;
+    //        m_fWei += pModelData->GetPartsList(nPartsListType)->fWei * pModelData->GetPartsRate(nCntPartsList)->fWeiRate;
 
-            // 特殊能力
-            int customPartsExFlag = 0;  // カスタマイズ画面で使う、パーツ毎の特殊能力
-            nExNumber = pModelData->GetPartsList(nPartsListType)->nEx0;
-            BITON(m_exFlag, 0x001 << nExNumber);
-            BITON(customPartsExFlag, 0x001 << nExNumber);
-            nExNumber = pModelData->GetPartsList(nPartsListType)->nEx1;
-            BITON(m_exFlag, 0x001 << nExNumber);
-            BITON(customPartsExFlag, 0x001 << nExNumber);
+    //        // 特殊能力
+    //        int customPartsExFlag = 0;  // カスタマイズ画面で使う、パーツ毎の特殊能力
+    //        nExNumber = pModelData->GetPartsList(nPartsListType)->nEx0;
+    //        BITON(m_exFlag, 0x001 << nExNumber);
+    //        BITON(customPartsExFlag, 0x001 << nExNumber);
+    //        nExNumber = pModelData->GetPartsList(nPartsListType)->nEx1;
+    //        BITON(m_exFlag, 0x001 << nExNumber);
+    //        BITON(customPartsExFlag, 0x001 << nExNumber);
 
-            // 各パーツリストから、細部のパーツを決定
-            if (nCntPartsList == PARTS_LIST_HEAD)
-            {
-                // カスタマイズ画面で特殊能力表示を更新
-                if (m_pText_Custom_Ex_Head)
-                {
-                    char cExName[256];
-                    CustomExName(cExName, customPartsExFlag);
-                    m_pText_Custom_Ex_Head->SetText(cExName);
-                }
+    //        // 各パーツリストから、細部のパーツを決定
+    //        if (nCntPartsList == PARTS_LIST_HEAD)
+    //        {
+    //            // カスタマイズ画面で特殊能力表示を更新
+    //            if (m_pText_Custom_Ex_Head)
+    //            {
+    //                char cExName[256];
+    //                CustomExName(cExName, customPartsExFlag);
+    //                m_pText_Custom_Ex_Head->SetText(cExName);
+    //            }
 
-                // モデルをバインド
-                BindParts(PARTS_HEAD, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
+    //            // モデルをバインド
+    //            BindParts(PARTS_HEAD, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
 
-                // カスタマイズパーツ番号を取得
-                m_anNumCustomParts[CUSTOM_PARTS_HEAD] = nPartsListType;
+    //            // カスタマイズパーツ番号を取得
+    //            m_anNumCustomParts[CUSTOM_PARTS_HEAD] = nPartsListType;
 
-                // スイングの向きを、補助値から補助値へ
-                m_afParam[PARAM_SWING_UP] = pModelData->GetPartsList(nPartsListType)->afParam[1];
-                m_afParam[PARAM_SWING_DOWN] = pModelData->GetPartsList(nPartsListType)->afParam[2];
-                m_afParam[PARAM_SMASH] = pModelData->GetPartsList(nPartsListType)->afParam[3];
-                m_afParam[PARAM_SPIKE_RIGHT] = pModelData->GetPartsList(nPartsListType)->afParam[4];
-                m_afParam[PARAM_SPIKE_LEFT] = pModelData->GetPartsList(nPartsListType)->afParam[5];
+    //            // スイングの向きを、補助値から補助値へ
+    //            m_afParam[PARAM_SWING_UP] = pModelData->GetPartsList(nPartsListType)->afParam[1];
+    //            m_afParam[PARAM_SWING_DOWN] = pModelData->GetPartsList(nPartsListType)->afParam[2];
+    //            m_afParam[PARAM_SMASH] = pModelData->GetPartsList(nPartsListType)->afParam[3];
+    //            m_afParam[PARAM_SPIKE_RIGHT] = pModelData->GetPartsList(nPartsListType)->afParam[4];
+    //            m_afParam[PARAM_SPIKE_LEFT] = pModelData->GetPartsList(nPartsListType)->afParam[5];
 
-                // ボイスセットの番号を保持
-                m_voiceSet = (int)pModelData->GetPartsList(nPartsListType)->afParam[6];
+    //            // ボイスセットの番号を保持
+    //            m_voiceSet = (int)pModelData->GetPartsList(nPartsListType)->afParam[6];
 
-                // 防御当たり判定の更新
-                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
-                {
-                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
-                }
-                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
-            }
-            else if (nCntPartsList == PARTS_LIST_UP)
-            {
-                // カスタマイズ画面で特殊能力表示を更新
-                if (m_pText_Custom_Ex_Up)
-                {
-                    char cExName[256];
-                    CustomExName(cExName, customPartsExFlag);
-                    m_pText_Custom_Ex_Up->SetText(cExName);
-                }
+    //            // 防御当たり判定の更新
+    //            if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+    //            {
+    //                collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+    //            }
+    //            collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+    //        }
+    //        else if (nCntPartsList == PARTS_LIST_UP)
+    //        {
+    //            // カスタマイズ画面で特殊能力表示を更新
+    //            if (m_pText_Custom_Ex_Up)
+    //            {
+    //                char cExName[256];
+    //                CustomExName(cExName, customPartsExFlag);
+    //                m_pText_Custom_Ex_Up->SetText(cExName);
+    //            }
 
-                // モデルをバインド
-                BindParts(PARTS_BODY, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
-                BindParts(PARTS_RSHOULDER, (int)pModelData->GetPartsList(nPartsListType)->afParam[1]);
-                BindParts(PARTS_RARM, (int)pModelData->GetPartsList(nPartsListType)->afParam[2]);
-                BindParts(PARTS_RHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[3]);
-                BindParts(PARTS_LSHOULDER, (int)pModelData->GetPartsList(nPartsListType)->afParam[4]);
-                BindParts(PARTS_LARM, (int)pModelData->GetPartsList(nPartsListType)->afParam[5]);
-                BindParts(PARTS_LHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
+    //            // モデルをバインド
+    //            BindParts(PARTS_BODY, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
+    //            BindParts(PARTS_RSHOULDER, (int)pModelData->GetPartsList(nPartsListType)->afParam[1]);
+    //            BindParts(PARTS_RARM, (int)pModelData->GetPartsList(nPartsListType)->afParam[2]);
+    //            BindParts(PARTS_RHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[3]);
+    //            BindParts(PARTS_LSHOULDER, (int)pModelData->GetPartsList(nPartsListType)->afParam[4]);
+    //            BindParts(PARTS_LARM, (int)pModelData->GetPartsList(nPartsListType)->afParam[5]);
+    //            BindParts(PARTS_LHAND, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
 
-                // カスタマイズパーツ番号を取得
-                m_anNumCustomParts[CUSTOM_PARTS_UP] = nPartsListType;
+    //            // カスタマイズパーツ番号を取得
+    //            m_anNumCustomParts[CUSTOM_PARTS_UP] = nPartsListType;
 
-                // 上半身の初期位置データ
-                m_nModelPosDefUp = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
+    //            // 上半身の初期位置データ
+    //            m_nModelPosDefUp = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
 
-                // 防御当たり判定の更新
-                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
-                {
-                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
-                }
-                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
-            }
-            else if (nCntPartsList == PARTS_LIST_DOWN)
-            {
-                // カスタマイズ画面で特殊能力表示を更新
-                if (m_pText_Custom_Ex_Down)
-                {
-                    char cExName[256];
-                    CustomExName(cExName, customPartsExFlag);
-                    m_pText_Custom_Ex_Down->SetText(cExName);
-                }
+    //            // 防御当たり判定の更新
+    //            if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+    //            {
+    //                collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+    //            }
+    //            collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+    //        }
+    //        else if (nCntPartsList == PARTS_LIST_DOWN)
+    //        {
+    //            // カスタマイズ画面で特殊能力表示を更新
+    //            if (m_pText_Custom_Ex_Down)
+    //            {
+    //                char cExName[256];
+    //                CustomExName(cExName, customPartsExFlag);
+    //                m_pText_Custom_Ex_Down->SetText(cExName);
+    //            }
 
-                // モデルをバインド
-                BindParts(PARTS_HIP, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
-                BindParts(PARTS_RTHIGH, (int)pModelData->GetPartsList(nPartsListType)->afParam[1]);
-                BindParts(PARTS_RLEG, (int)pModelData->GetPartsList(nPartsListType)->afParam[2]);
-                BindParts(PARTS_RFOOT, (int)pModelData->GetPartsList(nPartsListType)->afParam[3]);
-                BindParts(PARTS_LTHIGH, (int)pModelData->GetPartsList(nPartsListType)->afParam[4]);
-                BindParts(PARTS_LLEG, (int)pModelData->GetPartsList(nPartsListType)->afParam[5]);
-                BindParts(PARTS_LFOOT, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
+    //            // モデルをバインド
+    //            BindParts(PARTS_HIP, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
+    //            BindParts(PARTS_RTHIGH, (int)pModelData->GetPartsList(nPartsListType)->afParam[1]);
+    //            BindParts(PARTS_RLEG, (int)pModelData->GetPartsList(nPartsListType)->afParam[2]);
+    //            BindParts(PARTS_RFOOT, (int)pModelData->GetPartsList(nPartsListType)->afParam[3]);
+    //            BindParts(PARTS_LTHIGH, (int)pModelData->GetPartsList(nPartsListType)->afParam[4]);
+    //            BindParts(PARTS_LLEG, (int)pModelData->GetPartsList(nPartsListType)->afParam[5]);
+    //            BindParts(PARTS_LFOOT, (int)pModelData->GetPartsList(nPartsListType)->afParam[6]);
 
-                // カスタマイズパーツ番号を取得
-                m_anNumCustomParts[CUSTOM_PARTS_DOWN] = nPartsListType;
+    //            // カスタマイズパーツ番号を取得
+    //            m_anNumCustomParts[CUSTOM_PARTS_DOWN] = nPartsListType;
 
-                // 下半身の初期位置データ
-                m_nModelPosDefDown = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
+    //            // 下半身の初期位置データ
+    //            m_nModelPosDefDown = (int)pModelData->GetPartsList(nPartsListType)->afParam[7];
 
-                // 防御当たり判定の更新
-                if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
-                {
-                    collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
-                }
-                collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
-            }
-            else if (nCntPartsList == PARTS_LIST_WEP)
-            {
-                // カスタマイズ画面で特殊能力表示を更新
-                if (m_pText_Custom_Ex_Wep)
-                {
-                    char cExName[256];
-                    CustomExName(cExName, customPartsExFlag);
-                    m_pText_Custom_Ex_Wep->SetText(cExName);
-                }
+    //            // 防御当たり判定の更新
+    //            if (collisionSizeDefence.x < pModelData->GetPartsList(nPartsListType)->fWidth)
+    //            {
+    //                collisionSizeDefence.x = pModelData->GetPartsList(nPartsListType)->fWidth;
+    //            }
+    //            collisionSizeDefence.y += pModelData->GetPartsList(nPartsListType)->fHeight;
+    //        }
+    //        else if (nCntPartsList == PARTS_LIST_WEP)
+    //        {
+    //            // カスタマイズ画面で特殊能力表示を更新
+    //            if (m_pText_Custom_Ex_Wep)
+    //            {
+    //                char cExName[256];
+    //                CustomExName(cExName, customPartsExFlag);
+    //                m_pText_Custom_Ex_Wep->SetText(cExName);
+    //            }
 
-                // モデルをバインド
-                BindParts(PARTS_WEP, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
-                m_nNumWep = (int)pModelData->GetPartsList(nPartsListType)->afParam[0];
+    //            // モデルをバインド
+    //            BindParts(PARTS_WEP, (int)pModelData->GetPartsList(nPartsListType)->afParam[0]);
+    //            m_nNumWep = (int)pModelData->GetPartsList(nPartsListType)->afParam[0];
 
-                // カスタマイズパーツ番号を取得
-                m_anNumCustomParts[CUSTOM_PARTS_WEP] = nPartsListType;
+    //            // カスタマイズパーツ番号を取得
+    //            m_anNumCustomParts[CUSTOM_PARTS_WEP] = nPartsListType;
 
-                // 必殺技と、そのゲージ量
-                m_spShot = (int)pModelData->GetPartsList(nPartsListType)->afParam[1];
-                m_fSpGaugeMax = pModelData->GetPartsList(nPartsListType)->afParam[2];
+    //            // 必殺技と、そのゲージ量
+    //            m_spShot = (int)pModelData->GetPartsList(nPartsListType)->afParam[1];
+    //            m_fSpGaugeMax = pModelData->GetPartsList(nPartsListType)->afParam[2];
 
-                // 必殺技の補助値を補助値へ
-                m_afParam[PARAM_5_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[5];
-                m_afParam[PARAM_6_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[6];
-                m_afParam[PARAM_7_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[7];
-            }
-        }
-        // ファイルを閉じる
-        fclose(pFile);
-    }
+    //            // 必殺技の補助値を補助値へ
+    //            m_afParam[PARAM_5_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[5];
+    //            m_afParam[PARAM_6_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[6];
+    //            m_afParam[PARAM_7_WEAPON_SP] = pModelData->GetPartsList(nPartsListType)->afParam[7];
+    //        }
+    //    }
+    //    // ファイルを閉じる
+    //    fclose(pFile);
+    //}
 
     // カスタマイズ画面で必殺技表示を更新
     if (m_pText_Custom_Sp)
@@ -384,16 +408,45 @@ void CPlayer::LoadCustom(void)
         m_pText_Custom_Sp->SetText(cSpName);
     }
 
-    // 体力を決定
+    // 適当な設定
+    m_spShot = 1;
+    m_fSpGaugeMax = 100.0f;
+
+    // 共通の設定
+    BindParts(PARTS_BODY, 3);
+    BindParts(PARTS_RSHOULDER, 5);
+    BindParts(PARTS_RARM, 6);
+    BindParts(PARTS_RHAND, 7);
+    BindParts(PARTS_LSHOULDER, 8);
+    BindParts(PARTS_LARM, 9);
+    BindParts(PARTS_LHAND, 10);
+    BindParts(PARTS_HIP, 2);
+    BindParts(PARTS_RTHIGH, 11);
+    BindParts(PARTS_RLEG, 12);
+    BindParts(PARTS_RFOOT, 13);
+    BindParts(PARTS_LTHIGH, 14);
+    BindParts(PARTS_LLEG, 15);
+    BindParts(PARTS_LFOOT, 16);
+
+    // 各役職で異なる設定
     float fLife = 1.0f;
     switch (m_role)
     {
     case ROLE_WARRIOR:
+        BindParts(PARTS_HEAD, 4);
+        BindParts(PARTS_WEP, 17);
         fLife = WARRIOR_LIFE;
         collisionSizeDefence = WARRIOR_COLLISION_SIZE;
+        m_fSpd = WARRIOR_SPD;
+        m_fWei = WARRIOR_WEI;
         break;
     case ROLE_HUNTER:
+        BindParts(PARTS_HEAD, 18);
+        BindParts(PARTS_WEP, 19);
         fLife = HUNTER_LIFE;
+        collisionSizeDefence = HUNTER_COLLISION_SIZE;
+        m_fSpd = HUNTER_SPD;
+        m_fWei = HUNTER_WEI;
         break;
     case ROLE_CARRIER:
         fLife = CARRIER_LIFE;
@@ -409,7 +462,7 @@ void CPlayer::LoadCustom(void)
 
     // キャラクターに反映
     CCharacter::SetCollisionSizeDefence(collisionSizeDefence);
-    CCharacter::LoadModelData(m_nModelPosDefUp, m_nModelPosDefDown);
+    CCharacter::LoadModelData("./data/ANIMATION/motion_player.txt");
     CCharacter::Init(CCharacter::GetPos(), DEFAULT_SCALE);
 }
 
