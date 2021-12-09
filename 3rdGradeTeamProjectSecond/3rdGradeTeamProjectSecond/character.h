@@ -81,6 +81,7 @@ public:
     void LoadModelData(int nModelPosDefUp, int nModelPosDefDown); // モデルの初期位置データから読み込むときに使う関数
     void RotControl(void);                                        // 向きを調整
     bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType = 20);   // ダメージを受ける
+    bool PullToCenter(D3DXVECTOR3 centerPos);                     // 中心に引き寄せる
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
     void ControlMove(float& fMove, bool bGround = true);          // 移動量制御
 
@@ -213,6 +214,7 @@ private:
     bool m_bUseWhiteDraw;                    // 白描画を使用するかどうか
     int m_nCntWhiteDrawTime;                 // 白描画をするフレーム数
     bool m_bUseKnockBack;                    // ノックバックを使用するかどうか
+    bool m_bTakeWind;                        // 風を受けたかどうか
 };
 
 #endif

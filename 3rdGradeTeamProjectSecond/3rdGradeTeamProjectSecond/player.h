@@ -193,17 +193,17 @@ public:
         ANIM_WARRIOR_SKY,    // ウォーリアー空中
         ANIM_GLIDE,          // 滑空
         ANIM_SECOND_JUMP,    // 2段ジャンプ
-        ANIM_SQUAT,          // しゃがみ
+        ANIM_CARRIER_IDLE,   // キャリアー待機
         ANIM_DAMAGE_SMALL,   // のけぞり
         ANIM_DAMAGE_BIG,     // ダウン
         ANIM_STAND_UP,       // 起き上がり
-        ANIM_ABSORB,         // 吸収（アピール）
+        ANIM_CARRIER_DUSH,   // キャリアー走り
         ANIM_BLOWN,          // 吹き飛ばされ
-        ANIM_THIRD_JUMP,     // 3段ジャンプ
+        ANIM_CARRIER_GROUND, // キャリアー地上
         ANIM_CUSTOM_IDLE,    // カスタマイズ画面での待機
         ANIM_WEAPON_LOOK,    // カスタマイズ画面での武器を見る
-        ANIM_FIRST,          // 1位
-        ANIM_SECOND,         // 2位
+        ANIM_TANK_GROUND,    // タンク地上
+        ANIM_TANK_SKY,       // タンク空中
         ANIM_THIRD,          // 3位
         ANIM_FOURTH,         // 4位
         ANIM_FIRST_WAIT,     // 1位待機
@@ -262,20 +262,6 @@ public:
         ATTACK_STATE_TANK_SP,          // タンク必殺
         ATTACK_STATE_SIT_DOWN,         // 座る
     }ATTACK_STATE;
-
-    //// 汎用パラメータの内訳
-    //typedef enum
-    //{
-    //    PARAM_SWING_UP = 0,             // スイング上
-    //    PARAM_SWING_DOWN,               // スイング下
-    //    PARAM_SMASH,                    // スマッシュ
-    //    PARAM_SPIKE_RIGHT,              // スパイク右
-    //    PARAM_SPIKE_LEFT,               // スパイク左
-    //    PARAM_5_WEAPON_SP,              // 武器の必殺技補助値3番
-    //    PARAM_6_WEAPON_SP,              // 武器の必殺技補助値2番
-    //    PARAM_7_WEAPON_SP,              // 武器の必殺技補助値1番
-    //    PARAM_MAX
-    //}PARAM;
 
     typedef struct
     {
@@ -420,6 +406,7 @@ public:
     int GetCustomPartsNum(int nParts) { return m_anNumCustomParts[nParts]; }
     bool GetUseControllerEffect(void);       // コントローラの振動を使用するかどうか
     bool GetDispAbility(void) { return m_bDispAbility; }
+    int GetRole(void) { return m_role; }
 
 private:
     bool m_bMannequin;                       // マネキンかどうか
@@ -496,6 +483,8 @@ private:
     int m_nCntStopTime;         // 硬直時間のカウンタ
     int m_nCntAttackTime;       // 攻撃時間をカウント
     float m_fCurrentEnergy;     // 現在のエナジー量
+    int m_waitMotion;           // 待機モーション
+    int m_walkMotion;           // 移動モーション
 
     //===================================
     // このクラス内でのみ使う処理
@@ -516,7 +505,7 @@ private:
     void AtkHunterGround(D3DXVECTOR3& playerPos);
     void AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkCarrierGround(D3DXVECTOR3& playerPos);
-    void AtkCarrierSky(D3DXVECTOR3& playerPos);
+    void AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkTankGround(D3DXVECTOR3& playerPos);
     void AtkTankSky(D3DXVECTOR3& playerPos);
     void AtkHealerGround(D3DXVECTOR3& playerPos);

@@ -49,6 +49,10 @@
 #define MAX_SPD 2700.0f
 #define MAX_WEI 4100.0f
 
+// 持ち運びエナジー量
+#define CARRY_ENERGY_DEFAULT 50.0f
+#define CARRY_ENERGY_CARRIER 80.0f
+
 //=======================
 // ウォーリアー
 //=======================
@@ -69,11 +73,17 @@
 // キャリアー
 //=======================
 #define CARRIER_LIFE 370.0f
+#define CARRIER_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define CARRIER_SPD 1040.0f
+#define CARRIER_WEI 3060.0f
 
 //=======================
 // タンク
 //=======================
 #define TANK_LIFE 850.0f
+#define TANK_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define TANK_SPD 740.0f
+#define TANK_WEI 3360.0f
 
 //=======================
 // ヒーラー
@@ -166,11 +176,13 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     //===================================    
     // Secondで追加したメンバ変数
     //===================================
-    m_role = 0;
+    m_role = ROLE_TANK;
     m_attackState = ATTACK_STATE_NONE;
     m_nCntStopTime = 0;
     m_nCntAttackTime = 0;
     m_fCurrentEnergy = 0.0f;
+    m_waitMotion = ANIM_IDLE;
+    m_walkMotion = ANIM_MOVE;
 }
 
 //=============================================================================
@@ -449,10 +461,26 @@ void CPlayer::LoadCustom(void)
         m_fWei = HUNTER_WEI;
         break;
     case ROLE_CARRIER:
+        BindParts(PARTS_HEAD, 20);
+        BindParts(PARTS_WEP, 50);
+        BindParts(PARTS_RHAND, 21);
+        BindParts(PARTS_LHAND, 22);
+        BindParts(PARTS_RFOOT, 23);
+        BindParts(PARTS_LFOOT, 24);
         fLife = CARRIER_LIFE;
+        collisionSizeDefence = CARRIER_COLLISION_SIZE;
+        m_fSpd = CARRIER_SPD;
+        m_fWei = CARRIER_WEI;
+        m_waitMotion = ANIM_CARRIER_IDLE;
+        m_walkMotion = ANIM_CARRIER_DUSH;
         break;
     case ROLE_TANK:
+        BindParts(PARTS_HEAD, 25);
+        BindParts(PARTS_WEP, 26);
         fLife = TANK_LIFE;
+        collisionSizeDefence = TANK_COLLISION_SIZE;
+        m_fSpd = TANK_SPD;
+        m_fWei = TANK_WEI;
         break;
     case ROLE_HEALER:
         fLife = HEALER_LIFE;
@@ -990,7 +1018,7 @@ void CPlayer::UpdateMannequin(void)
         switch (m_rank)
         {
         case RANK_1:
-            GetAnimation()->SetAnimation(ANIM_FIRST);
+            GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             m_nCntAttackAnimTime++;
             if (m_nCntAttackAnimTime > PLAYER_VICTORY_WAIT_START_FRAME)
             {
@@ -1023,7 +1051,7 @@ void CPlayer::UpdateMannequin(void)
             }
             break;
         case RANK_2:
-            GetAnimation()->SetAnimation(ANIM_SECOND);
+            GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             break;
         case RANK_3:
             GetAnimation()->SetAnimation(ANIM_THIRD);
@@ -1520,7 +1548,7 @@ void CPlayer::Movement(float fSpeed)
     ControlMove(move.z, m_bGround);
 
     // モーションをまずは待機にする
-    GetAnimation()->SetAnimation(ANIM_IDLE);
+    GetAnimation()->SetAnimation(m_waitMotion);
 
     // プレイヤー移動処理
     Control(fSpeed, move);
@@ -1649,7 +1677,7 @@ void CPlayer::MoveMotion(void)
             // どのジャンプにするか
             if (m_bUsedThreeJump)
             {
-                GetAnimation()->SetAnimation(ANIM_THIRD_JUMP);
+                //GetAnimation()->SetAnimation(ANIM_THIRD_JUMP);
             }
             else
             {
@@ -1697,7 +1725,7 @@ void CPlayer::Control(float fSpeed, D3DXVECTOR3& move)
                     move.z = cosf(m_controlInput.fLeftStickAngle)*fSpeed;
 
                     // モーションを歩きにする
-                    GetAnimation()->SetAnimation(ANIM_MOVE);
+                    GetAnimation()->SetAnimation(m_walkMotion);
 
                     //キャラの向きを変える
                     SetRotDestY(m_controlInput.fPlayerAngle);
@@ -2089,10 +2117,10 @@ void CPlayer::GainEnergy(const float fEnergy)
     switch (m_role)
     {
     case ROLE_CARRIER:
-        fMaxEnergy = 80.0f;
+        fMaxEnergy = CARRY_ENERGY_CARRIER;
         break;
     default:
-        fMaxEnergy = 50.0f;
+        fMaxEnergy = CARRY_ENERGY_DEFAULT;
         break;
     }
 

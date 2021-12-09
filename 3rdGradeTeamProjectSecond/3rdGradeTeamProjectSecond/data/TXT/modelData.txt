@@ -165,67 +165,67 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [20] スパイダーの牙0
+# [20] キャリアーの顔
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 20
-	NAME = data/MODEL/spider/02_fang_00.x
+	NAME = data/MODEL/player4/02_head.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [21] スパイダーの牙1
+# [21] キャリアーの右手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 21
-	NAME = data/MODEL/spider/03_fang_01.x
+	NAME = data/MODEL/player4/05_handR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [22] スパイダーの右足0
+# [22] キャリアーの左手
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 22
-	NAME = data/MODEL/spider/04_leg_right_00.x
+	NAME = data/MODEL/player4/08_handL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [23] スパイダーの右足1
+# [23] キャリアーの右足
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 23
-	NAME = data/MODEL/spider/05_leg_right_01.x
+	NAME = data/MODEL/player4/11_footR.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [24] スパイダーの右足2
+# [24] キャリアーの左足
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 24
-	NAME = data/MODEL/spider/06_leg_right_02.x
+	NAME = data/MODEL/player4/14_footL.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [25] スパイダーの右足3
+# [25] タンクの顔
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 25
-	NAME = data/MODEL/spider/07_leg_right_03.x
+	NAME = data/MODEL/player3/02_head.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [26] スパイダーの左足0
+# [26] タンクの武器
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 26
-	NAME = data/MODEL/spider/08_leg_left_00.x
+	NAME = data/MODEL/player3/15_weapon.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [27] スパイダーの左足1
+# [27] キャリアーの残像
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 27
-	NAME = data/MODEL/spider/09_leg_left_01.x
+	NAME = data/MODEL/afterimage.x
 END_MODEL_DATASET
 
 #---------------------------------------

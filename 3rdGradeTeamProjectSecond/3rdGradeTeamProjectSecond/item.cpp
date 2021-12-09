@@ -25,15 +25,17 @@
 //========================================
 // マクロ定義
 //========================================
-#define ITEM_LAUNCH_VALUE D3DXVECTOR3(0.0f, 25.0f, 0.0f)
-#define ITEM_GRAVITY 1.0f
-#define ITEM_GRAVITY_MAX -15.0f
-#define ITEM_SPEED_UP_VALUE 1.0f
-#define ITEM_SPEED_MAX 60.0f
-#define ITEM_LIFE 600
-#define ITEM_FLASH_START_FRAME (ITEM_LIFE - 420)
-#define ITEM_CLOSE_PLAYER_DISTANCE 1000.0f
-#define ITEM_ROT_SPEED D3DXToRadian(2.0f)
+#define ITEM_LAUNCH_VALUE D3DXVECTOR3(0.0f, 25.0f, 0.0f)    // 打ち上げ量
+#define ITEM_GRAVITY 1.0f                                   // 重力
+#define ITEM_GRAVITY_MAX -15.0f                             // 重力制限
+#define ITEM_SPEED_UP_VALUE 1.25f                           // 加速量
+#define ITEM_SPEED_MAX 75.0f                                // 加速の最大量
+#define ITEM_LIFE 600                                       // 表示時間
+#define ITEM_FLASH_START_FRAME (ITEM_LIFE - 420)            // 点滅開始フレーム
+#define ITEM_USE_COLLISION_FRAME (ITEM_LIFE - 10)           // 衝突判定を持たせるまでのフレーム
+#define ITEM_CLOSE_DISTANCE_DEFAULT 1000.0f                 // 近いとみなす距離(デフォルト)
+#define ITEM_CLOSE_DISTANCE_CARRIER 2000.0f                 // 近いとみなす距離(キャリアー)
+#define ITEM_ROT_SPEED D3DXToRadian(2.0f)                   // 回転速度
 
 //=============================================================================
 // コンストラクタ
@@ -54,6 +56,8 @@ CItem::CItem() :CScene3D(CScene::OBJTYPE_ITEM)
     m_pEffect3d_Shadow = NULL;
     m_bGround = false;
     m_pTarget = NULL;
+
+    m_bUseCollision = false;
 }
 
 //=============================================================================
@@ -167,7 +171,10 @@ void CItem::Update(void)
     myPos += m_move;
 
     // 当たり判定
-    Collision(myPos);
+    if (m_bUseCollision)
+    {
+        Collision(myPos);
+    }
 
     // 位置を設定
     SetPos(myPos);
@@ -203,6 +210,10 @@ void CItem::Update(void)
         {
             m_bUseDraw = !m_bUseDraw;
         }
+    }
+    else if (m_nLife == ITEM_USE_COLLISION_FRAME)
+    {
+        m_bUseCollision = true;
     }
 
     // ライフがなくなった、または使用フラグがなくなったら、消滅
@@ -315,10 +326,20 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 
     // プレイヤーを探す
     float fKeepDistance = 0.0f;
-    CCharacter *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
+    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Player(myPos, fKeepDistance);
+
+    // プレイヤーがキャリアーなら、検知距離が伸びる
+    float fDiscoveryPlayerDistance = ITEM_CLOSE_DISTANCE_DEFAULT;
+    if (pKeepPlayer)
+    {
+        if (pKeepPlayer->GetRole() == CPlayer::ROLE_CARRIER)
+        {
+            fDiscoveryPlayerDistance = ITEM_CLOSE_DISTANCE_CARRIER;
+        }
+    }
 
     // キープしている距離が、近いとみなす値なら
-    if (fKeepDistance <= ITEM_CLOSE_PLAYER_DISTANCE)
+    if (fKeepDistance <= fDiscoveryPlayerDistance)
     {
         // プレイヤーを結びつける
         if (pKeepPlayer)

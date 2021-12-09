@@ -892,6 +892,48 @@ CCharacter *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float
 }
 
 //========================================
+// 一番近いプレイヤーとの距離とポインタを得る
+// Author : 後藤慎之助
+//========================================
+CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+{
+    // 変数宣言
+    CPlayer*pTarget = NULL;
+
+    // 距離が一番近いプレイヤーを決める（自分以外で）
+    fKeepDistance = DISTANCE_INIT_VALUE;
+    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+    {
+        // 自分以外で
+        if (nIdxPlayer == nCntPlayer)
+        {
+            continue;
+        }
+
+        // 生存しているなら
+        if (m_apPlayer[nCntPlayer]->GetDisp())
+        {
+            // 他のプレイヤーの位置
+            D3DXVECTOR3 otherPlayerPos = m_apPlayer[nCntPlayer]->GetPos();
+
+            // 距離を求める
+            float fSecondDistance = sqrtf(
+                powf((myPos.x - otherPlayerPos.x), 2.0f) +
+                powf((myPos.z - otherPlayerPos.z), 2.0f));
+
+            // 距離の比較と、対象のポインタを更新
+            if (fKeepDistance > fSecondDistance)
+            {
+                fKeepDistance = fSecondDistance;
+                pTarget = m_apPlayer[nCntPlayer];
+            }
+        }
+    }
+
+    return pTarget;
+}
+
+//========================================
 // 一番近いプレイヤーか移動要塞との距離とポインタを得る
 // Author : 後藤慎之助
 //========================================
@@ -1049,19 +1091,23 @@ D3DXVECTOR3 CGame::GetPosToClosestEnemy(D3DXVECTOR3 myPos)
             // 敵にキャスト
             CEnemy *pEnemy = (CEnemy*)pScene;
 
-            // 敵の位置
-            D3DXVECTOR3 enemyPos = pEnemy->GetPos();
-
-            // 距離を求める
-            float fSecondDistance = sqrtf(
-                powf((myPos.x - enemyPos.x), 2.0f) +
-                powf((myPos.z - enemyPos.z), 2.0f));
-
-            // 距離の比較と、対象の位置を更新
-            if (fFirstDistance > fSecondDistance)
+            // 出現しているなら
+            if (pEnemy->GetAppearState() == CEnemy::APPEAR_STATE_EXIST)
             {
-                fFirstDistance = fSecondDistance;
-                targetPos = enemyPos;
+                // 敵の位置
+                D3DXVECTOR3 enemyPos = pEnemy->GetPos();
+
+                // 距離を求める
+                float fSecondDistance = sqrtf(
+                    powf((myPos.x - enemyPos.x), 2.0f) +
+                    powf((myPos.z - enemyPos.z), 2.0f));
+
+                // 距離の比較と、対象の位置を更新
+                if (fFirstDistance > fSecondDistance)
+                {
+                    fFirstDistance = fSecondDistance;
+                    targetPos = enemyPos;
+                }
             }
 
             // 次のシーンにする

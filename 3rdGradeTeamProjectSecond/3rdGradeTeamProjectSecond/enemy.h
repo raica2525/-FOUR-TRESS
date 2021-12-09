@@ -190,6 +190,7 @@ public:
     //=============================
     // ƒQƒbƒ^[
     //=============================
+    int GetAppearState(void) { return m_appearState; }
 
 private:
     int m_type;                              // í—Ş

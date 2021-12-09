@@ -51,6 +51,7 @@ public:
         TYPE_COMMANDER_ATTACK,  // コマンダーの攻撃
         TYPE_HUNTER_GROUND,     // ハンターの地上攻撃
         TYPE_HUNTER_SKY,        // ハンターの空中攻撃
+        TYPE_CARRIER_SKY,       // キャリアーの空中攻撃
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -61,6 +62,7 @@ public:
         COLLISION_FLAG_PLAYER = 0x001 << 1,         // プレイヤーに当たる
         COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,      // ブロックに当たらない
         COLLISION_FLAG_REFLECT_BLOCK = 0x001 << 3,  // ブロックで跳ね返る
+        COLLISION_FLAG_PULL_ENEMY = 0x001 << 4,     // 敵を引き寄せる
     }COLLISION_FLAG;
 
     //=============================
@@ -71,7 +73,7 @@ public:
     //=============================
     // セッター
     //=============================
-    void SetTargetPos(D3DXVECTOR3 targetPos) { m_targetPos = targetPos; }
+    void SetParam(int nIdx, float fValue) { m_afParam[nIdx] = fValue; }
 
 private:
     int m_type;                     // 種類
@@ -93,7 +95,7 @@ private:
     bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // 多段ヒット回避を使うかどうか
     float m_fStrength;              // 強さ
 
-    D3DXVECTOR3 m_targetPos;        // ターゲットの位置
+    float m_afParam[PARAM_DATA_MAX];// 汎用データ
 
     //=============================
     // 種類ごとの処理

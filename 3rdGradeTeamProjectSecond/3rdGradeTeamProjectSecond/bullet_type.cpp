@@ -31,7 +31,15 @@
 //===========================
 // ハンターの空中攻撃
 //===========================
-#define HUNTER_SKY_HOMING_START_FRAME 25
+#define HUNTER_SKY_HOMING_START_FRAME 30
+#define HUNTER_SKY_HOMING_SPEED 60.0f
+// 汎用パラメータの内訳
+typedef enum
+{
+    PARAM_HUNTER_SKY_TARGET_POS_X = 0,
+    PARAM_HUNTER_SKY_TARGET_POS_Y,
+    PARAM_HUNTER_SKY_TARGET_POS_Z,
+}PARAM_HUNTER_SKY;
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -119,11 +127,11 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
     case TYPE_HUNTER_GROUND:
         // 固有の情報
         m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
-        m_fSpeed = 40.0f;
+        m_fSpeed = 50.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);
-        m_nLife = 60;
+        m_nLife = 45;
         m_fDamage = 70.0f;
         m_bUseDraw = true;
         m_bHitErase = false;// 貫通
@@ -133,7 +141,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
     case TYPE_HUNTER_SKY:
         // 固有の情報
         m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
-        m_fSpeed = 30.0f;
+        m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
         m_fDamage = 40.0f;
@@ -141,6 +149,19 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_CARRIER_SKY:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(2000.0f, 500.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_PULL_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 30;
+        m_fDamage = 0.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;// 貫通
+        bUseShadow = false; // 影を使用しない
         break;
     }
 
@@ -187,14 +208,17 @@ void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
     // ホーミング処理
     if (m_nCntTime == HUNTER_SKY_HOMING_START_FRAME)
     {
+        // 速度を加速
+        m_fSpeed = HUNTER_SKY_HOMING_SPEED;
+
         // 横の角度を決める
-        float fAngleXZ = atan2f((myPos.x - m_targetPos.x), (myPos.z - m_targetPos.z));
+        float fAngleXZ = atan2f((myPos.x - m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X]), (myPos.z - m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z]));
 
         // 縦の角度を決める
         float fDistance = sqrtf(
-            powf((m_targetPos.x - myPos.x), 2.0f) +
-            powf((m_targetPos.z - myPos.z), 2.0f));
-        float fHeight = fabsf((m_targetPos.y) - myPos.y);
+            powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X] - myPos.x), 2.0f) +
+            powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z] - myPos.z), 2.0f));
+        float fHeight = fabsf(m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Y] - myPos.y);
         float fAngleY = atan2(fDistance, fHeight);
 
         // 移動の角度に反映

@@ -30,6 +30,8 @@
 //========================================
 // マクロ定義
 //========================================
+#define PULL_TO_CENTER_VALUE 0.1f
+#define PULL_TO_CENTER_VALUE_LIMIT 25.0f
 
 //========================================
 // 静的メンバ変数宣言
@@ -83,6 +85,7 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
     m_bUseWhiteDraw = false;
     m_nCntWhiteDrawTime = 0;
     m_bUseKnockBack = true;
+    m_bTakeWind = false;
 }
 
 //=============================================================================
@@ -635,6 +638,54 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
 }
 
 //=============================================================================
+// 中心に引き寄せる処理
+// Author : 後藤慎之助
+//=============================================================================
+bool CCharacter::PullToCenter(D3DXVECTOR3 centerPos)
+{
+    // 無敵でないなら
+    if (!m_bIsInvincible)
+    {
+        // ノックバックを利用する状態なら
+        if (m_bUseKnockBack)
+        {
+            // 風を受けたフラグをtrueに
+            m_bTakeWind = true;
+
+            // 変数宣言
+            D3DXVECTOR3 myPos = GetPos();           // 位置を取得
+            float fKnockbackValue = 0.0f;           // ノックバック量
+
+            // 距離に応じてノックバック量を変える
+            float fDistance = sqrtf(
+                powf((centerPos.x - myPos.x), 2.0f) +
+                powf((centerPos.z - myPos.z), 2.0f));
+            fKnockbackValue = fDistance * PULL_TO_CENTER_VALUE;
+
+            // ノックバック量制限
+            if (fDistance > PULL_TO_CENTER_VALUE_LIMIT)
+            {
+                fDistance = PULL_TO_CENTER_VALUE_LIMIT;
+            }
+
+            // 攻撃状態をリセット
+            m_bResetAttackByDamage = true;
+
+            // 攻撃の方は向かず、ノックバックさせる
+            float fAngleToDamagePos = GetAngleToTargetXZ(myPos, centerPos);
+            //SetRot(D3DXVECTOR3(0.0f, fAngleToDamagePos, 0.0f));
+            //SetRotDest(D3DXVECTOR3(0.0f, fAngleToDamagePos, 0.0f));
+            m_move.x = sinf(fAngleToDamagePos) * fKnockbackValue;
+            m_move.z = cosf(fAngleToDamagePos) * fKnockbackValue;
+        }
+    }
+
+    // 引き寄せられたかどうか
+    bool bHit = !m_bIsInvincible;
+    return bHit;
+}
+
+//=============================================================================
 // ダメージを受けている時間を数える処理（前作の名残でプレイヤーでしか使ってない処理有り）
 // Author : 後藤慎之助
 //=============================================================================
@@ -648,6 +699,8 @@ void CCharacter::CntDownTakeDamageTime(void)
         // 負傷終了時に状態を戻す
         if (m_nCntTakeDamageTime == 0)
         {
+            m_bTakeWind = false;
+
             // ダウンからの起き上がり以外は、ダメージ状態を解除
             if (m_damageState != DAMAGE_STATE_BIG)
             {
@@ -695,7 +748,15 @@ void CCharacter::ControlMove(float& fMove, bool bGround)
         }
         else
         {
-            fControlMoveRate = PLAYER_CONTROL_MOVE_TAKE_DAMAGE;
+            // 風を受けているなら、地上と同じ
+            if (m_bTakeWind)
+            {
+                fControlMoveRate = PLAYER_CONTROL_MOVE_ON_GROUND;
+            }
+            else
+            {
+                fControlMoveRate = PLAYER_CONTROL_MOVE_TAKE_DAMAGE;
+            }
         }
 
         // 移動量制御

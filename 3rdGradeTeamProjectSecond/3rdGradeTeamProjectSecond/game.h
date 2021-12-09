@@ -117,6 +117,7 @@ public:
     static float GetAngleToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);    // 一番近いプレイヤーへの角度を求める
     static D3DXVECTOR3 GetPosToClosestPlayer(D3DXVECTOR3 myPos, int nIdxPlayer = NOT_EXIST);// 一番近いプレイヤーの位置を求める
     static CCharacter *GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
+    static CPlayer *GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
     static CCharacter *GetDistanceAndPointerToClosestPlayerOrFortress(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
     static CCharacter *GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, float &fKeepDistance);
     static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ

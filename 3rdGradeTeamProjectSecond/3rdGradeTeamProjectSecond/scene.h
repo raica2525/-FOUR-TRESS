@@ -36,10 +36,10 @@ public:
         OBJTYPE_ENEMY,              // エネミー
         OBJTYPE_ITEM,               // アイテム
         OBJTYPE_BULLET,             // 弾
-        OBJTYPE_MODEL_EFFECT,       // モデルエフェクト
         OBJTYPE_BLOCK,              // ブロック
         OBJTYPE_EFFECT3D,           // エフェクト3D
         OBJTYPE_BG,                 // 背景
+        OBJTYPE_MODEL_EFFECT,       // モデルエフェクト（背景より後ろにしないと、透過したときに元の色が見える）
         OBJTYPE_EFFECT2D_BACK_UI,   // エフェクト2D（UIより後ろ）
         OBJTYPE_UI_BACK_TEXT,       // UI（テキストより後ろ）
         OBJTYPE_TEXT,               // テキスト

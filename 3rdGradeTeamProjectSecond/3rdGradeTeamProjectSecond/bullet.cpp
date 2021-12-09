@@ -52,7 +52,7 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     m_fStrength = 0.0f;
 
-    m_targetPos = DEFAULT_VECTOR;
+    memset(m_afParam, 0, sizeof(m_afParam));
 }
 
 //=============================================================================
@@ -283,6 +283,14 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 // 敵にキャスト
                 CEnemy *pEnemy = (CEnemy*)pScene;
 
+                // 出現していないなら、次へ
+                if (pEnemy->GetAppearState() != CEnemy::APPEAR_STATE_EXIST)
+                {
+                    // 次のシーンにする
+                    pScene = pNextScene;
+                    continue;
+                }
+
                 // インデックスを取得
                 int nIdx = pEnemy->GetIdx();
                 if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
@@ -301,8 +309,17 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         // 多段ヒット回避用のフラグをtrueに
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
-                        // ダメージ
-                        bool bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                        // ダメージか引っ張り
+                        bool bDamaged = false;
+                        if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PULL_ENEMY))
+                        {
+                            bDamaged = pEnemy->PullToCenter(bulletPos);
+                        }
+                        else
+                        {
+                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                        }
+                        // 消す弾なら消す
                         if (bDamaged && m_bHitErase)
                         {
                             m_nLife = NOT_EXIST;
