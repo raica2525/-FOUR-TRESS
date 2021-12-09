@@ -180,33 +180,33 @@ public:
     // アニメーションの種類
     typedef enum
     {
-        ANIM_IDLE = 0,      // 待機
-        ANIM_MOVE,          // 移動
-        ANIM_JUMP,          // ジャンプ
-        ANIM_LANDING,       // 着地
+        ANIM_IDLE = 0,       // 待機
+        ANIM_MOVE,           // 移動
+        ANIM_JUMP,           // ジャンプ
+        ANIM_LANDING,        // 着地
         ANIM_WARRIOR_GROUND1,// ウォーリアー地上1
-        ANIM_WARRIOR_SP,    // ウォーリアー必殺
-        ANIM_WARRIOR_SKY,   // ウォーリアー空中
+        ANIM_HUNTER_GROUND,  // ハンター地上
+        ANIM_CARRIER_SKY,    // キャリアー空中
         ANIM_WARRIOR_GROUND2,// ウォーリアー地上2
-        ANIM_SIT_DOWN,      // 座る
-        ANIM_THROW,         // 投げ
-        ANIM_BUNT,          // バント
-        ANIM_GLIDE,         // 滑空
-        ANIM_SECOND_JUMP,   // 2段ジャンプ
-        ANIM_SQUAT,         // しゃがみ
-        ANIM_DAMAGE_SMALL,  // のけぞり
-        ANIM_DAMAGE_BIG,    // ダウン
-        ANIM_STAND_UP,      // 起き上がり
-        ANIM_ABSORB,        // 吸収（アピール）
-        ANIM_BLOWN,         // 吹き飛ばされ
-        ANIM_THIRD_JUMP,    // 3段ジャンプ
-        ANIM_CUSTOM_IDLE,   // カスタマイズ画面での待機
-        ANIM_WEAPON_LOOK,   // カスタマイズ画面での武器を見る
-        ANIM_FIRST,         // 1位
-        ANIM_SECOND,        // 2位
-        ANIM_THIRD,         // 3位
-        ANIM_FOURTH,        // 4位
-        ANIM_FIRST_WAIT,    // 1位待機
+        ANIM_SIT_DOWN,       // 座る
+        ANIM_HUNTER_SKY,     // ハンター空中
+        ANIM_WARRIOR_SKY,    // ウォーリアー空中
+        ANIM_GLIDE,          // 滑空
+        ANIM_SECOND_JUMP,    // 2段ジャンプ
+        ANIM_SQUAT,          // しゃがみ
+        ANIM_DAMAGE_SMALL,   // のけぞり
+        ANIM_DAMAGE_BIG,     // ダウン
+        ANIM_STAND_UP,       // 起き上がり
+        ANIM_ABSORB,         // 吸収（アピール）
+        ANIM_BLOWN,          // 吹き飛ばされ
+        ANIM_THIRD_JUMP,     // 3段ジャンプ
+        ANIM_CUSTOM_IDLE,    // カスタマイズ画面での待機
+        ANIM_WEAPON_LOOK,    // カスタマイズ画面での武器を見る
+        ANIM_FIRST,          // 1位
+        ANIM_SECOND,         // 2位
+        ANIM_THIRD,          // 3位
+        ANIM_FOURTH,         // 4位
+        ANIM_FIRST_WAIT,     // 1位待機
         ANIM_MAX,
     }ANIMATION;
 
@@ -263,19 +263,19 @@ public:
         ATTACK_STATE_SIT_DOWN,         // 座る
     }ATTACK_STATE;
 
-    // 汎用パラメータの内訳
-    typedef enum
-    {
-        PARAM_SWING_UP = 0,             // スイング上
-        PARAM_SWING_DOWN,               // スイング下
-        PARAM_SMASH,                    // スマッシュ
-        PARAM_SPIKE_RIGHT,              // スパイク右
-        PARAM_SPIKE_LEFT,               // スパイク左
-        PARAM_5_WEAPON_SP,              // 武器の必殺技補助値3番
-        PARAM_6_WEAPON_SP,              // 武器の必殺技補助値2番
-        PARAM_7_WEAPON_SP,              // 武器の必殺技補助値1番
-        PARAM_MAX
-    }PARAM;
+    //// 汎用パラメータの内訳
+    //typedef enum
+    //{
+    //    PARAM_SWING_UP = 0,             // スイング上
+    //    PARAM_SWING_DOWN,               // スイング下
+    //    PARAM_SMASH,                    // スマッシュ
+    //    PARAM_SPIKE_RIGHT,              // スパイク右
+    //    PARAM_SPIKE_LEFT,               // スパイク左
+    //    PARAM_5_WEAPON_SP,              // 武器の必殺技補助値3番
+    //    PARAM_6_WEAPON_SP,              // 武器の必殺技補助値2番
+    //    PARAM_7_WEAPON_SP,              // 武器の必殺技補助値1番
+    //    PARAM_MAX
+    //}PARAM;
 
     typedef struct
     {
@@ -459,7 +459,7 @@ private:
     float m_fDef;                            // 防御（最大HPにもなる）
     float m_fSpd;                            // 速さ
     float m_fWei;                            // 重さ
-    float m_afParam[PARAM_MAX];              // 汎用データ
+    float m_afParam[PARAM_DATA_MAX];         // 汎用データ
     int m_nModelPosDefUp;                    // モデルの初期位置データ（上半身）
     int m_nModelPosDefDown;                  // モデルの初期位置データ（下半身）
 
@@ -514,7 +514,7 @@ private:
     void AtkWarriorGround2(D3DXVECTOR3& playerPos);
     void AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkHunterGround(D3DXVECTOR3& playerPos);
-    void AtkHunterSky(D3DXVECTOR3& playerPos);
+    void AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkCarrierGround(D3DXVECTOR3& playerPos);
     void AtkCarrierSky(D3DXVECTOR3& playerPos);
     void AtkTankGround(D3DXVECTOR3& playerPos);

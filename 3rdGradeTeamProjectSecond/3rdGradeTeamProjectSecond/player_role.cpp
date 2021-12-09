@@ -14,6 +14,7 @@
 #include "animation.h"
 #include "fortress.h"
 #include "game.h"
+#include "bullet.h"
 
 //========================================
 // マクロ定義
@@ -53,6 +54,32 @@
 #define WARRIOR_SKY_UP_VALUE 20.0f
 #define WARRIOR_SKY_CHANCE_FRAME 30
 
+//==========================
+// ハンター地上
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define HUNTER_GROUND_WHOLE_FRAME 20
+#define HUNTER_GROUND_FIRE_FRAME (HUNTER_GROUND_WHOLE_FRAME - 10)
+
+//==========================
+// ハンター空中
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define HUNTER_SKY_WHOLE_FRAME 45
+#define HUNTER_SKY_FIRE_FRAME (HUNTER_SKY_WHOLE_FRAME - 35)
+// その他
+#define HUNTER_SKY_MOVE_LIMIT 0.5f
+#define HUNTER_SKY_ONCE_SHOT 4
+#define HUNTER_SKY_ANGLE_Y D3DXToRadian(50.0f)
+#define HUNTER_SKY_TARGETING_FRAME (HUNTER_SKY_WHOLE_FRAME - 1)
+// 汎用パラメータの内訳
+typedef enum
+{
+    PARAM_HUNTER_TARGET_POS_X = 0,
+    PARAM_HUNTER_TARGET_POS_Y,
+    PARAM_HUNTER_TARGET_POS_Z,
+}PARAM_HUNTER;
+
 //=============================================================================
 // 攻撃更新処理
 // Author : 後藤慎之助
@@ -73,6 +100,12 @@ void CPlayer::AttackUpdate(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             break;
         case ATTACK_STATE_WARRIOR_SKY:
             AtkWarriorSky(playerPos, move);
+            break;
+        case ATTACK_STATE_HUNTER_GROUND:
+            AtkHunterGround(playerPos);
+            break;
+        case ATTACK_STATE_HUNTER_SKY:
+            AtkHunterSky(playerPos, move);
             break;
         case ATTACK_STATE_SIT_DOWN:
             AtkSitDown(playerPos, move);
@@ -102,14 +135,22 @@ void CPlayer::AttackGenerator(void)
                     m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
                     break;
-                case ROLE_HUNTER:
-                    m_attackState = ATTACK_STATE_HUNTER_GROUND;
-                    break;
                 case ROLE_CARRIER:
                     m_attackState = ATTACK_STATE_CARRIER_GROUND;
                     break;
                 case ROLE_TANK:
                     m_attackState = ATTACK_STATE_TANK_GROUND;
+                    break;
+                }
+            }
+            else if (m_controlInput.bPressX)
+            {
+                // 連続攻撃系
+                switch (m_role)
+                {
+                case ROLE_HUNTER:
+                    m_nCntAttackTime = HUNTER_GROUND_WHOLE_FRAME;
+                    m_attackState = ATTACK_STATE_HUNTER_GROUND;
                     break;
                 }
             }
@@ -131,6 +172,7 @@ void CPlayer::AttackGenerator(void)
                     m_attackState = ATTACK_STATE_WARRIOR_SKY;
                     break;
                 case ROLE_HUNTER:
+                    m_nCntAttackTime = HUNTER_SKY_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_HUNTER_SKY;
                     break;
                 case ROLE_CARRIER:
@@ -167,6 +209,12 @@ void CPlayer::AttackMotion(void)
         break;
     case ATTACK_STATE_WARRIOR_SKY:
         GetAnimation()->SetAnimation(ANIM_WARRIOR_SKY);
+        break;
+    case ATTACK_STATE_HUNTER_GROUND:
+        GetAnimation()->SetAnimation(ANIM_HUNTER_GROUND);
+        break;
+    case ATTACK_STATE_HUNTER_SKY:
+        GetAnimation()->SetAnimation(ANIM_HUNTER_SKY);
         break;
     case ATTACK_STATE_SIT_DOWN:
         GetAnimation()->SetAnimation(ANIM_SIT_DOWN);
@@ -472,6 +520,66 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
         {
             // 移動要塞がないなら、強制で降りる
             ResetAttack();
+        }
+    }
+}
+
+//=============================================================================
+// ハンター地上攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
+{
+    // 攻撃発生フレーム
+    if (m_nCntAttackTime == HUNTER_GROUND_FIRE_FRAME)
+    {
+        D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+        CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle);
+    }
+    else if (m_nCntAttackTime > HUNTER_GROUND_FIRE_FRAME)
+    {
+        // キャラの向きを変える猶予フレーム
+        SetRotDestY(m_controlInput.fPlayerAngle);
+    }
+}
+
+//=============================================================================
+// ハンター空中攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
+{
+    // 攻撃発生フレーム
+    if (m_nCntAttackTime == HUNTER_SKY_FIRE_FRAME)
+    {
+        // 一度に複数の矢を、均等に放つ
+        for (int nCnt = 0; nCnt < HUNTER_SKY_ONCE_SHOT; nCnt++)
+        {
+            float fDigitAngle = (float)(nCnt + 1) * (D3DXToRadian(180.0f) / (float)(HUNTER_SKY_ONCE_SHOT + 1));
+            float fAngleXZ = GetRot().y + fDigitAngle - D3DXToRadian(90.0f);
+            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngleXZ), HUNTER_SKY_ANGLE_Y, -cosf(fAngleXZ));
+            CBullet*pBullet = CBullet::Create(CBullet::TYPE_HUNTER_SKY, GetPartsPos(PARTS_WEP), moveAngle);
+            D3DXVECTOR3 targetPos = D3DXVECTOR3(m_afParam[PARAM_HUNTER_TARGET_POS_X], m_afParam[PARAM_HUNTER_TARGET_POS_Y], m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
+            pBullet->SetTargetPos(targetPos);
+        }
+    }
+    else if (m_nCntAttackTime > HUNTER_SKY_FIRE_FRAME)
+    {
+        // 移動制限
+        move.x *= HUNTER_SKY_MOVE_LIMIT;
+        move.z *= HUNTER_SKY_MOVE_LIMIT;
+        move.y = 0.0f;
+
+        // ターゲットの位置を決めるフレーム
+        if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
+        {
+            // 位置を保存
+            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
+            m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
+            m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
+            m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
+            // キャラの向きをターゲットの方へ
+            SetRotDestY(GetAngleToTargetXZ(targetPos, playerPos));
         }
     }
 }

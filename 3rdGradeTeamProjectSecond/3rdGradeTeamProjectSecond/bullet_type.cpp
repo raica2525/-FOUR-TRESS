@@ -19,6 +19,20 @@
 #include "effect3d.h"
 #include "modelEffect.h"
 
+//========================================
+// マクロ定義（特徴的な処理をするもののみ）
+//========================================
+//===========================
+// コマンダーの弾
+//===========================
+#define COMMANDER_ATTACK_GRAVITY_VALUE -0.1f
+#define COMMANDER_ATTACK_GRAVITY_LIMIT -10.0f
+
+//===========================
+// ハンターの空中攻撃
+//===========================
+#define HUNTER_SKY_HOMING_START_FRAME 25
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -97,11 +111,34 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fSpeed = 5.0f;
         m_nLife = 999;
         m_bUseDraw = true;
-        m_bUseCntTime = true;
-        m_fGravityValue = -0.1f;
-        m_fGravityLimit = -10.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_HUNTER_GROUND:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
+        m_fSpeed = 40.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);
+        m_nLife = 60;
+        m_fDamage = 70.0f;
+        m_bUseDraw = true;
+        m_bHitErase = false;// 貫通
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_HUNTER_SKY:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
+        m_fSpeed = 30.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 300;
+        m_fDamage = 40.0f;
+        m_bUseDraw = true;
+        m_bHitErase = false;// 貫通
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -118,4 +155,54 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_pEffect3d_Shadow->SetSize(D3DXVECTOR3(m_collisionSize.x, m_collisionSize.x, 0.0f));
         m_pEffect3d_Shadow->SetDisp(false); // バレット側で描画を管理するため
     }
+}
+
+//=============================================================================
+// コマンダーの弾の移動処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::CommanderAttackMove(D3DXVECTOR3 &myPos)
+{
+    // カウンタ加算
+    m_nCntTime++;
+
+    // 重力を使うなら
+    float fGravity = COMMANDER_ATTACK_GRAVITY_VALUE * m_nCntTime;
+    if (fGravity < COMMANDER_ATTACK_GRAVITY_LIMIT)
+    {
+        fGravity = COMMANDER_ATTACK_GRAVITY_LIMIT;
+    }
+    myPos += m_moveAngle * m_fSpeed + D3DXVECTOR3(0.0f, fGravity, 0.0f);
+}
+
+//=============================================================================
+// ハンターの空中攻撃弾の移動処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
+{
+    // カウンタ加算
+    m_nCntTime++;
+
+    // ホーミング処理
+    if (m_nCntTime == HUNTER_SKY_HOMING_START_FRAME)
+    {
+        // 横の角度を決める
+        float fAngleXZ = atan2f((myPos.x - m_targetPos.x), (myPos.z - m_targetPos.z));
+
+        // 縦の角度を決める
+        float fDistance = sqrtf(
+            powf((m_targetPos.x - myPos.x), 2.0f) +
+            powf((m_targetPos.z - myPos.z), 2.0f));
+        float fHeight = fabsf((m_targetPos.y) - myPos.y);
+        float fAngleY = atan2(fDistance, fHeight);
+
+        // 移動の角度に反映
+        m_moveAngle.x = -sinf(fAngleXZ);
+        m_moveAngle.y = -cosf(fAngleY);
+        m_moveAngle.z = -cosf(fAngleXZ);
+    }
+
+    // 移動
+    myPos += m_moveAngle * m_fSpeed;
 }
