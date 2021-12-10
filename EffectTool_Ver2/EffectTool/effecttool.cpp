@@ -25,7 +25,7 @@
 // マクロ定義
 //================================================
 #define SPEED_MAX (2000)				// 速度の最大値
-#define ACCELERATION_MAX (1.0f)			// 加速度の最大値
+#define ACCELERATION_MAX (10.0f)		// 加速度の最大値
 #define GRAVITY_MAX (100.0f)			// 重力の最大値
 #define COLCHANGERATE_MAX (1.0f)		// 色変化割合の最大値
 #define FADEOUTRATE_MAX (1.0f)			// フェードアウトの割合の最大値
@@ -544,7 +544,6 @@ void CEffectTool::EffectCreate(void)
 		// カウントの加算
 		m_fCountFlame++;
 	}
-
 
 	// 設定したフレームとカウントが一致したら
 	if (m_fCreateFlame == m_fCountFlame)

@@ -187,7 +187,6 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_custom.cpp" />
     <ClCompile Include="player_sp.cpp" />
-    <ClCompile Include="preview.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -244,7 +243,6 @@
     <ClInclude Include="outline.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="preview.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="result.h" />

@@ -324,11 +324,11 @@ HRESULT CEffectData::UploadEffectInfo(const bool *bUpload)
 	// 開けたら
 	if (pFile != NULL)
 	{
+				fprintf(pFile, "SCRIPT		# この行は絶対消さないこと！\n");
 		for (int nEffectCount = 0; nEffectCount < TYPE_MAX; nEffectCount++)
 		{
 			if (bUpload[nEffectCount] == true)
 			{
-				fprintf(pFile, "SCRIPT		# この行は絶対消さないこと！\n");
 				fprintf(pFile, "\n");
 				fprintf(pFile, "#------------------------------------------------------------------------------\n");
 				fprintf(pFile, "# エフェクトの情報（F4でリロード可能）\n");
@@ -388,9 +388,9 @@ HRESULT CEffectData::UploadEffectInfo(const bool *bUpload)
 				fprintf(pFile, "END_EFFECT_DATASET\n");
 
 				fprintf(pFile, "\n\n\n");
-				fprintf(pFile, "END_SCRIPT		# この行は絶対消さないこと！\n");
 			}
 		}
+				fprintf(pFile, "END_SCRIPT		# この行は絶対消さないこと！\n");
 
 		// ファイルを閉じる
 		fclose(pFile);

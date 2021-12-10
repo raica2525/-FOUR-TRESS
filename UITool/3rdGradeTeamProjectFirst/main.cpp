@@ -58,12 +58,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         0,
         0,
         hInstance,
-        LoadIcon(hInstance, "test.ico"),  // アイコン
+        LoadIcon(hInstance, "TOLLICON"),  // アイコン
         LoadCursor(NULL, IDC_ARROW),
         (HBRUSH)(COLOR_WINDOW + 1),
         MAKEINTRESOURCE(IDR_MENU1),                             // メニューの名前
         CLASS_NAME,
-        LoadIcon(hInstance, "test.ico")
+        LoadIcon(hInstance,MAKEINTRESOURCE("TOLLICON")),
     };
 
     RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };

@@ -165,4 +165,85 @@ TEXTURESET
     NAME = data/TEXTURE/019_strikeshotbg.png
 END_TEXTURESET
 
+#---------------------------------------
+# [20] ひし形
+#---------------------------------------
+TEXTURESET
+    TYPE = 20
+    NAME = data/TEXTURE/20_rhombus.png
+END_TEXTURESET
+
+#---------------------------------------
+# [21] 切り裂き
+#---------------------------------------
+TEXTURESET
+    TYPE = 21
+    NAME = data/TEXTURE/021_hit.png
+END_TEXTURESET
+
+#---------------------------------------
+# [22] 打撃
+#---------------------------------------
+TEXTURESET
+    TYPE = 22
+    NAME = data/TEXTURE/022_hit.png
+END_TEXTURESET
+
+#---------------------------------------
+# [23] ハート
+#---------------------------------------
+TEXTURESET
+    TYPE = 23
+    NAME = data/TEXTURE/023_heart.png
+END_TEXTURESET
+
+
+#---------------------------------------
+# [24] サンダー
+#---------------------------------------
+TEXTURESET
+    TYPE = 24
+    NAME = data/TEXTURE/24_thunder.png
+END_TEXTURESET
+
+#---------------------------------------
+# [25] サンダー
+#---------------------------------------
+TEXTURESET
+    TYPE = 25
+    NAME = data/TEXTURE/25_mahoujin.png
+END_TEXTURESET
+
+#---------------------------------------
+# [26] サンダー
+#---------------------------------------
+TEXTURESET
+    TYPE = 26
+    NAME = data/TEXTURE/26_noroi.png
+END_TEXTURESET
+
+#---------------------------------------
+# [27] 風
+#---------------------------------------
+TEXTURESET
+    TYPE = 27
+    NAME = data/TEXTURE/27_wind.png
+END_TEXTURESET
+
+#---------------------------------------
+# [28] 風
+#---------------------------------------
+TEXTURESET
+    TYPE = 28
+    NAME = data/TEXTURE/28_wind.png
+END_TEXTURESET
+
+#---------------------------------------
+# [29] 風
+#---------------------------------------
+TEXTURESET
+    TYPE = 29
+    NAME = data/TEXTURE/29_wind.png
+END_TEXTURESET
+
 END_SCRIPT		# この行は絶対消さないこと！
