@@ -21,7 +21,7 @@ CAi::CAi()
     m_buttonStateOld.bButtonA = false;
     m_buttonStateOld.bButtonX = false;
     m_buttonStateOld.bButtonB = false;
-    m_buttonStateOld.bButtonY = false;
+    m_buttonStateOld.bButtonR2 = false;
     m_pPlayer = NULL;
 
     m_core = CORE_THINKING;
@@ -46,9 +46,9 @@ void CAi::Update(void)
     bool bCurrentButtonA = false;         // 現在のAボタン
     bool bCurrentButtonX = false;         // 現在のXボタン
     bool bCurrentButtonB = false;         // 現在のBボタン
-    bool bCurrentButtonY = false;         // 現在のYボタン
+    bool bCurrentButtonR2 = false;        // 現在のR2ボタン
 
-                                          // コアごとに場合分け
+    // コアごとに場合分け
     switch (m_core)
     {
     case CORE_THINKING:
@@ -145,14 +145,14 @@ void CAi::Update(void)
         m_pPlayer->GetControlInput()->bTriggerB = false;
     }
 
-    // Yボタントリガー
-    if (bCurrentButtonY && !m_buttonStateOld.bButtonY)
+    // R2ボタンプレス
+    if (bCurrentButtonR2 && m_buttonStateOld.bButtonR2)
     {
-        m_pPlayer->GetControlInput()->bTriggerY = true;
+        m_pPlayer->GetControlInput()->bPressR2 = true;
     }
     else
     {
-        m_pPlayer->GetControlInput()->bTriggerY = false;
+        m_pPlayer->GetControlInput()->bPressR2 = false;
     }
     //==============================================================
 
@@ -160,7 +160,7 @@ void CAi::Update(void)
     m_buttonStateOld.bButtonA = bCurrentButtonA;
     m_buttonStateOld.bButtonX = bCurrentButtonX;
     m_buttonStateOld.bButtonB = bCurrentButtonB;
-    m_buttonStateOld.bButtonY = bCurrentButtonY;
+    m_buttonStateOld.bButtonR2 = bCurrentButtonR2;
 }
 
 //=============================================================================

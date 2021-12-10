@@ -89,6 +89,7 @@ public:
     }   // カスタマイズ画面で、次のゲームを設定
     static void SetIdxPlayer(int nNum, int nIdxPlayer) { m_anMemoryIdxPlayer[nNum] = nIdxPlayer; }  // プレイヤーのインデックス
     static void SetAILevel(int nNum, CPlayer::AI_LEVEL level) { m_aMemoryAILevel[nNum] = level; }   // AIレベル
+    static void SetRole(int nNum, int role) { m_anMemoryRole[nNum] = role; }   // 役割
     static void SetQuitPause(void) { m_state = STATE_BUTTLE; m_bStopObjUpdate = false; }    // ポーズ状態をやめる
     static void SetUseKeyboard(bool bUseKeyboard) { m_bUseKeyboard = bUseKeyboard; }
     static void SetSpPlayer(CPlayer *pPlayer) { m_bCurrentSpShot = true; m_pSpPlayer = pPlayer; }
@@ -146,6 +147,7 @@ private:
     static bool m_bUseKeyboard;                            // キーボードを使うかどうか
     static int m_anMemoryIdxPlayer[MAX_PLAYER];            // プレイヤーのインデックスを記憶
     static CPlayer::AI_LEVEL m_aMemoryAILevel[MAX_PLAYER]; // AIレベルを記憶
+    static int m_anMemoryRole[MAX_PLAYER];                 // 役割を記憶
     static STATE m_state;                                  // 状態
     static MAP_LIMIT m_mapLimit;                           // マップ制限
 

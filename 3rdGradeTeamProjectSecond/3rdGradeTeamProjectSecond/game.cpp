@@ -63,6 +63,7 @@ int CGame::m_nNumAllPlayer = 0;
 bool CGame::m_bUseKeyboard = false;      // デバッグ時はここを変える
 int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
+int CGame::m_anMemoryRole[] = {};
 CGame::STATE CGame::m_state = STATE_ROUND_START;
 CGame::MAP_LIMIT CGame::m_mapLimit = {};
 
@@ -174,16 +175,16 @@ HRESULT CGame::Init(void)
         fSplitXRate = SPLIT_RATE_UNDER_3;
         player1Pos.x *= -fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
+            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         break;
     case 2:
         fSplitXRate = SPLIT_RATE_UNDER_3;
         player1Pos.x *= -fSplitXRate;
         player2Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
+            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
-            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
+            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1], m_anMemoryRole[1]);
         break;
     case 3:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
@@ -191,11 +192,11 @@ HRESULT CGame::Init(void)
         player2Pos.x *= -fSplitXRate;
         player3Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
+            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
+            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1], m_anMemoryRole[1]);
         m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
-            2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2]);
+            2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2], m_anMemoryRole[2]);
         break;
     case 4:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
@@ -204,13 +205,13 @@ HRESULT CGame::Init(void)
         player3Pos.x *= fSplitXRate;
         player4Pos.x *= fSplitXRate * 2.0f;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_bUseKeyboard);
+            0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
-            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1]);
+            1, m_anMemoryIdxPlayer[1], m_aMemoryAILevel[1], m_anMemoryRole[1]);
         m_apPlayer[2] = CPlayer::CreateInGame(player3Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
-            2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2]);
+            2, m_anMemoryIdxPlayer[2], m_aMemoryAILevel[2], m_anMemoryRole[2]);
         m_apPlayer[3] = CPlayer::CreateInGame(player4Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
-            3, m_anMemoryIdxPlayer[3], m_aMemoryAILevel[3]);
+            3, m_anMemoryIdxPlayer[3], m_aMemoryAILevel[3], m_anMemoryRole[3]);
         break;
     }
     // カメラのロックオン場所を変える

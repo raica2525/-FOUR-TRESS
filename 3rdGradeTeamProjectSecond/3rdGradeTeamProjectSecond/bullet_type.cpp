@@ -134,7 +134,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 45;
         m_fDamage = 70.0f;
         m_bUseDraw = true;
-        m_bHitErase = false;// 貫通
+        m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -159,6 +159,51 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         m_nLife = 30;
         m_fDamage = 0.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;// 貫通
+        bUseShadow = false; // 影を使用しない
+        break;
+    case TYPE_TANK_GROUND_LV1:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(150.0f, 150.0f);
+        m_fSpeed = 40.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 60;
+        m_fDamage = 50.0f;
+        m_bUseDraw = true;
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_TANK_GROUND_LV2:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(200.0f, 200.0f);
+        m_fSpeed = 45.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 60;
+        m_fDamage = 150.0f;
+        m_bUseDraw = true;
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_TANK_GROUND_LV3:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(250.0f, 250.0f);
+        m_fSpeed = 50.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 60;
+        m_fDamage = 0.0f;
+        m_bUseDraw = true;
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_TANK_GROUND_EX:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(1250.0f, 1250.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 60;
+        m_fDamage = 450.0f;
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない

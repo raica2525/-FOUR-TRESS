@@ -86,6 +86,7 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
     m_nCntWhiteDrawTime = 0;
     m_bUseKnockBack = true;
     m_bTakeWind = false;
+    m_lastHit = OBJTYPE_NONE;
 }
 
 //=============================================================================
@@ -532,11 +533,17 @@ void CCharacter::RotControl(void)
 // ダメージを受ける処理
 // Author : 後藤慎之助
 //=============================================================================
-bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType)
+bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, int effectType)
 {
     // 無敵でないなら
     if (!m_bIsInvincible)
     {
+        // 体力が残っているなら、最後に攻撃してきた人を更新
+        if (m_fLife > 0.0f)
+        {
+            m_lastHit = lastHit;
+        }
+
         // HPを表示
         SetUIHPDisp(true);
 

@@ -313,15 +313,15 @@ void CFortress::AttackPhase(void)
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
             if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle);
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle);
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV3)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle);
+                CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle, OBJTYPE_FORTRESS);
             }
 
             // 攻撃状態をリセット
@@ -356,7 +356,7 @@ bool CFortress::CollisionWall(D3DXVECTOR3 myPos)
                 &myCubeSize, &pBlock->GetCollisionSize()))
             {
                 // 致死ダメージ
-                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, blockPos);
+                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, blockPos, OBJTYPE_BLOCK);
                 return true;
             }
 

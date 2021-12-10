@@ -76,7 +76,7 @@ public:
         bool bButtonA;
         bool bButtonX;
         bool bButtonB;
-        bool bButtonY;
+        bool bButtonR2;
     }ButtonState;
 
     // S‚ª‚¯‚Ä‚¢‚é‚±‚Æ

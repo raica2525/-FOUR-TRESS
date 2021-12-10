@@ -82,8 +82,12 @@
 //=======================
 #define TANK_LIFE 850.0f
 #define TANK_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define TANK_COLLISION_SIZE_GUARD D3DXVECTOR2(500.0f, 450.0f)
 #define TANK_SPD 740.0f
 #define TANK_WEI 3360.0f
+#define TANK_GUARD_WIDTH 180.0f
+#define TANK_GUARD_DISTANCE 100.0f
+#define TANK_GUARD_COLOR D3DXCOLOR(1.0f,0.933f,0.0f,1.0f)
 
 //=======================
 // ヒーラー
@@ -107,7 +111,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_controlInput.bTriggerX = false;
     m_controlInput.bPressX = false;
     m_controlInput.bReleaseX = false;
-    m_controlInput.bTriggerY = false;
+    m_controlInput.bPressR2 = false;
     m_controlInput.bTriggerB = false;
     m_bUseKeyboard = false;
     m_AIlevel = AI_LEVEL_NONE;
@@ -176,13 +180,16 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     //===================================    
     // Secondで追加したメンバ変数
     //===================================
-    m_role = ROLE_TANK;
+    m_role = ROLE_WARRIOR;
     m_attackState = ATTACK_STATE_NONE;
     m_nCntStopTime = 0;
     m_nCntAttackTime = 0;
     m_fCurrentEnergy = 0.0f;
     m_waitMotion = ANIM_IDLE;
     m_walkMotion = ANIM_MOVE;
+    m_bUsingGuard = false;
+    m_nCntGuards = 0;
+    m_pLightGuard = NULL;
 }
 
 //=============================================================================
@@ -481,6 +488,7 @@ void CPlayer::LoadCustom(void)
         collisionSizeDefence = TANK_COLLISION_SIZE;
         m_fSpd = TANK_SPD;
         m_fWei = TANK_WEI;
+        m_afParam[0] = TANK_GUARD_WIDTH;
         break;
     case ROLE_HEALER:
         fLife = HEALER_LIFE;
@@ -537,7 +545,7 @@ void CPlayer::Input(void)
         m_controlInput.bTriggerX = pInputKeyboard->GetKeyboardTrigger(DIK_RETURN);
         m_controlInput.bPressX = pInputKeyboard->GetKeyboardPress(DIK_RETURN);
         m_controlInput.bReleaseX = pInputKeyboard->GetKeyboardRelease(DIK_RETURN);
-        m_controlInput.bTriggerY = pInputKeyboard->GetKeyboardTrigger(DIK_UP);
+        m_controlInput.bPressR2 = pInputKeyboard->GetKeyboardPress(DIK_UP);
         m_controlInput.bTriggerB = pInputKeyboard->GetKeyboardTrigger(DIK_RIGHT);
 
         // 左スティックが傾いているかどうか
@@ -635,7 +643,7 @@ void CPlayer::Input(void)
         m_controlInput.bTriggerX = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
         m_controlInput.bPressX = pInputJoypad->GetJoypadPress(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
         m_controlInput.bReleaseX = pInputJoypad->GetJoypadRelease(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
-        m_controlInput.bTriggerY = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_Y);
+        m_controlInput.bPressR2 = pInputJoypad->GetJoypadPress(m_nIdxControlAndColor, CInputJoypad::BUTTON_R2);
         m_controlInput.bTriggerB = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_B);
 
         // 左スティックが傾いているかどうか
@@ -679,6 +687,7 @@ void CPlayer::Update(void)
     // ダメージによって攻撃をリセットするフラグが立っているなら
     if (GetResetAttackByDamage())
     {
+        m_nCntGuards = 0;   // 攻撃を受けた時のみ、タンクのガード回数はリセットされる
         ResetAttack();
         SetResetAttackByDamage(false);
     }
@@ -755,48 +764,6 @@ void CPlayer::Update(void)
             {
                 // 硬直時間をカウント
                 m_nCntStopTime--;
-
-                //// 必殺技処理（ゲージ満タン時にXボタン押したら）
-                //if (m_fSpGaugeCurrent >= m_fSpGaugeMax)
-                //{
-                //    if (m_controlInput.bTriggerX)
-                //    {
-                //        EmitSpShot();
-                //    }
-                //}
-
-                //// ここでボールを放つ
-                //if (m_nCntStopTime == 0)
-                //{
-                //    // 位置を取得
-                //    D3DXVECTOR3 pos = DEFAULT_VECTOR;
-                //    pos = GetPos();
-
-                //    // 最初の接触ではないためfalse
-                //    AttackUpdate(pos, false);
-                //}
-
-                //// アタックアニメーションカウンタ（変なポーズで止まらないための最低保証）
-                //if (m_nCntAttackAnimTime > 0)
-                //{
-                //    // アニメーションカウントダウン
-                //    m_nCntAttackAnimTime--;
-
-                //    // 攻撃時間もカウントダウン
-                //    m_nCntAttackTime--;
-
-                //    // 攻撃終了時にメンバ変数を戻す（念のため）
-                //    if (m_nCntAttackTime == 0)
-                //    {
-                //        ResetAttack();
-                //    }
-
-                //    // 攻撃モーションにするかどうか
-                //    AttackMotion();
-
-                //    // アニメーションの最低保証
-                //    CCharacter::Update();
-                //}
             }
         }
         else
@@ -835,6 +802,46 @@ void CPlayer::Update(void)
 
         m_fSpGaugeCurrent = 0.0f;
         SetDisp(false);
+    }
+
+    // 盾を生成しているかどうか
+    if (m_pLightGuard)
+    {
+        // 盾を使っているなら
+        if (m_bUsingGuard)
+        {
+            // 当たり判定を変える
+            SetCollisionSizeDefence(TANK_COLLISION_SIZE_GUARD);
+
+            // 変数宣言
+            D3DXVECTOR3 playerRot = CCharacter::GetRot();   // プレイヤーの向いている向き
+            D3DXVECTOR3 slidePos = DEFAULT_VECTOR;          // ずらす位置
+            D3DXVECTOR3 shieldPos = DEFAULT_VECTOR;         // 盾の位置
+
+            // 発生位置をずらす
+            slidePos.x = TANK_GUARD_DISTANCE * -sinf(playerRot.y);
+            slidePos.z = TANK_GUARD_DISTANCE * -cosf(playerRot.y);
+
+            // 盾の位置を決める
+            shieldPos = GetPos() + slidePos;
+
+            // チャージ量に応じて、色を変える
+            D3DXCOLOR color = TANK_GUARD_COLOR;
+            float gDownValue = 0.0933f * (float)m_nCntGuards;
+            color.g -= gDownValue;
+
+            // 表示を反映
+            m_pLightGuard->SetUseDraw(true);
+            m_pLightGuard->SetRot(playerRot);
+            m_pLightGuard->SetPos(shieldPos);
+            m_pLightGuard->SetColor(color);
+        }
+        else
+        {
+            SetCollisionSizeDefence(TANK_COLLISION_SIZE);
+            m_pLightGuard->SetUseDraw(false);
+            m_pLightGuard->SetColor(TANK_GUARD_COLOR);
+        }
     }
 }
 
@@ -1054,7 +1061,7 @@ void CPlayer::UpdateMannequin(void)
             GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             break;
         case RANK_3:
-            GetAnimation()->SetAnimation(ANIM_THIRD);
+            GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             break;
         case RANK_4:
             GetAnimation()->SetAnimation(ANIM_FOURTH);
@@ -1196,6 +1203,7 @@ void CPlayer::ResetAttack(void)
     m_nCntAttackAnimTime = 0;
     m_attackState = ATTACK_STATE_NONE;
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
+    m_bUsingGuard = false;
 }
 
 //=============================================================================
@@ -1290,7 +1298,7 @@ void CPlayer::Draw(void)
 // Author : 後藤慎之助
 //=============================================================================
 CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate, int nIdxControlAndColor,
-    AI_LEVEL AIlevel, bool bUseKeyboard)
+    AI_LEVEL AIlevel, int role, bool bUseKeyboard)
 {
     // メモリ確保
     CPlayer *pPlayer = NULL;
@@ -1304,6 +1312,7 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
 
     // 読み込む種類の設定
     pPlayer->m_nIdxControlAndColor = nIdxControlAndColor;
+    pPlayer->m_role = role;
 
     // 初期化
     pPlayer->Init(pos, DEFAULT_SCALE);
@@ -1383,6 +1392,10 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
 
     // プレイアブル表示
     pPlayer->m_pUI_Playable = CUI::Create(nTexTypePlayable, DEFAULT_VECTOR, D3DXVECTOR3(50.0f, 50.0f, 0.0f), 0, playableCol);
+
+    // 光の盾生成
+    pPlayer->m_pLightGuard = CModelEffect::Create(30, DEFAULT_VECTOR, DEFAULT_VECTOR,
+        TANK_GUARD_COLOR);
 
     return pPlayer;
 }
@@ -1606,7 +1619,16 @@ void CPlayer::Movement(float fSpeed)
     //====================================================
 
     // 回転制御
-    RotControl();
+    if (m_controlInput.bPressR2 && m_bGround)
+    {
+        // 向き固定
+        D3DXVECTOR3 rot = GetRot();
+        SetRotDestY(rot.y);
+    }
+    else
+    {
+        RotControl();
+    }
 
     // マップ制限
     D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
@@ -1857,8 +1879,8 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                         // ジャンプ音
                         CManager::SoundPlay(CSound::LABEL_SE_JUMP);
 
-                        // 1Fだけ向きを変えることができる
-                        RotControl();
+                        //// 1Fだけ向きを変えることができる
+                        //RotControl();
 
                         // ジャンプの初期量
                         move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
@@ -1887,8 +1909,8 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                     // ジャンプ音
                     CManager::SoundPlay(CSound::LABEL_SE_JUMP);
 
-                    // 1Fだけ向きを変えることができる
-                    RotControl();
+                    //// 1Fだけ向きを変えることができる
+                    //RotControl();
 
                     // ジャンプの初期量
                     move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;

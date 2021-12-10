@@ -26,6 +26,7 @@
 //========================================
 // マクロ定義
 //========================================
+#define HIT_NOT_EXIST -99
 
 //=============================================================================
 // コンストラクタ
@@ -53,6 +54,7 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_fStrength = 0.0f;
 
     memset(m_afParam, 0, sizeof(m_afParam));
+    m_whoShot = OBJTYPE_NONE;
 }
 
 //=============================================================================
@@ -167,7 +169,7 @@ void CBullet::Draw(void)
 // 生成処理
 // Author : 後藤慎之助
 //=============================================================================
-CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, float fStrength, D3DXVECTOR3 rot)
+CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJTYPE whoShot, float fStrength, D3DXVECTOR3 rot)
 {
     // メモリ確保
     CBullet *pBullet = NULL;
@@ -177,6 +179,7 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, floa
     pBullet->m_type = type;
     pBullet->SetRot(rot);
     pBullet->m_fStrength = fStrength;
+    pBullet->m_whoShot = whoShot;
 
     // 初期化
     pBullet->SetupInfoByType(fStrength, pos);
@@ -227,11 +230,22 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         // 多段ヒット回避用のフラグをtrueに
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
-                        // ダメージ
-                        bool bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                        // ダメージが入ったかどうか
+                        bool bDamaged = false;
+
+                        // ガードしているかどうか
+                        if (pPlayer->GetUsingGuard())
+                        {
+                            bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld);
+                        }
+                        else
+                        {
+                            bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
+                        }
+
                         if (bDamaged && m_bHitErase)
                         {
-                            m_nLife = NOT_EXIST;
+                            m_nLife = HIT_NOT_EXIST;
                         }
                     }
                 }
@@ -258,10 +272,10 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     m_abUseAvoidMultipleHits[nIdx] = true;
 
                     // ダメージ
-                    bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                    bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
                     if (bDamaged && m_bHitErase)
                     {
-                        m_nLife = NOT_EXIST;
+                        m_nLife = HIT_NOT_EXIST;
                     }
                 }
             }
@@ -317,12 +331,12 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         }
                         else
                         {
-                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld);
+                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
                         }
                         // 消す弾なら消す
                         if (bDamaged && m_bHitErase)
                         {
-                            m_nLife = NOT_EXIST;
+                            m_nLife = HIT_NOT_EXIST;
                         }
                     }
                 }
@@ -355,7 +369,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 {
                     // ダメージ
                     pBlock->TakeDamage(m_bBreakGoalGate);
-                    m_nLife = NOT_EXIST;    // ブロックは貫通出来ない
+                    m_nLife = HIT_NOT_EXIST;    // ブロックは貫通出来ない
                 }
 
                 // 次のシーンにする
@@ -408,12 +422,22 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
     if (bulletPos.y < 0.0f)
     {
         bulletPos.y = 0.0f;
-        m_nLife = NOT_EXIST;
+        m_nLife = HIT_NOT_EXIST;
 
         // コマンダーの弾なら、敵を生成
         if (m_type == TYPE_COMMANDER_ATTACK)
         {
             CEnemy::Create(CEnemy::TYPE_ARMY, bulletPos);
+        }
+    }
+
+    // 当たったなら
+    if (m_nLife == HIT_NOT_EXIST)
+    {
+        // タンクの地上攻撃Lv3なら爆発
+        if (m_type == TYPE_TANK_GROUND_LV3)
+        {
+            CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
         }
     }
 }

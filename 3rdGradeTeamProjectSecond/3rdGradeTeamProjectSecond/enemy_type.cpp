@@ -34,7 +34,7 @@
 //===========================
 #define ARMY_WHOLE_FRAME 80     // 全体フレーム
 #define ARMY_FIRE_FRAME 60      // 発射フレーム
-#define ARMY_WAIT_COUNT 30      // 攻撃後の待機フレーム
+#define ARMY_WAIT_COUNT 35      // 攻撃後の待機フレーム（初期30）
 
 //===========================
 // カミカゼ
@@ -211,7 +211,7 @@ void CEnemy::AtkArmy(D3DXVECTOR3& myPos)
         D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
         D3DXVECTOR3 firePos = myPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
-        CBullet::Create(CBullet::TYPE_ARMY_ATTACK, firePos, moveAngle, m_fStrength);
+        CBullet::Create(CBullet::TYPE_ARMY_ATTACK, firePos, moveAngle, OBJTYPE_ENEMY, m_fStrength);
     }
     else if (m_nCntTime == ARMY_WHOLE_FRAME)
     {
@@ -262,7 +262,7 @@ void CEnemy::AtkCannon(D3DXVECTOR3& myPos)
         if (m_nCntTime % CANNON_FIRE_INTERVAL_FRAME == 0)
         {
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
-            CBullet::Create(CBullet::TYPE_CANNON_ATTACK, GetPartsPos(CANNON_PARTS_FIRE_CUBE), moveAngle, m_fStrength);
+            CBullet::Create(CBullet::TYPE_CANNON_ATTACK, GetPartsPos(CANNON_PARTS_FIRE_CUBE), moveAngle, OBJTYPE_ENEMY, m_fStrength);
         }
     }
     else if (m_nCntTime == CANNON_WHOLE_FRAME)
@@ -285,7 +285,7 @@ void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
         {
             float fAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngle), COMMANDER_SPAWN_ANGLE_Y, -cosf(fAngle));
-            CBullet::Create(CBullet::TYPE_COMMANDER_ATTACK, GetPartsPos(COMMANDER_PARTS_SPAWN_POS), moveAngle, m_fStrength);
+            CBullet::Create(CBullet::TYPE_COMMANDER_ATTACK, GetPartsPos(COMMANDER_PARTS_SPAWN_POS), moveAngle, OBJTYPE_ENEMY, m_fStrength);
         }
     }
     else if (m_nCntTime == COMMANDER_WHOLE_FRAME)

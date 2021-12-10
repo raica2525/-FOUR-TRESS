@@ -245,11 +245,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [30] キューブ
+# [30] タンクの光の盾
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 30
-	NAME = data/MODEL/cube.x
+	NAME = data/MODEL/lightwall.x
 END_MODEL_DATASET
 
 #---------------------------------------

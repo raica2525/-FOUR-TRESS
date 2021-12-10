@@ -17,10 +17,19 @@
 #include "bullet.h"
 #include "item.h"
 #include "modelEffect.h"
+#include "wave.h"
 
 //========================================
 // マクロ定義
 //========================================
+
+// 近距離攻撃のフラグ
+typedef enum
+{
+    CLOSE_ATTACK_FLAG_NONE = 0,             // なし
+    CLOSE_ATTACK_FLAG_TAUNT = 0x001 << 1,   // 挑発
+}CLOSE_ATTACK_FLAG;
+
 //==========================
 // ウォーリアー地上
 //==========================
@@ -39,6 +48,7 @@
 // その他
 #define WARRIOR_GROUND_DUSH_SPEED 25.0f
 #define WARRIOR_GROUND_COMBO_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 15)
+#define WARRIOR_GROUND_SLIDE_SPEED 10.0f
 
 //==========================
 // ウォーリアー空中
@@ -86,7 +96,7 @@ typedef enum
 // キャリアー地上
 //==========================
 // 基本ダメージ
-#define CARRIER_GROUND_BASE_DAMAGE 70.0f
+#define CARRIER_GROUND_BASE_DAMAGE 40.0f
 // 当たり判定周り
 #define CARRIER_GROUND_RADIUS 450.0f
 #define CARRIER_GROUND_HEIGHT 300.0f
@@ -100,6 +110,8 @@ typedef enum
 #define CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME 2
 #define CARRIER_GROUND_AFTERIMAGE_COLOR D3DXCOLOR(0.694f, 0.298f, 1.0f, 1.0f)
 #define CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE D3DXCOLOR(0.0f, 0.0f, 0.0f, -0.04f)
+#define CARRIER_GROUND_COMBO_FRAME (CARRIER_GROUND_WHOLE_FRAME - 50)
+#define CARRIER_GROUND_SECOND_ATTACK_WHOLE_FRAME 40
 
 //==========================
 // キャリアー空中
@@ -119,14 +131,38 @@ typedef enum
 #define CARRIER_SKY_CHANCE_FRAME 35
 
 //==========================
-// タンク地上
+// タンク地上1_盾構え
 //==========================
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define TANK_GROUND_WHOLE_FRAME 300
-#define TANK_GROUND_CREATE_SHIELD_FRAME (HUNTER_GROUND_WHOLE_FRAME - 20)
-//#define TANK_GROUND_FIRE_FRAME (HUNTER_GROUND_WHOLE_FRAME - 10)
+#define TANK_GROUND1_WHOLE_FRAME 300
+#define TANK_GROUND1_CREATE_SHIELD_FRAME (TANK_GROUND1_WHOLE_FRAME - 20)
 // その他
-#define TANK_GROUND_WALK_SPEED 10.0f
+#define TANK_GROUND1_WALK_SPEED 8.5f
+#define TANK_GROUND1_LV2 3
+#define TANK_GROUND1_LV3 10
+// 汎用パラメータの内訳
+typedef enum
+{
+    PARAM_TANK_GUARD_WIDTH = 0,
+}PARAM_TANK;
+
+//==========================
+// タンク地上2_爆発弾
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define TANK_GROUND2_WHOLE_FRAME 45
+#define TANK_GROUND2_FIRE_FRAME (TANK_GROUND2_WHOLE_FRAME - 25)
+
+//==========================
+// タンク空中
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define TANK_SKY_WHOLE_FRAME 80
+#define TANK_SKY_START_FRAME (TANK_SKY_WHOLE_FRAME - 20)
+#define TANK_SKY_END_FRAME (TANK_SKY_WHOLE_FRAME - 60)
+// 当たり判定周り
+#define TANK_SKY_RADIUS 7500.0f
+#define TANK_SKY_HEIGHT 500.0f
 
 //=============================================================================
 // 攻撃更新処理
@@ -155,14 +191,23 @@ void CPlayer::AttackUpdate(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         case ATTACK_STATE_HUNTER_SKY:
             AtkHunterSky(playerPos, move);
             break;
-        case ATTACK_STATE_CARRIER_GROUND:
-            AtkCarrierGround(playerPos);
+        case ATTACK_STATE_CARRIER_GROUND1:
+            AtkCarrierGround1(playerPos);
+            break;
+        case ATTACK_STATE_CARRIER_GROUND2:
+            AtkCarrierGround2(playerPos);
             break;
         case ATTACK_STATE_CARRIER_SKY:
             AtkCarrierSky(playerPos, move);
             break;
-        case ATTACK_STATE_TANK_GROUND:
-            AtkTankGround(playerPos);
+        case ATTACK_STATE_TANK_GROUND1:
+            AtkTankGround1(playerPos);
+            break;
+        case ATTACK_STATE_TANK_GROUND2:
+            AtkTankGround2(playerPos);
+            break;
+        case ATTACK_STATE_TANK_SKY:
+            AtkTankSky(playerPos, move);
             break;
         case ATTACK_STATE_SIT_DOWN:
             AtkSitDown(playerPos, move);
@@ -194,10 +239,11 @@ void CPlayer::AttackGenerator(void)
                     break;
                 case ROLE_CARRIER:
                     m_nCntAttackTime = CARRIER_GROUND_WHOLE_FRAME;
-                    m_attackState = ATTACK_STATE_CARRIER_GROUND;
+                    m_attackState = ATTACK_STATE_CARRIER_GROUND1;
                     break;
                 case ROLE_TANK:
-                    m_attackState = ATTACK_STATE_TANK_GROUND;
+                    m_nCntAttackTime = TANK_GROUND1_WHOLE_FRAME;
+                    m_attackState = ATTACK_STATE_TANK_GROUND1;
                     break;
                 }
             }
@@ -238,6 +284,7 @@ void CPlayer::AttackGenerator(void)
                     m_attackState = ATTACK_STATE_CARRIER_SKY;
                     break;
                 case ROLE_TANK:
+                    m_nCntAttackTime = TANK_SKY_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_TANK_SKY;
                     break;
                 }
@@ -275,17 +322,29 @@ void CPlayer::AttackMotion(void)
     case ATTACK_STATE_HUNTER_SKY:
         GetAnimation()->SetAnimation(ANIM_HUNTER_SKY);
         break;
-    case ATTACK_STATE_CARRIER_GROUND:
+    case ATTACK_STATE_CARRIER_GROUND1:
+        GetAnimation()->SetAnimation(ANIM_CARRIER_GROUND);
+        break;
+    case ATTACK_STATE_CARRIER_GROUND2:
         GetAnimation()->SetAnimation(ANIM_CARRIER_GROUND);
         break;
     case ATTACK_STATE_CARRIER_SKY:
         GetAnimation()->SetAnimation(ANIM_CARRIER_SKY);
         break;
-    case ATTACK_STATE_TANK_GROUND:
-        GetAnimation()->SetAnimation(ANIM_TANK_GROUND);
+    case ATTACK_STATE_TANK_GROUND1:
+        GetAnimation()->SetAnimation(ANIM_TANK_GROUND1);
+        break;
+    case ATTACK_STATE_TANK_GROUND2:
+        GetAnimation()->SetAnimation(ANIM_TANK_GROUND2);
         break;
     case ATTACK_STATE_TANK_SKY:
         GetAnimation()->SetAnimation(ANIM_TANK_SKY);
+        break;
+    case ATTACK_STATE_HEALER_GROUND:
+        //GetAnimation()->SetAnimation(ANIM_CARRIER_GROUND);
+        break;
+    case ATTACK_STATE_HEALER_SKY:
+        //GetAnimation()->SetAnimation(ANIM_CARRIER_SKY);
         break;
     case ATTACK_STATE_SIT_DOWN:
         GetAnimation()->SetAnimation(ANIM_SIT_DOWN);
@@ -339,14 +398,29 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
                 // 当たっているなら
                 if (IsCollisionCylinder(attackPos, attackSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                 {
-                    // 敵にダメージが入ったら
-                    if (pEnemy->TakeDamage(fPower, attackPos, playerPos))
+                    // 挑発フラグがあるなら
+                    if (IS_BITON(flag, CLOSE_ATTACK_FLAG_TAUNT))
                     {
+                        // 挑発状態にする
+                        pEnemy->DiscoveryTarget((CCharacter*)this);
+
                         // 当たった
                         bHit = true;
 
                         // 多段ヒット回避用のフラグをtrueに
                         m_abUseAvoidMultipleHits[nIdx] = true;
+                    }
+                    else
+                    {
+                        // 敵にダメージが入ったら
+                        if (pEnemy->TakeDamage(fPower, attackPos, playerPos, OBJTYPE_PLAYER))
+                        {
+                            // 当たった
+                            bHit = true;
+
+                            // 多段ヒット回避用のフラグをtrueに
+                            m_abUseAvoidMultipleHits[nIdx] = true;
+                        }
                     }
                 }
             }
@@ -384,6 +458,56 @@ void CPlayer::RideFortress(void)
 }
 
 //=============================================================================
+// 移動要塞に座って攻撃する処理
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
+{
+    // 移動要塞を取得
+    CFortress *pFortress = CGame::GetFortress();
+    if (pFortress)
+    {
+        // 自身の位置を、座席にする
+        playerPos = pFortress->GetPartsPos(CFortress::PARTS_SEAT);
+
+        // 移動量を念のためリセットする
+        move = DEFAULT_VECTOR;
+
+        // 向きを合わせる
+        SetRot(pFortress->GetRot());
+    }
+
+    // 電力消費攻撃
+    if (m_controlInput.bTriggerX)
+    {
+        if (pFortress)
+        {
+            pFortress->SetAttackPhase(true);
+        }
+    }
+    else if (m_controlInput.bTriggerB)
+    {
+        // 攻撃フェーズ中は降りられない
+        if (pFortress)
+        {
+            if (!pFortress->GetAttackPhase())
+            {
+                // 降りる処理（攻撃周りをリセット）
+                ResetAttack();
+
+                // 移動要塞側の座っているフラグを戻す
+                pFortress->SetNowWhoRiding(false);
+            }
+        }
+        else
+        {
+            // 移動要塞がないなら、強制で降りる
+            ResetAttack();
+        }
+    }
+}
+
+//=============================================================================
 // ウォーリアー地上攻撃1
 // Author : 後藤慎之助
 //=============================================================================
@@ -394,10 +518,10 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
         // 変数宣言
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                      // プレイヤーの向いている向き
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
-        float fFinalPower = 0.0f;                                          // 最終的な攻撃力
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // プレイヤーの向いている向き
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ずらす位置
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // 攻撃発生位置
+        float fFinalPower = 0.0f;                                         // 最終的な攻撃力
         const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // 攻撃発生距離
         const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // 攻撃の大きさ
         const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // 攻撃の高さ
@@ -412,6 +536,13 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 
         // 攻撃力を考慮
         fFinalPower = BASE_DAMAGE;
+
+        // 移動できる
+        if (m_controlInput.bTiltedLeftStick)
+        {
+            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        }
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
@@ -452,10 +583,10 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
         // 変数宣言
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                      // プレイヤーの向いている向き
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ずらす位置
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // 攻撃発生位置
-        float fFinalPower = 0.0f;                                          // 最終的な攻撃力
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // プレイヤーの向いている向き
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ずらす位置
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // 攻撃発生位置
+        float fFinalPower = 0.0f;                                         // 最終的な攻撃力
         const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // 攻撃発生距離
         const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // 攻撃の大きさ
         const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // 攻撃の高さ
@@ -470,6 +601,13 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 
         // 攻撃力を考慮
         fFinalPower = BASE_DAMAGE;
+
+        // 移動できる
+        if (m_controlInput.bTiltedLeftStick)
+        {
+            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        }
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
@@ -538,7 +676,6 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 落下
         move.y -= WARRIOR_SKY_UP_VALUE;
 
-
         // 当たったかどうか
         IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
@@ -554,56 +691,6 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 }
 
 //=============================================================================
-// 移動要塞に座って攻撃する処理
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
-{
-    // 移動要塞を取得
-    CFortress *pFortress = CGame::GetFortress();
-    if (pFortress)
-    {
-        // 自身の位置を、座席にする
-        playerPos = pFortress->GetPartsPos(CFortress::PARTS_SEAT);
-
-        // 移動量を念のためリセットする
-        move = DEFAULT_VECTOR;
-
-        // 向きを合わせる
-        SetRot(pFortress->GetRot());
-    }
-
-    // 電力消費攻撃
-    if (m_controlInput.bTriggerX)
-    {
-        if (pFortress)
-        {
-            pFortress->SetAttackPhase(true);
-        }
-    }
-    else if (m_controlInput.bTriggerB)
-    {
-        // 攻撃フェーズ中は降りられない
-        if (pFortress)
-        {
-            if (!pFortress->GetAttackPhase())
-            {
-                // 降りる処理（攻撃周りをリセット）
-                ResetAttack();
-
-                // 移動要塞側の座っているフラグを戻す
-                pFortress->SetNowWhoRiding(false);
-            }
-        }
-        else
-        {
-            // 移動要塞がないなら、強制で降りる
-            ResetAttack();
-        }
-    }
-}
-
-//=============================================================================
 // ハンター地上攻撃
 // Author : 後藤慎之助
 //=============================================================================
@@ -613,7 +700,7 @@ void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
     if (m_nCntAttackTime == HUNTER_GROUND_FIRE_FRAME)
     {
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
-        CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle);
+        CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
     }
     else if (m_nCntAttackTime > HUNTER_GROUND_FIRE_FRAME)
     {
@@ -637,7 +724,7 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             float fDigitAngle = (float)(nCnt + 1) * (D3DXToRadian(180.0f) / (float)(HUNTER_SKY_ONCE_SHOT + 1));
             float fAngleXZ = GetRot().y + fDigitAngle - D3DXToRadian(90.0f);
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngleXZ), HUNTER_SKY_ANGLE_Y, -cosf(fAngleXZ));
-            CBullet*pBullet = CBullet::Create(CBullet::TYPE_HUNTER_SKY, GetPartsPos(PARTS_WEP), moveAngle);
+            CBullet*pBullet = CBullet::Create(CBullet::TYPE_HUNTER_SKY, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
             D3DXVECTOR3 targetPos = D3DXVECTOR3(m_afParam[PARAM_HUNTER_TARGET_POS_X], m_afParam[PARAM_HUNTER_TARGET_POS_Y], m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
             pBullet->SetParam(0, m_afParam[PARAM_HUNTER_TARGET_POS_X]);
             pBullet->SetParam(1, m_afParam[PARAM_HUNTER_TARGET_POS_Y]);
@@ -666,10 +753,10 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 }
 
 //=============================================================================
-// キャリアー地上攻撃
+// キャリアー地上攻撃1
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::AtkCarrierGround(D3DXVECTOR3& playerPos)
+void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
 {
     // 攻撃発生フレームと終了フレームを考慮
     if (m_nCntAttackTime <= CARRIER_GROUND_START_FRAME &&
@@ -684,26 +771,26 @@ void CPlayer::AtkCarrierGround(D3DXVECTOR3& playerPos)
         const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // 攻撃の大きさ
         const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // 攻撃の高さ
         const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // 基本ダメージ
+        D3DXVECTOR3 posOld = GetPosOld();
 
         // 攻撃力を考慮
         fFinalPower = BASE_DAMAGE;
 
         // 前進
-        D3DXVECTOR3 rot = GetRot();
-        playerPos.x += -sinf(rot.y)*CARRIER_GROUND_DUSH_SPEED;
-        playerPos.z += -cosf(rot.y)*CARRIER_GROUND_DUSH_SPEED;
+        playerPos.x += -sinf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
+        playerPos.z += -cosf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
 
         // 残像を残す
         if (m_nCntAttackTime % CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME == 0)
         {
-            CModelEffect*pAfterimage = CModelEffect::Create(27, playerPos, rot, CARRIER_GROUND_AFTERIMAGE_COLOR, CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE, true);
+            CModelEffect*pAfterimage = CModelEffect::Create(27, posOld, playerRot, CARRIER_GROUND_AFTERIMAGE_COLOR, CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE, true);
             pAfterimage->SetAdditiveSynthesis();
         }
 
         // 当たったかどうか
         if (IsHitCloseRangeAttack(playerPos, playerPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
-            CItem::Create(CItem::TYPE_DENTI_5, GetPosOld(), CARRIER_GROUND_CREATE_ENERGY);
+            CItem::Create(CItem::TYPE_DENTI_5, posOld, CARRIER_GROUND_CREATE_ENERGY);
         }
 
 #ifdef COLLISION_TEST
@@ -714,6 +801,66 @@ void CPlayer::AtkCarrierGround(D3DXVECTOR3& playerPos)
     {
         // キャラの向きを変える猶予フレーム
         SetRotDestY(m_controlInput.fPlayerAngle);
+    }
+
+    // 連続攻撃の判定
+    if (m_nCntAttackTime <= CARRIER_GROUND_COMBO_FRAME)
+    {
+        // 左スティックが傾いているなら連撃
+        if (m_controlInput.bTiltedLeftStick)
+        {
+            ResetAttack();
+            m_nCntAttackTime = CARRIER_GROUND_SECOND_ATTACK_WHOLE_FRAME;
+            m_attackState = ATTACK_STATE_CARRIER_GROUND2;
+            SetRotY(m_controlInput.fPlayerAngle);
+            SetRotDestY(m_controlInput.fPlayerAngle);
+        }
+    }
+}
+
+//=============================================================================
+// キャリアー地上攻撃2
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkCarrierGround2(D3DXVECTOR3& playerPos)
+{
+    // 攻撃発生フレームと終了フレームを考慮
+    if (m_nCntAttackTime >= CARRIER_GROUND_END_FRAME)
+    {
+        // この攻撃中は無敵
+        SetInvincible(true);
+
+        // 変数宣言
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // プレイヤーの向いている向き
+        float fFinalPower = 0.0f;                                         // 最終的な攻撃力
+        const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // 攻撃の大きさ
+        const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // 攻撃の高さ
+        const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // 基本ダメージ
+        D3DXVECTOR3 posOld = GetPosOld();
+
+        // 攻撃力を考慮
+        fFinalPower = BASE_DAMAGE;
+
+        // 前進
+        playerPos.x += -sinf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
+        playerPos.z += -cosf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
+
+        // 残像を残す
+        if (m_nCntAttackTime % CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME == 0)
+        {
+            CModelEffect*pAfterimage = CModelEffect::Create(27, posOld, playerRot, CARRIER_GROUND_AFTERIMAGE_COLOR, CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE, true);
+            pAfterimage->SetAdditiveSynthesis();
+        }
+
+        // 当たったかどうか
+        if (IsHitCloseRangeAttack(playerPos, playerPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
+        {
+            CItem::Create(CItem::TYPE_DENTI_5, posOld, CARRIER_GROUND_CREATE_ENERGY);
+        }
+
+#ifdef COLLISION_TEST
+        CDebug::Create(playerPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+#endif // COLLISION_TEST
     }
 }
 
@@ -774,30 +921,169 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_nCntAttackTime == CARRIER_SKY_START_WIND_FRAME)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
-            CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR);
+            CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
         }
     }
 }
 
 //=============================================================================
-// タンク地上攻撃
+// タンク地上攻撃1_盾構え
 // Author : 後藤慎之助
 //=============================================================================
-void CPlayer::AtkTankGround(D3DXVECTOR3& playerPos)
+void CPlayer::AtkTankGround1(D3DXVECTOR3& playerPos)
 {
     // 攻撃発生フレームと終了フレームを考慮
-    if (m_nCntAttackTime <= TANK_GROUND_CREATE_SHIELD_FRAME)
+    if (m_nCntAttackTime <= TANK_GROUND1_CREATE_SHIELD_FRAME && m_nCntAttackTime > 1)
     {
+        // ガード中
+        m_bUsingGuard = true;
+
         // 移動できる
         if (m_controlInput.bTiltedLeftStick)
         {
-            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*TANK_GROUND_WALK_SPEED;
-            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*TANK_GROUND_WALK_SPEED;
+            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*TANK_GROUND1_WALK_SPEED;
+            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*TANK_GROUND1_WALK_SPEED;
+        }
+
+        // 通常攻撃でキャンセル可能
+        if (m_controlInput.bTriggerX)
+        {
+            ResetAttack();
+            m_nCntAttackTime = TANK_GROUND2_WHOLE_FRAME;
+            m_attackState = ATTACK_STATE_TANK_GROUND2;
         }
     }
-    else if (m_nCntAttackTime > TANK_GROUND_CREATE_SHIELD_FRAME)
+    else if (m_nCntAttackTime == 1)
     {
-        // キャラの向きを変える猶予フレーム
-        SetRotDestY(m_controlInput.fPlayerAngle);
+        ResetAttack();
+        m_nCntAttackTime = TANK_GROUND2_WHOLE_FRAME;
+        m_attackState = ATTACK_STATE_TANK_GROUND2;
+    }
+}
+
+//=============================================================================
+// タンク地上攻撃2_爆発弾
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkTankGround2(D3DXVECTOR3& playerPos)
+{
+    // 攻撃発生フレーム
+    if (m_nCntAttackTime == TANK_GROUND2_FIRE_FRAME)
+    {
+        // この攻撃中は無敵
+        SetInvincible(true);
+
+        // 発射角度、位置を取得
+        D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+        D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
+        D3DXVECTOR3 firePos = playerPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
+
+        // ガード回数に応じて、発射するタイプを変える
+        if (m_nCntGuards < TANK_GROUND1_LV2)
+        {
+            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV1, firePos, moveAngle, OBJTYPE_PLAYER);
+        }
+        else if (m_nCntGuards >= TANK_GROUND1_LV2 && m_nCntGuards < TANK_GROUND1_LV3)
+        {
+            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV2, firePos, moveAngle, OBJTYPE_PLAYER);
+        }
+        else if (m_nCntGuards >= TANK_GROUND1_LV3)
+        {
+            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV3, firePos, moveAngle, OBJTYPE_PLAYER);
+        }
+
+        // 撃てたなら、ガード回数をリセット
+        m_nCntGuards = 0;
+    }
+    else if (m_nCntAttackTime > TANK_GROUND2_FIRE_FRAME)
+    {
+        // 撃つまでは無敵
+        SetInvincible(true);
+    }
+}
+
+//=============================================================================
+// タンクがガード中にダメージを受ける処理
+// Author : 後藤慎之助
+//=============================================================================
+bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType)
+{
+    // 位置からダメージへの向きを取得
+    D3DXVECTOR3 myPos = GetPos();
+    float fAngleToDamagePos = D3DXToDegree(GetAngleToTargetXZ(damageOldPos, myPos));  // ダメージへの角度
+    if (fAngleToDamagePos < 0.0f)
+    {
+        fAngleToDamagePos += 360.0f;
+    }
+
+    // 自機の向きを取得
+    D3DXVECTOR3 myRot = GetRot();
+    float fPlayerAngle = D3DXToDegree(myRot.y);
+    if (fPlayerAngle < 0.0f)
+    {
+        fPlayerAngle += 360.0f;
+    }
+
+    // ダメージ向きがガード範囲内におさまっているなら
+    if (fAngleToDamagePos <= fPlayerAngle + (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f)&&
+        fAngleToDamagePos >= fPlayerAngle - (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f))
+    {
+        // ガード回数加算
+        m_nCntGuards++;
+        if (m_nCntGuards > TANK_GROUND1_LV3)
+        {
+            m_nCntGuards = TANK_GROUND1_LV3;
+        }
+
+        // ガードエフェクト発生
+
+        // ガード成功したため、関数を抜ける
+        return true;
+    }
+
+    // ダメージを受ける
+    return TakeDamage(fDamage, damagePos, damageOldPos, OBJTYPE_ENEMY, effectType);
+}
+
+//=============================================================================
+// タンク空中攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
+{
+    // 攻撃発生フレームと終了フレームを考慮
+    if (m_nCntAttackTime <= TANK_SKY_START_FRAME &&
+        m_nCntAttackTime >= TANK_SKY_END_FRAME)
+    {
+        // 挑発エフェクト
+        if (m_nCntAttackTime == TANK_SKY_START_FRAME)
+        {
+            CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));
+        }
+
+        // 移動できない
+        move = DEFAULT_VECTOR;
+
+        // この攻撃中は無敵
+        SetInvincible(true);
+
+        // 変数宣言
+        const float ATTACK_RADIUS = TANK_SKY_RADIUS;    // 攻撃の大きさ
+        const float ATTACK_HEIGHT = TANK_SKY_HEIGHT;    // 攻撃の高さ
+        int flag = 0;                                   // 近接攻撃のフラグ
+        D3DXVECTOR3 tauntPos = D3DXVECTOR3(playerPos.x, 0.0f, playerPos.z);
+
+        // 挑発の当たり判定
+        BITON(flag, CLOSE_ATTACK_FLAG_TAUNT);
+        IsHitCloseRangeAttack(tauntPos, tauntPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), 0.0f, flag);
+
+#ifdef COLLISION_TEST
+        CDebug::Create(tauntPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+#endif // COLLISION_TEST
+    }
+    else if (m_nCntAttackTime > CARRIER_GROUND_START_FRAME)
+    {
+        // 移動できない
+        move = DEFAULT_VECTOR;
     }
 }

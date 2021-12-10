@@ -74,6 +74,8 @@ public:
     static CScene*GetTopScene(OBJTYPE objtype) { return m_apTop[objtype]; }              // その種類の先頭のオブジェクトを取得
     CScene* GetNextScene(void) { return m_pNext; }                                      // 次のオブジェクトを取得
 
+    OBJTYPE GetObjtype(void) { return m_objType; }
+
     /*============================================================================================================================
     // オブジェクトのタイプごとでコンストラクタで次のシーン等を記憶しているため、絶対にオブジェクトタイプを書き換えてはいけない
     //void SetObjType(OBJTYPE objtype) { m_objType = objtype; }

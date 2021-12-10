@@ -37,7 +37,7 @@ public:
     void Uninit(void);                                                                  // 終了処理
     void Update(void);                                                                  // 更新処理
     void Draw(void);                                                                    // 描画処理
-    static CBullet *Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, float fStrength = 1.0f, D3DXVECTOR3 rot = DEFAULT_VECTOR);           // 生成処理
+    static CBullet *Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJTYPE whoShot, float fStrength = 1.0f, D3DXVECTOR3 rot = DEFAULT_VECTOR);           // 生成処理
 
     // 弾の種類
     typedef enum
@@ -52,6 +52,10 @@ public:
         TYPE_HUNTER_GROUND,     // ハンターの地上攻撃
         TYPE_HUNTER_SKY,        // ハンターの空中攻撃
         TYPE_CARRIER_SKY,       // キャリアーの空中攻撃
+        TYPE_TANK_GROUND_LV1,   // タンクの地上攻撃_LV1
+        TYPE_TANK_GROUND_LV2,   // タンクの地上攻撃_LV2
+        TYPE_TANK_GROUND_LV3,   // タンクの地上攻撃_LV3
+        TYPE_TANK_GROUND_EX,    // タンクの地上攻撃の爆発
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -96,6 +100,7 @@ private:
     float m_fStrength;              // 強さ
 
     float m_afParam[PARAM_DATA_MAX];// 汎用データ
+    OBJTYPE m_whoShot;              // 誰が撃ったか
 
     //=============================
     // 種類ごとの処理

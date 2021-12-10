@@ -21,6 +21,7 @@ CModelEffect::CModelEffect() :CScene3D(CScene::OBJTYPE_MODEL_EFFECT)
     m_colChangeRate = DEFAULT_COLOR_NONE;
     m_bUseLight = true;
 
+    m_bUseDraw = true;
     m_bUseAdditiveSynthesis = false;
 }
 
@@ -80,12 +81,15 @@ void CModelEffect::Update(void)
 //=============================================================================
 void CModelEffect::Draw(void)
 {
-    if (m_bUseAdditiveSynthesis)
+    if (m_bUseDraw)
     {
-        CScene3D::SetAdditiveSynthesis();
-    }
+        if (m_bUseAdditiveSynthesis)
+        {
+            CScene3D::SetAdditiveSynthesis();
+        }
 
-    CScene3D::Draw(true, m_bUseLight, m_col);
+        CScene3D::Draw(true, m_bUseLight, m_col);
+    }
 }
 
 //=============================================================================

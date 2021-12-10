@@ -165,6 +165,7 @@ class CAi;
 class CUI;
 class CText;
 class CNumberArray;
+class CModelEffect;
 
 //================================================
 // クラス宣言
@@ -202,9 +203,9 @@ public:
         ANIM_CARRIER_GROUND, // キャリアー地上
         ANIM_CUSTOM_IDLE,    // カスタマイズ画面での待機
         ANIM_WEAPON_LOOK,    // カスタマイズ画面での武器を見る
-        ANIM_TANK_GROUND,    // タンク地上
+        ANIM_TANK_GROUND1,   // タンク地上1
         ANIM_TANK_SKY,       // タンク空中
-        ANIM_THIRD,          // 3位
+        ANIM_TANK_GROUND2,   // タンク地上2
         ANIM_FOURTH,         // 4位
         ANIM_FIRST_WAIT,     // 1位待機
         ANIM_MAX,
@@ -250,16 +251,16 @@ public:
         ATTACK_STATE_WARRIOR_GROUND1,  // ウォーリアー地上1
         ATTACK_STATE_WARRIOR_GROUND2,  // ウォーリアー地上2
         ATTACK_STATE_WARRIOR_SKY,      // ウォーリアー空中
-        ATTACK_STATE_WARRIOR_SP,       // ウォーリアー必殺
         ATTACK_STATE_HUNTER_GROUND,    // ハンター地上
         ATTACK_STATE_HUNTER_SKY,       // ハンター空中
-        ATTACK_STATE_HUNTER_SP,        // ハンター必殺
-        ATTACK_STATE_CARRIER_GROUND,   // キャリアー地上
+        ATTACK_STATE_CARRIER_GROUND1,  // キャリアー地上1
+        ATTACK_STATE_CARRIER_GROUND2,  // キャリアー地上2
         ATTACK_STATE_CARRIER_SKY,      // キャリアー空中
-        ATTACK_STATE_CARRIER_SP,       // キャリアー必殺
-        ATTACK_STATE_TANK_GROUND,      // タンク地上
+        ATTACK_STATE_TANK_GROUND1,     // タンク地上1
+        ATTACK_STATE_TANK_GROUND2,     // タンク地上2
         ATTACK_STATE_TANK_SKY,         // タンク空中
-        ATTACK_STATE_TANK_SP,          // タンク必殺
+        ATTACK_STATE_HEALER_GROUND,    // ヒーラー地上
+        ATTACK_STATE_HEALER_SKY,       // ヒーラー空中
         ATTACK_STATE_SIT_DOWN,         // 座る
     }ATTACK_STATE;
 
@@ -275,7 +276,7 @@ public:
         bool bTriggerX;                 // Xボタントリガー
         bool bPressX;                   // Xボタンプレス
         bool bReleaseX;                 // Xボタンリリース
-        bool bTriggerY;                 // Yボタントリガー
+        bool bPressR2;                  // R2ボタンプレス
         bool bTriggerB;                 // Bボタントリガー
     }ControlInput;    // 入力制御
 
@@ -355,7 +356,7 @@ public:
     void Respawn(void);                                                                 // リスポーン
     void Draw(void);                                                                    // 描画処理
     static CPlayer *CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate, int nIdxControlAndColor,
-        AI_LEVEL AIlevel, bool bUseKeyboard = false);   // ゲーム内での生成処理
+        AI_LEVEL AIlevel, int role, bool bUseKeyboard = false);   // ゲーム内での生成処理
     static CPlayer *CreateInCustom(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxControlAndColor, bool bDisp); // カスタマイズ画面での生成
     static CPlayer *CreateInResult(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxControlAndColor, RANK rank);  // リザルト画面での生成    
 
@@ -369,6 +370,8 @@ public:
 
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nNumTexture);					// クリッピングマスク適用 //池田追加
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size);									// テクスチャなしクリッピングマスク適用 //池田追加
+
+    bool TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType = 20);
 
     /*========================================================
     // カスタマイズの文字列周り
@@ -407,6 +410,7 @@ public:
     bool GetUseControllerEffect(void);       // コントローラの振動を使用するかどうか
     bool GetDispAbility(void) { return m_bDispAbility; }
     int GetRole(void) { return m_role; }
+    bool GetUsingGuard(void) { return m_bUsingGuard; }
 
 private:
     bool m_bMannequin;                       // マネキンかどうか
@@ -485,6 +489,9 @@ private:
     float m_fCurrentEnergy;     // 現在のエナジー量
     int m_waitMotion;           // 待機モーション
     int m_walkMotion;           // 移動モーション
+    bool m_bUsingGuard;         // ガードを使用中かどうか
+    int m_nCntGuards;           // ガード回数
+    CModelEffect *m_pLightGuard;// 光の盾モデル
 
     //===================================
     // このクラス内でのみ使う処理
@@ -499,18 +506,20 @@ private:
     //===================================    
     // 攻撃系
     //===================================
+    void AtkSitDown(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkWarriorGround1(D3DXVECTOR3& playerPos);
     void AtkWarriorGround2(D3DXVECTOR3& playerPos);
     void AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkHunterGround(D3DXVECTOR3& playerPos);
     void AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
-    void AtkCarrierGround(D3DXVECTOR3& playerPos);
+    void AtkCarrierGround1(D3DXVECTOR3& playerPos);
+    void AtkCarrierGround2(D3DXVECTOR3& playerPos);
     void AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
-    void AtkTankGround(D3DXVECTOR3& playerPos);
-    void AtkTankSky(D3DXVECTOR3& playerPos);
+    void AtkTankGround1(D3DXVECTOR3& playerPos);
+    void AtkTankGround2(D3DXVECTOR3& playerPos);
+    void AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkHealerGround(D3DXVECTOR3& playerPos);
     void AtkHealerSky(D3DXVECTOR3& playerPos);
-    void AtkSitDown(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
 };
 
 #endif

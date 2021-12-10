@@ -246,27 +246,33 @@ void CEnemy::Update(void)
 //=============================================================================
 void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
 {
-    // アイテムを出す
-    CItem::TYPE dentiType = CItem::TYPE_DENTI_5;
-    if (m_fChargeValue >= CHARGE_VALUE_DENTI_3 && m_fChargeValue < CHARGE_VALUE_DENTI_1)
+    // ラストヒットがプレイヤーなら、アイテムを出す
+    OBJTYPE lastHit = GetLastHit();
+    if (lastHit == OBJTYPE_PLAYER)
     {
-        dentiType = CItem::TYPE_DENTI_3;
+        CItem::TYPE dentiType = CItem::TYPE_DENTI_5;
+        if (m_fChargeValue >= CHARGE_VALUE_DENTI_3 && m_fChargeValue < CHARGE_VALUE_DENTI_1)
+        {
+            dentiType = CItem::TYPE_DENTI_3;
+        }
+        else if (m_fChargeValue >= CHARGE_VALUE_DENTI_1)
+        {
+            dentiType = CItem::TYPE_DENTI_1;
+        }
+        // 最低保証
+        if (m_fChargeValue < 1.0f)
+        {
+            m_fChargeValue = 1.0f;
+        }
+        CItem::Create(dentiType, myPos, m_fChargeValue);
     }
-    else if (m_fChargeValue >= CHARGE_VALUE_DENTI_1)
+    else
     {
-        dentiType = CItem::TYPE_DENTI_1;
-    }
-    // 最低保証
-    if (m_fChargeValue < 1.0f)
-    {
-        m_fChargeValue = 1.0f;
-    }
-    CItem::Create(dentiType, myPos, m_fChargeValue);
-
-    // カミカゼの場合、爆発を生み出す
-    if (m_type == TYPE_KAMIKAZE)
-    {
-        CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, m_fStrength);
+        // カミカゼの場合、プレイヤー以外にやられたら爆発を生み出す
+        if (m_type == TYPE_KAMIKAZE)
+        {
+            CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
+        }
     }
 
     // 終了処理
@@ -474,7 +480,7 @@ void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
             if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
             {
                 // HP0に
-                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos());
+                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
             }
         }
     }

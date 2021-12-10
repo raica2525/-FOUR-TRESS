@@ -38,7 +38,16 @@ public:
     void Draw(void);
     static CModelEffect *Create(int nModelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot = DEFAULT_VECTOR, D3DXCOLOR col = SCENE3D_EMISSIVE_COLOR, D3DXCOLOR colChangeRate = DEFAULT_COLOR_NONE, bool bUseLight = true);
 
+    //=======================
+    // セッター
+    //=======================
     void SetAdditive(void) { m_bUseAdditiveSynthesis = true; }
+    void SetUseDraw(bool bUseDraw) { m_bUseDraw = bUseDraw; }
+    void SetColor(D3DXCOLOR col) { m_col = col; }
+
+    //=======================
+    // ゲッター
+    //=======================
 
 private:
     int m_nModelType;             // 使うモデルの種類
@@ -46,6 +55,7 @@ private:
     D3DXCOLOR m_colChangeRate;    // 色変化割合
     bool m_bUseLight;             // ライトを使うかどうか
 
+    bool m_bUseDraw;              // 描画するかどうか
     bool m_bUseAdditiveSynthesis; // 加算合成にするかどうか
 };
 

@@ -367,6 +367,24 @@ void CDebugMenu::Update(void)
         }
         else
         {
+            // –ðŠ„Œˆ’è
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_1))
+            {
+                CGame::SetRole(PLAYER_1, CPlayer::ROLE_WARRIOR);
+            }
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_2))
+            {
+                CGame::SetRole(PLAYER_1, CPlayer::ROLE_HUNTER);
+            }
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_3))
+            {
+                CGame::SetRole(PLAYER_1, CPlayer::ROLE_CARRIER);
+            }
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_4))
+            {
+                CGame::SetRole(PLAYER_1, CPlayer::ROLE_TANK);
+            }
+
             // ãˆÚ“®
             if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || Controller.lY < 0 && m_nSelectCoolTime <= 0)
             {
