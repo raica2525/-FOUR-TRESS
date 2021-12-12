@@ -43,40 +43,40 @@ public:
     typedef enum
     {
         TYPE_HEAL = 0,              // 回復
-        TYPE_BALL_AURA,             // ボールオーラ
-        TYPE_BALL_APPEAR,           // ボール出現
+        TYPE_HEART,                 // ハート弾
+        TYPE_THRUST,                // ヒットエフェクト(突き、弓)
         TYPE_NEGA,                  // 反転合成
-        TYPE_WALK_SMOKE_RIGHT,      // 歩き始めの砂煙右
-        TYPE_JUMP_SMOKE_RIGHT,      // ジャンプの砂煙右
-        TYPE_GROUND_SMOKE,          // 着地時の砂煙
+        TYPE_SLASH,                 // ヒットエフェクト（斬撃）
+        TYPE_LIGHTNING_0,           // 電撃弾_0
+        TYPE_LIGHTNING_1,           // 電撃弾_1
         TYPE_SECOND_JUMP_AIR_RING,  // 二段ジャンプの空気の輪
         TYPE_SECOND_JUMP_SMOKE,     // 二段ジャンプの砂煙
-        TYPE_WALK_SMOKE_LEFT,       // 歩き始めの砂煙左
-        TYPE_JUMP_SMOKE_LEFT,       // ジャンプの砂煙左
-        TYPE_SHOOT_CIRCLE_1P,       // シュート時の円1P
-        TYPE_SHOOT_CIRCLE_2P,       // シュート時の円2P
-        TYPE_SHOOT_CIRCLE_3P,       // シュート時の円3P
-        TYPE_SHOOT_CIRCLE_4P,       // シュート時の円4P
-        TYPE_SHOOT_CIRCLE_1P_FAST,  // シュート時の円1P改
-        TYPE_SHOOT_CIRCLE_2P_FAST,  // シュート時の円2P改
-        TYPE_SHOOT_CIRCLE_3P_FAST,  // シュート時の円3P改
-        TYPE_SHOOT_CIRCLE_4P_FAST,  // シュート時の円4P改
-        TYPE_SHOOT_ABSORB,          // 吸収
+        TYPE_LIGHTNING_RANGE,       // 電撃(範囲)
+        TYPE_SMOKE,                 // 煙
+        TYPE_GET,                   // アイテム取得
+        TYPE_EXPLOSION_0,           // [12] 爆発_0
+        TYPE_EXPLOSION_1,           // [13] 爆発_1
+        TYPE_EXPLOSION_2,           // [14] 爆発_2
+        TYPE_ENEMY_POP_0,           // [15] 敵出現_0
+        TYPE_ENEMY_POP_1,           // [16] 敵出現_1
+        TYPE_ENEMY_DESTROYING,      // [17] 敵やられ
+        TYPE_WIND_0,                // [18] 風_0
+        TYPE_WIND_1,                // [19] 風_1
         TYPE_HIT_BALL,              // ボールが当たった時
-        TYPE_LUCKY_GUARD_FIRST,     // ラッキーガード時に最初に出るエフェクト
-        TYPE_LUCKY_GUARD_SECOND,    // ラッキーガード時に2番目に出るエフェクト
-        TYPE_TITLE_FIRE_RED,        // タイトルの赤い炎
-        TYPE_TITLE_FIRE_BLUE,       // タイトルの青い炎
+        TYPE_ROAR_0,                // [21] 咆哮_0
+        TYPE_ROAR_1,                // [22] 咆哮_1
+        TYPE_ROAR_2,                // [23] 咆哮_2
+        TYPE_ARROW,                 // [24] 矢のエフェクト
         TYPE_KIRA,                  // カーソルクリック時のキラキラ
         TYPE_SHADOW,                // 影
-        TYPE_WARP_SPLASH,           // ワープ時の飛沫
-        TYPE_WARP_SPLASH2,          // ワープ時の飛沫2
-        TYPE_WARP_UP,               // ワープ上
-        TYPE_WARP_DOWN,             // ワープ下
-        TYPE_WARP_RIGHT,            // ワープ右
-        TYPE_WARP_LEFT,             // ワープ左
-        TYPE_DIVING,                // 急降下
-        TYPE_BLOWN,                 // 吹っ飛ばされた時
+        TYPE_MAGIC_CIRCLE_0,        // [27] 魔法陣_0
+        TYPE_MAGIC_CIRCLE_1,        // [28] 魔法陣_1
+        TYPE_MAGIC_CIRCLE_2,        // [29] 魔法陣_2
+        TYPE_IMPACT_WAVE_0,         // [30] ウォーリアージャンプ攻撃0
+        TYPE_IMPACT_WAVE_1,         // [31] ウォーリアージャンプ攻撃1
+        TYPE_IMPACT_WAVE_2,         // [32] ウォーリアージャンプ攻撃2
+        TYPE_DARKNESS_AURA_0,       // [33] 即死オーラ_0
+        TYPE_DARKNESS_AURA_1,       // [34] 即死オーラ_1
         TYPE_RED_WING,              // 赤い翼
         TYPE_BLUE_WING,             // 青い翼
         TYPE_WALL_HIT_SMOKE,        // 壁バウンド煙

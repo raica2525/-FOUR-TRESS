@@ -17,7 +17,7 @@
 //=============================================================================
 // É}ÉNÉçíËã`
 //=============================================================================
-#define EFFECT_DATA_FILENAME ("data/TXT/effect.txt")
+#define EFFECT_DATA_FILENAME ("data/TXT/12_curse.txt")
 #define EFFECT_DATA_OUTPUT_FILENAME ("data/TXT/effectinfo.txt")
 
 //=============================================================================

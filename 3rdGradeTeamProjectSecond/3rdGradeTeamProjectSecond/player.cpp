@@ -822,7 +822,7 @@ void CPlayer::Update(void)
             D3DXVECTOR3 hipPos = GetPartsPos(PARTS_HIP);
             if (hipPos.y > -500.0f) // 画面外対応
             {
-                CEffect3D::Emit(CEffectData::TYPE_BLOWN, hipPos, m_hipPosOld);
+                //CEffect3D::Emit(CEffectData::TYPE_BLOWN, hipPos, m_hipPosOld);
             }
         }
     }
@@ -1644,7 +1644,7 @@ void CPlayer::MoveMotion(void)
     {
         // 着地の砂煙（当たり判定の分、砂煙が広がる）
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-        CEffect3D::Emit(CEffectData::TYPE_GROUND_SMOKE, GetPos(), GetPos(), collisionSizeDefence.x);
+        //CEffect3D::Emit(CEffectData::TYPE_GROUND_SMOKE, GetPos(), GetPos(), collisionSizeDefence.x);
 
         // 着地時間を設定
         m_nCntLandingTime = PLAYER_LANDING_TIME;
@@ -1816,12 +1816,12 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                 if (GetRot().y == PLAYER_ROT_LEFT)
                 {
                     // ジャンプの砂煙
-                    CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
+                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
                 }
                 else
                 {
                     // ジャンプの砂煙
-                    CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
+                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
                 }
 
                 // ジャンプ音

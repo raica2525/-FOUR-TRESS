@@ -164,7 +164,7 @@ void CTitle::EmitFire(FIRE_POS firePos)
     const float BASE_ANGLE = 67.5f;
     D3DXVECTOR3 pos = DEFAULT_VECTOR;
     float fAngle = 0.0f;
-    CEffectData::TYPE effectType = CEffectData::TYPE_TITLE_FIRE_RED;
+    //CEffectData::TYPE effectType = CEffectData::TYPE_TITLE_FIRE_RED;
 
     // à íuÇ∆å¸Ç´Ç∆êFÇåàÇﬂÇÈ
     switch (firePos)
@@ -173,16 +173,16 @@ void CTitle::EmitFire(FIRE_POS firePos)
         pos.y = -POS_Y_ADJUST;
         pos.x = float(rand() % RAND_X);
         fAngle = D3DXToRadian(180.0f) + BASE_ANGLE - ANGLE_ADJUST;
-        effectType = CEffectData::TYPE_TITLE_FIRE_BLUE;
+        //effectType = CEffectData::TYPE_TITLE_FIRE_BLUE;
         break;
     case FIRE_POS_DOWN:
         pos.y = SCREEN_HEIGHT + POS_Y_ADJUST;
         pos.x = float(rand() % RAND_X) - float(RAND_X - SCREEN_WIDTH);
         fAngle = BASE_ANGLE - ANGLE_ADJUST;
-        effectType = CEffectData::TYPE_TITLE_FIRE_RED;
+        //effectType = CEffectData::TYPE_TITLE_FIRE_RED;
         break;
     }
 
     // âäê∂ê¨
-    CEffect2D::Create(effectType, pos, fAngle);
+    //CEffect2D::Create(effectType, pos, fAngle);
 }
