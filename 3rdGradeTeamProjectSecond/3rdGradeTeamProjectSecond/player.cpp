@@ -93,6 +93,9 @@
 // ヒーラー
 //=======================
 #define HEALER_LIFE 350.0f
+#define HEALER_COLLISION_SIZE D3DXVECTOR2(300.0f, 450.0f)
+#define HEALER_SPD 790.0f
+#define HEALER_WEI 3060.0f
 
 //=============================================================================
 // コンストラクタ
@@ -491,7 +494,12 @@ void CPlayer::LoadCustom(void)
         m_afParam[0] = TANK_GUARD_WIDTH;
         break;
     case ROLE_HEALER:
+        BindParts(PARTS_HEAD, 25);
+        BindParts(PARTS_WEP, 26);
         fLife = HEALER_LIFE;
+        collisionSizeDefence = HEALER_COLLISION_SIZE;
+        m_fSpd = HEALER_SPD;
+        m_fWei = HEALER_WEI;
         break;
     }
     SetUpLife(fLife);
@@ -1030,7 +1038,7 @@ void CPlayer::UpdateMannequin(void)
             if (m_nCntAttackAnimTime > PLAYER_VICTORY_WAIT_START_FRAME)
             {
                 m_nCntAttackAnimTime = PLAYER_VICTORY_WAIT_START_FRAME;
-                GetAnimation()->SetAnimation(ANIM_FIRST_WAIT);
+                GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             }
             else if (m_nCntAttackAnimTime == PLAYER_VICTORY_VOICE_FRAME)
             {
@@ -1064,7 +1072,7 @@ void CPlayer::UpdateMannequin(void)
             GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             break;
         case RANK_4:
-            GetAnimation()->SetAnimation(ANIM_FOURTH);
+            GetAnimation()->SetAnimation(ANIM_CUSTOM_IDLE);
             break;
         }
 

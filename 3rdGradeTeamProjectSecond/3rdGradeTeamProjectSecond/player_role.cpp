@@ -164,6 +164,21 @@ typedef enum
 #define TANK_SKY_RADIUS 7500.0f
 #define TANK_SKY_HEIGHT 500.0f
 
+//==========================
+// ヒーラー地上
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define HEALER_GROUND_WHOLE_FRAME 60
+#define HEALER_GROUND_FIRE_FRAME (HEALER_GROUND_WHOLE_FRAME - 30)
+#define HEALER_GROUND_BASE_DAMAGE 40.0f
+
+//==========================
+// ヒーラー空中
+//==========================
+// 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
+#define HEALER_SKY_WHOLE_FRAME 90
+#define HEALER_SKY_FIRE_FRAME (HEALER_SKY_WHOLE_FRAME - 45)
+
 //=============================================================================
 // 攻撃更新処理
 // Author : 後藤慎之助
@@ -212,6 +227,12 @@ void CPlayer::AttackUpdate(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         case ATTACK_STATE_SIT_DOWN:
             AtkSitDown(playerPos, move);
             break;
+        case ATTACK_STATE_HEALER_GROUND:
+            AtkHealerGround(playerPos);
+            break;
+        case ATTACK_STATE_HEALER_SKY:
+            AtkHealerSky(playerPos, move);
+            break;
         }
     }
 }
@@ -244,6 +265,10 @@ void CPlayer::AttackGenerator(void)
                 case ROLE_TANK:
                     m_nCntAttackTime = TANK_GROUND1_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_TANK_GROUND1;
+                    break;
+                case ROLE_HEALER:
+                    m_nCntAttackTime = HEALER_GROUND_WHOLE_FRAME;
+                    m_attackState = ATTACK_STATE_HEALER_GROUND;
                     break;
                 }
             }
@@ -286,6 +311,10 @@ void CPlayer::AttackGenerator(void)
                 case ROLE_TANK:
                     m_nCntAttackTime = TANK_SKY_WHOLE_FRAME;
                     m_attackState = ATTACK_STATE_TANK_SKY;
+                    break;
+                case ROLE_HEALER:
+                    m_nCntAttackTime = HEALER_SKY_WHOLE_FRAME;
+                    m_attackState = ATTACK_STATE_HEALER_SKY;
                     break;
                 }
             }
@@ -341,10 +370,10 @@ void CPlayer::AttackMotion(void)
         GetAnimation()->SetAnimation(ANIM_TANK_SKY);
         break;
     case ATTACK_STATE_HEALER_GROUND:
-        //GetAnimation()->SetAnimation(ANIM_CARRIER_GROUND);
+        GetAnimation()->SetAnimation(ANIM_HEALER_GROUND);
         break;
     case ATTACK_STATE_HEALER_SKY:
-        //GetAnimation()->SetAnimation(ANIM_CARRIER_SKY);
+        GetAnimation()->SetAnimation(ANIM_HEALER_SKY);
         break;
     case ATTACK_STATE_SIT_DOWN:
         GetAnimation()->SetAnimation(ANIM_SIT_DOWN);
@@ -1085,5 +1114,74 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
     {
         // 移動できない
         move = DEFAULT_VECTOR;
+    }
+}
+
+//=============================================================================
+// ヒーラー地上攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
+{
+    // 攻撃発生フレーム
+    if (m_nCntAttackTime == HEALER_GROUND_FIRE_FRAME)
+    {
+        // 発射角度、位置を取得
+        D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+        D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
+        D3DXVECTOR3 firePos = playerPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
+        CBullet *pBullet = CBullet::Create(CBullet::TYPE_HEALER_GROUND, firePos, moveAngle, OBJTYPE_PLAYER);
+        if (pBullet)
+        {
+            pBullet->SetDamage(HEALER_GROUND_BASE_DAMAGE);
+        }
+    }
+    else if (m_nCntAttackTime > HEALER_GROUND_FIRE_FRAME)
+    {
+        // キャラの向きを変える猶予フレーム
+        SetRotDestY(m_controlInput.fPlayerAngle);
+    }
+}
+
+//=============================================================================
+// ヒーラー空中攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
+{
+    // 攻撃発生フレーム
+    if (m_nCntAttackTime == HUNTER_SKY_FIRE_FRAME)
+    {
+        // 一度に複数の矢を、均等に放つ
+        for (int nCnt = 0; nCnt < HUNTER_SKY_ONCE_SHOT; nCnt++)
+        {
+            float fDigitAngle = (float)(nCnt + 1) * (D3DXToRadian(180.0f) / (float)(HUNTER_SKY_ONCE_SHOT + 1));
+            float fAngleXZ = GetRot().y + fDigitAngle - D3DXToRadian(90.0f);
+            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngleXZ), HUNTER_SKY_ANGLE_Y, -cosf(fAngleXZ));
+            CBullet*pBullet = CBullet::Create(CBullet::TYPE_HUNTER_SKY, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
+            D3DXVECTOR3 targetPos = D3DXVECTOR3(m_afParam[PARAM_HUNTER_TARGET_POS_X], m_afParam[PARAM_HUNTER_TARGET_POS_Y], m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
+            pBullet->SetParam(0, m_afParam[PARAM_HUNTER_TARGET_POS_X]);
+            pBullet->SetParam(1, m_afParam[PARAM_HUNTER_TARGET_POS_Y]);
+            pBullet->SetParam(2, m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
+        }
+    }
+    else if (m_nCntAttackTime > HUNTER_SKY_FIRE_FRAME)
+    {
+        // 移動制限
+        move.x *= HUNTER_SKY_MOVE_LIMIT;
+        move.z *= HUNTER_SKY_MOVE_LIMIT;
+        move.y = 0.0f;
+
+        // ターゲットの位置を決めるフレーム
+        if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
+        {
+            // 位置を保存
+            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
+            m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
+            m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
+            m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
+            // キャラの向きをターゲットの方へ
+            SetRotDestY(GetAngleToTargetXZ(targetPos, playerPos));
+        }
     }
 }

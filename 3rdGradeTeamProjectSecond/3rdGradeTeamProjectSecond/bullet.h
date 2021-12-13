@@ -12,6 +12,7 @@
 //================================================
 #include "main.h"
 #include "scene3d.h"
+#include "effect3d.h"
 
 //================================================
 // マクロ定義
@@ -20,7 +21,6 @@
 //================================================
 // 前方宣言
 //================================================
-class CEffect3D;
 
 //================================================
 // クラス宣言
@@ -56,6 +56,7 @@ public:
         TYPE_TANK_GROUND_LV2,   // タンクの地上攻撃_LV2
         TYPE_TANK_GROUND_LV3,   // タンクの地上攻撃_LV3
         TYPE_TANK_GROUND_EX,    // タンクの地上攻撃の爆発
+        TYPE_HEALER_GROUND,     // ヒーラーの地上攻撃
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -78,6 +79,9 @@ public:
     // セッター
     //=============================
     void SetParam(int nIdx, float fValue) { m_afParam[nIdx] = fValue; }
+    void SetDamage(float fDamage) { m_fDamage = fDamage; }
+    void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
+    void SetCollisionSizeAndShadow(D3DXVECTOR2 size) { m_collisionSize = size; if (m_pEffect3d_Shadow)m_pEffect3d_Shadow->CEffect3D::SetSize(D3DXVECTOR3(size.x, size.x, 0.0f)); }
 
 private:
     int m_type;                     // 種類

@@ -60,7 +60,7 @@ CEffect2D *CGame::m_pEffect2d_Posi = NULL;
 
 CGame::TYPE CGame::m_type = TYPE_TRAINING;
 int CGame::m_nNumAllPlayer = 0;
-bool CGame::m_bUseKeyboard = false;      // デバッグ時はここを変える
+bool CGame::m_bUseKeyboard = true;      // デバッグ時はここを変える
 int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
 int CGame::m_anMemoryRole[] = {};

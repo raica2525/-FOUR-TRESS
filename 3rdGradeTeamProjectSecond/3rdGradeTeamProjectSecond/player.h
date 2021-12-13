@@ -206,8 +206,8 @@ public:
         ANIM_TANK_GROUND1,   // タンク地上1
         ANIM_TANK_SKY,       // タンク空中
         ANIM_TANK_GROUND2,   // タンク地上2
-        ANIM_FOURTH,         // 4位
-        ANIM_FIRST_WAIT,     // 1位待機
+        ANIM_HEALER_GROUND,  // ヒーラー地上
+        ANIM_HEALER_SKY,     // ヒーラー空中
         ANIM_MAX,
     }ANIMATION;
 
@@ -519,7 +519,7 @@ private:
     void AtkTankGround2(D3DXVECTOR3& playerPos);
     void AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
     void AtkHealerGround(D3DXVECTOR3& playerPos);
-    void AtkHealerSky(D3DXVECTOR3& playerPos);
+    void AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move);
 };
 
 #endif
