@@ -384,6 +384,10 @@ void CDebugMenu::Update(void)
             {
                 CGame::SetRole(PLAYER_1, CPlayer::ROLE_TANK);
             }
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_5))
+            {
+                CGame::SetRole(PLAYER_1, CPlayer::ROLE_HEALER);
+            }
 
             // ãˆÚ“®
             if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || Controller.lY < 0 && m_nSelectCoolTime <= 0)

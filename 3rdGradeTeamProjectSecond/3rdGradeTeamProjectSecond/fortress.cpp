@@ -72,7 +72,7 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     SetCollisionSizeDefence(D3DXVECTOR2(950.0f, 450.0f));
     m_fSpeed = 2.5f;
     SetUpLife(1000.0f);
-    SetUseKnockBack(false);
+    SetTakeKnockBack(false);
     // パーツ数を設定、モデルをバインド、アニメーションをバインド
     CCharacter::SetPartNum(PARTS_MAX);
     CCharacter::BindParts(PARTS_BODY, 55);

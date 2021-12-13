@@ -166,6 +166,7 @@ class CUI;
 class CText;
 class CNumberArray;
 class CModelEffect;
+class CBullet;
 
 //================================================
 // クラス宣言
@@ -371,7 +372,7 @@ public:
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nNumTexture);					// クリッピングマスク適用 //池田追加
     void ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size);									// テクスチャなしクリッピングマスク適用 //池田追加
 
-    bool TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType = 20);
+    bool TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseKnockBack = true, int effectType = 20);
 
     /*========================================================
     // カスタマイズの文字列周り
@@ -384,7 +385,6 @@ public:
     // セッター
     //======================================================*/
     void SetAddPoint(void) { m_nPoint++; }
-    void SetSpGaugeCurrent(float fSpGauge) { m_fSpGaugeCurrent = fSpGauge; }
     void ResetStatusEveryRound(void);   // 毎ラウンドリセットするステータス
     void SetDispAbility(bool bDisp) { m_bDispAbility = bDisp; }
     void SetCustomWeaponLook(void) { if (m_nCntAttackAnimTime <= 0)m_nCntAttackAnimTime = PLAYER_WEAPON_LOOK_FRAME; }
@@ -402,7 +402,6 @@ public:
     int GetIdxCreate(void) { return m_nIdxCreate; }
     int GetIdxControlAndColor(void) { return m_nIdxControlAndColor; }
     int GetPoint(void) { return m_nPoint; }
-    float GetSpGaugeCurrent(void) { return m_fSpGaugeCurrent; }
     bool GetGround(void) { return m_bGround; }
     int GetPressJumpTime(void) { return m_nCntPressJump; }
     AI_LEVEL GetAILevel(void) { return m_AIlevel; }
@@ -462,8 +461,6 @@ private:
     int m_nCntAttackAnimTime;                // 攻撃アニメーションの最低保証
 
     int m_spShot;                            // 必殺技
-    float m_fSpGaugeCurrent;                 // 現在の必殺ゲージ量
-    float m_fSpGaugeMax;                     // 最大必殺ゲージ量
 
     CClipingMusk* m_pClipingMusk;			 // クリッピングマスク
     int m_nNumWep;                           // 武器のモデル番号
@@ -487,11 +484,13 @@ private:
     int m_nCntStopTime;         // 硬直時間のカウンタ
     int m_nCntAttackTime;       // 攻撃時間をカウント
     float m_fCurrentEnergy;     // 現在のエナジー量
+    float m_fCurrentEnergyMax;  // エナジーの最大量
     int m_waitMotion;           // 待機モーション
     int m_walkMotion;           // 移動モーション
     bool m_bUsingGuard;         // ガードを使用中かどうか
     int m_nCntGuards;           // ガード回数
     CModelEffect *m_pLightGuard;// 光の盾モデル
+    CBullet *m_pHealingCircle;  // 回復魔方陣
 
     //===================================
     // このクラス内でのみ使う処理

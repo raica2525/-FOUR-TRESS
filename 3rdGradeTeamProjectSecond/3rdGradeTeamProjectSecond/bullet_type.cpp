@@ -41,6 +41,12 @@ typedef enum
     PARAM_HUNTER_SKY_TARGET_POS_Z,
 }PARAM_HUNTER_SKY;
 
+//===========================
+// ヒーラーの空中攻撃
+//===========================
+#define HEALER_SKY_WHOLE_FRAME 180
+#define HEALER_SKY_INTERVAL 30
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -110,6 +116,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 120;
         m_fDamage = 15.0f;
         m_bUseDraw = true;
+        //m_bUseKnockBack = false;// ノックバックは利用しない
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -208,6 +215,36 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない
         break;
+    case TYPE_HEALER_GROUND:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(200.0f, 200.0f);
+        m_fSpeed = 35.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 65;
+        m_fDamage = 0.0f;   // 生成時に、現在のチャージ量に応じたものに変える
+        m_bUseDraw = true;
+        m_bHitErase = false;// 貫通（要調整）
+        // モデルをバインド
+        BindModelData(32);  // 仮にボール
+        break;
+    case TYPE_HEALER_SKY:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_bUseUninit = false;   // 消えない
+        m_bUseUpdate = false;   // 更新処理は、プレイヤーが決める
+        m_fDamage = 0.0f;       // 生成時に、現在のチャージ量に応じたものに変える
+        m_bUseDraw = false;
+        m_bHitErase = false;    // 貫通
+        m_bUseKnockBack = false;// ノックバックは利用しない
+        bUseShadow = false;     // 影を使用しない
+        break;
     }
 
     // 強さを反映
@@ -274,4 +311,30 @@ void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
 
     // 移動
     myPos += m_moveAngle * m_fSpeed;
+}
+
+//=============================================================================
+// ヒーラーの空中攻撃処理
+// Author : 後藤慎之助
+//=============================================================================
+bool CBullet::HealerSkyUseCollision(void)
+{
+    // カウンタ加算
+    m_nCntTime++;
+
+    // 当たり判定を使うかどうかの発生間隔
+    bool bUseCollision = false;
+    if (m_nCntTime % HEALER_SKY_INTERVAL == 0)
+    {
+        bUseCollision = true;
+        memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
+    }
+
+    // カウンタが発生時間の最大を超えたら、更新処理を止める
+    if (m_nCntTime > HEALER_SKY_WHOLE_FRAME)
+    {
+        m_bUseUpdate = false;
+    }
+
+    return bUseCollision;
 }

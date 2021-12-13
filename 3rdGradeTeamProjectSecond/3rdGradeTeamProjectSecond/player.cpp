@@ -34,6 +34,7 @@
 #include "number_array.h"
 #include "enemy.h"
 #include "fortress.h"
+#include "bullet.h"
 
 //========================================
 // マクロ定義
@@ -163,8 +164,8 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nCntAttackAnimTime = 0;
 
     m_spShot = SP_SHOT_HEAL;
-    m_fSpGaugeCurrent = 0.0f;
-    m_fSpGaugeMax = 0.0f;
+    m_fCurrentEnergy = 0.0f;
+    m_fCurrentEnergyMax = 0.0f;
 
     m_pClipingMusk = NULL;
     m_nNumWep = 0;
@@ -193,6 +194,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_bUsingGuard = false;
     m_nCntGuards = 0;
     m_pLightGuard = NULL;
+    m_pHealingCircle = NULL;
 }
 
 //=============================================================================
@@ -432,7 +434,17 @@ void CPlayer::LoadCustom(void)
 
     // 適当な設定
     m_spShot = 1;
-    m_fSpGaugeMax = 100.0f;
+
+    // 最大持ち運びエナジー量
+    switch (m_role)
+    {
+    case ROLE_CARRIER:
+        m_fCurrentEnergyMax = CARRY_ENERGY_CARRIER;
+        break;
+    default:
+        m_fCurrentEnergyMax = CARRY_ENERGY_DEFAULT;
+        break;
+    }
 
     // 共通の設定
     BindParts(PARTS_BODY, 3);
@@ -808,7 +820,7 @@ void CPlayer::Update(void)
         // KO音（各自の処理は、各自のクラス内で書く）
         CManager::SoundPlay(CSound::LABEL_SE_KO);
 
-        m_fSpGaugeCurrent = 0.0f;
+        m_fCurrentEnergy = 0.0f;
         SetDisp(false);
     }
 
@@ -1092,14 +1104,14 @@ void CPlayer::UpdateGameUI(void)
 {
     // SPゲージとパーセント数値を更新
     D3DXVECTOR3 spGaugeSize = m_pUI_SP->GetMemorySize();
-    spGaugeSize.x *= m_fSpGaugeCurrent / m_fSpGaugeMax;
-    spGaugeSize.y *= m_fSpGaugeCurrent / m_fSpGaugeMax;
+    spGaugeSize.x *= m_fCurrentEnergy / m_fCurrentEnergyMax;
+    spGaugeSize.y *= m_fCurrentEnergy / m_fCurrentEnergyMax;
     m_pUI_SP->SetSize(spGaugeSize);
-    int nDispNumber = (int)((m_fSpGaugeCurrent / m_fSpGaugeMax) * 100.0f);
+    int nDispNumber = (int)((m_fCurrentEnergy / m_fCurrentEnergyMax) * 100.0f);
     m_pNumArray_SP->SetDispNumber(nDispNumber);
 
     // 必殺ゲージMAXエフェクト
-    if (m_fSpGaugeCurrent >= m_fSpGaugeMax)
+    if (m_fCurrentEnergy >= m_fCurrentEnergyMax)
     {
         m_nCntSpGaugeMaxTime++;
         if (m_nCntSpGaugeMaxTime > PLAYER_SP_GAUGE_MAX_EFFECT_INTERVAL)
@@ -1239,7 +1251,7 @@ void CPlayer::Respawn(void)
     SetTakeDamageTime(0);
     SetDamageState(DAMAGE_STATE_NONE);
 
-    m_fSpGaugeCurrent = 0.0f;
+    m_fCurrentEnergy = 0.0f;
 }
 
 //=============================================================================
@@ -1404,6 +1416,9 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
     // 光の盾生成
     pPlayer->m_pLightGuard = CModelEffect::Create(30, DEFAULT_VECTOR, DEFAULT_VECTOR,
         TANK_GUARD_COLOR);
+
+    // 回復魔方陣生成
+    pPlayer->m_pHealingCircle = CBullet::Create(CBullet::TYPE_HEALER_SKY, DEFAULT_VECTOR, DEFAULT_VECTOR, OBJTYPE_PLAYER);
 
     return pPlayer;
 }
@@ -2123,11 +2138,11 @@ void CPlayer::ResetStatusEveryRound(void)
     //    }
     //}
 
-    // 必殺ゲージ
-    if (IS_BITOFF(m_exFlag, EX_FLAG_SAVE_SP_GAUGE))
-    {
-        m_fSpGaugeCurrent = 0.0f;
-    }
+    //// 必殺ゲージ
+    //if (IS_BITOFF(m_exFlag, EX_FLAG_SAVE_SP_GAUGE))
+    //{
+    //    m_fSpGaugeCurrent = 0.0f;
+    //}
 
     // バリア状態をリセット
     if (m_bSpBarrier)
@@ -2142,23 +2157,11 @@ void CPlayer::ResetStatusEveryRound(void)
 //=============================================================================
 void CPlayer::GainEnergy(const float fEnergy)
 {
-    // 最大持ち運びエナジー量
-    float fMaxEnergy = 0.0f;
-    switch (m_role)
-    {
-    case ROLE_CARRIER:
-        fMaxEnergy = CARRY_ENERGY_CARRIER;
-        break;
-    default:
-        fMaxEnergy = CARRY_ENERGY_DEFAULT;
-        break;
-    }
-
     // エナジー加算
     m_fCurrentEnergy += fEnergy;
-    if (m_fCurrentEnergy > fMaxEnergy)
+    if (m_fCurrentEnergy > m_fCurrentEnergyMax)
     {
-        m_fCurrentEnergy = fMaxEnergy;
+        m_fCurrentEnergy = m_fCurrentEnergyMax;
     }
 }
 

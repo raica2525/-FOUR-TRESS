@@ -373,6 +373,12 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             // プレイヤーにキャスト
             CPlayer *pPlayer = (CPlayer*)pScene;
 
+            // 表示しているかどうか
+            if (!pPlayer->GetDisp())
+            {
+                continue;
+            }
+
             // 当たっているなら
             if (IsCollisionCylinder(myPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
             {

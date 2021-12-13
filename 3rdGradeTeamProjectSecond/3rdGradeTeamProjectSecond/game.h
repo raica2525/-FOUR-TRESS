@@ -56,13 +56,6 @@ public:
         STATE_MAX			       // 状態の最大数
     }STATE;
 
-    // マップ制限
-    typedef struct
-    {
-        float fHeight;
-        float fWidth;
-    }MAP_LIMIT;
-
     CGame();
     ~CGame();
     HRESULT Init(void);
@@ -101,7 +94,6 @@ public:
     static STATE GetState(void) { return m_state; }                                 // ゲームの状態を取得
     static CPlayer* GetPlayer(const int nNum) { return m_apPlayer[nNum]; }          // プレイヤーを取得
     static int GetNumAllPlayer(void) { return m_nNumAllPlayer; }                    // 全体プレイヤー人数を取得
-    static MAP_LIMIT GetMapLimit(void) { return m_mapLimit; }                       // マップ制限を取得
     static TYPE GetType(void) { return m_type; }                                    // ゲーム種類を取得
     static bool GetStopObjUpdate(void) { return m_bStopObjUpdate; }                 // オブジェクトのアップデートを止めるかどうか
     static CEffect2D* GetNega(void) { return m_pEffect2d_Nega; }                    // 反転合成のエフェクトを取得
@@ -149,7 +141,6 @@ private:
     static CPlayer::AI_LEVEL m_aMemoryAILevel[MAX_PLAYER]; // AIレベルを記憶
     static int m_anMemoryRole[MAX_PLAYER];                 // 役割を記憶
     static STATE m_state;                                  // 状態
-    static MAP_LIMIT m_mapLimit;                           // マップ制限
 
     static CPlayer *m_pSpPlayer;                           // ストライクシュートプレイヤーのポインタ
     static bool m_bCurrentSpShot;                          // 現在ストライクシュートを撃っているかどうか

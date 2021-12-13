@@ -55,6 +55,10 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
 
     memset(m_afParam, 0, sizeof(m_afParam));
     m_whoShot = OBJTYPE_NONE;
+    m_fHealValue = 0.0f;
+    m_bUseUpdate = true;
+    m_bUseUninit = true;
+    m_bUseKnockBack = true;
 }
 
 //=============================================================================
@@ -101,13 +105,20 @@ void CBullet::Uninit(void)
 //=============================================================================
 void CBullet::Update(void)
 {
+    // 更新処理を使わないなら、関数を抜ける
+    if (!m_bUseUpdate)
+    {
+        return;
+    }
+
     // 位置、大きさを取得
     D3DXVECTOR3 myPos = GetPos();
 
     // 1F前の位置を結びつける
     m_posOld = myPos;
 
-    // 移動量を位置に結びつける(種類ごとの動き)
+    // 種類ごとの処理
+    bool bUseCollisionThisFrame = true;
     switch (m_type)
     {
     case TYPE_COMMANDER_ATTACK:
@@ -116,13 +127,20 @@ void CBullet::Update(void)
     case TYPE_HUNTER_SKY:
         HunterSkyMove(myPos);
         break;
+    case TYPE_HEALER_SKY:
+        bUseCollisionThisFrame = HealerSkyUseCollision();
+        break;
     default:
+        // 移動量を位置に反映
         myPos += m_moveAngle * m_fSpeed;
         break;
     }
 
     // 当たり判定を設定
-    Collision(myPos);
+    if (bUseCollisionThisFrame)
+    {
+        Collision(myPos);
+    }
 
     // 位置を設定
     SetPos(myPos);
@@ -139,10 +157,13 @@ void CBullet::Update(void)
     }
 
     // ライフがなくなった、または使用フラグがなくなったら、消滅
-    m_nLife--;
-    if (m_nLife <= 0)
+    if (m_bUseUninit)
     {
-        Uninit();
+        m_nLife--;
+        if (m_nLife <= 0)
+        {
+            Uninit();
+        }
     }
 }
 
@@ -221,6 +242,12 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     continue;
                 }
 
+                // 表示しているかどうか
+                if (!pPlayer->GetDisp())
+                {
+                    continue;
+                }
+
                 // 多段ヒット回避用フラグがfalseなら
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
@@ -233,14 +260,24 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         // ダメージが入ったかどうか
                         bool bDamaged = false;
 
-                        // ガードしているかどうか
-                        if (pPlayer->GetUsingGuard())
+                        // 回復するなら
+                        if (IS_BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER))
                         {
-                            bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld);
+                            // 回復は無敵の有無にかかわらず入る
+                            bDamaged = true;
+                            pPlayer->Healing(m_fHealValue);
                         }
                         else
                         {
-                            bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
+                            // ダメージを受けるなら、ガードしているかどうか
+                            if (pPlayer->GetUsingGuard())
+                            {
+                                bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld, m_bUseKnockBack);
+                            }
+                            else
+                            {
+                                bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                            }
                         }
 
                         if (bDamaged && m_bHitErase)
@@ -255,27 +292,30 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
             }
         }
 
-        // 移動要塞を取得
-        CFortress *pFortress = CGame::GetFortress();
-        if (pFortress)
+        // プレイヤーを回復させないなら、移動要塞を取得（今後移動要塞周りのフラグが増えるなら、要改善）
+        if (IS_BITOFF(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER))
         {
-            // インデックスを取得
-            int nIdx = pFortress->GetIdx();
-
-            // 多段ヒット回避用フラグがfalseなら
-            if (!m_abUseAvoidMultipleHits[nIdx])
+            CFortress *pFortress = CGame::GetFortress();
+            if (pFortress)
             {
-                // 当たっているなら
-                if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
-                {
-                    // 多段ヒット回避用のフラグをtrueに
-                    m_abUseAvoidMultipleHits[nIdx] = true;
+                // インデックスを取得
+                int nIdx = pFortress->GetIdx();
 
-                    // ダメージ
-                    bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
-                    if (bDamaged && m_bHitErase)
+                // 多段ヒット回避用フラグがfalseなら
+                if (!m_abUseAvoidMultipleHits[nIdx])
+                {
+                    // 当たっているなら
+                    if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
                     {
-                        m_nLife = HIT_NOT_EXIST;
+                        // 多段ヒット回避用のフラグをtrueに
+                        m_abUseAvoidMultipleHits[nIdx] = true;
+
+                        // ダメージ
+                        bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                        if (bDamaged && m_bHitErase)
+                        {
+                            m_nLife = HIT_NOT_EXIST;
+                        }
                     }
                 }
             }
@@ -329,9 +369,15 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         {
                             bDamaged = pEnemy->PullToCenter(bulletPos);
                         }
+                        else if (IS_BITON(m_collisionFlag, COLLISION_FLAG_HEAL_ENEMY))
+                        {
+                            // 回復は無敵の有無にかかわらず入る
+                            bDamaged = true;
+                            pEnemy->Healing(m_fHealValue);
+                        }
                         else
                         {
-                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot);
+                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
                         }
                         // 消す弾なら消す
                         if (bDamaged && m_bHitErase)

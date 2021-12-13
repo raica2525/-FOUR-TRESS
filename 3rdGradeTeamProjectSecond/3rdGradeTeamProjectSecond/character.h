@@ -80,8 +80,9 @@ public:
     void LoadModelData(char* cFilePass);                          // テキストファイルから直接読み込む時に使う関数
     void LoadModelData(int nModelPosDefUp, int nModelPosDefDown); // モデルの初期位置データから読み込むときに使う関数
     void RotControl(void);                                        // 向きを調整
-    bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, int effectType = 20);   // ダメージを受ける
+    bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack = true, int effectType = 20);   // ダメージを受ける
     bool PullToCenter(D3DXVECTOR3 centerPos);                     // 中心に引き寄せる
+    void Healing(float fHealValue);                               // 回復処理
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
     void ControlMove(float& fMove, bool bGround = true);          // 移動量制御
 
@@ -118,7 +119,7 @@ public:
     void SetDamageState(DAMAGE_STATE damageState) { m_damageState = damageState; }
     void SetResetAttackByDamage(bool bReset) { m_bResetAttackByDamage = bReset; }
     void SetMoveOld(D3DXVECTOR3 moveOld) { m_moveOld = moveOld; }
-    void SetUseKnockBack(bool bUse) { m_bUseKnockBack = bUse; }
+    void SetTakeKnockBack(bool bUse) { m_bTakeKnockBack = bUse; }
     void SetTurnSpeed(float fTurnSpeed) { m_fTurnSpeed = D3DXToRadian(fTurnSpeed); }
     void SetDisp(bool bDisp) { m_bDisp = bDisp; }
     void SetIdx(int nIdx) { m_nIdx = nIdx; }
@@ -214,7 +215,7 @@ private:
     DAMAGE_STATE m_damageState;              // 負傷状態
     bool m_bUseWhiteDraw;                    // 白描画を使用するかどうか
     int m_nCntWhiteDrawTime;                 // 白描画をするフレーム数
-    bool m_bUseKnockBack;                    // ノックバックを使用するかどうか
+    bool m_bTakeKnockBack;                   // ノックバックを受けるかどうか
     bool m_bTakeWind;                        // 風を受けたかどうか
     OBJTYPE m_lastHit;                       // 最後に攻撃してきた人
 };

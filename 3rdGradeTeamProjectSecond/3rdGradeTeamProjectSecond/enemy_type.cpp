@@ -142,7 +142,7 @@ void CEnemy::SetupInfoByType(void)
         m_fSpeed = 0.0f;
         fHP = 450.0f;
         m_fChargeValue = 10.0f;
-        SetUseKnockBack(false);
+        SetTakeKnockBack(false);
         SetTurnSpeed(1.2f);
         m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
