@@ -9,7 +9,7 @@ SCRIPT			# この行は絶対消さないこと！
 #---------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 16
+	TEX_TYPE = 104
 	ONCE = 4
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -45,7 +45,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 23
+	TEX_TYPE = 122
 	ONCE = 1
 	PLANE = 1
 	ON_CIRCLE = 0
@@ -82,7 +82,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 21
+	TEX_TYPE = 121
 	ONCE = 10
 	PLANE = 0		# 0がXYで1がXZ
 	ON_CIRCLE = 0		# bool
@@ -157,7 +157,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 22
+	TEX_TYPE = 120
 	ONCE = 3
 	PLANE = 0		# 0がXYで1がXZ
 	ON_CIRCLE = 0		# bool
@@ -229,7 +229,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 24
+	TEX_TYPE = 123
 	ONCE = 6
 	PLANE = 0
 	ON_CIRCLE = 1
@@ -341,7 +341,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 24
+	TEX_TYPE = 123
 	ONCE = 100
 	PLANE = 1
 	ON_CIRCLE = 0
@@ -377,7 +377,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 10
+	TEX_TYPE = 36
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -413,7 +413,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 16
+	TEX_TYPE = 104
 	ONCE = 2
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -449,7 +449,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 10
+	TEX_TYPE = 36
 	ONCE = 10
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -485,7 +485,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 12
+	TEX_TYPE = 113
 	ONCE = 6
 	PLANE = 0
 	ON_CIRCLE = 1
@@ -521,7 +521,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 2
-	TEX_TYPE = 4
+	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -557,7 +557,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 10
+	TEX_TYPE = 36
 	ONCE = 20
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -593,7 +593,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 8
+	TEX_TYPE = 34
 	ONCE = 30
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -629,7 +629,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 10
+	TEX_TYPE = 36
 	ONCE = 20
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -665,7 +665,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 29
+	TEX_TYPE = 126
 	ONCE = 3
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -701,7 +701,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 27
+	TEX_TYPE = 127
 	ONCE = 1
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -775,7 +775,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 4
+	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -811,7 +811,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 12
+	TEX_TYPE = 38
 	ONCE = 6
 	PLANE = 0
 	ON_CIRCLE = 1
@@ -847,7 +847,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 2
-	TEX_TYPE = 4
+	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -974,7 +974,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 25
+	TEX_TYPE = 124
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -1010,7 +1010,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 16
+	TEX_TYPE = 104
 	ONCE = 4
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -1046,7 +1046,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 2
-	TEX_TYPE = 25
+	TEX_TYPE = 124
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 0
@@ -1082,7 +1082,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 20
+	TEX_TYPE = 119
 	ONCE = 20
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -1118,7 +1118,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 14
+	TEX_TYPE = 102
 	ONCE = 9
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -1154,7 +1154,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 2
-	TEX_TYPE = 2
+	TEX_TYPE = 6
 	ONCE = 21
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -1190,7 +1190,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 8
+	TEX_TYPE = 11
 	ONCE = 6
 	PLANE = 1
 	ON_CIRCLE = 1
@@ -1226,7 +1226,7 @@ END_EFFECT_DATASET
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 26
+	TEX_TYPE = 125
 	ONCE = 1
 	PLANE = 0
 	ON_CIRCLE = 1
@@ -1258,111 +1258,111 @@ EFFECT_DATASET
 END_EFFECT_DATASET
 
 #-------------------------------------------------------------
-# [35] タイトル落ちてきたときの羽(右側の赤)
+# [35] 着地砂埃
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 35
-	TEX_TYPE = 103
-	ONCE = 20
-	PLANE = 0		# 0がXYで1がXZ
-	ON_CIRCLE = 0		# bool
-	EMIT_INSIDE = 0		# bool
-	SCATTER_ANGLE = 50	# 0～314
-	SCATTER_WIDTH = 100	# 0～314
-	SPEED_MAX = 2000
-	SPEED_MIN = 1000
+	TYPE = 0
+	TEX_TYPE = 36
+	ONCE = 6
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 200
+	SPEED_MIN = 200
 	SPEED_AA_MAX = 0
 	SPEED_AA_MIN = 0
-	ACCEL = 0.980	# 1.0倍が基本
-	GRAVITY = 0.030
-	GRAVITYLIMIT = 5.000
-	ROT_LAY = 0		# bool
-	ROT_EQUAL_MOVE = 0	# bool
-	ROT_SPEED_MAX = 300
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
 	ROT_SPEED_MIN = 0
-	COL = 1.000 0.259 0.465 1.000
+	COL = 0.803 0.622 0.372 1.000
 	COL_CHANGE = 0.000 0.000 0.000 0.000
-	FADE_OUT_RATE = 0.003	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_RATE = 0.062
 	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 5000
+	SIZE_MAX = 10000
 	SIZE_MIN = 5000
-	SIZE_CHANGE = 0.25 0.25 0.0
-	EMITRADIUS = 0
-	ADD_BLEND = 1		# bool
-	USE_ZBUFFER = 0		# bool
-	ALPHA_TEST_BORDER = 1
+	SIZE_CHANGE = 1.0 1.0 0.0
+	EMITRADIUS = 56
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
 END_EFFECT_DATASET
 
 #-------------------------------------------------------------
-# [36]  タイトル落ちてきたときの羽(左側の青)
+# [36] ジャンプ砂埃
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 36
-	TEX_TYPE = 103
-	ONCE = 20
-	PLANE = 0		# 0がXYで1がXZ
-	ON_CIRCLE = 0		# bool
-	EMIT_INSIDE = 0		# bool
-	SCATTER_ANGLE = 253	# 0～314
-	SCATTER_WIDTH = 100	# 0～314
-	SPEED_MAX = 2000
-	SPEED_MIN = 1000
+	TYPE = 2
+	TEX_TYPE = 36
+	ONCE = 4
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 180
+	SCATTER_WIDTH = 100
+	SPEED_MAX = 760
+	SPEED_MIN = 716
 	SPEED_AA_MAX = 0
 	SPEED_AA_MIN = 0
-	ACCEL = 0.980	# 1.0倍が基本
-	GRAVITY = 0.030
-	GRAVITYLIMIT = 5.000
-	ROT_LAY = 0		# bool
-	ROT_EQUAL_MOVE = 0	# bool
-	ROT_SPEED_MAX = 300
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 800
 	ROT_SPEED_MIN = 0
-	COL = 0.259 0.820 1.000 1.000
+	COL = 0.710 0.588 0.420 1.000
 	COL_CHANGE = 0.000 0.000 0.000 0.000
-	FADE_OUT_RATE = 0.003	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_RATE = 0.080
 	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 5000
-	SIZE_MIN = 5000
-	SIZE_CHANGE = 0.25 0.25 0.0
+	SIZE_MAX = 2500
+	SIZE_MIN = 1500
+	SIZE_CHANGE = 5.0 5.0 0.0
 	EMITRADIUS = 0
-	ADD_BLEND = 1		# bool
-	USE_ZBUFFER = 0		# bool
-	ALPHA_TEST_BORDER = 1
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
 END_EFFECT_DATASET
 
 #-------------------------------------------------------------
-# [37] 壁にあたったときの煙
+# [37] 火花
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 37
-	TEX_TYPE = 10
-	ONCE = 5
-	PLANE = 0		# 0がXYで1がXZ
-	ON_CIRCLE = 1		# bool
-	EMIT_INSIDE = 0		# bool
-	SCATTER_ANGLE = 0	# 0～314
-	SCATTER_WIDTH = 0	# 0～314
-	SPEED_MAX = 0
+	TYPE = 1
+	TEX_TYPE = 119
+	ONCE = 7
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 86
 	SPEED_MIN = 0
 	SPEED_AA_MAX = 0
 	SPEED_AA_MIN = 0
-	ACCEL = 0.000	# 1.0倍が基本
+	ACCEL = 1.000
 	GRAVITY = 0.000
 	GRAVITYLIMIT = 0.000
-	ROT_LAY = 0		# bool
-	ROT_EQUAL_MOVE = 0	# bool
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
 	ROT_SPEED_MAX = 0
 	ROT_SPEED_MIN = 0
-	COL = 1.000 1.000 1.000 1.000
-	COL_CHANGE = 0.000 0.000 0.000 0.000
-	FADE_OUT_RATE = 0.200	# アルファ値減衰(0ならサイズを減衰させる)
+	COL = 1.000 0.347 0.110 1.000
+	COL_CHANGE = 0.000 0.028 0.000 0.000
+	FADE_OUT_RATE = 0.000
 	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 8000
-	SIZE_MIN = 8000
-	SIZE_CHANGE = 0.0 0.0 0.0
-	EMITRADIUS = 20
-	ADD_BLEND = 1		# bool
-	USE_ZBUFFER = 0		# bool
-	ALPHA_TEST_BORDER = 5
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -10.0 -8.0 0.0
+	EMITRADIUS = 52
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
 END_EFFECT_DATASET
 
 #-------------------------------------------------------------
