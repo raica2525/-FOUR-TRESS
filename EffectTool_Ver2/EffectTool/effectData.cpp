@@ -17,8 +17,8 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define EFFECT_DATA_FILENAME ("data/TXT/effect.txt")
-#define EFFECT_DATA_OUTPUT_FILENAME ("data/TXT/effectinfo.txt")
+#define EFFECT_DATA_FILENAME ("data/TXT/effect.txt")                // 読み込むファイル名
+#define EFFECT_DATA_OUTPUT_FILENAME ("data/TXT/effectinfo.txt")     // 書き出すファイル名
 
 //=============================================================================
 // コンストラクタ
@@ -324,16 +324,18 @@ HRESULT CEffectData::UploadEffectInfo(const bool *bUpload)
 	// 開けたら
 	if (pFile != NULL)
 	{
-		for (int nEffectCount = 0; nEffectCount < TYPE_MAX; nEffectCount++)
-		{
-			if (bUpload[nEffectCount] == true)
-			{
 				fprintf(pFile, "SCRIPT		# この行は絶対消さないこと！\n");
+
 				fprintf(pFile, "\n");
 				fprintf(pFile, "#------------------------------------------------------------------------------\n");
 				fprintf(pFile, "# エフェクトの情報（F4でリロード可能）\n");
 				fprintf(pFile, "#------------------------------------------------------------------------------\n");
 				fprintf(pFile, "\n");
+
+		for (int nEffectCount = 0; nEffectCount < TYPE_MAX; nEffectCount++)
+		{
+			if (bUpload[nEffectCount] == true)
+			{
 
 				fprintf(pFile, "#-------------------------------------------------------------\n");
 				fprintf(pFile, "# [%d] （エフェクト名）\n", nEffectCount);
@@ -388,9 +390,9 @@ HRESULT CEffectData::UploadEffectInfo(const bool *bUpload)
 				fprintf(pFile, "END_EFFECT_DATASET\n");
 
 				fprintf(pFile, "\n\n\n");
-				fprintf(pFile, "END_SCRIPT		# この行は絶対消さないこと！\n");
 			}
 		}
+				fprintf(pFile, "END_SCRIPT		# この行は絶対消さないこと！\n");
 
 		// ファイルを閉じる
 		fclose(pFile);

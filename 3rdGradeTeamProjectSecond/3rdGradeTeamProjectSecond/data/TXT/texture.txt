@@ -981,4 +981,84 @@ TEXTURESET
 END_TEXTURESET
 
 
+#---------------------------------------
+# [119] 衝撃
+#---------------------------------------
+TEXTURESET
+    TYPE = 119
+    NAME = data/TEXTURE/effect/20_rhombus.png
+END_TEXTURESET
+
+#---------------------------------------
+# [120] 斬撃
+#---------------------------------------
+TEXTURESET
+    TYPE = 120
+    NAME = data/TEXTURE/effect/021_hit.png
+END_TEXTURESET
+
+#---------------------------------------
+# [121] 打撃
+#---------------------------------------
+TEXTURESET
+    TYPE = 121
+    NAME = data/TEXTURE/effect/022_hit.png
+END_TEXTURESET
+
+#---------------------------------------
+# [122] ハート
+#---------------------------------------
+TEXTURESET
+    TYPE = 122
+    NAME = data/TEXTURE/effect/023_heart.png
+END_TEXTURESET
+
+#---------------------------------------
+# [123] 電撃
+#---------------------------------------
+TEXTURESET
+    TYPE = 123
+    NAME = data/TEXTURE/effect/24_thunder.png
+END_TEXTURESET
+
+#---------------------------------------
+# [124] 魔法陣
+#---------------------------------------
+TEXTURESET
+    TYPE = 124
+    NAME = data/TEXTURE/effect/25_mahoujin.png
+END_TEXTURESET
+
+#---------------------------------------
+# [125] 呪い
+#---------------------------------------
+TEXTURESET
+    TYPE = 125
+    NAME = data/TEXTURE/effect/26_noroi.png
+END_TEXTURESET
+
+#---------------------------------------
+# [126] 風_0
+#---------------------------------------
+TEXTURESET
+    TYPE = 126
+    NAME = data/TEXTURE/effect/27_wind.png
+END_TEXTURESET
+
+
+#---------------------------------------
+# [127] 風_1
+#---------------------------------------
+TEXTURESET
+    TYPE = 127
+    NAME = data/TEXTURE/effect/28_wind.png
+END_TEXTURESET
+
+#---------------------------------------
+# [128] 風_2
+#---------------------------------------
+TEXTURESET
+    TYPE = 128
+    NAME = data/TEXTURE/effect/29_wind.png
+END_TEXTURESET
 END_SCRIPT		# この行は絶対消さないこと！

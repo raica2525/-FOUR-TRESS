@@ -59,6 +59,13 @@ CBillboard::CBillboard()
 	m_fTexY2 = 1.0f;
 	m_nAlphaTestBorder = DEFAULT_ALPHA_TEST_BORDER;
 	m_fRotAngle = 0.0f;
+
+	// 頂点バッファを開放
+	if (m_pVtxBuff != NULL)
+	{
+		m_pVtxBuff->Release();
+		m_pVtxBuff = NULL;
+	}
 }
 
 //=============================================================================
@@ -91,13 +98,6 @@ HRESULT CBillboard::Init(void)
 //=============================================================================
 void CBillboard::Uninit(void)
 {
-	// 頂点バッファを開放
-	if (m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
-	}
-
 	// シーンの開放
 	Release();
 }

@@ -1,0 +1,111 @@
+SCRIPT		# この行は絶対消さないこと！
+
+#-------------------------------------------------------------
+# [12] 爆発_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 0
+	TEX_TYPE = 10
+	ONCE = 10
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 42
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 588
+	SPEED_AA_MIN = 0
+	ACCEL = 0.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.981 0.898 0.401 1.000
+	COL_CHANGE = 0.032 -0.016 -0.010 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [13] 爆発_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 1
+	TEX_TYPE = 12
+	ONCE = 6
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 1000
+	SPEED_MIN = 1000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.300
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.080
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 50
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [14] 爆発_2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 2
+	TEX_TYPE = 4
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 -0.098
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 50000
+	SIZE_MIN = 50000
+	SIZE_CHANGE = -30.0 -30.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+END_SCRIPT		# この行は絶対消さないこと！

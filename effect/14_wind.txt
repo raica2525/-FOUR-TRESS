@@ -1,0 +1,81 @@
+SCRIPT		# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# エフェクトの情報（F4でリロード可能）
+#------------------------------------------------------------------------------
+
+#-------------------------------------------------------------
+# [18] 風_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 0
+	TEX_TYPE = 29
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 32
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 8
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 396
+	ROT_SPEED_MIN = 136
+	COL = 0.757 0.923 0.666 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.016
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = 0.3 0.2 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [19] 風_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 1
+	TEX_TYPE = 27
+	ONCE = 1
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 150
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 256
+	SPEED_MIN = 128
+	SPEED_AA_MAX = 242
+	SPEED_AA_MIN = 0
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.572 0.892 0.762 1.000
+	COL_CHANGE = -0.002 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.080
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -10.0 20.0 0.0
+	EMITRADIUS = 90
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+
+END_SCRIPT		# この行は絶対消さないこと！

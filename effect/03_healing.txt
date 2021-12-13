@@ -1,0 +1,45 @@
+SCRIPT		# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# エフェクトの情報（F4でリロード可能）
+#------------------------------------------------------------------------------
+
+#-------------------------------------------------------------
+# [0] （エフェクト名）
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 0
+	TEX_TYPE = 16
+	ONCE = 4
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = -1.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 400
+	ROT_SPEED_MIN = 250
+	COL = 0.186 0.911 0.466 1.000
+	COL_CHANGE = 0.010 0.010 0.010 0.000
+	FADE_OUT_RATE = 0.020
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 1000
+	SIZE_CHANGE = -2.0 -2.0 0.0
+	EMITRADIUS = 200
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+
+END_SCRIPT		# この行は絶対消さないこと！
