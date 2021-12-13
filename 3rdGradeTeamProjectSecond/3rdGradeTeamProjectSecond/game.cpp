@@ -341,6 +341,11 @@ void CGame::Update(void)
             m_pEffect2d_Posi->SetRotVertex(0.0f);     // 更新を止める代わりに、頂点はここで調整
         }
     }
+
+    CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, { -0.0f,100.0f,0.0f }, { -0.0f,100.0f,0.0f });
+    CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, { -500.0f,100.0f,0.0f }, { -500.0f,100.0f,0.0f });
+    CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, { -1000.0f,100.0f,0.0f }, { -1000.0f,100.0f,0.0f });
+
 }
 
 //=============================================================================

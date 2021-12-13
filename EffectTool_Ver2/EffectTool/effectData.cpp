@@ -17,7 +17,7 @@
 //=============================================================================
 // マクロ定義
 //=============================================================================
-#define EFFECT_DATA_FILENAME ("data/TXT/effect.txt")                // 読み込むファイル名
+#define EFFECT_DATA_FILENAME ("data/TXT/effectinfo.txt")                // 読み込むファイル名
 #define EFFECT_DATA_OUTPUT_FILENAME ("data/TXT/effectinfo.txt")     // 書き出すファイル名
 
 //=============================================================================
@@ -227,6 +227,10 @@ HRESULT CEffectData::Init(void)
                                 &m_aCreateInfo[nNumType].sizeChangeRate.y,
                                 &m_aCreateInfo[nNumType].sizeChangeRate.z);
                         }
+                        else if (strcmp(cHeadText, "SIZE_CHANGE_LOCK_TIME") == 0)
+                        {
+                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &m_aCreateInfo[nNumType].nCntSizeChangeLock);
+}
 						else if (strcmp(cHeadText, "SIZE_CHANGE_START_OR_FINISH") == 0)
 						{
 							sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nBool);
@@ -296,7 +300,6 @@ HRESULT CEffectData::Init(void)
 
     return S_OK;
 }
-
 //=============================================================================
 // 終了処理
 //=============================================================================
@@ -381,6 +384,8 @@ HRESULT CEffectData::UploadEffectInfo(const bool *bUpload)
 				fprintf(pFile, "	SIZE_CHANGE = %.1f %.1f %.1f\n", m_aCreateInfo[nEffectCount].sizeChangeRate.x,
 					m_aCreateInfo[nEffectCount].sizeChangeRate.y,
 					m_aCreateInfo[nEffectCount].sizeChangeRate.z);
+                fprintf(pFile, "    SIZE_CHANGE_LOCK_TIME  = %d\n", m_aCreateInfo[nEffectCount].nCntSizeChangeLock);
+                fprintf(pFile, "    SIZE_CHANGE_START_OR_FINISH  = %d\n", m_aCreateInfo[nEffectCount].bSizeChangeStartOrFinish);
 				fprintf(pFile, "	EMITRADIUS = %.0f\n", m_aCreateInfo[nEffectCount].fEmitRadius);
 
 				fprintf(pFile, "	ADD_BLEND = %d\n", m_aCreateInfo[nEffectCount].bUseAdditiveSynthesis);

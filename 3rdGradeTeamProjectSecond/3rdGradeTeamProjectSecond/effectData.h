@@ -77,9 +77,9 @@ public:
         TYPE_IMPACT_WAVE_2,         // [32] ウォーリアージャンプ攻撃2
         TYPE_DARKNESS_AURA_0,       // [33] 即死オーラ_0
         TYPE_DARKNESS_AURA_1,       // [34] 即死オーラ_1
-        TYPE_LANDING_FUGITIVE_DUST,              // [35] 着地砂埃
-        TYPE_JUMP_FUGITIVE_DUST,             // [36] ジャンプ砂埃
-        TYPE_SPARK,        // [37] 火花
+        TYPE_LANDING_FUGITIVE_DUST, // [35] 着地砂埃
+        TYPE_JUMP_FUGITIVE_DUST,    // [36] ジャンプ砂埃
+        TYPE_SPARK,                 // [37] 火花
         TYPE_WALL_HIT_SHOCK,        // 壁バウンド衝撃波
         TYPE_ABSORB,                // 立ち上がり吸収
         TYPE_READY_TO_FIGHT1,       // 準備完了1

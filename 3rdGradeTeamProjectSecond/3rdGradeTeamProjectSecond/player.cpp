@@ -1846,12 +1846,14 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                 if (GetRot().y == PLAYER_ROT_LEFT)
                 {
                     // ジャンプの砂煙
-                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
+                    CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, GetPos(), GetPos());
+
                 }
                 else
                 {
                     // ジャンプの砂煙
-                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
+                    CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, GetPos(), GetPos());
+
                 }
 
                 // ジャンプ音

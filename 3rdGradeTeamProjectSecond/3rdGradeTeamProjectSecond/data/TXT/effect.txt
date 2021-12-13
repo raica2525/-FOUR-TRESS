@@ -44,7 +44,7 @@ END_EFFECT_DATASET
 # [1] ハート弾
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 1
 	TEX_TYPE = 122
 	ONCE = 1
 	PLANE = 1
@@ -81,7 +81,7 @@ END_EFFECT_DATASET
 # [2] ヒットエフェクト(突き、弓)
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 2
 	TEX_TYPE = 121
 	ONCE = 10
 	PLANE = 0		# 0がXYで1がXZ
@@ -156,7 +156,7 @@ END_EFFECT_DATASET
 # [4] ヒットエフェクト（斬撃）
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 4
 	TEX_TYPE = 120
 	ONCE = 3
 	PLANE = 0		# 0がXYで1がXZ
@@ -192,7 +192,7 @@ END_EFFECT_DATASET
 # [5] 電撃弾
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 5
 	TEX_TYPE = 0
 	ONCE = 4
 	PLANE = 0
@@ -228,7 +228,7 @@ END_EFFECT_DATASET
 # [6] 電撃弾
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 6
 	TEX_TYPE = 123
 	ONCE = 6
 	PLANE = 0
@@ -340,7 +340,7 @@ END_EFFECT_DATASET
 # [9] 電撃(範囲)
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 9
 	TEX_TYPE = 123
 	ONCE = 100
 	PLANE = 1
@@ -376,7 +376,7 @@ END_EFFECT_DATASET
 # [10] 煙
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 10
 	TEX_TYPE = 36
 	ONCE = 1
 	PLANE = 0
@@ -412,7 +412,7 @@ END_EFFECT_DATASET
 # [11] アイテム取得
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 11
 	TEX_TYPE = 104
 	ONCE = 2
 	PLANE = 1
@@ -448,7 +448,7 @@ END_EFFECT_DATASET
 # [12] 爆発_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 12
 	TEX_TYPE = 36
 	ONCE = 10
 	PLANE = 0
@@ -484,7 +484,7 @@ END_EFFECT_DATASET
 # [13] 爆発_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 13
 	TEX_TYPE = 113
 	ONCE = 6
 	PLANE = 0
@@ -520,7 +520,7 @@ END_EFFECT_DATASET
 # [14] 爆発_2
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 2
+	TYPE = 14
 	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
@@ -556,7 +556,7 @@ END_EFFECT_DATASET
 # [15] 敵出現_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 15
 	TEX_TYPE = 36
 	ONCE = 20
 	PLANE = 1
@@ -592,7 +592,7 @@ END_EFFECT_DATASET
 # [16] 敵出現_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 16
 	TEX_TYPE = 34
 	ONCE = 30
 	PLANE = 1
@@ -628,7 +628,7 @@ END_EFFECT_DATASET
 # [17] 敵やられ
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 17
 	TEX_TYPE = 36
 	ONCE = 20
 	PLANE = 1
@@ -664,7 +664,7 @@ END_EFFECT_DATASET
 # [18] 風_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 18
 	TEX_TYPE = 126
 	ONCE = 3
 	PLANE = 1
@@ -700,7 +700,7 @@ END_EFFECT_DATASET
 # [19] 風_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 19
 	TEX_TYPE = 127
 	ONCE = 1
 	PLANE = 1
@@ -774,7 +774,7 @@ END_EFFECT_DATASET
 # [21] 咆哮_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 21
 	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
@@ -810,7 +810,7 @@ END_EFFECT_DATASET
 # [22] 咆哮_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 22
 	TEX_TYPE = 38
 	ONCE = 6
 	PLANE = 0
@@ -846,7 +846,7 @@ END_EFFECT_DATASET
 # [23] 咆哮_2
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 2
+	TYPE = 23
 	TEX_TYPE = 8
 	ONCE = 1
 	PLANE = 0
@@ -882,7 +882,7 @@ END_EFFECT_DATASET
 # [24] 矢のエフェクト
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 24
 	TEX_TYPE = 0
 	ONCE = 3
 	PLANE = 1
@@ -952,7 +952,6 @@ EFFECT_DATASET
 	ALPHA_TEST_BORDER = 50
 END_EFFECT_DATASET
 
-
 #---------------------------------------
 # [26] 影
 #---------------------------------------
@@ -973,7 +972,7 @@ END_EFFECT_DATASET
 # [27] 魔法陣_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 27
 	TEX_TYPE = 124
 	ONCE = 1
 	PLANE = 0
@@ -1009,7 +1008,7 @@ END_EFFECT_DATASET
 # [28] 魔法陣_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 28
 	TEX_TYPE = 104
 	ONCE = 4
 	PLANE = 1
@@ -1045,7 +1044,7 @@ END_EFFECT_DATASET
 # [29] 魔法陣_2
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 2
+	TYPE = 29
 	TEX_TYPE = 124
 	ONCE = 1
 	PLANE = 0
@@ -1081,7 +1080,7 @@ END_EFFECT_DATASET
 # [30] ウォーリアージャンプ攻撃0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 30
 	TEX_TYPE = 119
 	ONCE = 20
 	PLANE = 1
@@ -1117,7 +1116,7 @@ END_EFFECT_DATASET
 # [31] ウォーリアージャンプ攻撃1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 31
 	TEX_TYPE = 102
 	ONCE = 9
 	PLANE = 1
@@ -1153,7 +1152,7 @@ END_EFFECT_DATASET
 # [32] ウォーリアージャンプ攻撃2
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 2
+	TYPE = 32
 	TEX_TYPE = 6
 	ONCE = 21
 	PLANE = 1
@@ -1189,7 +1188,7 @@ END_EFFECT_DATASET
 # [33] 即死オーラ_0
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 33
 	TEX_TYPE = 11
 	ONCE = 6
 	PLANE = 1
@@ -1225,7 +1224,7 @@ END_EFFECT_DATASET
 # [34] 即死オーラ_1
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 34
 	TEX_TYPE = 125
 	ONCE = 1
 	PLANE = 0
@@ -1261,7 +1260,7 @@ END_EFFECT_DATASET
 # [35] 着地砂埃
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 0
+	TYPE = 35
 	TEX_TYPE = 36
 	ONCE = 6
 	PLANE = 1
@@ -1297,7 +1296,7 @@ END_EFFECT_DATASET
 # [36] ジャンプ砂埃
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 2
+	TYPE = 36
 	TEX_TYPE = 36
 	ONCE = 4
 	PLANE = 1
@@ -1333,7 +1332,7 @@ END_EFFECT_DATASET
 # [37] 火花
 #-------------------------------------------------------------
 EFFECT_DATASET
-	TYPE = 1
+	TYPE = 37
 	TEX_TYPE = 119
 	ONCE = 7
 	PLANE = 1
