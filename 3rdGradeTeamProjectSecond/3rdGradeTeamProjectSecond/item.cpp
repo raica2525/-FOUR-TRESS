@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// ã‚¢ã‚¤ãƒ†ãƒ å‡¦ç† (item.cpp)
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒAƒCƒeƒ€ˆ— (item.cpp)
+// Author : Œã“¡T”V•
 //
 //======================================================================================
 
 //========================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 //========================
 #include "item.h"
 #include "manager.h"
@@ -23,23 +23,23 @@
 #include "fortress.h"
 
 //========================================
-// ãƒã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 //========================================
-#define ITEM_LAUNCH_VALUE D3DXVECTOR3(0.0f, 25.0f, 0.0f)    // æ‰“ã¡ä¸Šã’é‡
-#define ITEM_GRAVITY 1.0f                                   // é‡åŠ›
-#define ITEM_GRAVITY_MAX -15.0f                             // é‡åŠ›åˆ¶é™
-#define ITEM_SPEED_UP_VALUE 1.25f                           // åŠ é€Ÿé‡
-#define ITEM_SPEED_MAX 75.0f                                // åŠ é€Ÿã®æœ€å¤§é‡
-#define ITEM_LIFE 600                                       // è¡¨ç¤ºæ™‚é–“
-#define ITEM_FLASH_START_FRAME (ITEM_LIFE - 420)            // ç‚¹æ»…é–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ 
-#define ITEM_USE_COLLISION_FRAME (ITEM_LIFE - 10)           // è¡çªåˆ¤å®šã‚’æŒãŸã›ã‚‹ã¾ã§ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
-#define ITEM_CLOSE_DISTANCE_DEFAULT 1000.0f                 // è¿‘ã„ã¨ã¿ãªã™è·é›¢(ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ)
-#define ITEM_CLOSE_DISTANCE_CARRIER 2000.0f                 // è¿‘ã„ã¨ã¿ãªã™è·é›¢(ã‚­ãƒ£ãƒªã‚¢ãƒ¼)
-#define ITEM_ROT_SPEED D3DXToRadian(2.0f)                   // å›è»¢é€Ÿåº¦
+#define ITEM_LAUNCH_VALUE D3DXVECTOR3(0.0f, 25.0f, 0.0f)    // ‘Å‚¿ã‚°—Ê
+#define ITEM_GRAVITY 1.0f                                   // d—Í
+#define ITEM_GRAVITY_MAX -15.0f                             // d—Í§ŒÀ
+#define ITEM_SPEED_UP_VALUE 1.25f                           // ‰Á‘¬—Ê
+#define ITEM_SPEED_MAX 75.0f                                // ‰Á‘¬‚ÌÅ‘å—Ê
+#define ITEM_LIFE 600                                       // •\¦ŠÔ
+#define ITEM_FLASH_START_FRAME (ITEM_LIFE - 420)            // “_–ÅŠJnƒtƒŒ[ƒ€
+#define ITEM_USE_COLLISION_FRAME (ITEM_LIFE - 10)           // Õ“Ë”»’è‚ğ‚½‚¹‚é‚Ü‚Å‚ÌƒtƒŒ[ƒ€
+#define ITEM_CLOSE_DISTANCE_DEFAULT 1000.0f                 // ‹ß‚¢‚Æ‚İ‚È‚·‹——£(ƒfƒtƒHƒ‹ƒg)
+#define ITEM_CLOSE_DISTANCE_CARRIER 2000.0f                 // ‹ß‚¢‚Æ‚İ‚È‚·‹——£(ƒLƒƒƒŠƒA[)
+#define ITEM_ROT_SPEED D3DXToRadian(2.0f)                   // ‰ñ“]‘¬“x
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CItem::CItem() :CScene3D(CScene::OBJTYPE_ITEM)
 {
@@ -61,20 +61,20 @@ CItem::CItem() :CScene3D(CScene::OBJTYPE_ITEM)
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒfƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CItem::~CItem()
 {
 }
 
 //=============================================================================
-// åˆæœŸåŒ–å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ‰Šú‰»ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 HRESULT CItem::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-    // åˆæœŸè¨­å®š
+    // ‰Šúİ’è
     switch (m_type)
     {
     case TYPE_DENTI_5:
@@ -91,22 +91,22 @@ HRESULT CItem::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
         break;
     }
 
-    // åˆæœŸåŒ–
+    // ‰Šú‰»
     CScene3D::Init(pos, size);
 
-    // ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®š
+    // ƒXƒP[ƒ‹‚ğİ’è
     SetScale(size);
 
     return S_OK;
 }
 
 //=============================================================================
-// çµ‚äº†å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// I—¹ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::Uninit(void)
 {
-    // å½±ã‚’æ¶ˆã™
+    // ‰e‚ğÁ‚·
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->SetDontUse();
@@ -116,21 +116,21 @@ void CItem::Uninit(void)
 }
 
 //=============================================================================
-// æ›´æ–°å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// XVˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::Update(void)
 {
-    // ä½ç½®ã€å¤§ãã•ã‚’å–å¾—
+    // ˆÊ’uA‘å‚«‚³‚ğæ“¾
     D3DXVECTOR3 myPos = GetPos();
 
-    // 1Få‰ã®ä½ç½®ã‚’çµã³ã¤ã‘ã‚‹
+    // 1F‘O‚ÌˆÊ’u‚ğŒ‹‚Ñ‚Â‚¯‚é
     m_posOld = myPos;
 
-    // ç€åœ°ã—ã¦ã„ãªã„ãªã‚‰
+    // ’…’n‚µ‚Ä‚¢‚È‚¢‚È‚ç
     if (!m_bGround)
     {
-        // é‡åŠ›ç™ºç”Ÿ
+        // d—Í”­¶
         if (myPos.y > 0.0f)
         {
             m_move.y -= ITEM_GRAVITY;
@@ -149,7 +149,7 @@ void CItem::Update(void)
     }
     else
     {
-        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹ã‚’è¿½å¾“ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¤ãƒ³ã‚¿ãŒãªã„ãªã‚‰ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ¢ã™ï¼‰
+        // ƒvƒŒƒCƒ„[‚Ì•û‚ğ’Ç]iƒvƒŒƒCƒ„[‚Ìƒ|ƒCƒ“ƒ^‚ª‚È‚¢‚È‚çAƒvƒŒƒCƒ„[‚ğ’T‚·j
         if (m_pTarget)
         {
             if (m_pTarget->GetDisp())
@@ -167,19 +167,19 @@ void CItem::Update(void)
         }
     }
 
-    // ä½ç½®ã«ç§»å‹•é‡ã‚’åæ˜ 
+    // ˆÊ’u‚ÉˆÚ“®—Ê‚ğ”½‰f
     myPos += m_move;
 
-    // å½“ãŸã‚Šåˆ¤å®š
+    // “–‚½‚è”»’è
     if (m_bUseCollision)
     {
         Collision(myPos);
     }
 
-    // ä½ç½®ã‚’è¨­å®š
+    // ˆÊ’u‚ğİ’è
     SetPos(myPos);
 
-    // å›è»¢
+    // ‰ñ“]
     D3DXVECTOR3 rot = GetRot();
     rot.y += ITEM_ROT_SPEED;
     if (rot.y > D3DX_PI)
@@ -197,13 +197,13 @@ void CItem::Update(void)
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
 
-    // å½±ã®ä½ç½®ã‚’æ›´æ–°
+    // ‰e‚ÌˆÊ’u‚ğXV
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->SetPos(D3DXVECTOR3(myPos.x, SHADOW_POS_Y, myPos.z));
     }
 
-    // ãƒ©ã‚¤ãƒ•ãŒãªããªã‚Šã‹ã‘ãŸã‚‰ã€ç‚¹æ»…
+    // ƒ‰ƒCƒt‚ª‚È‚­‚È‚è‚©‚¯‚½‚çA“_–Å
     if (m_nLife < ITEM_FLASH_START_FRAME)
     {
         if (m_nLife % 2 == 0)
@@ -216,7 +216,7 @@ void CItem::Update(void)
         m_bUseCollision = true;
     }
 
-    // ãƒ©ã‚¤ãƒ•ãŒãªããªã£ãŸã€ã¾ãŸã¯ä½¿ç”¨ãƒ•ãƒ©ã‚°ãŒãªããªã£ãŸã‚‰ã€æ¶ˆæ»…
+    // ƒ‰ƒCƒt‚ª‚È‚­‚È‚Á‚½A‚Ü‚½‚Íg—pƒtƒ‰ƒO‚ª‚È‚­‚È‚Á‚½‚çAÁ–Å
     m_nLife--;
     if (m_nLife <= 0)
     {
@@ -225,18 +225,18 @@ void CItem::Update(void)
 }
 
 //=============================================================================
-// æç”»å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// •`‰æˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::Draw(void)
 {
-    // å½±
+    // ‰e
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->CBillboard::Draw();
     }
 
-    // æç”»ã™ã‚‹ãªã‚‰
+    // •`‰æ‚·‚é‚È‚ç
     if (m_bUseDraw)
     {
         CScene3D::Draw();
@@ -244,21 +244,21 @@ void CItem::Draw(void)
 }
 
 //=============================================================================
-// ç”Ÿæˆå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ¶¬ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 CItem * CItem::Create(int type, D3DXVECTOR3 pos, float fEnergy)
 {
-    // ãƒ¡ãƒ¢ãƒªç¢ºä¿
+    // ƒƒ‚ƒŠŠm•Û
     CItem *pItem = NULL;
     pItem = new CItem;
 
-    // å…ˆã«çµã³ã¤ã‘ã¦ãŠã
+    // æ‚ÉŒ‹‚Ñ‚Â‚¯‚Ä‚¨‚­
     pItem->m_type = type;
     pItem->m_fGetEnergy = fEnergy;
 
-    // åˆæœŸåŒ–
-    // ä½ç½®ãŒ0ã‚ˆã‚Šå¤§ãã„ã‚ˆã†ã«ã™ã‚‹
+    // ‰Šú‰»
+    // ˆÊ’u‚ª0‚æ‚è‘å‚«‚¢‚æ‚¤‚É‚·‚é
     if (pos.y <= 0.0f)
     {
         pos.y = 1.0f;
@@ -269,66 +269,66 @@ CItem * CItem::Create(int type, D3DXVECTOR3 pos, float fEnergy)
 }
 
 //=============================================================================
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‹ã‚ã›ã‚‹å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒvƒŒƒCƒ„[‚ÉŒü‚©‚í‚¹‚éˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::MoveTowardPlayer(D3DXVECTOR3 myPos)
 {
-    // ç§»å‹•é€Ÿåº¦ã‚’å¾ã€…ã«é€Ÿã‚ã‚‹
+    // ˆÚ“®‘¬“x‚ğ™X‚É‘¬‚ß‚é
     m_fSpeed += ITEM_SPEED_UP_VALUE;
     if (m_fSpeed > ITEM_SPEED_MAX)
     {
         m_fSpeed = ITEM_SPEED_MAX;
     }
 
-    // å¤‰æ•°å®£è¨€
+    // •Ï”éŒ¾
     D3DXVECTOR3 targetPos = m_pTarget->GetPos();
     float fAngle = 0.0f;
 
-    // è§’åº¦ã‚’æ±‚ã‚ã‚‹
+    // Šp“x‚ğ‹‚ß‚é
     fAngle = atan2f((myPos.x - targetPos.x), (myPos.z - targetPos.z));
 
-    // æ¨ªç§»å‹•ã®å€¤ã‚’æ±ºã‚ã‚‹
+    // ‰¡ˆÚ“®‚Ì’l‚ğŒˆ‚ß‚é
     m_move.x = -sinf(fAngle) * m_fSpeed;
     m_move.z = -cosf(fAngle) * m_fSpeed;
 
-    // è·é›¢ã‚’æ¸¬ã‚‹
+    // ‹——£‚ğ‘ª‚é
     float fDistance = sqrtf(
         powf((targetPos.x - myPos.x), 2.0f) +
         powf((targetPos.z - myPos.z), 2.0f));
 
-    // é«˜ã•ã®å·®ã‚’æ¸¬ã‚‹
+    // ‚‚³‚Ì·‚ğ‘ª‚é
     float fHeight = fabsf((targetPos.y) - myPos.y);
 
-    // ç¸¦ã®è§’åº¦ã‚’æ±ºã‚ã‚‹
+    // c‚ÌŠp“x‚ğŒˆ‚ß‚é
     float fAngleY = atan2(fDistance, fHeight);
 
-    // ç¸¦ã®ç§»å‹•é‡ã‚’æ±ºã‚ã‚‹
+    // c‚ÌˆÚ“®—Ê‚ğŒˆ‚ß‚é
     m_move.y = cosf(fAngleY) * m_fSpeed;
 
-    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä½ç½®ã®ã»ã†ãŒã€è‡ªèº«ã®ä½ç½®ã‚ˆã‚Šä½ã„ãªã‚‰
+    // ƒ^[ƒQƒbƒg‚ÌˆÊ’u‚Ì‚Ù‚¤‚ªA©g‚ÌˆÊ’u‚æ‚è’á‚¢‚È‚ç
     if (targetPos.y < myPos.y)
     {
-        // Yè»¸ã®ç§»å‹•è§’åº¦ã‚’é€†ã«ã™ã‚‹
+        // Y²‚ÌˆÚ“®Šp“x‚ğ‹t‚É‚·‚é
         m_move.y *= -1;
     }
 }
 
 //=============================================================================
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ¢ã™å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒvƒŒƒCƒ„[‚ğ’T‚·ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 {
-    // ã¾ãšã€ç§»å‹•é‡ã¨ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ãªãã™
+    // ‚Ü‚¸AˆÚ“®—Ê‚ÆƒXƒs[ƒh‚ğ‚È‚­‚·
     m_move = DEFAULT_VECTOR;
     m_fSpeed = 0.0f;
 
-    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ¢ã™
+    // ƒvƒŒƒCƒ„[‚ğ’T‚·
     float fKeepDistance = 0.0f;
     CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Player(myPos, fKeepDistance);
 
-    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã‚­ãƒ£ãƒªã‚¢ãƒ¼ãªã‚‰ã€æ¤œçŸ¥è·é›¢ãŒä¼¸ã³ã‚‹
+    // ƒvƒŒƒCƒ„[‚ªƒLƒƒƒŠƒA[‚È‚çAŒŸ’m‹——£‚ªL‚Ñ‚é
     float fDiscoveryPlayerDistance = ITEM_CLOSE_DISTANCE_DEFAULT;
     if (pKeepPlayer)
     {
@@ -338,10 +338,10 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
         }
     }
 
-    // ã‚­ãƒ¼ãƒ—ã—ã¦ã„ã‚‹è·é›¢ãŒã€è¿‘ã„ã¨ã¿ãªã™å€¤ãªã‚‰
+    // ƒL[ƒv‚µ‚Ä‚¢‚é‹——£‚ªA‹ß‚¢‚Æ‚İ‚È‚·’l‚È‚ç
     if (fKeepDistance <= fDiscoveryPlayerDistance)
     {
-        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’çµã³ã¤ã‘ã‚‹
+        // ƒvƒŒƒCƒ„[‚ğŒ‹‚Ñ‚Â‚¯‚é
         if (pKeepPlayer)
         {
             m_pTarget = pKeepPlayer;
@@ -349,55 +349,55 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
     }
     else
     {
-        // è¿‘ã„ã‚­ãƒ£ãƒ©ãŒã„ãªã„ãªã‚‰ã€ç€åœ°ãƒ•ãƒ©ã‚°ã‚’æ¶ˆã™ï¼ˆç©ºä¸­ã§ã‚­ãƒ£ãƒ©ãŒã‚„ã‚‰ã‚ŒãŸæ™‚ã«ã€ã‚¢ã‚¤ãƒ†ãƒ ã‚’ã‚‚ã†ä¸€åº¦åœ°é¢ã«è½ã¨ã™ãŸã‚ï¼‰
+        // ‹ß‚¢ƒLƒƒƒ‰‚ª‚¢‚È‚¢‚È‚çA’…’nƒtƒ‰ƒO‚ğÁ‚·i‹ó’†‚ÅƒLƒƒƒ‰‚ª‚â‚ç‚ê‚½‚ÉAƒAƒCƒeƒ€‚ğ‚à‚¤ˆê“x’n–Ê‚É—‚Æ‚·‚½‚ßj
         m_bGround = false;
     }
 }
 
 //=============================================================================
-// è¡çªå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// Õ“Ëˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CItem::Collision(D3DXVECTOR3 myPos)
 {
-    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    // ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
     CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
     for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
     {
-        // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+        // ’†g‚ª‚ ‚é‚È‚ç
         if (pScene)
         {
-            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+            // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
             CScene*pNextScene = pScene->GetNextScene();
-            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚­ãƒ£ã‚¹ãƒˆ
+            // ƒvƒŒƒCƒ„[‚ÉƒLƒƒƒXƒg
             CPlayer *pPlayer = (CPlayer*)pScene;
           
-            // è¡¨ç¤ºã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+            // •\¦‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
             if (!pPlayer->GetDisp())
             {
                 continue;
             }
           
-            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã‚’å–å¾—
+            // ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğæ“¾
             D3DXVECTOR3 playerPos= pPlayer->GetPos();
 
-            // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+            // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
             if (IsCollisionCylinder(myPos, m_collisionSize, playerPos, pPlayer->GetCollisionSizeDefence()))
             {
-                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¨ãƒŠã‚¸ãƒ¼åŠ ç®—
+                // ƒvƒŒƒCƒ„[‚ÌƒGƒiƒW[‰ÁZ
                 pPlayer->GainEnergy(m_fGetEnergy);
 
-                // 1äººã—ã‹è¡çªã—ãªã„ãŸã‚ã€é–¢æ•°ã‚’æŠœã‘ã‚‹
+                // 1l‚µ‚©Õ“Ë‚µ‚È‚¢‚½‚ßAŠÖ”‚ğ”²‚¯‚é
                 m_nLife = NOT_EXIST;
 
-                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ã«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
+                // ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ÉƒGƒtƒFƒNƒg”­¶
                 CEffect3D::Emit(CEffectData::TYPE_GET, playerPos, playerPos);
                 CEffect3D::Emit(CEffectData::TYPE_GET, playerPos, playerPos);
 
                 return;
             }
 
-            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+            // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
             pScene = pNextScene;
         }
     }
