@@ -410,6 +410,7 @@ public:
     bool GetDispAbility(void) { return m_bDispAbility; }
     int GetRole(void) { return m_role; }
     bool GetUsingGuard(void) { return m_bUsingGuard; }
+    ATTACK_STATE GetAttackState(void) { return m_attackState; }
 
 private:
     bool m_bMannequin;                       // ƒ}ƒlƒLƒ“‚©‚Ç‚¤‚©

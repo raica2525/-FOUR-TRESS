@@ -12,6 +12,70 @@
 #include "game.h"
 #include "library.h"
 
+//*****************************************************************************
+// マクロ定義
+//*****************************************************************************
+
+// 弾を近いとみなす値
+#define BULLET_CLOSE_VALUE 750.0f
+
+// 攻撃の射程
+#define ATTACK_RANGE_WARRIOR 750.0f
+#define ATTACK_RANGE_HUNTER 3000.0f
+#define ATTACK_RANGE_CARRIER 1250.0f
+#define ATTACK_RANGE_TANK 1500.0f
+#define ATTACK_RANGE_HEALER 2500.0f
+
+// 標的取得間隔
+#define TARGETTING_INTERVAL_AI_LEVEL_1_MAX 30
+#define TARGETTING_INTERVAL_AI_LEVEL_1_MIN 20
+#define TARGETTING_INTERVAL_AI_LEVEL_2_MAX 20
+#define TARGETTING_INTERVAL_AI_LEVEL_2_MIN 10
+#define TARGETTING_INTERVAL_AI_LEVEL_3_MAX 10
+#define TARGETTING_INTERVAL_AI_LEVEL_3_MIN 5
+
+// 考え時間
+#define THINKING_TIME_AI_LEVEL_1_MAX 45
+#define THINKING_TIME_AI_LEVEL_1_MIN 30
+#define THINKING_TIME_AI_LEVEL_2_MAX 20
+#define THINKING_TIME_AI_LEVEL_2_MIN 10
+#define THINKING_TIME_AI_LEVEL_3_MAX 5
+#define THINKING_TIME_AI_LEVEL_3_MIN 1
+
+// コアの優先順位
+#define CORE_PRIORITY_1 60
+#define CORE_PRIORITY_2 30
+#define CORE_PRIORITY_3 10
+
+// 強襲時間
+#define ASSAULT_TIME_AI_LEVEL_1_MAX 60
+#define ASSAULT_TIME_AI_LEVEL_1_MIN 30
+#define ASSAULT_TIME_AI_LEVEL_2_MAX 150
+#define ASSAULT_TIME_AI_LEVEL_2_MIN 90
+#define ASSAULT_TIME_AI_LEVEL_3_MAX 180
+#define ASSAULT_TIME_AI_LEVEL_3_MIN 120
+
+// 避ける時間
+#define AVOID_TIME_AI_LEVEL_1_MAX 30
+#define AVOID_TIME_AI_LEVEL_1_MIN 15
+#define AVOID_TIME_AI_LEVEL_2_MAX 40
+#define AVOID_TIME_AI_LEVEL_2_MIN 25
+#define AVOID_TIME_AI_LEVEL_3_MAX 35
+#define AVOID_TIME_AI_LEVEL_3_MIN 20
+
+// 待つ時間
+#define WAIT_TIME_AI_LEVEL_1_MAX 30
+#define WAIT_TIME_AI_LEVEL_1_MIN 15
+#define WAIT_TIME_AI_LEVEL_2_MAX 40
+#define WAIT_TIME_AI_LEVEL_2_MIN 25
+#define WAIT_TIME_AI_LEVEL_3_MAX 35
+#define WAIT_TIME_AI_LEVEL_3_MIN 20
+
+// 攻撃時に狙った攻撃ができるかどうか（100分の何）
+#define ATTACK_TARGET_AI_LEVEL_1 30
+#define ATTACK_TARGET_AI_LEVEL_2 75
+#define ATTACK_TARGET_AI_LEVEL_3 95
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -26,6 +90,10 @@ CAi::CAi()
 
     m_core = CORE_THINKING;
     m_nCntActionTime = 0;
+
+    m_targetPos = DEFAULT_VECTOR;
+    m_nCntSearchTarget = 0;
+    m_fAttackRange = 0.0f;
 }
 
 //=============================================================================
@@ -42,46 +110,61 @@ CAi::~CAi()
 //=============================================================================
 void CAi::Update(void)
 {
+    // ターゲット位置を決める処理
+    if (m_nCntSearchTarget <= 0)
+    {
+        GetTargetPos();
+    }
+    else
+    {
+        m_nCntSearchTarget--;
+    }
+
     // 変数宣言
     bool bCurrentButtonA = false;         // 現在のAボタン
     bool bCurrentButtonX = false;         // 現在のXボタン
     bool bCurrentButtonB = false;         // 現在のBボタン
     bool bCurrentButtonR2 = false;        // 現在のR2ボタン
 
-    // コアごとに場合分け
-    switch (m_core)
-    {
-    case CORE_THINKING:
-        Thinking();
-        DontMove(false);
-        break;
-    case CORE_ASSAULT:
-        AnotherAction();
-        RushToBall();
-        bCurrentButtonA = JumpBecauseBallUp();
-        switch (m_pPlayer->GetAILevel())
-        {
-        case CPlayer::AI_LEVEL_1:
-        case CPlayer::AI_LEVEL_2:
-            bCurrentButtonX = DecideAttack(false);
-            break;
-        case CPlayer::AI_LEVEL_3:
-            bCurrentButtonX = DecideAttack(true);   // レベル3は攻撃時に向きも合わせに行く
-            break;
-        }
-        break;
-    case CORE_AVOID:
-        AnotherAction();
-        RunAwayFromBall();
-        bCurrentButtonA = JumpBecauseBallMoveDown();
-        bCurrentButtonX = DecideAttack(true);
-        break;
-    case CORE_WAIT:
-        AnotherAction();
-        DontMove(true);
-        bCurrentButtonX = DecideAttack(true);
-        break;
-    }
+    // 追加
+    RushToTarget();
+    bCurrentButtonA = JumpBecauseEnemyBulletClose();
+    bCurrentButtonX = DecideAttack();
+
+    //// コアごとに場合分け
+    //switch (m_core)
+    //{
+    //case CORE_THINKING:
+    //    Thinking();
+    //    DontMove(false);
+    //    break;
+    //case CORE_ASSAULT:
+    //    AnotherAction();
+    //    RushToBall();
+    //    bCurrentButtonA = JumpBecauseBallUp();
+    //    switch (m_pPlayer->GetAILevel())
+    //    {
+    //    case CPlayer::AI_LEVEL_1:
+    //    case CPlayer::AI_LEVEL_2:
+    //        bCurrentButtonX = DecideAttack();
+    //        break;
+    //    case CPlayer::AI_LEVEL_3:
+    //        bCurrentButtonX = DecideAttack();
+    //        break;
+    //    }
+    //    break;
+    //case CORE_AVOID:
+    //    AnotherAction();
+    //    RunAwayFromBall();
+    //    bCurrentButtonA = JumpBecauseBallMoveDown();
+    //    bCurrentButtonX = DecideAttack();
+    //    break;
+    //case CORE_WAIT:
+    //    AnotherAction();
+    //    DontMove(true);
+    //    bCurrentButtonX = DecideAttack();
+    //    break;
+    //}
 
     //==============================================================
     // コントローラの操作に置き換える
@@ -176,6 +259,25 @@ CAi * CAi::Create(CPlayer *pPlayer)
     pAI->m_pPlayer = pPlayer;
     pAI->GetThinkingTime();
 
+    switch (pPlayer->GetRole())
+    {
+    case CPlayer::ROLE_WARRIOR:
+        pAI->m_fAttackRange = ATTACK_RANGE_WARRIOR;
+        break;
+    case CPlayer::ROLE_HUNTER:
+        pAI->m_fAttackRange = ATTACK_RANGE_HUNTER;
+        break;
+    case CPlayer::ROLE_CARRIER:
+        pAI->m_fAttackRange = ATTACK_RANGE_CARRIER;
+        break;
+    case CPlayer::ROLE_TANK:
+        pAI->m_fAttackRange = ATTACK_RANGE_TANK;
+        break;
+    case CPlayer::ROLE_HEALER:
+        pAI->m_fAttackRange = ATTACK_RANGE_HEALER;
+        break;
+    }
+
     return pAI;
 }
 
@@ -257,7 +359,7 @@ void CAi::Thinking(void)
                 //{
                 //    GetAvoidTime();
                 //}
-                GetAssaultTime();
+                GetAvoidTime();
                 break;
             }
         }
@@ -384,10 +486,10 @@ void CAi::DontMove(bool bUseTurn)
 {
     //m_pPlayer->GetControlInput()->bTiltedLeftStick = false;
 
-    //// 移動しない程度にボールのほうを振り向くなら
+    //// 移動しない程度に敵を振り向くなら
     //if (bUseTurn)
     //{
-    //    // ボールのほうを向いていないならそちらを向く
+    //    // 敵のほうを向いていないならそちらを向く
     //    if (!IsFacingBall())
     //    {
     //        // ボールを取得
@@ -401,10 +503,10 @@ void CAi::DontMove(bool bUseTurn)
 }
 
 //=============================================================================
-// ボールの方を向いているか
+// 敵の方を向いているか
 // Author : 後藤慎之助
 //=============================================================================
-bool CAi::IsFacingBall(void)
+bool CAi::IsFacingEnemy(void)
 {
     //// ボールを取得
     //CBall* pBall = CGame::GetBall();
@@ -421,17 +523,18 @@ bool CAi::IsFacingBall(void)
 }
 
 //=============================================================================
-// ボールに詰め寄る処理
+// ターゲットに詰め寄る処理
 // Author : 後藤慎之助
 //=============================================================================
-void CAi::RushToBall(void)
+void CAi::RushToTarget(void)
 {
-    //// ボールを取得
-    //CBall* pBall = CGame::GetBall();
-    //float fAngle = GetAngleToTarget3D2D(m_pPlayer->GetPos(), pBall->GetPos());
+    // ターゲットへの角度を取得
+    float fAngle = GetAngleToTargetXZ(m_pPlayer->GetPos(), m_targetPos);
+    float fPlayerAngle = GetAngleToTargetXZ(m_targetPos, m_pPlayer->GetPos());
 
-    //m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
-    //m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
+    m_pPlayer->GetControlInput()->bTiltedLeftStick = true;
+    m_pPlayer->GetControlInput()->fLeftStickAngle = fAngle;
+    m_pPlayer->GetControlInput()->fPlayerAngle = fPlayerAngle;
 }
 
 //=============================================================================
@@ -485,40 +588,31 @@ void CAi::RunAwayFromBall(void)
 }
 
 //=============================================================================
-// ボールが上にあるからジャンプする処理
+// 敵の弾が近いからジャンプする処理
 // Author : 後藤慎之助
 //=============================================================================
-bool CAi::JumpBecauseBallUp(void)
+bool CAi::JumpBecauseEnemyBulletClose(void)
 {
     // ジャンプするかどうか
     bool bUseJump = false;
 
-    //// ボールを取得
-    //CBall* pBall = CGame::GetBall();
+    // 敵の弾が近いならジャンプ
+    if (CGame::GetDistanceToClosestEnemyBullet(m_pPlayer->GetPos()) < BULLET_CLOSE_VALUE)
+    {
+        bUseJump = true;
+    }
 
-    //// ボールのほうが上にあるなら
-    //if (pBall->GetPos().y > m_pPlayer->GetPos().y + m_pPlayer->GetCollisionSizeDeffence().y)
-    //{
-    //    bUseJump = true;
-    //}
+    // 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
+    if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
+    {
+        return false;
+    }
 
-    //// 地上にいて、ジャンプボタンを長押ししようとしているなら、長押し解除
-    //if (m_pPlayer->GetGround() && m_buttonStateOld.bButtonA)
-    //{
-    //    return false;
-    //}
-
-    //// 空中にいて、滞空が終了したなら、長押し解除
-    //if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
-    //{
-    //    return false;
-    //}
-
-    //// ボールが配置されていないなら、ジャンプしない
-    //if (!pBall->GetDisp())
-    //{
-    //    return false;
-    //}
+    // 空中にいて、滞空が終了したなら、長押し解除
+    if (m_pPlayer->GetPressJumpTime() > PLAYER_JUMP_KEEP_FRAME)
+    {
+        return false;
+    }
 
     return bUseJump;
 }
@@ -566,70 +660,25 @@ bool CAi::JumpBecauseBallMoveDown(void)
 // 決めきる攻撃をするかどうかの処理
 // Author : 後藤慎之助
 //=============================================================================
-bool CAi::DecideAttack(bool bUseTurn)
+bool CAi::DecideAttack(void)
 {
     // 基本的な攻撃をするかどうか
     bool bUseDecideAttack = false;
 
-    //// ボールを取得
-    //CBall* pBall = CGame::GetBall();
+    // 攻撃をすると判断する距離
+    if (GetDistanceXZ(m_pPlayer->GetPos(), m_targetPos) <= m_fAttackRange)
+    {
+        bUseDecideAttack = true;
+    }
 
-    //// ボールが当たり判定を使っていないなら、関数を抜ける
-    //if (!pBall->GetUseCollision())
-    //{
-    //    return false;
-    //}
-
-    //// ボールのほうを向いていないなら、関数を抜ける（振り向きで打てる攻撃を使用しないので、若干弱くなる）
-    //if (!bUseTurn)
-    //{
-    //    if (!IsFacingBall())
-    //    {
-    //        return false;
-    //    }
-    //}
-    //else
-    //{
-    //    // ターンを使うとしても、そもそもターンを使えない状況（地面にいる）なら、関数を抜ける
-    //    if (!IsFacingBall() && m_pPlayer->GetGround())
-    //    {
-    //        return false;
-    //    }
-    //}
-
-    //// プレイヤーの中心座標
-    //D3DXVECTOR3 playerCenterPos = m_pPlayer->GetPos() + D3DXVECTOR3(0.0f, m_pPlayer->GetCollisionSizeDeffence().y * 0.5f, 0.0f);
-
-    //// 攻撃をすると判断する距離
-    //float fAttackDistance = (m_pPlayer->GetCollisionSizeDeffence().x + m_pPlayer->GetCollisionSizeDeffence().y) * 0.5f + (BALL_COLLISION_SIZE_SIDE);
-    //if (GetDistance2D(playerCenterPos, pBall->GetPos()) <= fAttackDistance)
-    //{
-    //    bUseDecideAttack = true;
-
-    //    // チャージ中にボールが近づいたなら、即座に離す
-    //    if (m_pPlayer->GetSwingCharge() > 0)
-    //    {
-    //        bUseDecideAttack = false;
-    //    }
-
-    //    // コアが避ける中ならボールの方を向く
-    //    if (m_core == CORE_AVOID)
-    //    {
-    //        RushToBall();
-
-    //        // 打ち始めで近くのプレイヤーに左右されないため、関数を抜ける
-    //        if (m_pPlayer->GetStopTime() == 0)
-    //        {
-    //            return true;
-    //        }
-    //    }
-
-    //    // 飛ばすとき、近くのプレイヤーのほうにスティックを倒す
-    //    if (m_pPlayer->GetStopTime() == 1 || m_pPlayer->GetStopTime() == 0)
-    //    {
-    //        GetAttackAngle();
-    //    }
-    //}
+    // ハンター以外は、キープレスでの攻撃がない（タンクは要変更）
+    if (m_pPlayer->GetRole() != CPlayer::ROLE_HUNTER)
+    {
+        if (m_buttonStateOld.bButtonX)
+        {
+            return false;
+        }
+    }
 
     return bUseDecideAttack;
 }
@@ -724,4 +773,28 @@ void CAi::GetAttackAngle(void)
 
     //// 得た攻撃角度を結びつける
     //m_pPlayer->GetControlInput()->fLeftStickAngle = fAttackAngle;
+}
+
+//=============================================================================
+// 標的の位置取得
+// Author : 後藤慎之助
+//=============================================================================
+void CAi::GetTargetPos(void)
+{
+    // 何を標的とみなすかによって、得る位置が変わる
+    m_targetPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
+
+    // 次の標的取得時間を得る
+    switch (m_pPlayer->GetAILevel())
+    {
+    case CPlayer::AI_LEVEL_1:
+        m_nCntSearchTarget = GetRandNum(TARGETTING_INTERVAL_AI_LEVEL_1_MAX, TARGETTING_INTERVAL_AI_LEVEL_1_MIN);
+        break;
+    case CPlayer::AI_LEVEL_2:
+        m_nCntSearchTarget = GetRandNum(TARGETTING_INTERVAL_AI_LEVEL_2_MAX, TARGETTING_INTERVAL_AI_LEVEL_2_MIN);
+        break;
+    case CPlayer::AI_LEVEL_3:
+        m_nCntSearchTarget = GetRandNum(TARGETTING_INTERVAL_AI_LEVEL_3_MAX, TARGETTING_INTERVAL_AI_LEVEL_3_MIN);
+        break;
+    }
 }

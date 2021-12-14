@@ -62,6 +62,7 @@ int GetRandNum(const int nMax, const int nMin);
 float GetAngleToTarget2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 float GetAngleToTargetXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 float GetDistance2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
+float GetDistanceXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos);
 D3DXVECTOR3 caclRotate(const D3DXVECTOR3 p1, const D3DXVECTOR3 cp, float deg);
 bool IsCollisionSide2D(const D3DXVECTOR3 r1, const D3DXVECTOR3 r2, const D3DXVECTOR3 p1, const D3DXVECTOR3 p2);
 bool IsCollisionToRotationRect(const D3DXVECTOR3 myCenterPos, const D3DXVECTOR3 mySize, const D3DXVECTOR3 targetPos1, const D3DXVECTOR3 targetPos2, const D3DXVECTOR3 targetPos3, const D3DXVECTOR3 targetPos4);

@@ -77,6 +77,7 @@ public:
     // ゲッター
     //=============================
     D3DXVECTOR2 GetCollisionSize(void) { return m_collisionSize; }
+    OBJTYPE GetWhoShot(void) { return m_whoShot; }
 
     //=============================
     // セッター

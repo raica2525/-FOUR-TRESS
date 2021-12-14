@@ -13,52 +13,6 @@
 #include "main.h"
 #include "player.h"
 
-//*****************************************************************************
-// マクロ定義
-//*****************************************************************************
-
-// 考え時間
-#define THINKING_TIME_AI_LEVEL_1_MAX 45
-#define THINKING_TIME_AI_LEVEL_1_MIN 30
-#define THINKING_TIME_AI_LEVEL_2_MAX 20
-#define THINKING_TIME_AI_LEVEL_2_MIN 10
-#define THINKING_TIME_AI_LEVEL_3_MAX 5
-#define THINKING_TIME_AI_LEVEL_3_MIN 1
-
-// コアの優先順位
-#define CORE_PRIORITY_1 60
-#define CORE_PRIORITY_2 30
-#define CORE_PRIORITY_3 10
-
-// 強襲時間
-#define ASSAULT_TIME_AI_LEVEL_1_MAX 60
-#define ASSAULT_TIME_AI_LEVEL_1_MIN 30
-#define ASSAULT_TIME_AI_LEVEL_2_MAX 150
-#define ASSAULT_TIME_AI_LEVEL_2_MIN 90
-#define ASSAULT_TIME_AI_LEVEL_3_MAX 180
-#define ASSAULT_TIME_AI_LEVEL_3_MIN 120
-
-// 避ける時間
-#define AVOID_TIME_AI_LEVEL_1_MAX 30
-#define AVOID_TIME_AI_LEVEL_1_MIN 15
-#define AVOID_TIME_AI_LEVEL_2_MAX 40
-#define AVOID_TIME_AI_LEVEL_2_MIN 25
-#define AVOID_TIME_AI_LEVEL_3_MAX 35
-#define AVOID_TIME_AI_LEVEL_3_MIN 20
-
-// 待つ時間
-#define WAIT_TIME_AI_LEVEL_1_MAX 30
-#define WAIT_TIME_AI_LEVEL_1_MIN 15
-#define WAIT_TIME_AI_LEVEL_2_MAX 40
-#define WAIT_TIME_AI_LEVEL_2_MIN 25
-#define WAIT_TIME_AI_LEVEL_3_MAX 35
-#define WAIT_TIME_AI_LEVEL_3_MIN 20
-
-// 攻撃時に狙った攻撃ができるかどうか（100分の何）
-#define ATTACK_TARGET_AI_LEVEL_1 30
-#define ATTACK_TARGET_AI_LEVEL_2 75
-#define ATTACK_TARGET_AI_LEVEL_3 95
-
 //================================================
 // クラス宣言
 //================================================
@@ -98,13 +52,15 @@ public:
     void GetAvoidTime(void);                    // 避ける時間を得る
     void GetWaitTime(void);                     // 待つ時間を得る
     void DontMove(bool bUseTurn);               // 移動しない
-    bool IsFacingBall(void);                    // ボールの方を向いているか
-    void RushToBall(void);                      // ボールに詰め寄る
+    bool IsFacingEnemy(void);                   // エネミーの方を向いているか
+    void RushToTarget(void);                    // ターゲットに詰め寄る
     void RunAwayFromBall(void);                 // ボールから逃げる
-    bool JumpBecauseBallUp(void);               // ボールが上にあるからジャンプする
+    bool JumpBecauseEnemyBulletClose(void);     // 敵の弾が近いからジャンプする
     bool JumpBecauseBallMoveDown(void);         // ボールが下がってきているからジャンプする
-    bool DecideAttack(bool bUseTurn);           // 決めきる攻撃をするかどうか
+    bool DecideAttack(void);                    // 決めきる攻撃をするかどうか
     void GetAttackAngle(void);                  // 攻撃時にどの方向にスティックを倒すか
+
+    void GetTargetPos(void);                    // ターゲットの位置を決める
 
 private:
     CPlayer *m_pPlayer;
@@ -112,6 +68,10 @@ private:
 
     CORE m_core;                    // 現在何を心がけているか
     int m_nCntActionTime;           // 行動のカウンタ
+
+    D3DXVECTOR3 m_targetPos;        // 標的の位置
+    int m_nCntSearchTarget;         // 標的を探すためのカウンタ
+    float m_fAttackRange;           // 攻撃の射程
 };
 
 #endif

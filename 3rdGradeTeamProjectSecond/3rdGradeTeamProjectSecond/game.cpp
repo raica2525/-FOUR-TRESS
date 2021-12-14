@@ -32,6 +32,7 @@
 #include "road.h"
 #include "fortress.h"
 #include "block.h"
+#include "bullet.h"
 
 //========================================
 // マクロ定義
@@ -129,7 +130,7 @@ HRESULT CGame::Init(void)
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
     if (m_type == TYPE_TRAINING)
     {
-        m_nNumAllPlayer = 1;                // トレーニングは1人固定
+        //m_nNumAllPlayer = 1;                // トレーニングは1人固定
         CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
         m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
         m_pFortress->SetSpeed(0.0f);
@@ -1113,4 +1114,51 @@ D3DXVECTOR3 CGame::GetPosToClosestEnemy(D3DXVECTOR3 myPos)
     }
 
     return targetPos;
+}
+
+//========================================
+// 一番近い敵の弾の距離を求める
+// Author : 後藤慎之助
+//========================================
+float CGame::GetDistanceToClosestEnemyBullet(D3DXVECTOR3 myPos)
+{
+    // 変数宣言
+    float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
+
+    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BULLET);
+    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BULLET); nCntScene++)
+    {
+        // 中身があるなら
+        if (pScene)
+        {
+            // 次のシーンを記憶
+            CScene*pNextScene = pScene->GetNextScene();
+
+            // 敵にキャスト
+            CBullet *pBullet = (CBullet*)pScene;
+
+            // 敵の弾なら
+            if (pBullet->GetWhoShot() == CScene::OBJTYPE_ENEMY)
+            {
+                // 弾の位置
+                D3DXVECTOR3 bulletPos = pBullet->GetPos();
+
+                // 距離を求める
+                float fSecondDistance = sqrtf(
+                    powf((myPos.x - bulletPos.x), 2.0f) +
+                    powf((myPos.z - bulletPos.z), 2.0f));
+
+                // 距離の比較と、対象の位置を更新
+                if (fFirstDistance > fSecondDistance)
+                {
+                    fFirstDistance = fSecondDistance;
+                }
+            }
+
+            // 次のシーンにする
+            pScene = pNextScene;
+        }
+    }
+
+    return fFirstDistance;
 }

@@ -401,6 +401,22 @@ float GetDistance2D(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
 }
 
 //===========================================
+// ‘ÎÛ‚Ö‚Ì‹——£‚ğ“¾‚éXZ
+// Author : Œã“¡T”V•
+//===========================================
+float GetDistanceXZ(const D3DXVECTOR3 myPos, const D3DXVECTOR3 targetPos)
+{
+    float fDistance = 0.0f;
+
+    // ‹——£‚ğ‹‚ß‚é
+    fDistance = sqrtf(
+        powf((myPos.x - targetPos.x), 2.0f) +
+        powf((myPos.z - targetPos.z), 2.0f));
+
+    return fDistance;
+}
+
+//===========================================
 // ‰Á–@’è—‰ñ“]À•WŒvZŠÖ”
 //-------------------------------------------------
 // ‰ñ“]‚·‚é“_À•W p1
