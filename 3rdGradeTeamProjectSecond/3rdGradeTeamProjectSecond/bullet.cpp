@@ -427,6 +427,10 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         // コマンダーの弾なら、敵を生成
         if (m_type == TYPE_COMMANDER_ATTACK)
         {
+            // 敵出現エフェクト
+            CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
+
             CEnemy::Create(CEnemy::TYPE_ARMY, bulletPos);
         }
     }

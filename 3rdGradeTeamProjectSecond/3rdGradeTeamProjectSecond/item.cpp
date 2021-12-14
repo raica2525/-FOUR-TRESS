@@ -369,12 +369,14 @@ void CItem::Collision(D3DXVECTOR3 myPos)
         {
             // 次のシーンを記憶
             CScene*pNextScene = pScene->GetNextScene();
-
             // プレイヤーにキャスト
             CPlayer *pPlayer = (CPlayer*)pScene;
 
+            // プレイヤーの位置を取得
+            D3DXVECTOR3 playerPos= pPlayer->GetPos();
+
             // 当たっているなら
-            if (IsCollisionCylinder(myPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
+            if (IsCollisionCylinder(myPos, m_collisionSize, playerPos, pPlayer->GetCollisionSizeDefence()))
             {
                 // プレイヤーのエナジー加算
                 pPlayer->GainEnergy(m_fGetEnergy);
@@ -382,9 +384,9 @@ void CItem::Collision(D3DXVECTOR3 myPos)
                 // 1人しか衝突しないため、関数を抜ける
                 m_nLife = NOT_EXIST;
 
-                // エフェクト発生
-                CEffect3D::Emit(CEffectData::TYPE_GET, pPlayer->GetPos(), pPlayer->GetPos());
-                CEffect3D::Emit(CEffectData::TYPE_GET, pPlayer->GetPos(), pPlayer->GetPos());
+                // プレイヤーの位置にエフェクト発生
+                CEffect3D::Emit(CEffectData::TYPE_GET, playerPos, playerPos);
+                CEffect3D::Emit(CEffectData::TYPE_GET, playerPos, playerPos);
 
                 return;
             }

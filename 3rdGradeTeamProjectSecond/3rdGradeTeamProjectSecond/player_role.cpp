@@ -683,10 +683,10 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             m_nCntAttackTime = WARRIOR_SKY_CHANCE_FRAME;
 
             // 空中攻撃のエフェクト
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
 
         }
         // 防御当たり判定の大きさを取得
@@ -917,10 +917,10 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             m_nCntAttackTime = CARRIER_SKY_CHANCE_FRAME;
 
             // 空中攻撃のエフェクト
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
         }
         // 防御当たり判定の大きさを取得
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();

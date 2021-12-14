@@ -107,9 +107,6 @@ HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     // キャラクターに反映
     CCharacter::Init(pos, DEFAULT_SCALE);
 
-    CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
-    CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
-
     return S_OK;
 }
 
@@ -268,7 +265,7 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
             m_fChargeValue = 1.0f;
         }
         CItem::Create(dentiType, myPos, m_fChargeValue);
-        CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, GetPos(), GetPos());
+        CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
     }
     else
     {
@@ -276,13 +273,13 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         if (m_type == TYPE_KAMIKAZE)
         {
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
-            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, GetPos(), GetPos());
-            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, myPos, myPos);
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, myPos, myPos);
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, myPos, myPos);
         }
         else
         {// カミカゼ以外は通常のエフェクトを出す
-            CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
         }
     }
 
@@ -471,6 +468,9 @@ void CEnemy::Appear(void)
         SetRotY(fAngleToTarget);
         m_appearState = APPEAR_STATE_EXIST;
         SetInvincible(false);
+        // 敵出現エフェクト
+        CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
+        CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
     }
 }
 
