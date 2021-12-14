@@ -579,12 +579,12 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         // 攻撃力を考慮
         fFinalPower = BASE_DAMAGE;
 
-        // 移動できる
-        if (m_controlInput.bTiltedLeftStick)
-        {
-            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
-            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
-        }
+        //// 移動できる
+        //if (m_controlInput.bTiltedLeftStick)
+        //{
+        //    playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        //    playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        //}
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
@@ -611,6 +611,8 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
             ResetAttack();
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND2;
+            SetRotY(m_controlInput.fPlayerAngle);
+            SetRotDestY(m_controlInput.fPlayerAngle);
         }
     }
 }
@@ -645,12 +647,12 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
         // 攻撃力を考慮
         fFinalPower = BASE_DAMAGE;
 
-        // 移動できる
-        if (m_controlInput.bTiltedLeftStick)
-        {
-            playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
-            playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
-        }
+        //// 移動できる
+        //if (m_controlInput.bTiltedLeftStick)
+        //{
+        //    playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        //    playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
+        //}
 
         // 前進
         D3DXVECTOR3 rot = GetRot();
@@ -676,6 +678,8 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
             ResetAttack();
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
+            SetRotY(m_controlInput.fPlayerAngle);
+            SetRotDestY(m_controlInput.fPlayerAngle);
         }
     }
 }
