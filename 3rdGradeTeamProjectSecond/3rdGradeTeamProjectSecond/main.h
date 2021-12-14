@@ -106,7 +106,8 @@
 // 影の高さ
 #define SHADOW_POS_Y 2.0f
 
-// キャラクターの最大数
+// キャラクターのインデックスの最大数（主に多段ヒット回避に使用、最小のは最大を超えた時に戻すときの値、常に画面にいるキャラを考慮）
+#define CHARACTER_IDX_MIN_IN_RESET 10
 #define CHARACTER_IDX_MAX 128
 
 // 汎用データの最大数

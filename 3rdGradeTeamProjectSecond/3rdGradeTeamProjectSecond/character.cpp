@@ -84,7 +84,7 @@ CCharacter::CCharacter(OBJTYPE objtype) :CScene(objtype)
     m_damageState = DAMAGE_STATE_NONE;
     m_bUseWhiteDraw = false;
     m_nCntWhiteDrawTime = 0;
-    m_bUseKnockBack = true;
+    m_bTakeKnockBack = true;
     m_bTakeWind = false;
     m_lastHit = OBJTYPE_NONE;
 }
@@ -533,7 +533,7 @@ void CCharacter::RotControl(void)
 // ダメージを受ける処理
 // Author : 後藤慎之助
 //=============================================================================
-bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, int effectType)
+bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack, int effectType)
 {
     // 無敵でないなら
     if (!m_bIsInvincible)
@@ -559,23 +559,24 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
         m_nCntWhiteDrawTime = WHITE_DRAW_TIME;
 
         // 変数宣言
-        D3DXVECTOR3 myPos = GetPos();           // 位置を取得
-        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-        float fKnockbackValue = 0.0f;           // ノックバック量
+        D3DXVECTOR3 myPos = GetPos();                   // 位置を取得
+        float fKnockbackValue = 0.0f;                   // ノックバック量
+        DAMAGE_STATE damageState = DAMAGE_STATE_NONE;   // ダメージ状態
+        int nCntTakeDamageTime = 0;                     // ダメージを受けた時のカウンタ
 
         // 負傷状態を、受けるダメージから判定
         int nEffectFrame = PLAYER_TAKE_DAMAGE_SMALL_EFFECT_FRAME;   // 振動フレーム
         if (fDamage < TAKE_DAMAGE_BORDER_DAMAGE)
         {
             // 小やられ
-            m_damageState = DAMAGE_STATE_SMALL;
+            damageState = DAMAGE_STATE_SMALL;
             fKnockbackValue = KNOCK_BACK_SMALL;
-            m_nCntTakeDamageTime = TAKE_DAMAGE_SMALL_FRAME;
+            nCntTakeDamageTime = TAKE_DAMAGE_SMALL_FRAME;
         }
         else
         {
             // 吹っ飛ばされ状態は、移動量がなくなって地面につくまで続く
-            m_damageState = DAMAGE_STATE_BLOWN;
+            damageState = DAMAGE_STATE_BLOWN;
             fKnockbackValue = KNOCK_BACK_BIG;
 
             // 大きい振動
@@ -595,6 +596,7 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
             D3DXVECTOR3 hitEffectPos = damagePos;
             if (damagePos == damageOldPos)
             {
+                D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
                 hitEffectPos = myPos + D3DXVECTOR3(0.0f, collisionSizeDefence.y * 0.5f, 0.0f);
             }
             CEffect3D::Emit(effectType, hitEffectPos, damageOldPos);
@@ -618,9 +620,13 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
             CManager::SoundPlay(CSound::LABEL_SE_DAMAGE);
         }
 
-        // ノックバックを利用する状態なら
-        if (m_bUseKnockBack)
+        // ノックバックがある攻撃かつ、ノックバックを利用する状態なら
+        if (bUseKnockBack && m_bTakeKnockBack)
         {
+            // ダメージ状態を更新
+            m_damageState = damageState;
+            m_nCntTakeDamageTime = nCntTakeDamageTime;
+
             // 攻撃状態をリセット
             m_bResetAttackByDamage = true;
 
@@ -654,7 +660,7 @@ bool CCharacter::PullToCenter(D3DXVECTOR3 centerPos)
     if (!m_bIsInvincible)
     {
         // ノックバックを利用する状態なら
-        if (m_bUseKnockBack)
+        if (m_bTakeKnockBack)
         {
             // 風を受けたフラグをtrueに
             m_bTakeWind = true;
@@ -690,6 +696,28 @@ bool CCharacter::PullToCenter(D3DXVECTOR3 centerPos)
     // 引き寄せられたかどうか
     bool bHit = !m_bIsInvincible;
     return bHit;
+}
+
+//=============================================================================
+// 回復処理
+// Author : 後藤慎之助
+//=============================================================================
+void CCharacter::Healing(float fHealValue)
+{
+    // 表示されていないなら、関数を抜ける
+    if (!m_bDisp)
+    {
+        return;
+    }
+
+    // 最大値より超えないように回復
+    m_fLife += fHealValue;
+    if (m_fLife > m_fMaxLife)
+    {
+        m_fLife = m_fMaxLife;
+    }
+
+    // 自身の位置から回復エフェクトを発生
 }
 
 //=============================================================================

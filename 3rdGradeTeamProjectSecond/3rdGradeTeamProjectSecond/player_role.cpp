@@ -170,14 +170,27 @@ typedef enum
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
 #define HEALER_GROUND_WHOLE_FRAME 60
 #define HEALER_GROUND_FIRE_FRAME (HEALER_GROUND_WHOLE_FRAME - 30)
+// その他
 #define HEALER_GROUND_BASE_DAMAGE 40.0f
+#define HEALER_GROUND_ADD_DAMAGE_RATE 1.0f
+#define HEALER_GROUND_BASE_HEALING 20.0f
+#define HEALER_GROUND_ADD_HEALING_RATE 0.5f
 
 //==========================
 // ヒーラー空中
 //==========================
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
 #define HEALER_SKY_WHOLE_FRAME 90
-#define HEALER_SKY_FIRE_FRAME (HEALER_SKY_WHOLE_FRAME - 45)
+#define HEALER_SKY_START_FRAME (HEALER_SKY_WHOLE_FRAME - 40)
+#define HEALER_SKY_END_FRAME (HEALER_SKY_WHOLE_FRAME - 70)
+// 当たり判定周り
+#define HEALER_SKY_EMIT_DISTANCE 1000.0f
+#define HEALER_SKY_MOVE_LIMIT 0.25f
+// その他
+#define HEALER_SKY_BASE_DAMAGE 30.0f
+#define HEALER_SKY_ADD_DAMAGE_RATE 0.75f
+#define HEALER_SKY_BASE_HEALING 15.0f
+#define HEALER_SKY_ADD_HEALING_RATE 0.375f
 
 //=============================================================================
 // 攻撃更新処理
@@ -1049,7 +1062,7 @@ void CPlayer::AtkTankGround2(D3DXVECTOR3& playerPos)
 // タンクがガード中にダメージを受ける処理
 // Author : 後藤慎之助
 //=============================================================================
-bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, int effectType)
+bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseKnockBack, int effectType)
 {
     // 位置からダメージへの向きを取得
     D3DXVECTOR3 myPos = GetPos();
@@ -1085,7 +1098,7 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
     }
 
     // ダメージを受ける
-    return TakeDamage(fDamage, damagePos, damageOldPos, OBJTYPE_ENEMY, effectType);
+    return TakeDamage(fDamage, damagePos, damageOldPos, OBJTYPE_ENEMY, bUseKnockBack, effectType);
 }
 
 //=============================================================================
@@ -1147,7 +1160,11 @@ void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
         CBullet *pBullet = CBullet::Create(CBullet::TYPE_HEALER_GROUND, firePos, moveAngle, OBJTYPE_PLAYER);
         if (pBullet)
         {
-            pBullet->SetDamage(HEALER_GROUND_BASE_DAMAGE);
+            // 現在のエナジー量に応じて、ダメージを設定する
+            float fDamage = HEALER_GROUND_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_GROUND_ADD_DAMAGE_RATE);
+            pBullet->SetDamage(fDamage);
+            float fHealing = HEALER_GROUND_BASE_HEALING + (m_fCurrentEnergy * HEALER_GROUND_ADD_HEALING_RATE);
+            pBullet->SetHealValue(fHealing);
         }
     }
     else if (m_nCntAttackTime > HEALER_GROUND_FIRE_FRAME)
@@ -1163,39 +1180,49 @@ void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
 //=============================================================================
 void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // 攻撃発生フレーム
-    if (m_nCntAttackTime == HUNTER_SKY_FIRE_FRAME)
+    // 攻撃発生フレームと終了フレームを考慮
+    if (m_nCntAttackTime <= HEALER_SKY_START_FRAME &&
+        m_nCntAttackTime >= HEALER_SKY_END_FRAME)
     {
-        // 一度に複数の矢を、均等に放つ
-        for (int nCnt = 0; nCnt < HUNTER_SKY_ONCE_SHOT; nCnt++)
+        // 移動できない
+        move = DEFAULT_VECTOR;
+
+        // 回復魔方陣をアクティブ化
+        if (m_nCntAttackTime == HEALER_SKY_START_FRAME)
         {
-            float fDigitAngle = (float)(nCnt + 1) * (D3DXToRadian(180.0f) / (float)(HUNTER_SKY_ONCE_SHOT + 1));
-            float fAngleXZ = GetRot().y + fDigitAngle - D3DXToRadian(90.0f);
-            D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngleXZ), HUNTER_SKY_ANGLE_Y, -cosf(fAngleXZ));
-            CBullet*pBullet = CBullet::Create(CBullet::TYPE_HUNTER_SKY, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
-            D3DXVECTOR3 targetPos = D3DXVECTOR3(m_afParam[PARAM_HUNTER_TARGET_POS_X], m_afParam[PARAM_HUNTER_TARGET_POS_Y], m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
-            pBullet->SetParam(0, m_afParam[PARAM_HUNTER_TARGET_POS_X]);
-            pBullet->SetParam(1, m_afParam[PARAM_HUNTER_TARGET_POS_Y]);
-            pBullet->SetParam(2, m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
+            // 変数宣言
+            D3DXVECTOR3 playerRot = CCharacter::GetRot();                 // プレイヤーの向いている向き
+            D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                        // ずらす位置
+            D3DXVECTOR3 bulletPos = DEFAULT_VECTOR;                       // 攻撃発生位置
+            const float ATTACK_EMIT_DISTANCE = HEALER_SKY_EMIT_DISTANCE;  // 攻撃発生距離
+
+            // 攻撃発生位置をずらす
+            slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
+            slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
+
+            // 攻撃発生位置を決める
+            bulletPos = D3DXVECTOR3(playerPos.x, 0.0f, playerPos.z) + slidePos;
+
+            // 現在のエナジー量に応じて、ダメージを設定する
+            float fDamage = HEALER_SKY_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_SKY_ADD_DAMAGE_RATE);
+            float fHealing = HEALER_SKY_BASE_HEALING + (m_fCurrentEnergy * HEALER_SKY_ADD_HEALING_RATE);
+
+            // 値を反映
+            if (m_pHealingCircle)
+            {
+                m_pHealingCircle->SetPos(bulletPos);
+                m_pHealingCircle->SetDamage(fDamage);
+                m_pHealingCircle->SetHealValue(fHealing);
+                m_pHealingCircle->SetCntTime(0);        // カウンタをリセット
+                m_pHealingCircle->SetUseUpdate(true);   // 更新フラグをリセット
+            }
         }
     }
-    else if (m_nCntAttackTime > HUNTER_SKY_FIRE_FRAME)
+    else if (m_nCntAttackTime > HEALER_SKY_START_FRAME)
     {
         // 移動制限
-        move.x *= HUNTER_SKY_MOVE_LIMIT;
-        move.z *= HUNTER_SKY_MOVE_LIMIT;
+        move.x *= HEALER_SKY_MOVE_LIMIT;
+        move.z *= HEALER_SKY_MOVE_LIMIT;
         move.y = 0.0f;
-
-        // ターゲットの位置を決めるフレーム
-        if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
-        {
-            // 位置を保存
-            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
-            m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
-            m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
-            m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
-            // キャラの向きをターゲットの方へ
-            SetRotDestY(GetAngleToTargetXZ(targetPos, playerPos));
-        }
     }
 }

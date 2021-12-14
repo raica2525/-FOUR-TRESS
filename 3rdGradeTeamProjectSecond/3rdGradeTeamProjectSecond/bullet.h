@@ -57,6 +57,7 @@ public:
         TYPE_TANK_GROUND_LV3,   // タンクの地上攻撃_LV3
         TYPE_TANK_GROUND_EX,    // タンクの地上攻撃の爆発
         TYPE_HEALER_GROUND,     // ヒーラーの地上攻撃
+        TYPE_HEALER_SKY,        // ヒーラーの空中攻撃
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -68,6 +69,8 @@ public:
         COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,      // ブロックに当たらない
         COLLISION_FLAG_REFLECT_BLOCK = 0x001 << 3,  // ブロックで跳ね返る
         COLLISION_FLAG_PULL_ENEMY = 0x001 << 4,     // 敵を引き寄せる
+        COLLISION_FLAG_HEAL_PLAYER = 0x001 << 5,    // プレイヤーを回復する
+        COLLISION_FLAG_HEAL_ENEMY = 0x001 << 6 ,    // 敵を回復する
     }COLLISION_FLAG;
 
     //=============================
@@ -82,6 +85,9 @@ public:
     void SetDamage(float fDamage) { m_fDamage = fDamage; }
     void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
     void SetCollisionSizeAndShadow(D3DXVECTOR2 size) { m_collisionSize = size; if (m_pEffect3d_Shadow)m_pEffect3d_Shadow->CEffect3D::SetSize(D3DXVECTOR3(size.x, size.x, 0.0f)); }
+    void SetHealValue(float fHealValue) { m_fHealValue = fHealValue; }
+    void SetUseUpdate(bool bUseUpdate) { m_bUseUpdate = bUseUpdate; }
+    void SetCntTime(int nCntTime) { m_nCntTime = nCntTime; }
 
 private:
     int m_type;                     // 種類
@@ -105,6 +111,14 @@ private:
 
     float m_afParam[PARAM_DATA_MAX];// 汎用データ
     OBJTYPE m_whoShot;              // 誰が撃ったか
+    float m_fHealValue;             // 回復量
+    bool m_bUseUpdate;              // 更新処理を使うかどうか
+    bool m_bUseUninit;              // 終了処理を使うかどうか
+    bool m_bUseKnockBack;           // ノックバックを使うかどうか
+
+    int m_trailEffectType;          // 軌跡エフェクトの種類
+    int m_nCntTrailInterval;        // 軌跡の発生間隔
+    int m_nCntTrailEffect;          // 軌跡のカウンタ
 
     //=============================
     // 種類ごとの処理
@@ -112,6 +126,7 @@ private:
     void SetupInfoByType(float fStrength, const D3DXVECTOR3 pos);
     void CommanderAttackMove(D3DXVECTOR3 &myPos);
     void HunterSkyMove(D3DXVECTOR3 &myPos);
+    bool HealerSkyUseCollision(void);
 
     //=============================
     // このクラス内でのみ使う処理

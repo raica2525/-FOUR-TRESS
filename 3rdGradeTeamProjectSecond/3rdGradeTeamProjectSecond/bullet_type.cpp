@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// ’e‚Ìí—Ş”h¶ˆ— (bullet_type.cpp)
-// Author : Œã“¡T”V•
+// å¼¾ã®ç¨®é¡æ´¾ç”Ÿå‡¦ç† (bullet_type.cpp)
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //
 //======================================================================================
 
 //========================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //========================
 #include "bullet.h"
 #include "manager.h"
@@ -20,20 +20,20 @@
 #include "modelEffect.h"
 
 //========================================
-// ƒ}ƒNƒ’è‹`i“Á’¥“I‚Èˆ—‚ğ‚·‚é‚à‚Ì‚Ì‚İj
+// ãƒã‚¯ãƒ­å®šç¾©ï¼ˆç‰¹å¾´çš„ãªå‡¦ç†ã‚’ã™ã‚‹ã‚‚ã®ã®ã¿ï¼‰
 //========================================
 //===========================
-// ƒRƒ}ƒ“ƒ_[‚Ì’e
+// ã‚³ãƒãƒ³ãƒ€ãƒ¼ã®å¼¾
 //===========================
 #define COMMANDER_ATTACK_GRAVITY_VALUE -0.1f
 #define COMMANDER_ATTACK_GRAVITY_LIMIT -10.0f
 
 //===========================
-// ƒnƒ“ƒ^[‚Ì‹ó’†UŒ‚
+// ãƒãƒ³ã‚¿ãƒ¼ã®ç©ºä¸­æ”»æ’ƒ
 //===========================
 #define HUNTER_SKY_HOMING_START_FRAME 30
 #define HUNTER_SKY_HOMING_SPEED 60.0f
-// ”Ä—pƒpƒ‰ƒ[ƒ^‚Ì“à–ó
+// æ±ç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å†…è¨³
 typedef enum
 {
     PARAM_HUNTER_SKY_TARGET_POS_X = 0,
@@ -41,56 +41,65 @@ typedef enum
     PARAM_HUNTER_SKY_TARGET_POS_Z,
 }PARAM_HUNTER_SKY;
 
+//===========================
+// ãƒ’ãƒ¼ãƒ©ãƒ¼ã®ç©ºä¸­æ”»æ’ƒ
+//===========================
+#define HEALER_SKY_WHOLE_FRAME 180
+#define HEALER_SKY_INTERVAL 30
+
 //=============================================================================
-// í—Ş‚²‚Æ‚Ì‰Šúİ’è
-// Author : Œã“¡T”V•
+// ç¨®é¡ã”ã¨ã®åˆæœŸè¨­å®š
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
 {
-    // ‰e‚ğ¶¬‚·‚é‚©‚Ç‚¤‚©
+    // å½±ã‚’ç”Ÿæˆã™ã‚‹ã‹ã©ã†ã‹
     bool bUseShadow = true;
 
     switch (m_type)
     {
     case TYPE_ARMY_ATTACK:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
         m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         m_nLife = 120;
         m_fDamage = 50.0f;
-        m_bUseDraw = true;  // ‰¼
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        m_bUseDraw = true;  // ä»®
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
+        // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç•ªå·ã¨ç™ºç”Ÿé–“éš”
+        m_trailEffectType = 0;
+        m_nCntTrailInterval = 5;
         break;
     case TYPE_RAILGUN_LV2:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(500.0f, 500.0f);
         m_fSpeed = 15.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 180;
         m_fDamage = 5000.0f;
-        m_bUseDraw = true;  // ‰¼
-        m_bHitErase = false;// ŠÑ’Ê
-        m_bBreakGoalGate = true;    // ƒS[ƒ‹ƒQ[ƒg‚ğ‰ó‚¹‚é
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        m_bUseDraw = true;  // ä»®
+        m_bHitErase = false;// è²«é€š
+        m_bBreakGoalGate = true;    // ã‚´ãƒ¼ãƒ«ã‚²ãƒ¼ãƒˆã‚’å£Šã›ã‚‹
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_RAILGUN_LV3:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
         m_fSpeed = 15.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
         m_fDamage = 10000.0f;
-        m_bUseDraw = true;  // ‰¼
-        m_bHitErase = false;// ŠÑ’Ê
-        m_bBreakGoalGate = true;    // ƒS[ƒ‹ƒQ[ƒg‚ğ‰ó‚¹‚é
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        m_bUseDraw = true;  // ä»®
+        m_bHitErase = false;// è²«é€š
+        m_bBreakGoalGate = true;    // ã‚´ãƒ¼ãƒ«ã‚²ãƒ¼ãƒˆã‚’å£Šã›ã‚‹
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_KAMIKAZE_EX:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
@@ -99,33 +108,34 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 60;
         m_fDamage = 300.0f;
         m_bUseDraw = false;
-        m_bHitErase = false;// ŠÑ’Ê
-        bUseShadow = false; // ‰e‚ğg—p‚µ‚È‚¢
+        m_bHitErase = false;// è²«é€š
+        bUseShadow = false; // å½±ã‚’ä½¿ç”¨ã—ãªã„
         break;
     case TYPE_CANNON_ATTACK:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
         m_fSpeed = 25.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         m_nLife = 120;
         m_fDamage = 15.0f;
         m_bUseDraw = true;
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        //m_bUseKnockBack = false;// ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã¯åˆ©ç”¨ã—ãªã„
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_COMMANDER_ATTACK:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
         m_fSpeed = 5.0f;
         m_nLife = 999;
         m_bUseDraw = true;
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-        BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ƒuƒƒbƒN‚Å”½Ë‚ÍAƒuƒƒbƒN‚ÅÁ‚¦‚È‚­‚·‚é‚Ì‚Æƒƒ“ƒZƒbƒg
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ãƒ–ãƒ­ãƒƒã‚¯ã§åå°„ã¯ã€ãƒ–ãƒ­ãƒƒã‚¯ã§æ¶ˆãˆãªãã™ã‚‹ã®ã¨ãƒ¯ãƒ³ã‚»ãƒƒãƒˆ
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_HUNTER_GROUND:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
         m_fSpeed = 50.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
@@ -134,24 +144,24 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 45;
         m_fDamage = 70.0f;
         m_bUseDraw = true;
-        m_bHitErase = false;// ŠÑ’Êi—v’²®j
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        m_bHitErase = false;// è²«é€šï¼ˆè¦èª¿æ•´ï¼‰
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_HUNTER_SKY:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
         m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
         m_fDamage = 40.0f;
         m_bUseDraw = true;
-        m_bHitErase = false;// ŠÑ’Ê
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        m_bHitErase = false;// è²«é€š
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_CARRIER_SKY:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(2000.0f, 500.0f);
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
@@ -160,44 +170,44 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 30;
         m_fDamage = 0.0f;
         m_bUseDraw = false;
-        m_bHitErase = false;// ŠÑ’Ê
-        bUseShadow = false; // ‰e‚ğg—p‚µ‚È‚¢
+        m_bHitErase = false;// è²«é€š
+        bUseShadow = false; // å½±ã‚’ä½¿ç”¨ã—ãªã„
         break;
     case TYPE_TANK_GROUND_LV1:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(150.0f, 150.0f);
         m_fSpeed = 40.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 50.0f;
         m_bUseDraw = true;
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_TANK_GROUND_LV2:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(200.0f, 200.0f);
         m_fSpeed = 45.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 150.0f;
         m_bUseDraw = true;
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_TANK_GROUND_LV3:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(250.0f, 250.0f);
         m_fSpeed = 50.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 0.0f;
         m_bUseDraw = true;
-        // ƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒh
-        BindModelData(32);  // ‰¼‚Éƒ{[ƒ‹
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
         break;
     case TYPE_TANK_GROUND_EX:
-        // ŒÅ—L‚Ìî•ñ
+        // å›ºæœ‰ã®æƒ…å ±
         m_collisionSize = D3DXVECTOR2(1250.0f, 1250.0f);
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
@@ -205,34 +215,64 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 60;
         m_fDamage = 450.0f;
         m_bUseDraw = false;
-        m_bHitErase = false;// ŠÑ’Ê
-        bUseShadow = false; // ‰e‚ğg—p‚µ‚È‚¢
+        m_bHitErase = false;// è²«é€š
+        bUseShadow = false; // å½±ã‚’ä½¿ç”¨ã—ãªã„
+        break;
+    case TYPE_HEALER_GROUND:
+        // å›ºæœ‰ã®æƒ…å ±
+        m_collisionSize = D3DXVECTOR2(200.0f, 200.0f);
+        m_fSpeed = 35.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        m_nLife = 65;
+        m_fDamage = 0.0f;   // ç”Ÿæˆæ™‚ã«ã€ç¾åœ¨ã®ãƒãƒ£ãƒ¼ã‚¸é‡ã«å¿œã˜ãŸã‚‚ã®ã«å¤‰ãˆã‚‹
+        m_bUseDraw = true;
+        m_bHitErase = false;// è²«é€šï¼ˆè¦èª¿æ•´ï¼‰
+        // ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰
+        BindModelData(32);  // ä»®ã«ãƒœãƒ¼ãƒ«
+        break;
+    case TYPE_HEALER_SKY:
+        // å›ºæœ‰ã®æƒ…å ±
+        m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_bUseUninit = false;   // æ¶ˆãˆãªã„
+        m_bUseUpdate = false;   // æ›´æ–°å‡¦ç†ã¯ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ±ºã‚ã‚‹
+        m_fDamage = 0.0f;       // ç”Ÿæˆæ™‚ã«ã€ç¾åœ¨ã®ãƒãƒ£ãƒ¼ã‚¸é‡ã«å¿œã˜ãŸã‚‚ã®ã«å¤‰ãˆã‚‹
+        m_bUseDraw = false;
+        m_bHitErase = false;    // è²«é€š
+        m_bUseKnockBack = false;// ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã¯åˆ©ç”¨ã—ãªã„
+        bUseShadow = false;     // å½±ã‚’ä½¿ç”¨ã—ãªã„
         break;
     }
 
-    // ‹­‚³‚ğ”½‰f
-    //m_fSpeed *= fStrength;    // ˆÚ“®‘¬“x‚à‘¬‚­‚È‚é‚Ì‚Íˆá˜aŠ´H
+    // å¼·ã•ã‚’åæ˜ 
+    //m_fSpeed *= fStrength;    // ç§»å‹•é€Ÿåº¦ã‚‚é€Ÿããªã‚‹ã®ã¯é•å’Œæ„Ÿï¼Ÿ
     m_fDamage *= fStrength;
 
-    // ‰e¶¬
+    // å½±ç”Ÿæˆ
     if (bUseShadow)
     {
         m_pEffect3d_Shadow = CEffect3D::Create(CEffectData::TYPE_SHADOW, D3DXVECTOR3(pos.x, SHADOW_POS_Y, pos.z));
         m_pEffect3d_Shadow->SetSize(D3DXVECTOR3(m_collisionSize.x, m_collisionSize.x, 0.0f));
-        m_pEffect3d_Shadow->SetDisp(false); // ƒoƒŒƒbƒg‘¤‚Å•`‰æ‚ğŠÇ—‚·‚é‚½‚ß
+        m_pEffect3d_Shadow->SetDisp(false); // ãƒãƒ¬ãƒƒãƒˆå´ã§æç”»ã‚’ç®¡ç†ã™ã‚‹ãŸã‚
     }
 }
 
 //=============================================================================
-// ƒRƒ}ƒ“ƒ_[‚Ì’e‚ÌˆÚ“®ˆ—
-// Author : Œã“¡T”V•
+// ã‚³ãƒãƒ³ãƒ€ãƒ¼ã®å¼¾ã®ç§»å‹•å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CBullet::CommanderAttackMove(D3DXVECTOR3 &myPos)
 {
-    // ƒJƒEƒ“ƒ^‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿åŠ ç®—
     m_nCntTime++;
 
-    // d—Í‚ğg‚¤‚È‚ç
+    // é‡åŠ›ã‚’ä½¿ã†ãªã‚‰
     float fGravity = COMMANDER_ATTACK_GRAVITY_VALUE * m_nCntTime;
     if (fGravity < COMMANDER_ATTACK_GRAVITY_LIMIT)
     {
@@ -242,37 +282,62 @@ void CBullet::CommanderAttackMove(D3DXVECTOR3 &myPos)
 }
 
 //=============================================================================
-// ƒnƒ“ƒ^[‚Ì‹ó’†UŒ‚’e‚ÌˆÚ“®ˆ—
-// Author : Œã“¡T”V•
+// ãƒãƒ³ã‚¿ãƒ¼ã®ç©ºä¸­æ”»æ’ƒå¼¾ã®ç§»å‹•å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
 {
-    // ƒJƒEƒ“ƒ^‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿åŠ ç®—
     m_nCntTime++;
 
-    // ƒz[ƒ~ƒ“ƒOˆ—
+    // ãƒ›ãƒ¼ãƒŸãƒ³ã‚°å‡¦ç†
     if (m_nCntTime == HUNTER_SKY_HOMING_START_FRAME)
     {
-        // ‘¬“x‚ğ‰Á‘¬
+        // é€Ÿåº¦ã‚’åŠ é€Ÿ
         m_fSpeed = HUNTER_SKY_HOMING_SPEED;
 
-        // ‰¡‚ÌŠp“x‚ğŒˆ‚ß‚é
+        // æ¨ªã®è§’åº¦ã‚’æ±ºã‚ã‚‹
         float fAngleXZ = atan2f((myPos.x - m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X]), (myPos.z - m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z]));
 
-        // c‚ÌŠp“x‚ğŒˆ‚ß‚é
+        // ç¸¦ã®è§’åº¦ã‚’æ±ºã‚ã‚‹
         float fDistance = sqrtf(
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X] - myPos.x), 2.0f) +
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z] - myPos.z), 2.0f));
         float fHeight = fabsf(m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Y] - myPos.y);
         float fAngleY = atan2(fDistance, fHeight);
 
-        // ˆÚ“®‚ÌŠp“x‚É”½‰f
+        // ç§»å‹•ã®è§’åº¦ã«åæ˜ 
         m_moveAngle.x = -sinf(fAngleXZ);
         m_moveAngle.y = -cosf(fAngleY);
         m_moveAngle.z = -cosf(fAngleXZ);
     }
 
-    // ˆÚ“®
+    // ç§»å‹•
     myPos += m_moveAngle * m_fSpeed;
+}
 
+//=============================================================================
+// ãƒ’ãƒ¼ãƒ©ãƒ¼ã®ç©ºä¸­æ”»æ’ƒå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
+//=============================================================================
+bool CBullet::HealerSkyUseCollision(void)
+{
+    // ã‚«ã‚¦ãƒ³ã‚¿åŠ ç®—
+    m_nCntTime++;
+
+    // å½“ãŸã‚Šåˆ¤å®šã‚’ä½¿ã†ã‹ã©ã†ã‹ã®ç™ºç”Ÿé–“éš”
+    bool bUseCollision = false;
+    if (m_nCntTime % HEALER_SKY_INTERVAL == 0)
+    {
+        bUseCollision = true;
+        memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
+    }
+
+    // ã‚«ã‚¦ãƒ³ã‚¿ãŒç™ºç”Ÿæ™‚é–“ã®æœ€å¤§ã‚’è¶…ãˆãŸã‚‰ã€æ›´æ–°å‡¦ç†ã‚’æ­¢ã‚ã‚‹
+    if (m_nCntTime > HEALER_SKY_WHOLE_FRAME)
+    {
+        m_bUseUpdate = false;
+    }
+
+    return bUseCollision;
 }

@@ -65,7 +65,6 @@ int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
 int CGame::m_anMemoryRole[] = {};
 CGame::STATE CGame::m_state = STATE_ROUND_START;
-CGame::MAP_LIMIT CGame::m_mapLimit = {};
 
 CPlayer *CGame::m_pSpPlayer = NULL;
 bool CGame::m_bCurrentSpShot = false;
@@ -98,10 +97,6 @@ CGame::CGame()
     //memset(m_anMemoryIdxPlayer, 0, sizeof(m_anMemoryIdxPlayer));
     //memset(m_aMemoryAILevel, 0, sizeof(m_aMemoryAILevel));
     m_state = STATE_ROUND_START;
-
-    // 仮でマップ制限をつけている
-    m_mapLimit.fHeight = GAME_LIMIT_HEIGHT;
-    m_mapLimit.fWidth = GAME_LIMIT_WIDTH;
 
     m_nCntGameTime = 0;
     m_bFirestRound = true;
@@ -164,10 +159,10 @@ HRESULT CGame::Init(void)
     m_pPause = CPause::Create();
 
     // プレイヤーの生成
-    D3DXVECTOR3 player1Pos = D3DXVECTOR3(m_mapLimit.fWidth, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player2Pos = D3DXVECTOR3(m_mapLimit.fWidth, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player3Pos = D3DXVECTOR3(m_mapLimit.fWidth, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player4Pos = D3DXVECTOR3(m_mapLimit.fWidth, m_mapLimit.fHeight * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player4Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
     float fSplitXRate = 0.0f;
     switch (m_nNumAllPlayer)
     {
