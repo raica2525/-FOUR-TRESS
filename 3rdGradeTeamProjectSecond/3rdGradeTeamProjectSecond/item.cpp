@@ -381,6 +381,11 @@ void CItem::Collision(D3DXVECTOR3 myPos)
 
                 // 1人しか衝突しないため、関数を抜ける
                 m_nLife = NOT_EXIST;
+
+                // エフェクト発生
+                CEffect3D::Emit(CEffectData::TYPE_GET, pPlayer->GetPos(), pPlayer->GetPos());
+                CEffect3D::Emit(CEffectData::TYPE_GET, pPlayer->GetPos(), pPlayer->GetPos());
+
                 return;
             }
 

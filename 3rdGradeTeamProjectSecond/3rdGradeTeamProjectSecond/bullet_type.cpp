@@ -274,4 +274,5 @@ void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
 
     // ˆÚ“®
     myPos += m_moveAngle * m_fSpeed;
+
 }

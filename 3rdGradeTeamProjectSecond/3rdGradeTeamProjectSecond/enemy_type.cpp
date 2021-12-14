@@ -236,6 +236,7 @@ void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
     {
         // ‘Ò‹@AI‚É
         SetBaseState(BASE_STATE_WAIT, DEFAULT_FOLLOW_WAIT_FRAME);
+
     }
     else if (m_nCntTime == KAMIKAZE_TARGET_FRAME)
     {
@@ -246,6 +247,7 @@ void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
             float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
             m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
             SetRotDestY(fDestAngle);
+
         }
     }
 }
