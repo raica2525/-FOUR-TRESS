@@ -1689,7 +1689,7 @@ void CPlayer::MoveMotion(void)
     {
         // 着地の砂煙（当たり判定の分、砂煙が広がる）
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-        //CEffect3D::Emit(CEffectData::TYPE_GROUND_SMOKE, GetPos(), GetPos(), collisionSizeDefence.x);
+        CEffect3D::Emit(CEffectData::TYPE_LANDING_FUGITIVE_DUST, GetPos(), GetPos());
 
         // 着地時間を設定
         m_nCntLandingTime = PLAYER_LANDING_TIME;
@@ -1861,12 +1861,14 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                 if (GetRot().y == PLAYER_ROT_LEFT)
                 {
                     // ジャンプの砂煙
-                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_RIGHT, GetPos(), GetPos());
+                    CEffect3D::Emit(CEffectData::TYPE_JUMP_FUGITIVE_DUST, GetPos(), GetPos());
+
                 }
                 else
                 {
                     // ジャンプの砂煙
-                    //CEffect3D::Emit(CEffectData::TYPE_JUMP_SMOKE_LEFT, GetPos(), GetPos());
+                    CEffect3D::Emit(CEffectData::TYPE_JUMP_FUGITIVE_DUST, GetPos(), GetPos());
+
                 }
 
                 // ジャンプ音

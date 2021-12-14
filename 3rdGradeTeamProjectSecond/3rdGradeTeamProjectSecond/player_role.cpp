@@ -595,6 +595,7 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
+
         }
 
 #ifdef COLLISION_TEST
@@ -693,6 +694,13 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_bGround)
         {
             m_nCntAttackTime = WARRIOR_SKY_CHANCE_FRAME;
+
+            // 空中攻撃のエフェクト
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
+
         }
         // 防御当たり判定の大きさを取得
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
@@ -920,6 +928,12 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_bGround)
         {
             m_nCntAttackTime = CARRIER_SKY_CHANCE_FRAME;
+
+            // 空中攻撃のエフェクト
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
         }
         // 防御当たり判定の大きさを取得
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
