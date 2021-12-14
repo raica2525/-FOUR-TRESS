@@ -68,6 +68,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = true;  // 仮
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        // エフェクト番号と発生間隔
+        m_trailEffectType = 0;
+        m_nCntTrailInterval = 5;
         break;
     case TYPE_RAILGUN_LV2:
         // 固有の情報

@@ -103,7 +103,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_ARMY:
         // å≈óLÇÃèÓïÒ
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 300.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
         m_fSpeed = 5.0f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
@@ -119,7 +119,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_KAMIKAZE:
         // å≈óLÇÃèÓïÒ
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 325.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
         m_fSpeed = 5.0f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;

@@ -59,6 +59,10 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_bUseUpdate = true;
     m_bUseUninit = true;
     m_bUseKnockBack = true;
+
+    m_trailEffectType = NOT_EXIST;
+    m_nCntTrailInterval = 1;
+    m_nCntTrailEffect = 0;
 }
 
 //=============================================================================
@@ -156,6 +160,17 @@ void CBullet::Update(void)
         m_pEffect3d_Shadow->SetPos(D3DXVECTOR3(myPos.x, SHADOW_POS_Y, myPos.z));
     }
 
+    // 軌跡エフェクト発生
+    if (m_trailEffectType != NOT_EXIST)
+    {
+        m_nCntTrailEffect++;
+        if (m_nCntTrailEffect >= m_nCntTrailInterval)
+        {
+            m_nCntTrailEffect = 0;
+            CEffect3D::Create(m_trailEffectType, myPos);
+        }
+    }
+
     // ライフがなくなった、または使用フラグがなくなったら、消滅
     if (m_bUseUninit)
     {
@@ -201,6 +216,7 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJT
     pBullet->SetRot(rot);
     pBullet->m_fStrength = fStrength;
     pBullet->m_whoShot = whoShot;
+    pBullet->m_posOld = pos;
 
     // 初期化
     pBullet->SetupInfoByType(fStrength, pos);

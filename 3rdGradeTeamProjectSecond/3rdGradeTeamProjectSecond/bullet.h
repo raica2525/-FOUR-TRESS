@@ -116,6 +116,10 @@ private:
     bool m_bUseUninit;              // 終了処理を使うかどうか
     bool m_bUseKnockBack;           // ノックバックを使うかどうか
 
+    int m_trailEffectType;          // 軌跡エフェクトの種類
+    int m_nCntTrailInterval;        // 軌跡の発生間隔
+    int m_nCntTrailEffect;          // 軌跡のカウンタ
+
     //=============================
     // 種類ごとの処理
     //=============================

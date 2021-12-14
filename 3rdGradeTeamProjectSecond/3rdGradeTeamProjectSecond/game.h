@@ -119,7 +119,7 @@ public:
         m_nCharacterIdx++;
         if (m_nCharacterIdx >= CHARACTER_IDX_MAX)
         {
-            m_nCharacterIdx = 0;
+            m_nCharacterIdx = CHARACTER_IDX_MIN_IN_RESET;
         }
         return m_nCharacterIdx;
     }
