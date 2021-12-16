@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\Sys_h">
       <UniqueIdentifier>{7885ff65-1459-48de-bed9-6a7dd02cb491}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Useful_h\FileManage_h">
+      <UniqueIdentifier>{79cb20ba-f2e9-47cd-abff-71e5f95afb6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Useful\FileManage">
+      <UniqueIdentifier>{e2cf9116-ef0e-4ff2-a94d-a4890ba1742d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="effectData.cpp">
@@ -207,6 +213,12 @@
     <ClCompile Include="player_role.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="json.cpp">
+      <Filter>ソース ファイル\Useful\FileManage</Filter>
+    </ClCompile>
+    <ClCompile Include="mapmanager.cpp">
+      <Filter>ソース ファイル\Sys</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="effectData.h">
@@ -352,6 +364,15 @@
     </ClInclude>
     <ClInclude Include="item.h">
       <Filter>ヘッダー ファイル\Obj_h</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>ヘッダー ファイル\Useful_h\FileManage_h</Filter>
+    </ClInclude>
+    <ClInclude Include="picojson.h">
+      <Filter>ヘッダー ファイル\Useful_h\FileManage_h</Filter>
+    </ClInclude>
+    <ClInclude Include="mapmanager.h">
+      <Filter>ヘッダー ファイル\Sys_h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
