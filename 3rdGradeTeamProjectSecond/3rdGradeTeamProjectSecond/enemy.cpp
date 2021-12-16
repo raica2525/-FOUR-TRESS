@@ -85,6 +85,7 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
+    m_nAddScore = 1;
 }
 
 //=============================================================================
@@ -246,10 +247,11 @@ void CEnemy::Update(void)
 //=============================================================================
 void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
 {
-    // ラストヒットがプレイヤーなら、アイテムを出す
+    // ラストヒットがプレイヤーなら、アイテムを出しスコアも加算
     OBJTYPE lastHit = GetLastHit();
     if (lastHit == OBJTYPE_PLAYER)
     {
+        // アイテム
         CItem::TYPE dentiType = CItem::TYPE_DENTI_5;
         if (m_fChargeValue >= CHARGE_VALUE_DENTI_3 && m_fChargeValue < CHARGE_VALUE_DENTI_1)
         {
@@ -266,6 +268,9 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         }
         CItem::Create(dentiType, myPos, m_fChargeValue);
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
+
+        // スコア加算
+        CGame::AddScore(m_nAddScore);
     }
     else
     {

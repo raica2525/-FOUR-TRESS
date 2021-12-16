@@ -51,8 +51,6 @@ CTexture *CManager::m_pTexture = NULL;
 CModelData *CManager::m_pModelData = NULL;
 CEffectData *CManager::m_pEffectData = NULL;
 
-int CManager::m_nScore = 0;
-
 //========================================
 // 生成の管理のデフォルトコンストラクタ
 // Author : 後藤慎之助

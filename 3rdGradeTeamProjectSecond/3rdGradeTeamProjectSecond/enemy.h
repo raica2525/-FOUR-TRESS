@@ -223,6 +223,7 @@ private:
 
     bool m_bUseCommonAtkFollow;              // 追従攻撃を使用するかどうか
     TARGET_TREND m_targetTrend;              // ターゲット傾向
+    int m_nAddScore;                         // 加算スコア
 
     //=============================
     // 種類ごとの処理

@@ -40,7 +40,14 @@ public:
 
     Info* GetInfo(const int nNum);	// テクスチャ情報
 
+    int GetCntLoadTextureByTxt(void) { return m_nCntLoadTextureByTxt; }
+
 private:
     Info m_aInfo[MAX_TEXTURE];	// テクスチャ情報
+
+    //=====================================
+    // Second以降で追加したもの
+    //=====================================
+    int m_nCntLoadTextureByTxt; // テキストファイルから読み込んだテクスチャの数
 };
 #endif

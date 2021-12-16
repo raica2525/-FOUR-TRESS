@@ -84,6 +84,7 @@ void CEnemy::SetupInfoByType(void)
         m_fChargeValue = 3.0f;
         m_walkMotion = SPIDER_ANIM_WALK;
         m_attackMotion = SPIDER_ANIM_ATTACK;
+        m_nAddScore = 9999;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(SPIDER_PARTS_MAX);
         CCharacter::BindParts(SPIDER_PARTS_BODY, 18);
@@ -103,13 +104,14 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_ARMY:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
         m_fSpeed = 5.0f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = ARMY_ANIM_WALK;
         m_attackMotion = ARMY_ANIM_ATTACK;
         m_deathMotion = ARMY_ANIM_DEATH;
+        m_nAddScore = 50;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(ARMY_PARTS_MAX);
         CCharacter::BindParts(ARMY_PARTS_BODY, 43);
@@ -119,7 +121,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_KAMIKAZE:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
         m_fSpeed = 5.0f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;
@@ -127,6 +129,7 @@ void CEnemy::SetupInfoByType(void)
         m_attackMotion = KAMIKAZE_ANIM_ATTACK;
         m_deathMotion = KAMIKAZE_ANIM_DEATH;
         m_targetTrend = TARGET_TREND_FORTRESS;
+        m_nAddScore = 100;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(KAMIKAZE_PARTS_MAX);
         CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
@@ -145,6 +148,7 @@ void CEnemy::SetupInfoByType(void)
         SetTakeKnockBack(false);
         SetTurnSpeed(1.2f);
         m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
+        m_nAddScore = 300;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(CANNON_PARTS_MAX);
         CCharacter::BindParts(CANNON_PARTS_BODY, 51);
@@ -159,6 +163,7 @@ void CEnemy::SetupInfoByType(void)
         fHP = 850.0f;
         m_fChargeValue = 20.0f;
         m_attackMotion = COMMANDER_ANIM_SPAWN_ENEMY;
+        m_nAddScore = 400;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
         CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);

@@ -16,6 +16,7 @@
 #include "character.h"
 #include "player.h"
 #include "text.h"
+#include "fortress.h"
 
 //========================
 // 静的メンバ変数宣言
@@ -286,14 +287,63 @@ void CCamera::Update(void)
         // カメラと自身の距離
         m_fDistance = CAMERA_LOCK_ON_OFFSET;
 
-        // 仮に1Pにロックオン
-        CPlayer *pPlayer = CGame::GetPlayer(0);
-        if (pPlayer)
+        //// 仮に1Pにロックオン
+        //CPlayer *pPlayer = CGame::GetPlayer(0);
+        //if (pPlayer)
+        //{
+        //    m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDefence().y / 2.0f, 0.0f);
+        //    m_posRDest = m_pos;
+        //}
+        // 各プレイヤーの平均位置にロックオンする
+        D3DXVECTOR3 lockOnPos = DEFAULT_VECTOR;
+        int nCntDispPlayer = 0;
+        CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
+        for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
         {
-            m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDefence().y / 2.0f, 0.0f);
+            // 中身があるなら
+            if (pScene)
+            {
+                // 次のシーンを記憶
+                CScene*pNextScene = pScene->GetNextScene();
+                // プレイヤーにキャスト
+                CPlayer *pPlayer = (CPlayer*)pScene;
+
+                // 表示しているかどうか
+                if (!pPlayer->GetDisp())
+                {
+                    continue;
+                }
+
+                // 人数を加算
+                nCntDispPlayer++;
+
+                // プレイヤーの位置を取得し、加算
+                D3DXVECTOR3 playerPos = pPlayer->GetPos();
+                lockOnPos += playerPos;
+
+                // 次のシーンにする
+                pScene = pNextScene;
+            }
+        }
+
+        // もし、プレイヤーが一体も表示されていないなら、移動要塞の位置を追従
+        if (nCntDispPlayer <= 0)
+        {
+            CFortress*pFortress = NULL;
+            pFortress = CGame::GetFortress();
+            if (pFortress)
+            {
+                m_pos = pFortress->GetPos() + D3DXVECTOR3(0.0f, 225.0f, 0.0f);
+                m_posRDest = m_pos;
+            }
+        }
+        else
+        {
+            m_pos = lockOnPos / (float)nCntDispPlayer + D3DXVECTOR3(0.0f, 225.0f, 0.0f);
             m_posRDest = m_pos;
         }
 
+        // 画面の揺れ
         if (m_shakePhase == SHAKE_PHASE_NONE)
         {
             // 位置の目的地を更新(球面座標の公式)
