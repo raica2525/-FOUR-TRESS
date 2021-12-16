@@ -46,6 +46,7 @@ CModelData::CModelData()
     }
 
     memset(m_aPartsRate, 0, sizeof(m_aPartsRate));
+    m_nCntLoadModelByTxt = 0;
 }
 
 //=============================================================================
@@ -113,6 +114,10 @@ HRESULT CModelData::Init(void)
                         if (strcmp(cHeadText, "TYPE") == 0)
                         {
                             sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nNumType);
+                            if (nNumType > m_nCntLoadModelByTxt)
+                            {
+                                m_nCntLoadModelByTxt = nNumType;    // “Ç‚İ‚ñ‚¾’†‚Åˆê”Ô‘å‚«‚¢Type‚ğæ“¾‚·‚é
+                            }
                         }
                         else if (strcmp(cHeadText, "NAME") == 0)
                         {

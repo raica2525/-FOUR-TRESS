@@ -83,10 +83,17 @@ public:
     PartsParam* GetPartsList(const int nNum);   // パーツリスト情報
     PartsRate* GetPartsRate(const int nNum);    // パーツレート情報
 
+    int GetCntLoadModelByTxt(void) { return m_nCntLoadModelByTxt; }
+
 private:
     ModelData m_aModelData[MAX_MODEL_DATA];         // モデルデータ
     ModelPosDef m_aModelPosDef[MAX_MODEL_POS_DEF];  // モデルの初期位置データ
     PartsParam m_aPartsList[MAX_PARTS_LIST];        // パーツリスト
     PartsRate m_aPartsRate[MAX_PARTS];              // パーツレート
+
+    //=====================================
+    // Second以降で追加したもの
+    //=====================================
+    int m_nCntLoadModelByTxt;                   // テキストファイルから読み込んだモデルの数
 };
 #endif
