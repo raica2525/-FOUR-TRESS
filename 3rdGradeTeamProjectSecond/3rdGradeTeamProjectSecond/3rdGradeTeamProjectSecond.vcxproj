@@ -164,8 +164,10 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_type.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fileio.cpp" />
     <ClCompile Include="fortress.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="ground.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="json.cpp" />
@@ -188,6 +190,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_custom.cpp" />
     <ClCompile Include="player_role.cpp" />
+    <ClCompile Include="polygon3d.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="road.cpp" />
@@ -218,8 +221,10 @@
     <ClInclude Include="effectData.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="fileio.h" />
     <ClInclude Include="fortress.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="ground.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="json.h" />
@@ -241,6 +246,7 @@
     <ClInclude Include="pause.h" />
     <ClInclude Include="picojson.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="polygon3d.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="road.h" />

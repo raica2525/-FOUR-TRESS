@@ -16,7 +16,7 @@ class CPolygon3D : public CScene3D
 public:
 
 	CPolygon3D();		//コンストラクタ
-	~CPolygon3D();		//デストラクタ
+	virtual ~CPolygon3D();		//デストラクタ
 
 	HRESULT Init(void);
 	void Uninit(void);

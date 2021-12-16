@@ -219,6 +219,15 @@
     <ClCompile Include="mapmanager.cpp">
       <Filter>ソース ファイル\Sys</Filter>
     </ClCompile>
+    <ClCompile Include="fileio.cpp">
+      <Filter>ソース ファイル\Useful\FileManage</Filter>
+    </ClCompile>
+    <ClCompile Include="polygon3d.cpp">
+      <Filter>ソース ファイル\ObjParent</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="effectData.h">
@@ -373,6 +382,15 @@
     </ClInclude>
     <ClInclude Include="mapmanager.h">
       <Filter>ヘッダー ファイル\Sys_h</Filter>
+    </ClInclude>
+    <ClInclude Include="fileio.h">
+      <Filter>ヘッダー ファイル\Useful_h\FileManage_h</Filter>
+    </ClInclude>
+    <ClInclude Include="polygon3d.h">
+      <Filter>ヘッダー ファイル\ObjParent_h</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
+      <Filter>ヘッダー ファイル\Obj_h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
