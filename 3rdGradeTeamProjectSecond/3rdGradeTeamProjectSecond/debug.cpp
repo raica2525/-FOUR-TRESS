@@ -293,6 +293,8 @@ void CDebugMenu::Update(void)
                 }
                 CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_NONE);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
                 break;
             case SELECT_ARENA_2:
                 CFade::SetFade(CManager::MODE_GAME);
@@ -306,6 +308,8 @@ void CDebugMenu::Update(void)
                 }
                 CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_1);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
                 break;
             case SELECT_ARENA_3:
                 CFade::SetFade(CManager::MODE_GAME);
@@ -319,6 +323,8 @@ void CDebugMenu::Update(void)
                 }
                 CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_2);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
                 break;
             case SELECT_ARENA_4:
                 CFade::SetFade(CManager::MODE_GAME);
@@ -332,6 +338,8 @@ void CDebugMenu::Update(void)
                 }
                 CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_3);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
                 break;
             case SELECT_ARENA_5:
                 CFade::SetFade(CManager::MODE_GAME);
@@ -347,6 +355,10 @@ void CDebugMenu::Update(void)
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_1);
                 CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_2);
                 CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_3);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
+                CGame::SetIdxPlayer(2, 2);
+                CGame::SetIdxPlayer(3, 3);
                 break;
             case SELECT_ARENA_6:
                 CFade::SetFade(CManager::MODE_GAME);
@@ -362,6 +374,10 @@ void CDebugMenu::Update(void)
                 CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_NONE);
                 CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_NONE);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
+                CGame::SetIdxPlayer(2, 2);
+                CGame::SetIdxPlayer(3, 3);
                 break;
             }
         }

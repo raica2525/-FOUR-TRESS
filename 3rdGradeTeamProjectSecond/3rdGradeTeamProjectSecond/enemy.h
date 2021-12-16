@@ -186,6 +186,7 @@ public:
     // セッター
     //=============================
     void SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame = NOT_EXIST);    // 基本状態を変える処理
+    void SetWhoContribution(int nWho) { m_nWhoContribution = nWho; }
 
     //=============================
     // ゲッター
@@ -224,6 +225,8 @@ private:
     bool m_bUseCommonAtkFollow;              // 追従攻撃を使用するかどうか
     TARGET_TREND m_targetTrend;              // ターゲット傾向
     int m_nAddScore;                         // 加算スコア
+    int m_nWhoContribution;                  // 誰の貢献か
+    int m_nDeathContributionPoint;           // 死亡した際に、プレイヤーに入る貢献度
 
     //=============================
     // 種類ごとの処理

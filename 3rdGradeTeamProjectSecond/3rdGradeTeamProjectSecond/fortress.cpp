@@ -32,7 +32,14 @@
 #define CHARGE_VALUE_LV3 150.0f
 
 // 発射までのチャージ時間
-#define CHARGE_FIRE_FRAME 90
+#define CHARGE_FIRE_FRAME_LV1 30
+#define CHARGE_FIRE_FRAME_LV2 60
+#define CHARGE_FIRE_FRAME_LV3 90
+
+// 貢献度
+#define CHARGE_POINT_LV1 5
+#define CHARGE_POINT_LV2 10
+#define CHARGE_POINT_LV3 15
 
 //=============================================================================
 // コンストラクタ
@@ -52,6 +59,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_nCntTime = 0;
 
     m_bDisp = true;
+    m_nWhoAttackPhase = 0;
 }
 
 //=============================================================================
@@ -113,8 +121,11 @@ void CFortress::Update(void)
     // 道を探しているかどうか
     SearchRoad(myPos);
 
-    // 移動
-    myPos += m_moveAngle * m_fSpeed;
+    // 移動（攻撃フェーズ中は移動できない）
+    if (!m_bAttackPhase)
+    {
+        myPos += m_moveAngle * m_fSpeed;
+    }
 
     // 位置を設定
     SetPos(myPos);
@@ -305,24 +316,51 @@ void CFortress::AttackPhase(void)
         // カウンタを加算
         m_nCntTime++;
 
+        // チャージまでかかる時間
+        int nCntMaxTime = 0;
+        if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
+        {
+            nCntMaxTime = CHARGE_FIRE_FRAME_LV1;
+        }
+        else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
+        {
+            nCntMaxTime = CHARGE_FIRE_FRAME_LV2;
+        }
+        else if (m_fChargeValue >= CHARGE_VALUE_LV3)
+        {
+            nCntMaxTime = CHARGE_FIRE_FRAME_LV3;
+        }
+
         // 一定カウンタで、攻撃
-        if (m_nCntTime >= CHARGE_FIRE_FRAME)
+        if (m_nCntTime >= nCntMaxTime)
         {
             // チャージ状況に応じて変える
             D3DXVECTOR3 firePos = GetPartsPos(PARTS_FIRE_POS);
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
+            CBullet *pBullet = NULL;
+            int nContributionPoint = 0;
             if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
+                pBullet = CBullet::Create(CBullet::TYPE_THUNDER, GetPos(), DEFAULT_VECTOR, OBJTYPE_FORTRESS);
+                nContributionPoint = CHARGE_POINT_LV1;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
+                pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
+                nContributionPoint = CHARGE_POINT_LV2;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV3)
             {
-                CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle, OBJTYPE_FORTRESS);
+                pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle, OBJTYPE_FORTRESS);
+                nContributionPoint = CHARGE_POINT_LV3;
             }
+            if (pBullet)
+            {
+                pBullet->SetWhoContribution(m_nWhoAttackPhase);
+            }
+
+            // 貢献度を撃っただけでも上げる
+            CGame::GetPlayer(m_nWhoAttackPhase)->GainContribution(nContributionPoint);
 
             // 攻撃状態をリセット
             ResetAttack();

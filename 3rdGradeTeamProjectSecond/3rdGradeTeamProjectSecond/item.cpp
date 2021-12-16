@@ -326,7 +326,7 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 
     // プレイヤーを探す
     float fKeepDistance = 0.0f;
-    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Player(myPos, fKeepDistance);
+    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Denti(myPos, fKeepDistance);
 
     // プレイヤーがキャリアーなら、検知距離が伸びる
     float fDiscoveryPlayerDistance = ITEM_CLOSE_DISTANCE_DEFAULT;
@@ -379,7 +379,10 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             }
 
             // 現在のエナジー量が、そのプレイヤーの最大数に達しているなら次のプレイヤーへ
-
+            if (pPlayer->GetCurrentEnergy() >= pPlayer->GetCurrentEnergyMax())
+            {
+                continue;
+            }
           
             // プレイヤーの位置を取得
             D3DXVECTOR3 playerPos= pPlayer->GetPos();

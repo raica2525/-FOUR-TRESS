@@ -138,8 +138,10 @@ CBlock *CBlock::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 collisionSize, D3D
 // ダメージを受ける処理（ここの関数ゴリ押しすぎた、「ゲートを破壊できるのは電磁砲のみ」）
 // Author : 後藤慎之助
 //=============================================================================
-void CBlock::TakeDamage(bool bBreakGoalGate)
+bool CBlock::TakeDamage(bool bBreakGoalGate)
 {
+    bool bBreak = false;
+
     // 壊れるブロックなら
     if (m_bBreak)
     {
@@ -154,6 +156,7 @@ void CBlock::TakeDamage(bool bBreakGoalGate)
                 // リザルトに移行
                 CFade::SetFade(CManager::MODE_RESULT);
                 m_bUse = false;
+                bBreak = true;
             }
         }
         else if (m_type == TYPE_NORMAL_GATE)
@@ -161,11 +164,15 @@ void CBlock::TakeDamage(bool bBreakGoalGate)
             if (bBreakGoalGate)
             {
                 m_bUse = false;
+                bBreak = true;
             }
         }
         else
         {
             m_bUse = false;
+            bBreak = true;
         }
     }
+
+    return bBreak;
 }

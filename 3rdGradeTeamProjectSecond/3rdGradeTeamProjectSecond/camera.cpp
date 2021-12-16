@@ -48,6 +48,10 @@
 // 視野角
 #define CAMERA_VIEW_ANGLE D3DXToRadian(45.0f)
 
+// 目標位置との距離
+#define DISTANCE_DEST_POS_MIN -6500.0f
+#define DISTANCE_DEST_POS_MAX -10000.0f
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -284,19 +288,10 @@ void CCamera::Update(void)
 
     case STATE_BUTTLE:
     {
-        // カメラと自身の距離
-        m_fDistance = CAMERA_LOCK_ON_OFFSET;
-
-        //// 仮に1Pにロックオン
-        //CPlayer *pPlayer = CGame::GetPlayer(0);
-        //if (pPlayer)
-        //{
-        //    m_pos = pPlayer->GetPos() + D3DXVECTOR3(0.0f, pPlayer->GetCollisionSizeDefence().y / 2.0f, 0.0f);
-        //    m_posRDest = m_pos;
-        //}
         // 各プレイヤーの平均位置にロックオンする
         D3DXVECTOR3 lockOnPos = DEFAULT_VECTOR;
         int nCntDispPlayer = 0;
+        float fDistance = 0.0f;
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
         {
@@ -321,6 +316,11 @@ void CCamera::Update(void)
                 D3DXVECTOR3 playerPos = pPlayer->GetPos();
                 lockOnPos += playerPos;
 
+                // 距離も加算
+                fDistance += sqrtf(
+                    powf((m_pos.x - playerPos.x), 2.0f) +
+                    powf((m_pos.z - playerPos.z), 2.0f));
+
                 // 次のシーンにする
                 pScene = pNextScene;
             }
@@ -335,12 +335,18 @@ void CCamera::Update(void)
             {
                 m_pos = pFortress->GetPos() + D3DXVECTOR3(0.0f, 225.0f, 0.0f);
                 m_posRDest = m_pos;
+                m_fDistance = DISTANCE_DEST_POS_MIN;
             }
         }
         else
         {
             m_pos = lockOnPos / (float)nCntDispPlayer + D3DXVECTOR3(0.0f, 225.0f, 0.0f);
             m_posRDest = m_pos;
+            m_fDistance = DISTANCE_DEST_POS_MIN - (fDistance / (float)nCntDispPlayer);
+            if (m_fDistance < DISTANCE_DEST_POS_MAX)
+            {
+                m_fDistance = DISTANCE_DEST_POS_MAX;
+            }
         }
 
         // 画面の揺れ

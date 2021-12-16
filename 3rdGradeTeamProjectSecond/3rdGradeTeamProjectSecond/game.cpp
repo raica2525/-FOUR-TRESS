@@ -138,10 +138,10 @@ HRESULT CGame::Init(void)
         CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
         m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
         m_pFortress->SetSpeed(0.0f);
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
 
         CBg::Create(66, D3DXVECTOR3(1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
         CBg::Create(66, D3DXVECTOR3(-1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
@@ -897,10 +897,10 @@ CCharacter *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float
 }
 
 //========================================
-// 一番近いプレイヤーとの距離とポインタを得る
+// 一番近いプレイヤーとの距離とポインタを得る_電池バージョン
 // Author : 後藤慎之助
 //========================================
-CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Denti(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
 {
     // 変数宣言
     CPlayer*pTarget = NULL;
@@ -915,8 +915,8 @@ CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, f
             continue;
         }
 
-        // 生存しているなら
-        if (m_apPlayer[nCntPlayer]->GetDisp())
+        // 生存しているかつ、チャージ量が最大でないなら
+        if (m_apPlayer[nCntPlayer]->GetDisp() && m_apPlayer[nCntPlayer]->GetCurrentEnergy() < m_apPlayer[nCntPlayer]->GetCurrentEnergyMax())
         {
             // 他のプレイヤーの位置
             D3DXVECTOR3 otherPlayerPos = m_apPlayer[nCntPlayer]->GetPos();
@@ -1178,4 +1178,22 @@ void CGame::AddScore(const int nScore)
 {
     m_nScore += nScore;
     m_pScore->SetDispNumber(m_nScore);
+}
+
+//========================================
+// プレイヤーが誰かしら存在しているか取得する
+// Author : 後藤慎之助
+//========================================
+bool CGame::GetDispAnyPlayer(void)
+{
+    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+    {
+        // 生存しているなら
+        if (m_apPlayer[nCntPlayer]->GetDisp())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -63,6 +63,8 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_trailEffectType = NOT_EXIST;
     m_nCntTrailInterval = 1;
     m_nCntTrailEffect = 0;
+    m_nWhoContribution = NOT_EXIST;
+    m_nHitContributionPoint = 0;
 }
 
 //=============================================================================
@@ -148,11 +150,6 @@ void CBullet::Update(void)
 
     // 位置を設定
     SetPos(myPos);
-
-#ifdef COLLISION_TEST
-    D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
-    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 119);
-#endif // COLLISION_TEST
 
     // 影の位置を更新
     if (m_pEffect3d_Shadow)
@@ -279,9 +276,22 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         // 回復するなら
                         if (IS_BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER))
                         {
+                            // 撃ち手は回復できない
+                            if (m_nWhoContribution == pPlayer->GetIdxCreate())
+                            {
+                                continue;
+                            }
+
                             // 回復は無敵の有無にかかわらず入る
                             bDamaged = true;
-                            pPlayer->Healing(m_fHealValue);
+                            if (pPlayer->Healing(m_fHealValue))
+                            {
+                                // 撃った人の貢献度が上がる
+                                if (m_nWhoContribution != NOT_EXIST)
+                                {
+                                    CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nHitContributionPoint);
+                                }
+                            }
                         }
                         else
                         {
@@ -374,7 +384,13 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
                     // 当たっているなら
-                    if (IsCollisionCylinder(bulletPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
+                    D3DXVECTOR3 collisionPos = bulletPos;
+                    if (m_type == TYPE_RAILGUN_LV2 || m_type == TYPE_RAILGUN_LV3)
+                    {
+                        // レールガンは地を這う
+                        collisionPos.y = 0.0f;
+                    }
+                    if (IsCollisionCylinder(collisionPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                     {
                         // 多段ヒット回避用のフラグをtrueに
                         m_abUseAvoidMultipleHits[nIdx] = true;
@@ -394,6 +410,11 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         else
                         {
                             bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                            if (bDamaged)
+                            {
+                                // 貢献した人を設定
+                                pEnemy->SetWhoContribution(m_nWhoContribution);
+                            }
                         }
                         // 消す弾なら消す
                         if (bDamaged && m_bHitErase)
@@ -430,7 +451,14 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     &myCubeSize, &pBlock->GetCollisionSize()))
                 {
                     // ダメージ
-                    pBlock->TakeDamage(m_bBreakGoalGate);
+                    if (pBlock->TakeDamage(m_bBreakGoalGate))
+                    {
+                        // 撃った人の貢献度が上がる
+                        if (m_nWhoContribution != NOT_EXIST)
+                        {
+                            CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nHitContributionPoint);
+                        }
+                    }
                     m_nLife = HIT_NOT_EXIST;    // ブロックは貫通出来ない
                 }
 
@@ -503,7 +531,13 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         // タンクの地上攻撃Lv3なら爆発
         if (m_type == TYPE_TANK_GROUND_LV3)
         {
-            CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
+            CBullet *pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
+            pBullet->SetWhoContribution(m_nWhoContribution);
         }
     }
+
+#ifdef COLLISION_TEST
+    D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
+    CDebug::Create(bulletPos, size, CDebug::TYPE_MOMENT, 119);
+#endif // COLLISION_TEST
 }

@@ -390,7 +390,7 @@ void CRenderer::GameDebugData(void)
     //wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
 
     // デフォルト
-    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue());
+    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d\n\n-PLAYER1-\nENERGY:%d\nPOINT:%d\n", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue(), (int)pPlayer->GetCurrentEnergy(), pPlayer->GetContributionPoint());
 
     // テキスト描画
     m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
