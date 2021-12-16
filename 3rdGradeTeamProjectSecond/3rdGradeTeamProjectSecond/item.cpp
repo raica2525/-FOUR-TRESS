@@ -377,6 +377,9 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             {
                 continue;
             }
+
+            // 現在のエナジー量が、そのプレイヤーの最大数に達しているなら次のプレイヤーへ
+
           
             // プレイヤーの位置を取得
             D3DXVECTOR3 playerPos= pPlayer->GetPos();
@@ -384,6 +387,7 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             // 当たっているなら
             if (IsCollisionCylinder(myPos, m_collisionSize, playerPos, pPlayer->GetCollisionSizeDefence()))
             {
+
                 // プレイヤーのエナジー加算
                 pPlayer->GainEnergy(m_fGetEnergy);
 

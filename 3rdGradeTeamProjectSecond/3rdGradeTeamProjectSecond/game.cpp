@@ -73,6 +73,8 @@ CText *CGame::m_pSpText = NULL;
 
 CFortress *CGame::m_pFortress = NULL;
 int CGame::m_nCharacterIdx = 0;
+CNumberArray *CGame::m_pScore = NULL;
+int CGame::m_nScore = 0;
 
 //=============================================================================
 // ゲームのコンストラクタ
@@ -104,6 +106,8 @@ CGame::CGame()
 
     m_pFortress = NULL;
     m_nCharacterIdx = 0;
+    m_pScore = NULL;
+    m_nScore = 0;
 }
 
 //=============================================================================
@@ -218,6 +222,9 @@ HRESULT CGame::Init(void)
     m_pEffect2d_Nega->SetUseUpdate(false);
     m_pEffect2d_Posi = CEffect2D::Create(3, DEFAULT_VECTOR);
     m_pEffect2d_Posi->SetUseUpdate(false);
+
+    // スコア表示を生成
+    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(640.0f, 675.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), 0, false);
 
     // BGMをランダム再生
     int nRand = GetRandNum(2, 0);
@@ -1161,4 +1168,14 @@ float CGame::GetDistanceToClosestEnemyBullet(D3DXVECTOR3 myPos)
     }
 
     return fFirstDistance;
+}
+
+//========================================
+// スコアを加算する処理
+// Author : 後藤慎之助
+//========================================
+void CGame::AddScore(const int nScore)
+{
+    m_nScore += nScore;
+    m_pScore->SetDispNumber(m_nScore);
 }
