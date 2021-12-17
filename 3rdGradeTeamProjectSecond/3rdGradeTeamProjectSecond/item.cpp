@@ -385,12 +385,16 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             // 表示しているかどうか
             if (!pPlayer->GetDisp())
             {
+                // 次のシーンにする
+                pScene = pNextScene;
                 continue;
             }
 
             // 現在のエナジー量が、そのプレイヤーの最大数に達しているなら次のプレイヤーへ
             if (pPlayer->GetCurrentEnergy() >= pPlayer->GetCurrentEnergyMax())
             {
+                // 次のシーンにする
+                pScene = pNextScene;
                 continue;
             }
           
