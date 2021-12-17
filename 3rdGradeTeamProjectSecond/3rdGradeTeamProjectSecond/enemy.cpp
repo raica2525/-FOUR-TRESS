@@ -91,6 +91,8 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
     m_nAddScore = 1;
     m_nWhoContribution = NOT_EXIST;
     m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;
+
+    m_bDeathBySquashed = false;
 }
 
 //=============================================================================
@@ -233,13 +235,22 @@ void CEnemy::Update(void)
             }
             else
             {
-                // あるなら、死亡状態に
-                m_baseState = BASE_STATE_DEATH;
-
-                // 一定カウンタで、消す
-                if (m_nCntTime >= DEATH_FRAME)
+                // 移動要塞に踏みつぶされたなら
+                if (m_bDeathBySquashed)
                 {
+                    // 即座に消す
                     DeathOneFrame(myPos);
+                }
+                else
+                {
+                    // 死亡状態演出
+                    m_baseState = BASE_STATE_DEATH;
+
+                    // 一定カウンタで、消す
+                    if (m_nCntTime >= DEATH_FRAME)
+                    {
+                        DeathOneFrame(myPos);
+                    }
                 }
             }
         }
@@ -518,6 +529,9 @@ void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
             {
                 // HP0に
                 TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
+
+                // 移動要塞に踏みつぶされた
+                m_bDeathBySquashed = true;
             }
         }
     }

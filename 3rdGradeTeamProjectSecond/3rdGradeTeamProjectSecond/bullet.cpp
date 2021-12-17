@@ -231,6 +231,13 @@ CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJT
 //=============================================================================
 void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 {
+    // レールガンは地を這う
+    D3DXVECTOR3 collisionPos = bulletPos;
+    if (m_type == TYPE_RAILGUN_LV2 || m_type == TYPE_RAILGUN_LV3)
+    {
+        collisionPos.y = 0.0f;
+    }
+
     // プレイヤー、移動要塞との当たり判定
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PLAYER))
     {
@@ -383,13 +390,6 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                 // 多段ヒット回避用フラグがfalseなら
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
-                    // 当たっているなら
-                    D3DXVECTOR3 collisionPos = bulletPos;
-                    if (m_type == TYPE_RAILGUN_LV2 || m_type == TYPE_RAILGUN_LV3)
-                    {
-                        // レールガンは地を這う
-                        collisionPos.y = 0.0f;
-                    }
                     if (IsCollisionCylinder(collisionPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                     {
                         // 多段ヒット回避用のフラグをtrueに

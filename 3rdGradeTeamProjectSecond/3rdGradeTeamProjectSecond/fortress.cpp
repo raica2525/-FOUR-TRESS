@@ -78,7 +78,7 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // 初期設定
     SetCollisionSizeDefence(D3DXVECTOR2(950.0f, 450.0f));
-    m_fSpeed = 2.5f;
+    m_fSpeed = 3.0f;
     SetUpLife(1000.0f);
     SetTakeKnockBack(false);
     // パーツ数を設定、モデルをバインド、アニメーションをバインド

@@ -87,7 +87,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
     case TYPE_RAILGUN_LV2:
         // å≈óLÇÃèÓïÒ
         m_collisionSize = D3DXVECTOR2(500.0f, 500.0f);
-        m_fSpeed = 15.0f;
+        m_fSpeed = 17.5f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 180;
         m_fDamage = 5000.0f;
@@ -101,9 +101,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
     case TYPE_RAILGUN_LV3:
         // å≈óLÇÃèÓïÒ
         m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
-        m_fSpeed = 15.0f;
+        m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
-        m_nLife = 300;
+        m_nLife = 240;
         m_fDamage = 10000.0f;
         m_bUseDraw = true;  // âº
         m_bHitErase = false;// ä—í 

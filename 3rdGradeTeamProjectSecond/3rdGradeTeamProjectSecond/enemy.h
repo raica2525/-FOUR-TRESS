@@ -228,6 +228,8 @@ private:
     int m_nWhoContribution;                  // 誰の貢献か
     int m_nDeathContributionPoint;           // 死亡した際に、プレイヤーに入る貢献度
 
+    bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+
     //=============================
     // 種類ごとの処理
     //=============================

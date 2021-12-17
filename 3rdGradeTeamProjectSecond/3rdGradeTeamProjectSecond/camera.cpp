@@ -50,7 +50,8 @@
 
 // 目標位置との距離
 #define DISTANCE_DEST_POS_MIN -6500.0f
-#define DISTANCE_DEST_POS_MAX -10000.0f
+#define DISTANCE_DEST_POS_MAX -12500.0f
+#define DISTANCE_RATE 1.5f
 
 //=============================================================================
 // コンストラクタ
@@ -237,7 +238,7 @@ HRESULT CCamera::Init(void)
     m_vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
     m_state = STATE_NONE;
     m_fPhi = 0.0f;
-    m_fTheta = 1;
+    m_fTheta = 1.0f;
     m_nCntState = 0;
     m_shakePhase = SHAKE_PHASE_NONE;
 
@@ -306,6 +307,8 @@ void CCamera::Update(void)
                 // 表示しているかどうか
                 if (!pPlayer->GetDisp())
                 {
+                    // 次のシーンにする
+                    pScene = pNextScene;
                     continue;
                 }
 
@@ -342,7 +345,7 @@ void CCamera::Update(void)
         {
             m_pos = lockOnPos / (float)nCntDispPlayer + D3DXVECTOR3(0.0f, 225.0f, 0.0f);
             m_posRDest = m_pos;
-            m_fDistance = DISTANCE_DEST_POS_MIN - (fDistance / (float)nCntDispPlayer);
+            m_fDistance = DISTANCE_DEST_POS_MIN - (fDistance * DISTANCE_RATE / (float)nCntDispPlayer);
             if (m_fDistance < DISTANCE_DEST_POS_MAX)
             {
                 m_fDistance = DISTANCE_DEST_POS_MAX;
