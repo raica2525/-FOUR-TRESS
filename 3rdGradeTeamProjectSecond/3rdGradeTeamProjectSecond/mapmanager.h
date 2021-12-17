@@ -7,8 +7,13 @@
 #ifndef _MAPMANAGER_H_
 #define _MAPMANAGER_H_
 
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// インクルードファイル
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 #include "main.h"
+#include "json.h"
 #include <string>
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 前方宣言
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -16,6 +21,7 @@ class CBg;
 class CBlock;
 class CEnemy;
 class CGround;
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // クラス定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

@@ -11,13 +11,11 @@
 #include "ground.h"
 #include "manager.h"
 #include "texture.h"
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
-// 静的メンバ変数宣言
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // コンストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CGround::CGround()
+CGround::CGround():CPolygon3D(CScene::OBJTYPE_BG)
 {
 	m_fAngle = 0.0f;
 }
@@ -38,13 +36,18 @@ void CGround::Update(void)
 	SetRot(D3DXVECTOR3(90.0f, m_fAngle, 0.0f));
 }
 
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// 名前でテクスチャを指定
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void CGround::SetTexKey(const std::string &key)
 {
-	m_texKey = key;
-	BindTexture(CManager::GetTextureManager()->GetTexture(key));
+	CTexture* pTexture = CManager::GetTexture();
+	BindTexture(pTexture->GetInfo(pTexture->GetIndexByName(key))->pTexture);
 }
 
-
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// 生成処理
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 CGround* CGround::Create(D3DXVECTOR3 pos, float fAngle, D3DXVECTOR3 size, std::string textureName)
 {
 	CGround* pGround = new CGround;

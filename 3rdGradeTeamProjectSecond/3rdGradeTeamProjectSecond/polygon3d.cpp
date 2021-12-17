@@ -8,12 +8,10 @@
 #include "manager.h"
 #include "renderer.h"
 
-
-
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //コンストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CPolygon3D::CPolygon3D()
+CPolygon3D::CPolygon3D(OBJTYPE objType) : CScene(objType)
 {
 	m_pTexture = NULL;
 	m_pVtxBuff = NULL;
@@ -31,7 +29,7 @@ CPolygon3D::~CPolygon3D()
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 //初期化処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-HRESULT CPolygon3D::Init(void)
+HRESULT CPolygon3D::Init(D3DXVECTOR3, D3DXVECTOR3)
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * NUM_VERTEX, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
@@ -75,7 +73,7 @@ void CPolygon3D::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
-	CScene3D::Uninit();
+	Release();
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -139,22 +137,6 @@ void CPolygon3D::Draw(void)
 
 		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
-}
-
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
-// 生成処理
-//・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CPolygon3D* CPolygon3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 size)
-{
-	CPolygon3D* pPolygon3D = new CPolygon3D;
-
-	pPolygon3D->SetPos(pos);
-	pPolygon3D->SetRot(rot);
-	pPolygon3D->SetSize(size);
-
-	pPolygon3D->Init();
-
-	return pPolygon3D;
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
