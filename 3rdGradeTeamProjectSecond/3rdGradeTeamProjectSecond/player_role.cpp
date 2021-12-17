@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// ƒvƒŒƒCƒ„[‚Ì–ðŠ„‚²‚Æ‚Ìˆ— (player_role.cpp)
-// Author : Œã“¡T”V•
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å½¹å‰²ã”ã¨ã®å‡¦ç† (player_role.cpp)
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //
 //======================================================================================
 
 //========================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //========================
 #include "player.h"
 #include "debug.h"
@@ -20,71 +20,71 @@
 #include "wave.h"
 
 //========================================
-// ƒ}ƒNƒ’è‹`
+// ãƒžã‚¯ãƒ­å®šç¾©
 //========================================
 
-// ‹ß‹——£UŒ‚‚Ìƒtƒ‰ƒO
+// è¿‘è·é›¢æ”»æ’ƒã®ãƒ•ãƒ©ã‚°
 typedef enum
 {
-    CLOSE_ATTACK_FLAG_NONE = 0,             // ‚È‚µ
-    CLOSE_ATTACK_FLAG_TAUNT = 0x001 << 1,   // ’§”­
+    CLOSE_ATTACK_FLAG_NONE = 0,             // ãªã—
+    CLOSE_ATTACK_FLAG_TAUNT = 0x001 << 1,   // æŒ‘ç™º
 }CLOSE_ATTACK_FLAG;
 
 //==========================
-// ƒEƒH[ƒŠƒA[’nã
+// ã‚¦ã‚©ãƒ¼ãƒªã‚¢ãƒ¼åœ°ä¸Š
 //==========================
-// Šî–{ƒ_ƒ[ƒW
+// åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 #define WARRIOR_GROUND_BASE_DAMAGE 100.0f
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define WARRIOR_GROUND_EMIT_DISTANCE 350.0f
 #define WARRIOR_GROUND_RADIUS 450.0f
 #define WARRIOR_GROUND_HEIGHT 300.0f
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define WARRIOR_GROUND_WHOLE_FRAME 30
 #define WARRIOR_GROUND_START_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 10)
 #define WARRIOR_GROUND_END_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 20)
-// d’¼ƒtƒŒ[ƒ€
+// ç¡¬ç›´ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define WARRIOR_GROUND_STOP_FRAME 5
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define WARRIOR_GROUND_DUSH_SPEED 25.0f
 #define WARRIOR_GROUND_COMBO_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 15)
 #define WARRIOR_GROUND_SLIDE_SPEED 10.0f
 
 //==========================
-// ƒEƒH[ƒŠƒA[‹ó’†
+// ã‚¦ã‚©ãƒ¼ãƒªã‚¢ãƒ¼ç©ºä¸­
 //==========================
-// Šî–{ƒ_ƒ[ƒW
+// åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 #define WARRIOR_SKY_BASE_DAMAGE 300.0f
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define WARRIOR_SKY_EMIT_DISTANCE -500.0f
 #define WARRIOR_SKY_RADIUS 750.0f
 #define WARRIOR_SKY_HEIGHT 500.0f
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
 #define WARRIOR_SKY_WHOLE_FRAME 9999
 #define WARRIOR_SKY_START_FRAME (WARRIOR_SKY_WHOLE_FRAME - 20)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define WARRIOR_SKY_UP_VALUE 20.0f
 #define WARRIOR_SKY_CHANCE_FRAME 30
 
 //==========================
-// ƒnƒ“ƒ^[’nã
+// ãƒãƒ³ã‚¿ãƒ¼åœ°ä¸Š
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define HUNTER_GROUND_WHOLE_FRAME 20
 #define HUNTER_GROUND_FIRE_FRAME (HUNTER_GROUND_WHOLE_FRAME - 10)
 
 //==========================
-// ƒnƒ“ƒ^[‹ó’†
+// ãƒãƒ³ã‚¿ãƒ¼ç©ºä¸­
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define HUNTER_SKY_WHOLE_FRAME 50
 #define HUNTER_SKY_FIRE_FRAME (HUNTER_SKY_WHOLE_FRAME - 35)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define HUNTER_SKY_MOVE_LIMIT 0.5f
 #define HUNTER_SKY_ONCE_SHOT 4
 #define HUNTER_SKY_ANGLE_Y D3DXToRadian(50.0f)
 #define HUNTER_SKY_TARGETING_FRAME (HUNTER_SKY_WHOLE_FRAME - 1)
-// ”Ä—pƒpƒ‰ƒ[ƒ^‚Ì“à–ó
+// æ±Žç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å†…è¨³
 typedef enum
 {
     PARAM_HUNTER_TARGET_POS_X = 0,
@@ -93,18 +93,18 @@ typedef enum
 }PARAM_HUNTER;
 
 //==========================
-// ƒLƒƒƒŠƒA[’nã
+// ã‚­ãƒ£ãƒªã‚¢ãƒ¼åœ°ä¸Š
 //==========================
-// Šî–{ƒ_ƒ[ƒW
+// åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 #define CARRIER_GROUND_BASE_DAMAGE 40.0f
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define CARRIER_GROUND_RADIUS 450.0f
 #define CARRIER_GROUND_HEIGHT 300.0f
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define CARRIER_GROUND_WHOLE_FRAME 70
 #define CARRIER_GROUND_START_FRAME (CARRIER_GROUND_WHOLE_FRAME - 30)
 #define CARRIER_GROUND_END_FRAME (CARRIER_GROUND_WHOLE_FRAME - 40)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define CARRIER_GROUND_DUSH_SPEED 150.0f
 #define CARRIER_GROUND_CREATE_ENERGY 1.0f
 #define CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME 2
@@ -114,94 +114,94 @@ typedef enum
 #define CARRIER_GROUND_SECOND_ATTACK_WHOLE_FRAME 40
 
 //==========================
-// ƒLƒƒƒŠƒA[‹ó’†
+// ã‚­ãƒ£ãƒªã‚¢ãƒ¼ç©ºä¸­
 //==========================
-// Šî–{ƒ_ƒ[ƒW
+// åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 #define CARRIER_SKY_BASE_DAMAGE 150.0f
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define CARRIER_SKY_EMIT_DISTANCE -200.0f
 #define CARRIER_SKY_RADIUS 700.0f
 #define CARRIER_SKY_HEIGHT 450.0f
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
 #define CARRIER_SKY_WHOLE_FRAME 9999
 #define CARRIER_SKY_START_ATTACK_FRAME (CARRIER_SKY_WHOLE_FRAME - 35)
 #define CARRIER_SKY_START_WIND_FRAME (CARRIER_SKY_WHOLE_FRAME - 15)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define CARRIER_SKY_UP_VALUE 20.0f
 #define CARRIER_SKY_CHANCE_FRAME 35
 
 //==========================
-// ƒ^ƒ“ƒN’nã1_‚\‚¦
+// ã‚¿ãƒ³ã‚¯åœ°ä¸Š1_ç›¾æ§‹ãˆ
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define TANK_GROUND1_WHOLE_FRAME 380
 #define TANK_GROUND1_CREATE_SHIELD_FRAME (TANK_GROUND1_WHOLE_FRAME - 20)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define TANK_GROUND1_WALK_SPEED 8.5f
 #define TANK_GROUND1_LV2 3
 #define TANK_GROUND1_LV3 10
-// ”Ä—pƒpƒ‰ƒ[ƒ^‚Ì“à–ó
+// æ±Žç”¨ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å†…è¨³
 typedef enum
 {
     PARAM_TANK_GUARD_WIDTH = 0,
 }PARAM_TANK;
 
 //==========================
-// ƒ^ƒ“ƒN’nã2_”š”­’e
+// ã‚¿ãƒ³ã‚¯åœ°ä¸Š2_çˆ†ç™ºå¼¾
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define TANK_GROUND2_WHOLE_FRAME 45
 #define TANK_GROUND2_FIRE_FRAME (TANK_GROUND2_WHOLE_FRAME - 25)
 
 //==========================
-// ƒ^ƒ“ƒN‹ó’†
+// ã‚¿ãƒ³ã‚¯ç©ºä¸­
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define TANK_SKY_WHOLE_FRAME 80
 #define TANK_SKY_START_FRAME (TANK_SKY_WHOLE_FRAME - 20)
 #define TANK_SKY_END_FRAME (TANK_SKY_WHOLE_FRAME - 60)
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define TANK_SKY_RADIUS 7500.0f
 #define TANK_SKY_HEIGHT 500.0f
 
 //==========================
-// ƒq[ƒ‰[’nã
+// ãƒ’ãƒ¼ãƒ©ãƒ¼åœ°ä¸Š
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define HEALER_GROUND_WHOLE_FRAME 60
 #define HEALER_GROUND_FIRE_FRAME (HEALER_GROUND_WHOLE_FRAME - 30)
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define HEALER_GROUND_BASE_DAMAGE 40.0f
 #define HEALER_GROUND_ADD_DAMAGE_RATE 1.0f
 #define HEALER_GROUND_BASE_HEALING 20.0f
 #define HEALER_GROUND_ADD_HEALING_RATE 0.5f
 
 //==========================
-// ƒq[ƒ‰[‹ó’†
+// ãƒ’ãƒ¼ãƒ©ãƒ¼ç©ºä¸­
 //==========================
-// ‘S‘ÌƒtƒŒ[ƒ€AUŒ‚”­¶ƒtƒŒ[ƒ€AUŒ‚I—¹ƒtƒŒ[ƒ€
+// å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã€æ”»æ’ƒçµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define HEALER_SKY_WHOLE_FRAME 90
 #define HEALER_SKY_START_FRAME (HEALER_SKY_WHOLE_FRAME - 40)
 #define HEALER_SKY_END_FRAME (HEALER_SKY_WHOLE_FRAME - 70)
-// “–‚½‚è”»’èŽü‚è
+// å½“ãŸã‚Šåˆ¤å®šå‘¨ã‚Š
 #define HEALER_SKY_EMIT_DISTANCE 1000.0f
 #define HEALER_SKY_MOVE_LIMIT 0.25f
-// ‚»‚Ì‘¼
+// ãã®ä»–
 #define HEALER_SKY_BASE_DAMAGE 30.0f
 #define HEALER_SKY_ADD_DAMAGE_RATE 0.75f
 #define HEALER_SKY_BASE_HEALING 15.0f
 #define HEALER_SKY_ADD_HEALING_RATE 0.375f
 
 //=============================================================================
-// UŒ‚XVˆ—
-// Author : Œã“¡T”V•
+// æ”»æ’ƒæ›´æ–°å‡¦ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AttackUpdate(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // •‰‚µ‚Ä‚¢‚È‚¢‚È‚ç
+    // è² å‚·ã—ã¦ã„ãªã„ãªã‚‰
     if (GetDamageState() == DAMAGE_STATE_NONE)
     {
-        // Žg‚¤‹Z‚É‚æ‚Á‚Äˆ—‚ªˆÙ‚È‚é
+        // ä½¿ã†æŠ€ã«ã‚ˆã£ã¦å‡¦ç†ãŒç•°ãªã‚‹
         switch (m_attackState)
         {
         case ATTACK_STATE_WARRIOR_GROUND1:
@@ -251,18 +251,18 @@ void CPlayer::AttackUpdate(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 }
 
 //=============================================================================
-// UŒ‚”­¶ˆ—
-// Author : Œã“¡T”V•
+// æ”»æ’ƒç™ºç”Ÿå‡¦ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AttackGenerator(void)
 {
-    // •‰‚µ‚Ä‚¢‚È‚¢ó‘Ô‚©‚ÂAUŒ‚’†‚Å‚È‚¢‚È‚ç
+    // è² å‚·ã—ã¦ã„ãªã„çŠ¶æ…‹ã‹ã¤ã€æ”»æ’ƒä¸­ã§ãªã„ãªã‚‰
     if (GetDamageState() == DAMAGE_STATE_NONE && m_attackState == ATTACK_STATE_NONE)
     {
-        // ’nã‚É‚¢‚é‚È‚ç
+        // åœ°ä¸Šã«ã„ã‚‹ãªã‚‰
         if (m_bGround)
         {
-            // ’ÊíUŒ‚ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½‚çAŠe–ðŠ„‚É‚æ‚Á‚ÄŽg‚¤UŒ‚‚ð•Ï‚¦‚é
+            // é€šå¸¸æ”»æ’ƒãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰ã€å„å½¹å‰²ã«ã‚ˆã£ã¦ä½¿ã†æ”»æ’ƒã‚’å¤‰ãˆã‚‹
             if (m_controlInput.bTriggerX)
             {
                 switch (m_role)
@@ -287,7 +287,7 @@ void CPlayer::AttackGenerator(void)
             }
             else if (m_controlInput.bPressX)
             {
-                // ˜A‘±UŒ‚Œn
+                // é€£ç¶šæ”»æ’ƒç³»
                 switch (m_role)
                 {
                 case ROLE_HUNTER:
@@ -298,13 +298,13 @@ void CPlayer::AttackGenerator(void)
             }
             else if (m_controlInput.bTriggerB)
             {
-                // ˆÚ“®—vÇ‚Éæ‚é
+                // ç§»å‹•è¦å¡žã«ä¹—ã‚‹
                 RideFortress();
             }
         }
         else
         {
-            // ’ÊíUŒ‚ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½‚çAŠe–ðŠ„‚É‚æ‚Á‚ÄŽg‚¤UŒ‚‚ð•Ï‚¦‚é
+            // é€šå¸¸æ”»æ’ƒãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰ã€å„å½¹å‰²ã«ã‚ˆã£ã¦ä½¿ã†æ”»æ’ƒã‚’å¤‰ãˆã‚‹
             if (m_controlInput.bTriggerX)
             {
                 switch (m_role)
@@ -333,7 +333,7 @@ void CPlayer::AttackGenerator(void)
             }
             else if (m_controlInput.bTriggerB)
             {
-                // ˆÚ“®—vÇ‚Éæ‚é
+                // ç§»å‹•è¦å¡žã«ä¹—ã‚‹
                 RideFortress();
             }
         }
@@ -341,12 +341,12 @@ void CPlayer::AttackGenerator(void)
 }
 
 //=============================================================================
-// UŒ‚ƒ‚[ƒVƒ‡ƒ“‚ÌŠÇ—
-// Author : Œã“¡T”V•
+// æ”»æ’ƒãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®ç®¡ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AttackMotion(void)
 {
-    // UŒ‚ó‘Ô‚É‰ž‚¶‚ÄAƒ‚[ƒVƒ‡ƒ“‚ðŒˆ‚ß‚é
+    // æ”»æ’ƒçŠ¶æ…‹ã«å¿œã˜ã¦ã€ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ±ºã‚ã‚‹
     switch (m_attackState)
     {
     case ATTACK_STATE_WARRIOR_GROUND1:
@@ -395,82 +395,82 @@ void CPlayer::AttackMotion(void)
 }
 
 //=============================================================================
-// ‹ßÚUŒ‚‚ª“–‚½‚Á‚½‚©‚Ç‚¤‚©‚Ìƒ`ƒFƒbƒN
-// Author : Œã“¡T”V•
+// è¿‘æŽ¥æ”»æ’ƒãŒå½“ãŸã£ãŸã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, float fPower, int flag)
 {
-    // –hŒä“–‚½‚è”»’è‚Ì‘å‚«‚³‚ðŽæ“¾
+    // é˜²å¾¡å½“ãŸã‚Šåˆ¤å®šã®å¤§ãã•ã‚’å–å¾—
     D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
 
-    // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+    // å½“ãŸã£ãŸã‹ã©ã†ã‹
     bool bHit = false;
 
-    // “G‚Æ‚Ì“–‚½‚è”»’è
+    // æ•µã¨ã®å½“ãŸã‚Šåˆ¤å®š
     CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
     for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
     {
-        // ’†g‚ª‚ ‚é‚È‚ç
+        // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
         if (pScene)
         {
-            // ŽŸ‚ÌƒV[ƒ“‚ð‹L‰¯
+            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
             CScene*pNextScene = pScene->GetNextScene();
 
-            // “G‚ÉƒLƒƒƒXƒg
+            // æ•µã«ã‚­ãƒ£ã‚¹ãƒˆ
             CEnemy *pEnemy = (CEnemy*)pScene;
 
-            // oŒ»‚µ‚Ä‚¢‚È‚¢‚È‚çAŽŸ‚Ö
+            // å‡ºç¾ã—ã¦ã„ãªã„ãªã‚‰ã€æ¬¡ã¸
             if (pEnemy->GetAppearState() != CEnemy::APPEAR_STATE_EXIST)
             {
-                // ŽŸ‚ÌƒV[ƒ“‚É‚·‚é
+                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
                 pScene = pNextScene;
                 continue;
             }
 
-            // “G‚ÌƒCƒ“ƒfƒbƒNƒX‚ðŽæ“¾
+            // æ•µã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
             int nIdx = pEnemy->GetIdx();
             if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
             {
                 continue;
             }
 
-            // ‘½’iƒqƒbƒg‰ñ”ð—pƒtƒ‰ƒO‚ªfalse‚È‚ç
+            // å¤šæ®µãƒ’ãƒƒãƒˆå›žé¿ç”¨ãƒ•ãƒ©ã‚°ãŒfalseãªã‚‰
             if (!m_abUseAvoidMultipleHits[nIdx])
             {
-                // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
+                // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
                 if (IsCollisionCylinder(attackPos, attackSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                 {
-                    // ’§”­ƒtƒ‰ƒO‚ª‚ ‚é‚È‚ç
+                    // æŒ‘ç™ºãƒ•ãƒ©ã‚°ãŒã‚ã‚‹ãªã‚‰
                     if (IS_BITON(flag, CLOSE_ATTACK_FLAG_TAUNT))
                     {
-                        // ’§”­ó‘Ô‚É‚·‚é
+                        // æŒ‘ç™ºçŠ¶æ…‹ã«ã™ã‚‹
                         pEnemy->DiscoveryTarget((CCharacter*)this);
 
-                        // “–‚½‚Á‚½
+                        // å½“ãŸã£ãŸ
                         bHit = true;
 
-                        // ‘½’iƒqƒbƒg‰ñ”ð—p‚Ìƒtƒ‰ƒO‚ðtrue‚É
+                        // å¤šæ®µãƒ’ãƒƒãƒˆå›žé¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
                         m_abUseAvoidMultipleHits[nIdx] = true;
                     }
                     else
                     {
-                        // “G‚Éƒ_ƒ[ƒW‚ª“ü‚Á‚½‚ç
+                        // æ•µã«ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒå…¥ã£ãŸã‚‰
                         if (pEnemy->TakeDamage(fPower, attackPos, playerPos, OBJTYPE_PLAYER))
                         {
-                            // vŒ£‚µ‚½l‚ðÝ’è
+                            // è²¢çŒ®ã—ãŸäººã‚’è¨­å®š
                             pEnemy->SetWhoContribution(m_nIdxCreate);
 
-                            // “–‚½‚Á‚½
+                            // å½“ãŸã£ãŸ
                             bHit = true;
 
-                            // ‘½’iƒqƒbƒg‰ñ”ð—p‚Ìƒtƒ‰ƒO‚ðtrue‚É
+                            // å¤šæ®µãƒ’ãƒƒãƒˆå›žé¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
                             m_abUseAvoidMultipleHits[nIdx] = true;
                         }
                     }
                 }
             }
 
-            // ŽŸ‚ÌƒV[ƒ“‚É‚·‚é
+            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
             pScene = pNextScene;
         }
     }
@@ -479,22 +479,22 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
 }
 
 //=============================================================================
-// ˆÚ“®—vÇ‚Éæ‚éˆ—
-// Author : Œã“¡T”V•
+// ç§»å‹•è¦å¡žã«ä¹—ã‚‹å‡¦ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::RideFortress(void)
 {
-    // ˆÚ“®—vÇ‚ðŽæ“¾
+    // ç§»å‹•è¦å¡žã‚’å–å¾—
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)
     {
-        // ’N‚àÀ‚Á‚Ä‚¢‚È‚¢‚È‚ç
+        // èª°ã‚‚åº§ã£ã¦ã„ãªã„ãªã‚‰
         if (!pFortress->GetNowWhoRiding())
         {
-            // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
+            // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
             if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
             {
-                // À‚éiUŒ‚ŽžŠÔ‚ðÝ’è‚µ‚È‚¢‚±‚Æ‚ÅAˆê’èŽžŠÔ‚ÅUŒ‚‚ðƒŠƒZƒbƒg‚·‚éƒtƒ‰ƒO‚ð—§‚½‚¹‚È‚¢j
+                // åº§ã‚‹ï¼ˆæ”»æ’ƒæ™‚é–“ã‚’è¨­å®šã—ãªã„ã“ã¨ã§ã€ä¸€å®šæ™‚é–“ã§æ”»æ’ƒã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’ç«‹ãŸã›ãªã„ï¼‰
                 m_attackState = ATTACK_STATE_SIT_DOWN;
                 pFortress->SetNowWhoRiding(true);
             }
@@ -503,29 +503,29 @@ void CPlayer::RideFortress(void)
 }
 
 //=============================================================================
-// ˆÚ“®—vÇ‚ÉÀ‚Á‚ÄUŒ‚‚·‚éˆ—
-// Author : Œã“¡T”V•
+// ç§»å‹•è¦å¡žã«åº§ã£ã¦æ”»æ’ƒã™ã‚‹å‡¦ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
 {
-    // ‚±‚ÌUŒ‚’†‚Í–³“G
+    // ã“ã®æ”»æ’ƒä¸­ã¯ç„¡æ•µ
     SetInvincible(true);
 
-    // ˆÚ“®—vÇ‚ðŽæ“¾
+    // ç§»å‹•è¦å¡žã‚’å–å¾—
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)
     {
-        // Ž©g‚ÌˆÊ’u‚ðAÀÈ‚É‚·‚é
+        // è‡ªèº«ã®ä½ç½®ã‚’ã€åº§å¸­ã«ã™ã‚‹
         playerPos = pFortress->GetPartsPos(CFortress::PARTS_SEAT);
 
-        // ˆÚ“®—Ê‚ð”O‚Ì‚½‚ßƒŠƒZƒbƒg‚·‚é
+        // ç§»å‹•é‡ã‚’å¿µã®ãŸã‚ãƒªã‚»ãƒƒãƒˆã™ã‚‹
         move = DEFAULT_VECTOR;
 
-        // Œü‚«‚ð‡‚í‚¹‚é
+        // å‘ãã‚’åˆã‚ã›ã‚‹
         SetRot(pFortress->GetRot());
     }
 
-    // “d—ÍÁ”ïUŒ‚
+    // é›»åŠ›æ¶ˆè²»æ”»æ’ƒ
     if (m_controlInput.bTriggerX)
     {
         if (pFortress)
@@ -535,69 +535,69 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     }
     else if (m_controlInput.bTriggerB)
     {
-        // UŒ‚ƒtƒF[ƒY’†‚Í~‚è‚ç‚ê‚È‚¢
+        // æ”»æ’ƒãƒ•ã‚§ãƒ¼ã‚ºä¸­ã¯é™ã‚Šã‚‰ã‚Œãªã„
         if (pFortress)
         {
             if (!pFortress->GetAttackPhase())
             {
-                // ~‚è‚éˆ—iUŒ‚Žü‚è‚ðƒŠƒZƒbƒgj
+                // é™ã‚Šã‚‹å‡¦ç†ï¼ˆæ”»æ’ƒå‘¨ã‚Šã‚’ãƒªã‚»ãƒƒãƒˆï¼‰
                 ResetAttack();
 
-                // ˆÚ“®—vÇ‘¤‚ÌÀ‚Á‚Ä‚¢‚éƒtƒ‰ƒO‚ð–ß‚·
+                // ç§»å‹•è¦å¡žå´ã®åº§ã£ã¦ã„ã‚‹ãƒ•ãƒ©ã‚°ã‚’æˆ»ã™
                 pFortress->SetNowWhoRiding(false);
             }
         }
         else
         {
-            // ˆÚ“®—vÇ‚ª‚È‚¢‚È‚çA‹­§‚Å~‚è‚é
+            // ç§»å‹•è¦å¡žãŒãªã„ãªã‚‰ã€å¼·åˆ¶ã§é™ã‚Šã‚‹
             ResetAttack();
         }
     }
 }
 
 //=============================================================================
-// ƒEƒH[ƒŠƒA[’nãUŒ‚1
-// Author : Œã“¡T”V•
+// ã‚¦ã‚©ãƒ¼ãƒªã‚¢ãƒ¼åœ°ä¸Šæ”»æ’ƒ1
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
-        // •Ï”éŒ¾
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚éŒü‚«
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ‚¸‚ç‚·ˆÊ’u
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // UŒ‚”­¶ˆÊ’u
-        float fFinalPower = 0.0f;                                         // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // UŒ‚”­¶‹——£
-        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹å‘ã
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ãšã‚‰ã™ä½ç½®
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // æ”»æ’ƒç™ºç”Ÿä½ç½®
+        float fFinalPower = 0.0f;                                         // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // æ”»æ’ƒç™ºç”Ÿè·é›¢
+        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 
-        // UŒ‚”­¶ˆÊ’u‚ð‚¸‚ç‚·
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’ãšã‚‰ã™
         slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
         slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
 
-        // UŒ‚”­¶ˆÊ’u‚ðŒˆ‚ß‚é
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’æ±ºã‚ã‚‹
         attackPos = playerPos + slidePos;
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        //// ˆÚ“®‚Å‚«‚é
+        //// ç§»å‹•ã§ãã‚‹
         //if (m_controlInput.bTiltedLeftStick)
         //{
         //    playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
         //    playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
         //}
 
-        // ‘Oi
+        // å‰é€²
         D3DXVECTOR3 rot = GetRot();
         playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
@@ -609,7 +609,7 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 #endif // COLLISION_TEST
     }
 
-    // ˜A‘±UŒ‚‚Ì”»’è
+    // é€£ç¶šæ”»æ’ƒã®åˆ¤å®š
     if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
     {
         if (m_controlInput.bTriggerX)
@@ -618,7 +618,7 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND2;
 
-            // Œü‚«‚ð‘¦À‚É•Ï‚¦‚ê‚é
+            // å‘ãã‚’å³åº§ã«å¤‰ãˆã‚Œã‚‹
             if (!m_controlInput.bPressR2)
             {
                 SetRotY(m_controlInput.fPlayerAngle);
@@ -629,48 +629,48 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
 }
 
 //=============================================================================
-// ƒEƒH[ƒŠƒA[’nãUŒ‚2
-// Author : Œã“¡T”V•
+// ã‚¦ã‚©ãƒ¼ãƒªã‚¢ãƒ¼åœ°ä¸Šæ”»æ’ƒ2
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
-        // •Ï”éŒ¾
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚éŒü‚«
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ‚¸‚ç‚·ˆÊ’u
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // UŒ‚”­¶ˆÊ’u
-        float fFinalPower = 0.0f;                                         // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // UŒ‚”­¶‹——£
-        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹å‘ã
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ãšã‚‰ã™ä½ç½®
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                           // æ”»æ’ƒç™ºç”Ÿä½ç½®
+        float fFinalPower = 0.0f;                                         // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_GROUND_EMIT_DISTANCE;  // æ”»æ’ƒç™ºç”Ÿè·é›¢
+        const float ATTACK_RADIUS = WARRIOR_GROUND_RADIUS;                // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = WARRIOR_GROUND_HEIGHT;                // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = WARRIOR_GROUND_BASE_DAMAGE;             // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 
-        // UŒ‚”­¶ˆÊ’u‚ð‚¸‚ç‚·
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’ãšã‚‰ã™
         slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
         slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
 
-        // UŒ‚”­¶ˆÊ’u‚ðŒˆ‚ß‚é
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’æ±ºã‚ã‚‹
         attackPos = playerPos + slidePos;
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        //// ˆÚ“®‚Å‚«‚é
+        //// ç§»å‹•ã§ãã‚‹
         //if (m_controlInput.bTiltedLeftStick)
         //{
         //    playerPos.x += sinf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
         //    playerPos.z += cosf(m_controlInput.fLeftStickAngle)*WARRIOR_GROUND_SLIDE_SPEED;
         //}
 
-        // ‘Oi
+        // å‰é€²
         D3DXVECTOR3 rot = GetRot();
         playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
@@ -681,7 +681,7 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 #endif // COLLISION_TEST
     }
 
-    // ˜A‘±UŒ‚‚Ì”»’è
+    // é€£ç¶šæ”»æ’ƒã®åˆ¤å®š
     if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
     {
         if (m_controlInput.bTriggerX)
@@ -690,7 +690,7 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
 
-            // Œü‚«‚ð‘¦À‚É•Ï‚¦‚ê‚é
+            // å‘ãã‚’å³åº§ã«å¤‰ãˆã‚Œã‚‹
             if (!m_controlInput.bPressR2)
             {
                 SetRotY(m_controlInput.fPlayerAngle);
@@ -701,52 +701,52 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
 }
 
 //=============================================================================
-// ƒEƒH[ƒŠƒA[‹ó’†UŒ‚
-// Author : Œã“¡T”V•
+// ã‚¦ã‚©ãƒ¼ãƒªã‚¢ãƒ¼ç©ºä¸­æ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= WARRIOR_SKY_START_FRAME &&
         m_nCntAttackTime > WARRIOR_SKY_CHANCE_FRAME)
     {
-        // ’…’n‚µ‚½‚çAŒ„‚ª”­¶‚µAUŒ‚‚ÍI—¹
+        // ç€åœ°ã—ãŸã‚‰ã€éš™ãŒç™ºç”Ÿã—ã€æ”»æ’ƒã¯çµ‚äº†
         if (m_bGround)
         {
             m_nCntAttackTime = WARRIOR_SKY_CHANCE_FRAME;
 
-            // ‹ó’†UŒ‚‚ÌƒGƒtƒFƒNƒg
+            // ç©ºä¸­æ”»æ’ƒã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
 
         }
-        // –hŒä“–‚½‚è”»’è‚Ì‘å‚«‚³‚ðŽæ“¾
+        // é˜²å¾¡å½“ãŸã‚Šåˆ¤å®šã®å¤§ãã•ã‚’å–å¾—
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
 
-        // •Ï”éŒ¾
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ‚¸‚ç‚·ˆÊ’u
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // UŒ‚”­¶ˆÊ’u
-        float fFinalPower = 0.0f;                                          // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_EMIT_DISTANCE = WARRIOR_SKY_EMIT_DISTANCE;      // UŒ‚”­¶‹——£
-        const float ATTACK_RADIUS = WARRIOR_SKY_RADIUS;                    // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = WARRIOR_SKY_HEIGHT;                    // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = WARRIOR_SKY_BASE_DAMAGE;                 // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ãšã‚‰ã™ä½ç½®
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // æ”»æ’ƒç™ºç”Ÿä½ç½®
+        float fFinalPower = 0.0f;                                          // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_EMIT_DISTANCE = WARRIOR_SKY_EMIT_DISTANCE;      // æ”»æ’ƒç™ºç”Ÿè·é›¢
+        const float ATTACK_RADIUS = WARRIOR_SKY_RADIUS;                    // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = WARRIOR_SKY_HEIGHT;                    // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = WARRIOR_SKY_BASE_DAMAGE;                 // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 
-        // UŒ‚”­¶ˆÊ’u‚ð‚¸‚ç‚·
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’ãšã‚‰ã™
         slidePos.y += ATTACK_EMIT_DISTANCE;
 
-        // UŒ‚”­¶ˆÊ’u‚ðŒˆ‚ß‚é
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’æ±ºã‚ã‚‹
         attackPos = playerPos + slidePos;
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        // —Ž‰º
+        // è½ä¸‹
         move.y -= WARRIOR_SKY_UP_VALUE;
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
 #ifdef COLLISION_TEST
@@ -761,12 +761,12 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 }
 
 //=============================================================================
-// ƒnƒ“ƒ^[’nãUŒ‚
-// Author : Œã“¡T”V•
+// ãƒãƒ³ã‚¿ãƒ¼åœ°ä¸Šæ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
     if (m_nCntAttackTime == HUNTER_GROUND_FIRE_FRAME)
     {
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
@@ -775,21 +775,21 @@ void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
     }
     else if (m_nCntAttackTime > HUNTER_GROUND_FIRE_FRAME)
     {
-        // ƒLƒƒƒ‰‚ÌŒü‚«‚ð•Ï‚¦‚é—P—\ƒtƒŒ[ƒ€
+        // ã‚­ãƒ£ãƒ©ã®å‘ãã‚’å¤‰ãˆã‚‹çŒ¶äºˆãƒ•ãƒ¬ãƒ¼ãƒ 
         SetRotDestY(m_controlInput.fPlayerAngle);
     }
 }
 
 //=============================================================================
-// ƒnƒ“ƒ^[‹ó’†UŒ‚
-// Author : Œã“¡T”V•
+// ãƒãƒ³ã‚¿ãƒ¼ç©ºä¸­æ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
     if (m_nCntAttackTime == HUNTER_SKY_FIRE_FRAME)
     {
-        // ˆê“x‚É•¡”‚Ì–î‚ðA‹Ï“™‚É•ú‚Â
+        // ä¸€åº¦ã«è¤‡æ•°ã®çŸ¢ã‚’ã€å‡ç­‰ã«æ”¾ã¤
         for (int nCnt = 0; nCnt < HUNTER_SKY_ONCE_SHOT; nCnt++)
         {
             float fDigitAngle = (float)(nCnt + 1) * (D3DXToRadian(180.0f) / (float)(HUNTER_SKY_ONCE_SHOT + 1));
@@ -805,61 +805,61 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
     }
     else if (m_nCntAttackTime > HUNTER_SKY_FIRE_FRAME)
     {
-        // ˆÚ“®§ŒÀ
+        // ç§»å‹•åˆ¶é™
         move.x *= HUNTER_SKY_MOVE_LIMIT;
         move.z *= HUNTER_SKY_MOVE_LIMIT;
         move.y = 0.0f;
 
-        // ƒ^[ƒQƒbƒg‚ÌˆÊ’u‚ðŒˆ‚ß‚éƒtƒŒ[ƒ€
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ä½ç½®ã‚’æ±ºã‚ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ 
         if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
         {
-            // ˆÊ’u‚ð•Û‘¶
+            // ä½ç½®ã‚’ä¿å­˜
             D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
             m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
             m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
             m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
-            // ƒLƒƒƒ‰‚ÌŒü‚«‚ðƒ^[ƒQƒbƒg‚Ì•û‚Ö
+            // ã‚­ãƒ£ãƒ©ã®å‘ãã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®æ–¹ã¸
             SetRotDestY(GetAngleToTargetXZ(targetPos, playerPos));
         }
     }
 }
 
 //=============================================================================
-// ƒLƒƒƒŠƒA[’nãUŒ‚1
-// Author : Œã“¡T”V•
+// ã‚­ãƒ£ãƒªã‚¢ãƒ¼åœ°ä¸Šæ”»æ’ƒ1
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= CARRIER_GROUND_START_FRAME &&
         m_nCntAttackTime >= CARRIER_GROUND_END_FRAME)
     {
-        // ‚±‚ÌUŒ‚’†‚Í–³“G
+        // ã“ã®æ”»æ’ƒä¸­ã¯ç„¡æ•µ
         SetInvincible(true);
 
-        // •Ï”éŒ¾
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚éŒü‚«
-        float fFinalPower = 0.0f;                                         // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹å‘ã
+        float fFinalPower = 0.0f;                                         // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
         D3DXVECTOR3 posOld = GetPosOld();
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        // ‘Oi
+        // å‰é€²
         playerPos.x += -sinf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
 
-        // Žc‘œ‚ðŽc‚·
+        // æ®‹åƒã‚’æ®‹ã™
         if (m_nCntAttackTime % CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME == 0)
         {
             CModelEffect*pAfterimage = CModelEffect::Create(27, posOld, playerRot, CARRIER_GROUND_AFTERIMAGE_COLOR, CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE, true);
             pAfterimage->SetAdditiveSynthesis();
         }
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         if (IsHitCloseRangeAttack(playerPos, playerPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             CItem::Create(CItem::TYPE_DENTI_5, posOld, CARRIER_GROUND_CREATE_ENERGY);
@@ -871,21 +871,21 @@ void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
     }
     else if (m_nCntAttackTime > CARRIER_GROUND_START_FRAME)
     {
-        // ƒLƒƒƒ‰‚ÌŒü‚«‚ð•Ï‚¦‚é—P—\ƒtƒŒ[ƒ€
+        // ã‚­ãƒ£ãƒ©ã®å‘ãã‚’å¤‰ãˆã‚‹çŒ¶äºˆãƒ•ãƒ¬ãƒ¼ãƒ 
         SetRotDestY(m_controlInput.fPlayerAngle);
     }
 
-    // ˜A‘±UŒ‚‚Ì”»’è
+    // é€£ç¶šæ”»æ’ƒã®åˆ¤å®š
     if (m_nCntAttackTime <= CARRIER_GROUND_COMBO_FRAME)
     {
-        // ¶ƒXƒeƒBƒbƒN‚ªŒX‚¢‚Ä‚¢‚é‚È‚ç˜AŒ‚
+        // å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãŒå‚¾ã„ã¦ã„ã‚‹ãªã‚‰é€£æ’ƒ
         if (m_controlInput.bTiltedLeftStick)
         {
             ResetAttack();
             m_nCntAttackTime = CARRIER_GROUND_SECOND_ATTACK_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_CARRIER_GROUND2;
 
-            // Œü‚«‚ð‘¦À‚É•Ï‚¦‚ê‚é
+            // å‘ãã‚’å³åº§ã«å¤‰ãˆã‚Œã‚‹
             if (!m_controlInput.bPressR2)
             {
                 SetRotY(m_controlInput.fPlayerAngle);
@@ -896,40 +896,40 @@ void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
 }
 
 //=============================================================================
-// ƒLƒƒƒŠƒA[’nãUŒ‚2
-// Author : Œã“¡T”V•
+// ã‚­ãƒ£ãƒªã‚¢ãƒ¼åœ°ä¸Šæ”»æ’ƒ2
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkCarrierGround2(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime >= CARRIER_GROUND_END_FRAME)
     {
-        // ‚±‚ÌUŒ‚’†‚Í–³“G
+        // ã“ã®æ”»æ’ƒä¸­ã¯ç„¡æ•µ
         SetInvincible(true);
 
-        // •Ï”éŒ¾
-        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚éŒü‚«
-        float fFinalPower = 0.0f;                                         // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹å‘ã
+        float fFinalPower = 0.0f;                                         // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_RADIUS = CARRIER_GROUND_RADIUS;                // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = CARRIER_GROUND_HEIGHT;                // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = CARRIER_GROUND_BASE_DAMAGE;             // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
         D3DXVECTOR3 posOld = GetPosOld();
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        // ‘Oi
+        // å‰é€²
         playerPos.x += -sinf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(playerRot.y)*CARRIER_GROUND_DUSH_SPEED;
 
-        // Žc‘œ‚ðŽc‚·
+        // æ®‹åƒã‚’æ®‹ã™
         if (m_nCntAttackTime % CARRIER_GROUND_CREATE_AFTERIMAGE_FRAME == 0)
         {
             CModelEffect*pAfterimage = CModelEffect::Create(27, posOld, playerRot, CARRIER_GROUND_AFTERIMAGE_COLOR, CARRIER_GROUND_AFTERIMAGE_COLOR_CHANGE_RATE, true);
             pAfterimage->SetAdditiveSynthesis();
         }
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         if (IsHitCloseRangeAttack(playerPos, playerPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             CItem::Create(CItem::TYPE_DENTI_5, posOld, CARRIER_GROUND_CREATE_ENERGY);
@@ -942,51 +942,51 @@ void CPlayer::AtkCarrierGround2(D3DXVECTOR3& playerPos)
 }
 
 //=============================================================================
-// ƒLƒƒƒŠƒA[‹ó’†UŒ‚
-// Author : Œã“¡T”V•
+// ã‚­ãƒ£ãƒªã‚¢ãƒ¼ç©ºä¸­æ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= CARRIER_SKY_START_ATTACK_FRAME &&
         m_nCntAttackTime > CARRIER_SKY_CHANCE_FRAME)
     {
-        // ’…’n‚µ‚½‚çAŒ„‚ª”­¶‚µAUŒ‚‚ÍI—¹
+        // ç€åœ°ã—ãŸã‚‰ã€éš™ãŒç™ºç”Ÿã—ã€æ”»æ’ƒã¯çµ‚äº†
         if (m_bGround)
         {
             m_nCntAttackTime = CARRIER_SKY_CHANCE_FRAME;
 
-            // ‹ó’†UŒ‚‚ÌƒGƒtƒFƒNƒg
+            // ç©ºä¸­æ”»æ’ƒã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_0, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_1, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_IMPACT_WAVE_2, playerPos, playerPos);
         }
-        // –hŒä“–‚½‚è”»’è‚Ì‘å‚«‚³‚ðŽæ“¾
+        // é˜²å¾¡å½“ãŸã‚Šåˆ¤å®šã®å¤§ãã•ã‚’å–å¾—
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
 
-        // •Ï”éŒ¾
-        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ‚¸‚ç‚·ˆÊ’u
-        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // UŒ‚”­¶ˆÊ’u
-        float fFinalPower = 0.0f;                                          // ÅI“I‚ÈUŒ‚—Í
-        const float ATTACK_EMIT_DISTANCE = CARRIER_SKY_EMIT_DISTANCE;      // UŒ‚”­¶‹——£
-        const float ATTACK_RADIUS = CARRIER_SKY_RADIUS;                    // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = CARRIER_SKY_HEIGHT;                    // UŒ‚‚Ì‚‚³
-        const float BASE_DAMAGE = CARRIER_SKY_BASE_DAMAGE;                 // Šî–{ƒ_ƒ[ƒW
+        // å¤‰æ•°å®£è¨€
+        D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                             // ãšã‚‰ã™ä½ç½®
+        D3DXVECTOR3 attackPos = DEFAULT_VECTOR;                            // æ”»æ’ƒç™ºç”Ÿä½ç½®
+        float fFinalPower = 0.0f;                                          // æœ€çµ‚çš„ãªæ”»æ’ƒåŠ›
+        const float ATTACK_EMIT_DISTANCE = CARRIER_SKY_EMIT_DISTANCE;      // æ”»æ’ƒç™ºç”Ÿè·é›¢
+        const float ATTACK_RADIUS = CARRIER_SKY_RADIUS;                    // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = CARRIER_SKY_HEIGHT;                    // æ”»æ’ƒã®é«˜ã•
+        const float BASE_DAMAGE = CARRIER_SKY_BASE_DAMAGE;                 // åŸºæœ¬ãƒ€ãƒ¡ãƒ¼ã‚¸
 
-        // UŒ‚”­¶ˆÊ’u‚ð‚¸‚ç‚·
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’ãšã‚‰ã™
         slidePos.y += ATTACK_EMIT_DISTANCE;
 
-        // UŒ‚”­¶ˆÊ’u‚ðŒˆ‚ß‚é
+        // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’æ±ºã‚ã‚‹
         attackPos = playerPos + slidePos;
 
-        // UŒ‚—Í‚ðl—¶
+        // æ”»æ’ƒåŠ›ã‚’è€ƒæ…®
         fFinalPower = BASE_DAMAGE;
 
-        // —Ž‰º
+        // è½ä¸‹
         move.y -= CARRIER_SKY_UP_VALUE;
 
-        // “–‚½‚Á‚½‚©‚Ç‚¤‚©
+        // å½“ãŸã£ãŸã‹ã©ã†ã‹
         IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
 #ifdef COLLISION_TEST
@@ -1000,10 +1000,15 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         move.x = 0.0f;
         move.z = 0.0f;
 
-        // “G‚ðˆø‚«Šñ‚¹‚é’e‚ð¶¬
+        // æ•µã‚’å¼•ãå¯„ã›ã‚‹å¼¾ã‚’ç”Ÿæˆ
         if (m_nCntAttackTime == CARRIER_SKY_START_WIND_FRAME)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
+
+            CEffect3D::Emit(CEffectData::TYPE_WIND_0, windPos, windPos);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+
             CBullet*pBullet = CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
             pBullet->SetWhoContribution(m_nIdxCreate);
         }
@@ -1011,28 +1016,28 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 }
 
 //=============================================================================
-// ƒ^ƒ“ƒN’nãUŒ‚1_‚\‚¦
-// Author : Œã“¡T”V•
+// ã‚¿ãƒ³ã‚¯åœ°ä¸Šæ”»æ’ƒ1_ç›¾æ§‹ãˆ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkTankGround1(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= TANK_GROUND1_CREATE_SHIELD_FRAME && m_nCntAttackTime > 1)
     {
-        // ƒX[ƒp[ƒA[ƒ}[
+        // ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¢ãƒ¼ãƒžãƒ¼
         SetTakeKnockBack(false);
 
-        // ƒK[ƒh’†
+        // ã‚¬ãƒ¼ãƒ‰ä¸­
         m_bUsingGuard = true;
 
-        // ˆÚ“®‚Å‚«‚é
+        // ç§»å‹•ã§ãã‚‹
         if (m_controlInput.bTiltedLeftStick)
         {
             playerPos.x += sinf(m_controlInput.fLeftStickAngle)*TANK_GROUND1_WALK_SPEED;
             playerPos.z += cosf(m_controlInput.fLeftStickAngle)*TANK_GROUND1_WALK_SPEED;
         }
 
-        // ’ÊíUŒ‚‚ÅƒLƒƒƒ“ƒZƒ‹‰Â”\
+        // é€šå¸¸æ”»æ’ƒã§ã‚­ãƒ£ãƒ³ã‚»ãƒ«å¯èƒ½
         if (m_controlInput.bTriggerX)
         {
             ResetAttack();
@@ -1049,23 +1054,23 @@ void CPlayer::AtkTankGround1(D3DXVECTOR3& playerPos)
 }
 
 //=============================================================================
-// ƒ^ƒ“ƒN’nãUŒ‚2_”š”­’e
-// Author : Œã“¡T”V•
+// ã‚¿ãƒ³ã‚¯åœ°ä¸Šæ”»æ’ƒ2_çˆ†ç™ºå¼¾
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkTankGround2(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
     if (m_nCntAttackTime == TANK_GROUND2_FIRE_FRAME)
     {
-        // ‚±‚ÌUŒ‚’†‚Í–³“G
+        // ã“ã®æ”»æ’ƒä¸­ã¯ç„¡æ•µ
         SetInvincible(true);
 
-        // ”­ŽËŠp“xAˆÊ’u‚ðŽæ“¾
+        // ç™ºå°„è§’åº¦ã€ä½ç½®ã‚’å–å¾—
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
         D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
         D3DXVECTOR3 firePos = playerPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
 
-        // ƒK[ƒh‰ñ”‚É‰ž‚¶‚ÄA”­ŽË‚·‚éƒ^ƒCƒv‚ð•Ï‚¦‚é
+        // ã‚¬ãƒ¼ãƒ‰å›žæ•°ã«å¿œã˜ã¦ã€ç™ºå°„ã™ã‚‹ã‚¿ã‚¤ãƒ—ã‚’å¤‰ãˆã‚‹
         CBullet *pBullet = NULL;
         if (m_nCntGuards < TANK_GROUND1_LV2)
         {
@@ -1084,31 +1089,31 @@ void CPlayer::AtkTankGround2(D3DXVECTOR3& playerPos)
             pBullet->SetWhoContribution(m_nIdxCreate);
         }
 
-        // Œ‚‚Ä‚½‚È‚çAƒK[ƒh‰ñ”‚ðƒŠƒZƒbƒg
+        // æ’ƒã¦ãŸãªã‚‰ã€ã‚¬ãƒ¼ãƒ‰å›žæ•°ã‚’ãƒªã‚»ãƒƒãƒˆ
         m_nCntGuards = 0;
     }
     else if (m_nCntAttackTime > TANK_GROUND2_FIRE_FRAME)
     {
-        // Œ‚‚Â‚Ü‚Å‚Í–³“G
+        // æ’ƒã¤ã¾ã§ã¯ç„¡æ•µ
         SetInvincible(true);
     }
 }
 
 //=============================================================================
-// ƒ^ƒ“ƒN‚ªƒK[ƒh’†‚Éƒ_ƒ[ƒW‚ðŽó‚¯‚éˆ—
-// Author : Œã“¡T”V•
+// ã‚¿ãƒ³ã‚¯ãŒã‚¬ãƒ¼ãƒ‰ä¸­ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹å‡¦ç†
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, bool bUseKnockBack, int effectType)
 {
-    // ˆÊ’u‚©‚çƒ_ƒ[ƒW‚Ö‚ÌŒü‚«‚ðŽæ“¾
+    // ä½ç½®ã‹ã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ã¸ã®å‘ãã‚’å–å¾—
     D3DXVECTOR3 myPos = GetPos();
-    float fAngleToDamagePos = D3DXToDegree(GetAngleToTargetXZ(damageOldPos, myPos));  // ƒ_ƒ[ƒW‚Ö‚ÌŠp“x
+    float fAngleToDamagePos = D3DXToDegree(GetAngleToTargetXZ(damageOldPos, myPos));  // ãƒ€ãƒ¡ãƒ¼ã‚¸ã¸ã®è§’åº¦
     if (fAngleToDamagePos < 0.0f)
     {
         fAngleToDamagePos += 360.0f;
     }
 
-    // Ž©‹@‚ÌŒü‚«‚ðŽæ“¾
+    // è‡ªæ©Ÿã®å‘ãã‚’å–å¾—
     D3DXVECTOR3 myRot = GetRot();
     float fPlayerAngle = D3DXToDegree(myRot.y);
     if (fPlayerAngle < 0.0f)
@@ -1116,11 +1121,11 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
         fPlayerAngle += 360.0f;
     }
 
-    // ƒ_ƒ[ƒWŒü‚«‚ªƒK[ƒh”ÍˆÍ“à‚É‚¨‚³‚Ü‚Á‚Ä‚¢‚é‚È‚ç
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸å‘ããŒã‚¬ãƒ¼ãƒ‰ç¯„å›²å†…ã«ãŠã•ã¾ã£ã¦ã„ã‚‹ãªã‚‰
     if (fAngleToDamagePos <= fPlayerAngle + (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f)&&
         fAngleToDamagePos >= fPlayerAngle - (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f))
     {
-        // ƒK[ƒh‰ñ”‰ÁŽZi2‰ñ‚Éˆê‰ñ‚ÌƒK[ƒh‚ÅvŒ£“x‚ð“¾‚éj
+        // ã‚¬ãƒ¼ãƒ‰å›žæ•°åŠ ç®—ï¼ˆ2å›žã«ä¸€å›žã®ã‚¬ãƒ¼ãƒ‰ã§è²¢çŒ®åº¦ã‚’å¾—ã‚‹ï¼‰
         m_nCntGuards++;
         if (m_nCntGuards % 2 == 0)
         {
@@ -1131,45 +1136,45 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
             m_nCntGuards = TANK_GROUND1_LV3;
         }
 
-        // ƒK[ƒhƒGƒtƒFƒNƒg”­¶
+        // ã‚¬ãƒ¼ãƒ‰ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
 
-        // ƒK[ƒh¬Œ÷‚µ‚½‚½‚ßAŠÖ”‚ð”²‚¯‚é
+        // ã‚¬ãƒ¼ãƒ‰æˆåŠŸã—ãŸãŸã‚ã€é–¢æ•°ã‚’æŠœã‘ã‚‹
         return true;
     }
 
-    // ƒ_ƒ[ƒW‚ðŽó‚¯‚é
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
     return TakeDamage(fDamage, damagePos, damageOldPos, OBJTYPE_ENEMY, bUseKnockBack, effectType);
 }
 
 //=============================================================================
-// ƒ^ƒ“ƒN‹ó’†UŒ‚
-// Author : Œã“¡T”V•
+// ã‚¿ãƒ³ã‚¯ç©ºä¸­æ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= TANK_SKY_START_FRAME &&
         m_nCntAttackTime >= TANK_SKY_END_FRAME)
     {
-        // ’§”­ƒGƒtƒFƒNƒg
+        // æŒ‘ç™ºã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
         if (m_nCntAttackTime == TANK_SKY_START_FRAME)
         {
             CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));
         }
 
-        // ˆÚ“®‚Å‚«‚È‚¢
+        // ç§»å‹•ã§ããªã„
         move = DEFAULT_VECTOR;
 
-        // ‚±‚ÌUŒ‚’†‚Í–³“G
+        // ã“ã®æ”»æ’ƒä¸­ã¯ç„¡æ•µ
         SetInvincible(true);
 
-        // •Ï”éŒ¾
-        const float ATTACK_RADIUS = TANK_SKY_RADIUS;    // UŒ‚‚Ì‘å‚«‚³
-        const float ATTACK_HEIGHT = TANK_SKY_HEIGHT;    // UŒ‚‚Ì‚‚³
-        int flag = 0;                                   // ‹ßÚUŒ‚‚Ìƒtƒ‰ƒO
+        // å¤‰æ•°å®£è¨€
+        const float ATTACK_RADIUS = TANK_SKY_RADIUS;    // æ”»æ’ƒã®å¤§ãã•
+        const float ATTACK_HEIGHT = TANK_SKY_HEIGHT;    // æ”»æ’ƒã®é«˜ã•
+        int flag = 0;                                   // è¿‘æŽ¥æ”»æ’ƒã®ãƒ•ãƒ©ã‚°
         D3DXVECTOR3 tauntPos = D3DXVECTOR3(playerPos.x, 0.0f, playerPos.z);
 
-        // ’§”­‚Ì“–‚½‚è”»’è
+        // æŒ‘ç™ºã®å½“ãŸã‚Šåˆ¤å®š
         BITON(flag, CLOSE_ATTACK_FLAG_TAUNT);
         IsHitCloseRangeAttack(tauntPos, tauntPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), 0.0f, flag);
 
@@ -1179,28 +1184,28 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
     }
     else if (m_nCntAttackTime > CARRIER_GROUND_START_FRAME)
     {
-        // ˆÚ“®‚Å‚«‚È‚¢
+        // ç§»å‹•ã§ããªã„
         move = DEFAULT_VECTOR;
     }
 }
 
 //=============================================================================
-// ƒq[ƒ‰[’nãUŒ‚
-// Author : Œã“¡T”V•
+// ãƒ’ãƒ¼ãƒ©ãƒ¼åœ°ä¸Šæ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
     if (m_nCntAttackTime == HEALER_GROUND_FIRE_FRAME)
     {
-        // ”­ŽËŠp“xAˆÊ’u‚ðŽæ“¾
+        // ç™ºå°„è§’åº¦ã€ä½ç½®ã‚’å–å¾—
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
         D3DXVECTOR3 collisionSize = GetCollisionSizeDefence();
         D3DXVECTOR3 firePos = playerPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
         CBullet *pBullet = CBullet::Create(CBullet::TYPE_HEALER_GROUND, firePos, moveAngle, OBJTYPE_PLAYER);
         if (pBullet)
         {
-            // Œ»Ý‚ÌƒGƒiƒW[—Ê‚É‰ž‚¶‚ÄAƒ_ƒ[ƒW‚ðÝ’è‚·‚é
+            // ç¾åœ¨ã®ã‚¨ãƒŠã‚¸ãƒ¼é‡ã«å¿œã˜ã¦ã€ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è¨­å®šã™ã‚‹
             float fDamage = HEALER_GROUND_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_GROUND_ADD_DAMAGE_RATE);
             pBullet->SetDamage(fDamage);
             float fHealing = HEALER_GROUND_BASE_HEALING + (m_fCurrentEnergy * HEALER_GROUND_ADD_HEALING_RATE);
@@ -1210,58 +1215,58 @@ void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
     }
     else if (m_nCntAttackTime > HEALER_GROUND_FIRE_FRAME)
     {
-        // ƒLƒƒƒ‰‚ÌŒü‚«‚ð•Ï‚¦‚é—P—\ƒtƒŒ[ƒ€
+        // ã‚­ãƒ£ãƒ©ã®å‘ãã‚’å¤‰ãˆã‚‹çŒ¶äºˆãƒ•ãƒ¬ãƒ¼ãƒ 
         SetRotDestY(m_controlInput.fPlayerAngle);
     }
 }
 
 //=============================================================================
-// ƒq[ƒ‰[‹ó’†UŒ‚
-// Author : Œã“¡T”V•
+// ãƒ’ãƒ¼ãƒ©ãƒ¼ç©ºä¸­æ”»æ’ƒ
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //=============================================================================
 void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
 {
-    // UŒ‚”­¶ƒtƒŒ[ƒ€‚ÆI—¹ƒtƒŒ[ƒ€‚ðl—¶
+    // æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã¨çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è€ƒæ…®
     if (m_nCntAttackTime <= HEALER_SKY_START_FRAME &&
         m_nCntAttackTime >= HEALER_SKY_END_FRAME)
     {
-        // ˆÚ“®‚Å‚«‚È‚¢
+        // ç§»å‹•ã§ããªã„
         move = DEFAULT_VECTOR;
 
-        // ‰ñ•œ–‚•ûw‚ðƒAƒNƒeƒBƒu‰»
+        // å›žå¾©é­”æ–¹é™£ã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ–åŒ–
         if (m_nCntAttackTime == HEALER_SKY_START_FRAME)
         {
-            // •Ï”éŒ¾
-            D3DXVECTOR3 playerRot = CCharacter::GetRot();                 // ƒvƒŒƒCƒ„[‚ÌŒü‚¢‚Ä‚¢‚éŒü‚«
-            D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                        // ‚¸‚ç‚·ˆÊ’u
-            D3DXVECTOR3 bulletPos = DEFAULT_VECTOR;                       // UŒ‚”­¶ˆÊ’u
-            const float ATTACK_EMIT_DISTANCE = HEALER_SKY_EMIT_DISTANCE;  // UŒ‚”­¶‹——£
+            // å¤‰æ•°å®£è¨€
+            D3DXVECTOR3 playerRot = CCharacter::GetRot();                 // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã„ã¦ã„ã‚‹å‘ã
+            D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                        // ãšã‚‰ã™ä½ç½®
+            D3DXVECTOR3 bulletPos = DEFAULT_VECTOR;                       // æ”»æ’ƒç™ºç”Ÿä½ç½®
+            const float ATTACK_EMIT_DISTANCE = HEALER_SKY_EMIT_DISTANCE;  // æ”»æ’ƒç™ºç”Ÿè·é›¢
 
-            // UŒ‚”­¶ˆÊ’u‚ð‚¸‚ç‚·
+            // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’ãšã‚‰ã™
             slidePos.x = ATTACK_EMIT_DISTANCE * -sinf(playerRot.y);
             slidePos.z = ATTACK_EMIT_DISTANCE * -cosf(playerRot.y);
 
-            // UŒ‚”­¶ˆÊ’u‚ðŒˆ‚ß‚é
+            // æ”»æ’ƒç™ºç”Ÿä½ç½®ã‚’æ±ºã‚ã‚‹
             bulletPos = D3DXVECTOR3(playerPos.x, 0.0f, playerPos.z) + slidePos;
 
-            // Œ»Ý‚ÌƒGƒiƒW[—Ê‚É‰ž‚¶‚ÄAƒ_ƒ[ƒW‚ðÝ’è‚·‚é
+            // ç¾åœ¨ã®ã‚¨ãƒŠã‚¸ãƒ¼é‡ã«å¿œã˜ã¦ã€ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’è¨­å®šã™ã‚‹
             float fDamage = HEALER_SKY_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_SKY_ADD_DAMAGE_RATE);
             float fHealing = HEALER_SKY_BASE_HEALING + (m_fCurrentEnergy * HEALER_SKY_ADD_HEALING_RATE);
 
-            // ’l‚ð”½‰f
+            // å€¤ã‚’åæ˜ 
             if (m_pHealingCircle)
             {
                 m_pHealingCircle->SetPos(bulletPos);
                 m_pHealingCircle->SetDamage(fDamage);
                 m_pHealingCircle->SetHealValue(fHealing);
-                m_pHealingCircle->SetCntTime(0);        // ƒJƒEƒ“ƒ^‚ðƒŠƒZƒbƒg
-                m_pHealingCircle->SetUseUpdate(true);   // XVƒtƒ‰ƒO‚ðƒŠƒZƒbƒg
+                m_pHealingCircle->SetCntTime(0);        // ã‚«ã‚¦ãƒ³ã‚¿ã‚’ãƒªã‚»ãƒƒãƒˆ
+                m_pHealingCircle->SetUseUpdate(true);   // æ›´æ–°ãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
             }
         }
     }
     else if (m_nCntAttackTime > HEALER_SKY_START_FRAME)
     {
-        // ˆÚ“®§ŒÀ
+        // ç§»å‹•åˆ¶é™
         move.x *= HEALER_SKY_MOVE_LIMIT;
         move.z *= HEALER_SKY_MOVE_LIMIT;
         move.y = 0.0f;

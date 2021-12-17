@@ -1,86 +1,87 @@
 //======================================================================================
 //
-// ’eˆ— (bullet.h)
-// Author : Œã“¡T”V•
+// å¼¾å‡¦ç† (bullet.h)
+// Author : å¾Œè—¤æ…Žä¹‹åŠ©
 //
 //======================================================================================
 #ifndef _BULLET_H_
 #define _BULLET_H_
 
 //================================================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //================================================
 #include "main.h"
 #include "scene3d.h"
 #include "effect3d.h"
+#include "effectData.h"
 
 //================================================
-// ƒ}ƒNƒ’è‹`
-//================================================
-
-//================================================
-// ‘O•ûéŒ¾
+// ãƒžã‚¯ãƒ­å®šç¾©
 //================================================
 
 //================================================
-// ƒNƒ‰ƒXéŒ¾
+// å‰æ–¹å®£è¨€
 //================================================
 
-// ’eƒNƒ‰ƒX
+//================================================
+// ã‚¯ãƒ©ã‚¹å®£è¨€
+//================================================
+
+// å¼¾ã‚¯ãƒ©ã‚¹
 class CBullet : public CScene3D
 {
 public:
     CBullet();
     ~CBullet();
 
-    HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // ‰Šú‰»ˆ—
-    void Uninit(void);                                                                  // I—¹ˆ—
-    void Update(void);                                                                  // XVˆ—
-    void Draw(void);                                                                    // •`‰æˆ—
-    static CBullet *Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJTYPE whoShot, float fStrength = 1.0f, D3DXVECTOR3 rot = DEFAULT_VECTOR);           // ¶¬ˆ—
+    HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // åˆæœŸåŒ–å‡¦ç†
+    void Uninit(void);                                                                  // çµ‚äº†å‡¦ç†
+    void Update(void);                                                                  // æ›´æ–°å‡¦ç†
+    void Draw(void);                                                                    // æç”»å‡¦ç†
+    static CBullet *Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJTYPE whoShot, float fStrength = 1.0f, D3DXVECTOR3 rot = DEFAULT_VECTOR);           // ç”Ÿæˆå‡¦ç†
 
-    // ’e‚ÌŽí—Þ
+    // å¼¾ã®ç¨®é¡ž
     typedef enum
     {
-        TYPE_ARMY_ATTACK = 0,   // ƒA[ƒ~[‚ÌUŒ‚
-        TYPE_THUNDER,           // —‹
-        TYPE_RAILGUN_LV2,       // “dŽ¥–Clv2
-        TYPE_RAILGUN_LV3,       // “dŽ¥–Clv3
-        TYPE_KAMIKAZE_EX,       // ƒJƒ~ƒJƒ[‚Ì”š”­
-        TYPE_CANNON_ATTACK,     // ƒLƒƒƒmƒ“‚ÌUŒ‚
-        TYPE_COMMANDER_ATTACK,  // ƒRƒ}ƒ“ƒ_[‚ÌUŒ‚
-        TYPE_HUNTER_GROUND,     // ƒnƒ“ƒ^[‚Ì’nãUŒ‚
-        TYPE_HUNTER_SKY,        // ƒnƒ“ƒ^[‚Ì‹ó’†UŒ‚
-        TYPE_CARRIER_SKY,       // ƒLƒƒƒŠƒA[‚Ì‹ó’†UŒ‚
-        TYPE_TANK_GROUND_LV1,   // ƒ^ƒ“ƒN‚Ì’nãUŒ‚_LV1
-        TYPE_TANK_GROUND_LV2,   // ƒ^ƒ“ƒN‚Ì’nãUŒ‚_LV2
-        TYPE_TANK_GROUND_LV3,   // ƒ^ƒ“ƒN‚Ì’nãUŒ‚_LV3
-        TYPE_TANK_GROUND_EX,    // ƒ^ƒ“ƒN‚Ì’nãUŒ‚‚Ì”š”­
-        TYPE_HEALER_GROUND,     // ƒq[ƒ‰[‚Ì’nãUŒ‚
-        TYPE_HEALER_SKY,        // ƒq[ƒ‰[‚Ì‹ó’†UŒ‚
+        TYPE_ARMY_ATTACK = 0,   // ã‚¢ãƒ¼ãƒŸãƒ¼ã®æ”»æ’ƒ
+        TYPE_THUNDER,           // é›·
+        TYPE_RAILGUN_LV2,       // é›»ç£ç ²lv2
+        TYPE_RAILGUN_LV3,       // é›»ç£ç ²lv3
+        TYPE_KAMIKAZE_EX,       // ã‚«ãƒŸã‚«ã‚¼ã®çˆ†ç™º
+        TYPE_CANNON_ATTACK,     // ã‚­ãƒ£ãƒŽãƒ³ã®æ”»æ’ƒ
+        TYPE_COMMANDER_ATTACK,  // ã‚³ãƒžãƒ³ãƒ€ãƒ¼ã®æ”»æ’ƒ
+        TYPE_HUNTER_GROUND,     // ãƒãƒ³ã‚¿ãƒ¼ã®åœ°ä¸Šæ”»æ’ƒ
+        TYPE_HUNTER_SKY,        // ãƒãƒ³ã‚¿ãƒ¼ã®ç©ºä¸­æ”»æ’ƒ
+        TYPE_CARRIER_SKY,       // ã‚­ãƒ£ãƒªã‚¢ãƒ¼ã®ç©ºä¸­æ”»æ’ƒ
+        TYPE_TANK_GROUND_LV1,   // ã‚¿ãƒ³ã‚¯ã®åœ°ä¸Šæ”»æ’ƒ_LV1
+        TYPE_TANK_GROUND_LV2,   // ã‚¿ãƒ³ã‚¯ã®åœ°ä¸Šæ”»æ’ƒ_LV2
+        TYPE_TANK_GROUND_LV3,   // ã‚¿ãƒ³ã‚¯ã®åœ°ä¸Šæ”»æ’ƒ_LV3
+        TYPE_TANK_GROUND_EX,    // ã‚¿ãƒ³ã‚¯ã®åœ°ä¸Šæ”»æ’ƒã®çˆ†ç™º
+        TYPE_HEALER_GROUND,     // ãƒ’ãƒ¼ãƒ©ãƒ¼ã®åœ°ä¸Šæ”»æ’ƒ
+        TYPE_HEALER_SKY,        // ãƒ’ãƒ¼ãƒ©ãƒ¼ã®ç©ºä¸­æ”»æ’ƒ
     }TYPE;
 
-    // ‰½‚É“–‚½‚é‚©‚Ìƒtƒ‰ƒO
+    // ä½•ã«å½“ãŸã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
     typedef enum
     {
-        COLLISION_FLAG_NONE = 0,                    // ‚È‚µ
-        COLLISION_FLAG_ENEMY = 0x001 << 0,          // “G‚É“–‚½‚é
-        COLLISION_FLAG_PLAYER = 0x001 << 1,         // ƒvƒŒƒCƒ„[‚É“–‚½‚é
-        COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,      // ƒuƒƒbƒN‚É“–‚½‚ç‚È‚¢
-        COLLISION_FLAG_REFLECT_BLOCK = 0x001 << 3,  // ƒuƒƒbƒN‚Å’µ‚Ë•Ô‚é
-        COLLISION_FLAG_PULL_ENEMY = 0x001 << 4,     // “G‚ðˆø‚«Šñ‚¹‚é
-        COLLISION_FLAG_HEAL_PLAYER = 0x001 << 5,    // ƒvƒŒƒCƒ„[‚ð‰ñ•œ‚·‚é
-        COLLISION_FLAG_HEAL_ENEMY = 0x001 << 6 ,    // “G‚ð‰ñ•œ‚·‚é
+        COLLISION_FLAG_NONE = 0,                    // ãªã—
+        COLLISION_FLAG_ENEMY = 0x001 << 0,          // æ•µã«å½“ãŸã‚‹
+        COLLISION_FLAG_PLAYER = 0x001 << 1,         // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã‚‹
+        COLLISION_FLAG_OFF_BLOCK = 0x001 << 2,      // ãƒ–ãƒ­ãƒƒã‚¯ã«å½“ãŸã‚‰ãªã„
+        COLLISION_FLAG_REFLECT_BLOCK = 0x001 << 3,  // ãƒ–ãƒ­ãƒƒã‚¯ã§è·³ã­è¿”ã‚‹
+        COLLISION_FLAG_PULL_ENEMY = 0x001 << 4,     // æ•µã‚’å¼•ãå¯„ã›ã‚‹
+        COLLISION_FLAG_HEAL_PLAYER = 0x001 << 5,    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å›žå¾©ã™ã‚‹
+        COLLISION_FLAG_HEAL_ENEMY = 0x001 << 6 ,    // æ•µã‚’å›žå¾©ã™ã‚‹
     }COLLISION_FLAG;
 
     //=============================
-    // ƒQƒbƒ^[
+    // ã‚²ãƒƒã‚¿ãƒ¼
     //=============================
     D3DXVECTOR2 GetCollisionSize(void) { return m_collisionSize; }
     OBJTYPE GetWhoShot(void) { return m_whoShot; }
 
     //=============================
-    // ƒZƒbƒ^[
+    // ã‚»ãƒƒã‚¿ãƒ¼
     //=============================
     void SetParam(int nIdx, float fValue) { m_afParam[nIdx] = fValue; }
     void SetDamage(float fDamage) { m_fDamage = fDamage; }
@@ -92,40 +93,39 @@ public:
     void SetWhoContribution(int nWho) { m_nWhoContribution = nWho; }
 
 private:
-    int m_type;                     // Ží—Þ
-    D3DXVECTOR2 m_collisionSize;    // Õ“ËƒTƒCƒY
-    D3DXVECTOR3 m_moveAngle;        // ˆÚ“®‚ÌŠp“x
-    float m_fSpeed;                 // ‘¬‚³
-    int m_collisionFlag;            // “–‚½‚è”»’è‚Ìƒtƒ‰ƒO
+    int m_type;                     // ç¨®é¡ž
+    D3DXVECTOR2 m_collisionSize;    // è¡çªã‚µã‚¤ã‚º
+    D3DXVECTOR3 m_moveAngle;        // ç§»å‹•ã®è§’åº¦
+    float m_fSpeed;                 // é€Ÿã•
+    int m_collisionFlag;            // å½“ãŸã‚Šåˆ¤å®šã®ãƒ•ãƒ©ã‚°
 
-    D3DXVECTOR3 m_posOld;           // 1F‘O‚ÌˆÊ’u
-    int m_nLife;                    // Žõ–½
-    float m_fDamage;                // ƒ_ƒ[ƒW
+    D3DXVECTOR3 m_posOld;           // 1Få‰ã®ä½ç½®
+    int m_nLife;                    // å¯¿å‘½
+    float m_fDamage;                // ãƒ€ãƒ¡ãƒ¼ã‚¸
 
-    int m_nCntTime;                 // ¶¬‚³‚ê‚Ä‚©‚ç‚ÌŽžŠÔ‚ð”‚¦‚é
-    bool m_bUseDraw;                // •`‰æ‚·‚é‚©‚Ç‚¤‚©
+    int m_nCntTime;                 // ç”Ÿæˆã•ã‚Œã¦ã‹ã‚‰ã®æ™‚é–“ã‚’æ•°ãˆã‚‹
+    bool m_bUseDraw;                // æç”»ã™ã‚‹ã‹ã©ã†ã‹
 
-    bool m_bHitErase;               // “–‚½‚Á‚½Žž‚ÉÁ‚·‚©‚Ç‚¤‚©
-    CEffect3D *m_pEffect3d_Shadow;  // ‰e‚Ö‚Ìƒ|ƒCƒ“ƒ^
-    bool m_bBreakGoalGate;          // ƒS[ƒ‹ƒQ[ƒg‚ð‰ó‚·‚©‚Ç‚¤‚©
-    bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // ‘½’iƒqƒbƒg‰ñ”ð‚ðŽg‚¤‚©‚Ç‚¤‚©
-    float m_fStrength;              // ‹­‚³
+    bool m_bHitErase;               // å½“ãŸã£ãŸæ™‚ã«æ¶ˆã™ã‹ã©ã†ã‹
+    CEffect3D *m_pEffect3d_Shadow;  // å½±ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+    bool m_bBreakGoalGate;          // ã‚´ãƒ¼ãƒ«ã‚²ãƒ¼ãƒˆã‚’å£Šã™ã‹ã©ã†ã‹
+    bool m_abUseAvoidMultipleHits[CHARACTER_IDX_MAX]; // å¤šæ®µãƒ’ãƒƒãƒˆå›žé¿ã‚’ä½¿ã†ã‹ã©ã†ã‹
+    float m_fStrength;              // å¼·ã•
 
-    float m_afParam[PARAM_DATA_MAX];// ”Ä—pƒf[ƒ^
-    OBJTYPE m_whoShot;              // ’N‚ªŒ‚‚Á‚½‚©
-    float m_fHealValue;             // ‰ñ•œ—Ê
-    bool m_bUseUpdate;              // XVˆ—‚ðŽg‚¤‚©‚Ç‚¤‚©
-    bool m_bUseUninit;              // I—¹ˆ—‚ðŽg‚¤‚©‚Ç‚¤‚©
-    bool m_bUseKnockBack;           // ƒmƒbƒNƒoƒbƒN‚ðŽg‚¤‚©‚Ç‚¤‚©
+    float m_afParam[PARAM_DATA_MAX];// æ±Žç”¨ãƒ‡ãƒ¼ã‚¿
+    OBJTYPE m_whoShot;              // èª°ãŒæ’ƒã£ãŸã‹
+    float m_fHealValue;             // å›žå¾©é‡
+    bool m_bUseUpdate;              // æ›´æ–°å‡¦ç†ã‚’ä½¿ã†ã‹ã©ã†ã‹
+    bool m_bUseUninit;              // çµ‚äº†å‡¦ç†ã‚’ä½¿ã†ã‹ã©ã†ã‹
+    bool m_bUseKnockBack;           // ãƒŽãƒƒã‚¯ãƒãƒƒã‚¯ã‚’ä½¿ã†ã‹ã©ã†ã‹
 
-    int m_trailEffectType;          // ‹OÕƒGƒtƒFƒNƒg‚ÌŽí—Þ
-    int m_nCntTrailInterval;        // ‹OÕ‚Ì”­¶ŠÔŠu
-    int m_nCntTrailEffect;          // ‹OÕ‚ÌƒJƒEƒ“ƒ^
-    int m_nWhoContribution;         // ’N‚ÌvŒ£‚©
-    int m_nHitContributionPoint;    // “–‚½‚Á‚½Û‚ÌvŒ£“x
-
+    CEffectData::IntervalEffect m_Effect;   // è»Œè·¡ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æƒ…å ±
+    
+    int m_nWhoContribution;         // èª°ã®è²¢çŒ®ã‹
+    int m_nHitContributionPoint;    // å½“ãŸã£ãŸéš›ã®è²¢çŒ®åº¦
+    
     //=============================
-    // Ží—Þ‚²‚Æ‚Ìˆ—
+    // ç¨®é¡žã”ã¨ã®å‡¦ç†
     //=============================
     void SetupInfoByType(float fStrength, const D3DXVECTOR3 pos);
     void CommanderAttackMove(D3DXVECTOR3 &myPos);
@@ -133,7 +133,7 @@ private:
     bool HealerSkyUseCollision(void);
 
     //=============================
-    // ‚±‚ÌƒNƒ‰ƒX“à‚Å‚Ì‚ÝŽg‚¤ˆ—
+    // ã“ã®ã‚¯ãƒ©ã‚¹å†…ã§ã®ã¿ä½¿ã†å‡¦ç†
     //=============================
     void Collision(D3DXVECTOR3 &bulletPos);
 };
