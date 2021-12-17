@@ -16,6 +16,8 @@
 #include "player.h"
 #include "fileio.h"
 #include "json.h"
+#include "enemy.h"
+
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -49,6 +51,8 @@ CModelData::CModelData()
 
     memset(m_aPartsRate, 0, sizeof(m_aPartsRate));
     m_nCntLoadModelByTxt = 0;
+
+    m_nameIndexMap.clear();
 }
 
 //=============================================================================
@@ -67,7 +71,7 @@ HRESULT CModelData::Init(void)
 {
 
 	HRESULT hr = LoadModelDataFromTxt(MODEL_DATA_FILENAME);
-	LoadModelDataFromJson(MAP_MODEL_FILENAME);
+	//LoadModelDataFromJson(MAP_MODEL_FILENAME);
     // モデルの初期位置データ読み込み
     LoadModelPosDef();
 
@@ -569,6 +573,34 @@ CModelData::PartsRate* CModelData::GetPartsRate(const int nNum)
     }
 
     return NULL;
+}
+
+//=============================================================================
+// 名前から敵の種類を読み込む
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+int CModelData::GetEnemyTypeByName(std::string name)
+{
+    int nReturnNumber = 0;
+
+    if (name.compare("data/model/army.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_ARMY;
+    }
+    else if (name.compare("data/model/kamikaze.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_KAMIKAZE;
+    }
+    else if (name.compare("data/model/cannon.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_CANNON;
+    }
+    else if (name.compare("data/model/commander.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_COMMANDER;
+    }
+
+    return nReturnNumber;
 }
 
 //=============================================================================
