@@ -14,6 +14,7 @@
 #include "character.h"
 #include "model.h"
 #include "player.h"
+#include "effectData.h"
 
 //================================================
 // マクロ定義
@@ -223,6 +224,8 @@ private:
 
     bool m_bUseCommonAtkFollow;              // 追従攻撃を使用するかどうか
     TARGET_TREND m_targetTrend;              // ターゲット傾向
+
+    CEffectData::IntervalEffect m_Effect;   // カミカゼの火花用エフェクト
 
     //=============================
     // 種類ごとの処理

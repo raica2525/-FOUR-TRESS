@@ -85,6 +85,10 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
+
+    m_Effect.type = NOT_EXIST;
+    m_Effect.interval = 1;
+    m_Effect.nCntTrail = 0;
 }
 
 //=============================================================================
@@ -688,6 +692,17 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             AtkArmy(myPos);
             break;
         case TYPE_KAMIKAZE:
+
+            // ”š’e‚©‚ç‰Î‰Ô‚ðo‚·
+            if (m_Effect.type != NOT_EXIST)
+            {
+                m_Effect.nCntTrail++;
+                if (m_Effect.nCntTrail >= m_Effect.interval)
+                {
+                    m_Effect.nCntTrail = 0;
+                    CEffect3D::Emit(m_Effect.type,GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE), GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE));
+                }
+            }
             AtkKamikaze(myPos);
             break;
         case TYPE_CANNON:

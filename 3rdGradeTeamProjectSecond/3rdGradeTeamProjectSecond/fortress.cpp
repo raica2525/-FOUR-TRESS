@@ -52,6 +52,15 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_nCntTime = 0;
 
     m_bDisp = true;
+
+    // エフェクト
+    for (int nCnt = 0; nCnt < EFFECT_MAX; nCnt++)
+    {
+        m_Effect[nCnt].type = NOT_EXIST;
+        m_Effect[nCnt].interval = 1;
+        m_Effect[nCnt].nCntTrail = 0;
+    }
+
 }
 
 //=============================================================================
@@ -73,6 +82,7 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     m_fSpeed = 2.5f;
     SetUpLife(1000.0f);
     SetTakeKnockBack(false);
+
     // パーツ数を設定、モデルをバインド、アニメーションをバインド
     CCharacter::SetPartNum(PARTS_MAX);
     CCharacter::BindParts(PARTS_BODY, 55);
@@ -86,6 +96,11 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     // キャラクターに反映
     CCharacter::Init(pos, DEFAULT_SCALE);
 
+    // エフェクトの設定
+    m_Effect[EFFECT_SMOKE].type = CEffectData::TYPE_SMOKE;    // エフェクトの種類
+    m_Effect[EFFECT_SMOKE].interval = 18;                     // エフェクトの発生感覚
+    m_Effect[EFFECT_LIGHTNING].type = CEffectData::TYPE_LIGHTNING_RANGE;    // エフェクトの種類
+    m_Effect[EFFECT_LIGHTNING].interval = 8;                     // エフェクトの発生感覚
     return S_OK;
 }
 
@@ -109,7 +124,7 @@ void CFortress::Update(void)
 
     // 位置を取得
     D3DXVECTOR3 myPos = GetPos();
-    
+
     // 道を探しているかどうか
     SearchRoad(myPos);
 
@@ -138,8 +153,23 @@ void CFortress::Update(void)
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
 
+    if (m_fChargeValue >= CHARGE_VALUE_LV1)//電磁法が打てる状態のとき電撃エフェクト発生
+    {
+        if (m_Effect[EFFECT_LIGHTNING].type != NOT_EXIST)
+        {
+            m_Effect[EFFECT_LIGHTNING].nCntTrail++;
+            if (m_Effect[EFFECT_LIGHTNING].nCntTrail >= m_Effect[EFFECT_LIGHTNING].interval)
+            {
+                m_Effect[EFFECT_LIGHTNING].nCntTrail = 0;
+                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING].type, myPos, myPos);
+            }
+        }
+    }
+
+float fLife = GetLife();// 移動要塞の体力取得
+
     // ライフがなくなったら
-    if (GetLife() <= 0.0f)
+    if (fLife <= 0.0f)
     {
         SetLife(0.0f);
 
@@ -153,6 +183,18 @@ void CFortress::Update(void)
 
             // 仮にリザルトに移行
             CFade::SetFade(CManager::MODE_RESULT);
+        }
+    }
+    else if (fLife <= 100.0f)        // HPが低いときに煙を発生させる(仮で100以下)
+    {
+        if (m_Effect[EFFECT_SMOKE].type != NOT_EXIST)
+        {
+            m_Effect[EFFECT_SMOKE].nCntTrail++;
+            if (m_Effect[EFFECT_SMOKE].nCntTrail >= m_Effect[EFFECT_SMOKE].interval)
+            {
+                m_Effect[EFFECT_SMOKE].nCntTrail = 0;
+                CEffect3D::Emit(m_Effect[EFFECT_SMOKE].type, myPos, myPos);
+            }
         }
     }
 }

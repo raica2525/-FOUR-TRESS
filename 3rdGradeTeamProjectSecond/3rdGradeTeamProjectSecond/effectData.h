@@ -80,7 +80,7 @@ public:
         TYPE_LANDING_FUGITIVE_DUST, // [35] 着地砂埃
         TYPE_JUMP_FUGITIVE_DUST,    // [36] ジャンプ砂埃
         TYPE_SPARK,                 // [37] 火花
-        TYPE_WALL_HIT_SHOCK,        // 壁バウンド衝撃波
+        TYPE_WALL_HIT_SHOCK,        // [38] ガードエフェクト
         TYPE_ABSORB,                // 立ち上がり吸収
         TYPE_READY_TO_FIGHT1,       // 準備完了1
         TYPE_READY_TO_FIGHT2,       // 準備完了2
@@ -146,6 +146,14 @@ public:
         bool bUseZBuffer;             // Zバッファをつかうかどうか
         int nAlphaTestBorder;         // αテストのボーダー
     }CreateInfo;    // 生成情報
+
+    // 一定間隔で出すエフェクトの構造体(工藤追加)
+    typedef struct
+    {
+        int type;          // エフェクトの種類
+        int interval;        // エフェクトの発生間隔
+        int nCntTrail;          // エフェクトのカウンタ
+    }IntervalEffect;
 
     HRESULT Init(void);
     void Uninit(void);

@@ -14,6 +14,7 @@
 #include "character.h"
 #include "model.h"
 #include "road.h"
+#include "effectData.h"
 
 //================================================
 // マクロ定義
@@ -44,6 +45,14 @@ public:
         PARTS_FIRE_POS,         // 発射位置
         PARTS_MAX,
     }PARTS;
+
+// 移動要塞で使用するエフェクトの種類(工藤追加)
+    typedef enum 
+    {
+        EFFECT_SMOKE=0,     // 煙
+        EFFECT_LIGHTNING,   // 電撃
+        EFFECT_MAX,
+    }EFFECT;
 
     HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // 初期化処理
     void Uninit(void);                                                                  // 終了処理
@@ -81,6 +90,8 @@ private:
     int m_nCntTime;             // 時間をカウント
 
     bool m_bDisp;               // 表示しているかどうか
+
+    CEffectData::IntervalEffect m_Effect[EFFECT_MAX];// エフェクト
 
     //=============================
     // このクラス内でのみ使う処理

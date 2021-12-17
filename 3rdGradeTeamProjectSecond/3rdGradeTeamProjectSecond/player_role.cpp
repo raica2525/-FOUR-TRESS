@@ -982,6 +982,10 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
             CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_0, { playerPos.x,0.0,playerPos.z}, { playerPos.x,0.0,playerPos.z });
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+
         }
     }
 }

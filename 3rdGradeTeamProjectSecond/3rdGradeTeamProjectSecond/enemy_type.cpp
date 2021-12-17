@@ -19,6 +19,7 @@
 #include "effect3d.h"
 #include "modelEffect.h"
 #include "bullet.h"
+#include "effectData.h"
 
 //========================================
 // マクロ定義
@@ -135,6 +136,9 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(KAMIKAZE_PARTS_BOMB, 49);
         CCharacter::BindParts(KAMIKAZE_PARTS_BOMB_CUBE, 50);
         CCharacter::LoadModelData("./data/ANIMATION/motion_kamikaze.txt");
+        m_Effect.type = CEffectData::TYPE_SPARK;
+        m_Effect.interval = 5;
+        m_Effect.nCntTrail = 0;
         break;
     case TYPE_CANNON:
         // 固有の情報
