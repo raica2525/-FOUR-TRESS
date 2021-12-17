@@ -1066,6 +1066,13 @@ CCharacter *CGame::GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, flo
 
     // ‹——£‚ªˆê”Ô‹ß‚¢ˆÚ“®—vÇ‚ª‹ß‚¢‚©”ä‚×‚é
     fKeepDistance = DISTANCE_INIT_VALUE;
+
+    // ¶‘¶‚µ‚Ä‚¢‚È‚¢‚È‚çAŠÖ”‚ð”²‚¯‚é
+    if (!m_pFortress->GetDisp())
+    {
+        return NULL;
+    }
+
     D3DXVECTOR3 fortressPos = m_pFortress->GetPos();
     float fDistanceToFortress = sqrtf(
         powf((myPos.x - fortressPos.x), 2.0f) +

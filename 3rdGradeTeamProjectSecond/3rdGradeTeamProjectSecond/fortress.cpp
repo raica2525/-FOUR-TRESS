@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// ç§»å‹•è¦å¡å‡¦ç† (fortress.cpp)
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ˆÚ“®—vÇˆ— (fortress.cpp)
+// Author : Œã“¡T”V•
 //
 //======================================================================================
 
 //========================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 //========================
 #include "fortress.h"
 #include "manager.h"
@@ -24,26 +24,30 @@
 #include "fade.h"
 
 //========================================
-// ãƒã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 //========================================
-// å¿…è¦ãƒãƒ£ãƒ¼ã‚¸é‡
+// •K—vƒ`ƒƒ[ƒW—Ê
 #define CHARGE_VALUE_LV1 50.0f
 #define CHARGE_VALUE_LV2 100.0f
 #define CHARGE_VALUE_LV3 150.0f
 
-// ç™ºå°„ã¾ã§ã®ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“
+// ”­Ë‚Ü‚Å‚Ìƒ`ƒƒ[ƒWŠÔ
 #define CHARGE_FIRE_FRAME_LV1 30
 #define CHARGE_FIRE_FRAME_LV2 60
 #define CHARGE_FIRE_FRAME_LV3 90
 
-// è²¢çŒ®åº¦
+// vŒ£“x
 #define CHARGE_POINT_LV1 5
 #define CHARGE_POINT_LV2 10
 #define CHARGE_POINT_LV3 15
 
+// ‘Ì—Íü‚è
+#define MAX_LIFE 1000.0f
+#define SMOKE_EFFECT_LIFE 250.0f
+
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
 {
@@ -60,7 +64,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
 
     m_bDisp = true;
 
-    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+    // ƒGƒtƒFƒNƒg
     for (int nCnt = 0; nCnt < EFFECT_MAX; nCnt++)
     {
         m_Effect[nCnt].type = NOT_EXIST;
@@ -72,26 +76,26 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒfƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CFortress::~CFortress()
 {
 }
 
 //=============================================================================
-// åˆæœŸåŒ–å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ‰Šú‰»ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-    // åˆæœŸè¨­å®š
+    // ‰Šúİ’è
     SetCollisionSizeDefence(D3DXVECTOR2(950.0f, 450.0f));
     m_fSpeed = 3.5f;
-    SetUpLife(1000.0f);
+    SetUpLife(MAX_LIFE);
     SetTakeKnockBack(false);
 
-    // ãƒ‘ãƒ¼ãƒ„æ•°ã‚’è¨­å®šã€ãƒ¢ãƒ‡ãƒ«ã‚’ãƒã‚¤ãƒ³ãƒ‰ã€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ãƒã‚¤ãƒ³ãƒ‰
+    // ƒp[ƒc”‚ğİ’èAƒ‚ƒfƒ‹‚ğƒoƒCƒ“ƒhAƒAƒjƒ[ƒVƒ‡ƒ“‚ğƒoƒCƒ“ƒh
     CCharacter::SetPartNum(PARTS_MAX);
     CCharacter::BindParts(PARTS_BODY, 55);
     CCharacter::BindParts(PARTS_CANNON_CENTER, 50);
@@ -101,20 +105,20 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     CCharacter::LoadModelData("./data/ANIMATION/motion_fortress.txt");
     CCharacter::SetDontUseAnimation();
 
-    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã«åæ˜ 
+    // ƒLƒƒƒ‰ƒNƒ^[‚É”½‰f
     CCharacter::Init(pos, DEFAULT_SCALE);
 
-    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®è¨­å®š
-    m_Effect[EFFECT_SMOKE].type = CEffectData::TYPE_SMOKE;    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç¨®é¡
-    m_Effect[EFFECT_SMOKE].interval = 18;                     // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç™ºç”Ÿæ„Ÿè¦š
-    m_Effect[EFFECT_LIGHTNING].type = CEffectData::TYPE_LIGHTNING_RANGE;    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç¨®é¡
-    m_Effect[EFFECT_LIGHTNING].interval = 8;                     // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç™ºç”Ÿæ„Ÿè¦š
+    // ƒGƒtƒFƒNƒg‚Ìİ’è
+    m_Effect[EFFECT_SMOKE].type = CEffectData::TYPE_SMOKE;    // ƒGƒtƒFƒNƒg‚Ìí—Ş
+    m_Effect[EFFECT_SMOKE].interval = 18;                     // ƒGƒtƒFƒNƒg‚Ì”­¶Š´Šo
+    m_Effect[EFFECT_LIGHTNING].type = CEffectData::TYPE_LIGHTNING_RANGE;    // ƒGƒtƒFƒNƒg‚Ìí—Ş
+    m_Effect[EFFECT_LIGHTNING].interval = 8;                     // ƒGƒtƒFƒNƒg‚Ì”­¶Š´Šo
     return S_OK;
 }
 
 //=============================================================================
-// çµ‚äº†å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// I—¹ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::Uninit(void)
 {
@@ -122,40 +126,40 @@ void CFortress::Uninit(void)
 }
 
 //=============================================================================
-// æ›´æ–°å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// XVˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::Update(void)
 {
-    // è² å‚·æ™‚é–“ãŒã‚ã‚‹ãªã‚‰ã€ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä¸‹ã’ã‚‹
+    // •‰ŠÔ‚ª‚ ‚é‚È‚çAƒJƒEƒ“ƒ^‚ğ‰º‚°‚é
     CntDownTakeDamageTime();
 
-    // ä½ç½®ã‚’å–å¾—
+    // ˆÊ’u‚ğæ“¾
     D3DXVECTOR3 myPos = GetPos();
 
-    // é“ã‚’æ¢ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+    // “¹‚ğ’T‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
     SearchRoad(myPos);
 
-    // ç§»å‹•ï¼ˆæ”»æ’ƒãƒ•ã‚§ãƒ¼ã‚ºä¸­ã¯ç§»å‹•ã§ããªã„ï¼‰
+    // ˆÚ“®iUŒ‚ƒtƒF[ƒY’†‚ÍˆÚ“®‚Å‚«‚È‚¢j
     if (!m_bAttackPhase)
     {
         myPos += m_moveAngle * m_fSpeed;
     }
 
-    // ä½ç½®ã‚’è¨­å®š
+    // ˆÊ’u‚ğİ’è
     SetPos(myPos);
 
-    // å£ã«å½“ãŸã£ãŸã‹ã©ã†ã‹
+    // •Ç‚É“–‚½‚Á‚½‚©‚Ç‚¤‚©
     if (!CollisionWall(myPos))
     {
-        // æ”»æ’ƒãƒ•ã‚§ãƒ¼ã‚ºã®å‡¦ç†
+        // UŒ‚ƒtƒF[ƒY‚Ìˆ—
         AttackPhase();
     }
 
-    // å‘ãã‚’èª¿æ•´
+    // Œü‚«‚ğ’²®
     RotControl();
 
-    // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã•ã›ã‚‹
+    // ƒAƒjƒ[ƒVƒ‡ƒ“‚³‚¹‚é
     CCharacter::Update();
 
 #ifdef COLLISION_TEST
@@ -164,7 +168,7 @@ void CFortress::Update(void)
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
 
-    if (m_fChargeValue >= CHARGE_VALUE_LV1)//é›»ç£æ³•ãŒæ‰“ã¦ã‚‹çŠ¶æ…‹ã®ã¨ãé›»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
+    if (m_fChargeValue >= CHARGE_VALUE_LV1)//“d¥–@‚ª‘Å‚Ä‚éó‘Ô‚Ì‚Æ‚«“dŒ‚ƒGƒtƒFƒNƒg”­¶
     {
         if (m_Effect[EFFECT_LIGHTNING].type != NOT_EXIST)
         {
@@ -177,26 +181,34 @@ void CFortress::Update(void)
         }
     }
 
-float fLife = GetLife();// ç§»å‹•è¦å¡ã®ä½“åŠ›å–å¾—
+float fLife = GetLife();// ˆÚ“®—vÇ‚Ì‘Ì—Íæ“¾
 
-    // ãƒ©ã‚¤ãƒ•ãŒãªããªã£ãŸã‚‰
+    // ƒ‰ƒCƒt‚ª‚È‚­‚È‚Á‚½‚ç
     if (fLife <= 0.0f)
     {
         SetLife(0.0f);
 
-        // ãƒˆãƒ¬ãƒ¼ãƒ‹ãƒ³ã‚°ã§ãªã„ãªã‚‰
+        // ƒgƒŒ[ƒjƒ“ƒO‚Å‚È‚¢‚È‚ç
         if (CGame::GetType() != CGame::TYPE_TRAINING)
         {
-            // ã“ã“ã§ã€ã‚´ãƒ¼ãƒ«ã‚²ãƒ¼ãƒˆã‚’ç ´å£Šã§ãã¦ã„ã‚‹ãªã‚‰ã€å‹ã¡åˆ¤å®šã‚’å„ªå…ˆ
+            // ‚±‚±‚ÅAƒS[ƒ‹ƒQ[ƒg‚ğ”j‰ó‚Å‚«‚Ä‚¢‚é‚È‚çAŸ‚¿”»’è‚ğ—Dæ
 
-            // ä»®ã«éè¡¨ç¤ºã«
+            // ‰¼‚É”ñ•\¦‚É
             m_bDisp = false;
 
-            // ä»®ã«ãƒªã‚¶ãƒ«ãƒˆã«ç§»è¡Œ
+            // ‰¼‚ÉƒŠƒUƒ‹ƒg‚ÉˆÚs
             CFade::SetFade(CManager::MODE_RESULT);
         }
+        else
+        {
+            // ƒgƒŒ[ƒjƒ“ƒO‚Å‚Í‚â‚ç‚ê‚È‚¢
+            SetLife(MAX_LIFE);
+            SetDisp(true);
+        }
     }
-    else if (fLife <= 100.0f)        // HPãŒä½ã„ã¨ãã«ç…™ã‚’ç™ºç”Ÿã•ã›ã‚‹(ä»®ã§100ä»¥ä¸‹)
+    
+    // HP‚ª’á‚¢‚Æ‚«‚É‰Œ‚ğ”­¶‚³‚¹‚é
+    if (fLife <= SMOKE_EFFECT_LIFE)
     {
         if (m_Effect[EFFECT_SMOKE].type != NOT_EXIST)
         {
@@ -211,8 +223,8 @@ float fLife = GetLife();// ç§»å‹•è¦å¡ã®ä½“åŠ›å–å¾—
 }
 
 //=============================================================================
-// æç”»å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// •`‰æˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::Draw(void)
 {
@@ -223,28 +235,28 @@ void CFortress::Draw(void)
 }
 
 //=============================================================================
-// ç”Ÿæˆå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ¶¬ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 CFortress *CFortress::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-    // ãƒ¡ãƒ¢ãƒªç¢ºä¿
+    // ƒƒ‚ƒŠŠm•Û
     CFortress *pFortress = NULL;
     pFortress = new CFortress;
 
-    // å…ˆã«çµã³ã¤ã‘ã¦ãŠã
+    // æ‚ÉŒ‹‚Ñ‚Â‚¯‚Ä‚¨‚­
     pFortress->CCharacter::SetPos(pos);
     pFortress->CCharacter::SetRot(rot);
 
-    // åˆæœŸåŒ–
+    // ‰Šú‰»
     pFortress->Init(pos, DEFAULT_SCALE);
 
     return pFortress;
 }
 
 //=============================================================================
-// æ”»æ’ƒãƒªã‚»ãƒƒãƒˆå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// UŒ‚ƒŠƒZƒbƒgˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::ResetAttack(void)
 {
@@ -254,8 +266,8 @@ void CFortress::ResetAttack(void)
 }
 
 //=============================================================================
-// ãƒãƒ£ãƒ¼ã‚¸é‡åŠ ç®—
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒ`ƒƒ[ƒW—Ê‰ÁZ
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::AddChargeValue(const float fChargeValue)
 {
@@ -267,39 +279,39 @@ void CFortress::AddChargeValue(const float fChargeValue)
 }
 
 //=============================================================================
-// é“ã‚’æ¢ã™å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// “¹‚ğ’T‚·ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::SearchRoad(D3DXVECTOR3 myPos)
 {
     if (m_bSearchRoad)
     {
-        // é“ã‚’æ¢ã™
-        float fKeepDistance = 999999.9f; // è·é›¢
+        // “¹‚ğ’T‚·
+        float fKeepDistance = 999999.9f; // ‹——£
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ROAD);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ROAD); nCntScene++)
         {
-            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+            // ’†g‚ª‚ ‚é‚È‚ç
             if (pScene)
             {
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // é“ã«ã‚­ãƒ£ã‚¹ãƒˆ
+                // “¹‚ÉƒLƒƒƒXƒg
                 CRoad *pRoad = (CRoad*)pScene;
 
-                // é€šéã—ã¦ã„ãªã„ãªã‚‰
+                // ’Ê‰ß‚µ‚Ä‚¢‚È‚¢‚È‚ç
                 if (!pRoad->GetPast())
                 {
-                    // é“ã®ä½ç½®
+                    // “¹‚ÌˆÊ’u
                     D3DXVECTOR3 roadPos = pRoad->GetPos();
 
-                    // è·é›¢è¨ˆç®—
+                    // ‹——£ŒvZ
                     float fCurrentDistance = sqrtf(
                         powf((myPos.x - roadPos.x), 2.0f) +
                         powf((myPos.z - roadPos.z), 2.0f));
 
-                    // è·é›¢ãŒä»Šã‚­ãƒ¼ãƒ—ã—ã¦ã„ã‚‹ã‚‚ã®ã‚ˆã‚Šè¿‘ã„ãªã‚‰ã€ç§»å‹•ã®å‘ãã‚’æ›´æ–°
+                    // ‹——£‚ª¡ƒL[ƒv‚µ‚Ä‚¢‚é‚à‚Ì‚æ‚è‹ß‚¢‚È‚çAˆÚ“®‚ÌŒü‚«‚ğXV
                     if (fKeepDistance > fCurrentDistance)
                     {
                         fKeepDistance = fCurrentDistance;
@@ -310,17 +322,17 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
                     }
                 }
 
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                 pScene = pNextScene;
             }
         }
 
-        // é“æ¢ã—çµ‚äº†
+        // “¹’T‚µI—¹
         m_bSearchRoad = false;
     }
     else
     {
-        // ç›®çš„ã®ä½ç½®ã«é”ã—ãŸãªã‚‰ã€æ¬¡ã®é“ã‚’æ¢ã™
+        // –Ú“I‚ÌˆÊ’u‚É’B‚µ‚½‚È‚çAŸ‚Ì“¹‚ğ’T‚·
         if (m_pTargetRoad)
         {
             D3DXVECTOR3 targetRoadPos = m_pTargetRoad->GetPos();
@@ -331,34 +343,34 @@ void CFortress::SearchRoad(D3DXVECTOR3 myPos)
             if (fDistanceToTargetRoad < SEARCH_NEXT_ROAD_DISTANCE)
             {
                 m_bSearchRoad = true;
-                m_pTargetRoad->SetPast(true);   // é“ã‚’é€šã‚ŠéããŸã“ã¨ã«ã™ã‚‹
+                m_pTargetRoad->SetPast(true);   // “¹‚ğ’Ê‚è‰ß‚¬‚½‚±‚Æ‚É‚·‚é
             }
         }
     }
 }
 
 //=============================================================================
-// æ”»æ’ƒãƒ•ã‚§ãƒ¼ã‚ºã®å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// UŒ‚ƒtƒF[ƒY‚Ìˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CFortress::AttackPhase(void)
 {
-    // æ”»æ’ƒãƒ•ã‚§ãƒ¼ã‚ºã«ãªã£ã¦ã„ã‚‹ãªã‚‰
+    // UŒ‚ƒtƒF[ƒY‚É‚È‚Á‚Ä‚¢‚é‚È‚ç
     if (m_bAttackPhase)
     {
-        // ã‚‚ã—ãƒãƒ£ãƒ¼ã‚¸é‡ãŒLv1ã«ã™ã‚‰é”ã—ã¦ã„ãªã„ãªã‚‰ã€é–¢æ•°ã‚’æŠœã‘ã‚‹
+        // ‚à‚µƒ`ƒƒ[ƒW—Ê‚ªLv1‚É‚·‚ç’B‚µ‚Ä‚¢‚È‚¢‚È‚çAŠÖ”‚ğ”²‚¯‚é
         if (m_fChargeValue < CHARGE_VALUE_LV1)
         {
-            // ã“ã“ã§ã¾ã ãƒãƒ£ãƒ¼ã‚¸ã•ã‚Œã¦ã„ãªã„æ—¨ã‚’è¡¨ç¤ºã™ã‚‹UIã‚’ç”Ÿæˆ
+            // ‚±‚±‚Å‚Ü‚¾ƒ`ƒƒ[ƒW‚³‚ê‚Ä‚¢‚È‚¢|‚ğ•\¦‚·‚éUI‚ğ¶¬
 
             m_bAttackPhase = false;
             return;
         }
 
-        // ã‚«ã‚¦ãƒ³ã‚¿ã‚’åŠ ç®—
+        // ƒJƒEƒ“ƒ^‚ğ‰ÁZ
         m_nCntTime++;
 
-        // ãƒãƒ£ãƒ¼ã‚¸ã¾ã§ã‹ã‹ã‚‹æ™‚é–“
+        // ƒ`ƒƒ[ƒW‚Ü‚Å‚©‚©‚éŠÔ
         int nCntMaxTime = 0;
         if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
         {
@@ -373,10 +385,10 @@ void CFortress::AttackPhase(void)
             nCntMaxTime = CHARGE_FIRE_FRAME_LV3;
         }
 
-        // ä¸€å®šã‚«ã‚¦ãƒ³ã‚¿ã§ã€æ”»æ’ƒ
+        // ˆê’èƒJƒEƒ“ƒ^‚ÅAUŒ‚
         if (m_nCntTime >= nCntMaxTime)
         {
-            // ãƒãƒ£ãƒ¼ã‚¸çŠ¶æ³ã«å¿œã˜ã¦å¤‰ãˆã‚‹
+            // ƒ`ƒƒ[ƒWó‹µ‚É‰‚¶‚Ä•Ï‚¦‚é
             D3DXVECTOR3 firePos = GetPartsPos(PARTS_FIRE_POS);
             D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
             CBullet *pBullet = NULL;
@@ -401,46 +413,46 @@ void CFortress::AttackPhase(void)
                 pBullet->SetWhoContribution(m_nWhoAttackPhase);
             }
 
-            // è²¢çŒ®åº¦ã‚’æ’ƒã£ãŸã ã‘ã§ã‚‚ä¸Šã’ã‚‹
+            // vŒ£“x‚ğŒ‚‚Á‚½‚¾‚¯‚Å‚àã‚°‚é
             CGame::GetPlayer(m_nWhoAttackPhase)->GainContribution(nContributionPoint);
 
-            // æ”»æ’ƒçŠ¶æ…‹ã‚’ãƒªã‚»ãƒƒãƒˆ
+            // UŒ‚ó‘Ô‚ğƒŠƒZƒbƒg
             ResetAttack();
         }
     }
 }
 
 //=============================================================================
-// å£ã«å½“ãŸã£ãŸã‹ã©ã†ã‹ã®å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// •Ç‚É“–‚½‚Á‚½‚©‚Ç‚¤‚©‚Ìˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 bool CFortress::CollisionWall(D3DXVECTOR3 myPos)
 {
     CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
     for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
     {
-        // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+        // ’†g‚ª‚ ‚é‚È‚ç
         if (pScene)
         {
-            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+            // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
             CScene*pNextScene = pScene->GetNextScene();
 
-            // ãƒ–ãƒ­ãƒƒã‚¯ã«ã‚­ãƒ£ã‚¹ãƒˆ
+            // ƒuƒƒbƒN‚ÉƒLƒƒƒXƒg
             CBlock *pBlock = (CBlock*)pScene;
 
-            // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+            // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
             D3DXVECTOR2 collisionSize = GetCollisionSizeDefence();
             D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSize.x, collisionSize.y, collisionSize.x);
             D3DXVECTOR3 blockPos = pBlock->GetPos();
             if (IsCollisionRectangle3D(&myPos, &blockPos,
                 &myCubeSize, &pBlock->GetCollisionSize()))
             {
-                // è‡´æ­»ãƒ€ãƒ¡ãƒ¼ã‚¸
+                // ’v€ƒ_ƒ[ƒW
                 TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, blockPos, OBJTYPE_BLOCK);
                 return true;
             }
 
-            // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+            // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
             pScene = pNextScene;
         }
     }

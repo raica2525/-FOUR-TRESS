@@ -243,6 +243,17 @@ void CEnemy::AtkArmy(D3DXVECTOR3& myPos)
 //=============================================================================
 void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
 {
+    // ”š’e‚©‚ç‰Î‰Ô‚ðo‚·
+    if (m_Effect.type != NOT_EXIST)
+    {
+        m_Effect.nCntTrail++;
+        if (m_Effect.nCntTrail >= m_Effect.interval)
+        {
+            m_Effect.nCntTrail = 0;
+            CEffect3D::Emit(m_Effect.type, GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE), GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE));
+        }
+    }
+
     // ˆÊ’u‚ÉˆÚ“®—Ê‚ðŒ‹‚Ñ‚Â‚¯‚é
     myPos += m_moveAngle * KAMIKAZE_ATK_SPEED;
 
