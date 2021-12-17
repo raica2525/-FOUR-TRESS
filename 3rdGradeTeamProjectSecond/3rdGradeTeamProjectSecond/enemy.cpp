@@ -26,6 +26,9 @@
 //========================================
 // マクロ定義
 //========================================
+// 基本死亡時貢献度
+#define DEFAULT_DEATH_CONTRIBUTION 1
+
 // 出現処理周り
 #define APPEAR_WAIT_FRAME 30    // 何フレームに一回検知するかの待機フレーム
 
@@ -86,6 +89,10 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
     m_nAddScore = 1;
+    m_nWhoContribution = NOT_EXIST;
+    m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;
+
+    m_bDeathBySquashed = false;
 }
 
 //=============================================================================
@@ -228,13 +235,22 @@ void CEnemy::Update(void)
             }
             else
             {
-                // あるなら、死亡状態に
-                m_baseState = BASE_STATE_DEATH;
-
-                // 一定カウンタで、消す
-                if (m_nCntTime >= DEATH_FRAME)
+                // 移動要塞に踏みつぶされたなら
+                if (m_bDeathBySquashed)
                 {
+                    // 即座に消す
                     DeathOneFrame(myPos);
+                }
+                else
+                {
+                    // 死亡状態演出
+                    m_baseState = BASE_STATE_DEATH;
+
+                    // 一定カウンタで、消す
+                    if (m_nCntTime >= DEATH_FRAME)
+                    {
+                        DeathOneFrame(myPos);
+                    }
                 }
             }
         }
@@ -271,6 +287,12 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
 
         // スコア加算
         CGame::AddScore(m_nAddScore);
+
+        // 貢献者のポイント加算
+        if (m_nWhoContribution != NOT_EXIST)
+        {
+            CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nDeathContributionPoint);
+        }
     }
     else
     {
@@ -298,8 +320,18 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
 //=============================================================================
 void CEnemy::RePatrol(void)
 {
-    m_bWarning = false;
-    SetBaseState(BASE_STATE_PATROL);
+    // プレイヤーが全員やられているなら、移動要塞を狙う（ほぼ詰み）
+    if (!CGame::GetDispAnyPlayer())
+    {
+        m_bWarning = true;
+        m_pTarget = (CCharacter*)CGame::GetFortress();
+        SetBaseState(BASE_STATE_ATTACK);
+    }
+    else
+    {
+        m_bWarning = false;
+        SetBaseState(BASE_STATE_PATROL);
+    }
 }
 
 //=============================================================================
@@ -497,6 +529,9 @@ void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
             {
                 // HP0に
                 TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
+
+                // 移動要塞に踏みつぶされた
+                m_bDeathBySquashed = true;
             }
         }
     }

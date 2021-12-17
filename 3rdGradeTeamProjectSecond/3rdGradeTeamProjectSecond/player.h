@@ -365,7 +365,6 @@ public:
     void MoveMotion(void);                                                              // 移動モーションの管理
     void Control(float fSpeed, D3DXVECTOR3& move);                                      // 制御
     void Jump(D3DXVECTOR3& move);                                                       // ジャンプ
-    void LeaveWepAfterimage(void);                                                      // 武器の残像を残す
     void DamageUpdate(D3DXVECTOR3 pos, D3DXVECTOR3& move);                              // 負傷更新処理
     void DamageMotion(void);                                                            // 負傷モーションの管理
 
@@ -384,12 +383,12 @@ public:
     /*========================================================
     // セッター
     //======================================================*/
-    void SetAddPoint(void) { m_nPoint++; }
     void ResetStatusEveryRound(void);   // 毎ラウンドリセットするステータス
     void SetDispAbility(bool bDisp) { m_bDispAbility = bDisp; }
     void SetCustomWeaponLook(void) { if (m_nCntAttackAnimTime <= 0)m_nCntAttackAnimTime = PLAYER_WEAPON_LOOK_FRAME; }
     void SetRank(RANK rank) { m_rank = rank; }
     void GainEnergy(const float fEnergy);
+    void GainContribution(const int nContribution) { m_nContributionPoint += nContribution; }
 
     /*========================================================
     // ゲッター
@@ -401,7 +400,6 @@ public:
     ControlInput *GetControlInput(void) { return &m_controlInput; }
     int GetIdxCreate(void) { return m_nIdxCreate; }
     int GetIdxControlAndColor(void) { return m_nIdxControlAndColor; }
-    int GetPoint(void) { return m_nPoint; }
     bool GetGround(void) { return m_bGround; }
     int GetPressJumpTime(void) { return m_nCntPressJump; }
     AI_LEVEL GetAILevel(void) { return m_AIlevel; }
@@ -411,6 +409,9 @@ public:
     int GetRole(void) { return m_role; }
     bool GetUsingGuard(void) { return m_bUsingGuard; }
     ATTACK_STATE GetAttackState(void) { return m_attackState; }
+    float GetCurrentEnergy(void) { return m_fCurrentEnergy; }
+    float GetCurrentEnergyMax(void) { return m_fCurrentEnergyMax; }
+    int GetContributionPoint(void) { return m_nContributionPoint; }
 
 private:
     bool m_bMannequin;                       // マネキンかどうか
@@ -435,9 +436,6 @@ private:
 
     int m_nIdxCreate;                        // 生成のインデックス
     int m_nIdxControlAndColor;               // コントロールとカラーのインデックス
-    int m_nPoint;                            // ポイント
-    D3DXVECTOR3 m_startPos;                  // 開始位置を保持
-    D3DXVECTOR3 m_startRot;                  // 開始向きを保持
 
     int m_exFlag;                            // 特殊能力フラグ
     bool m_bGround;                          // 地面にいるかどうか
@@ -464,18 +462,15 @@ private:
     int m_spShot;                            // 必殺技
 
     CClipingMusk* m_pClipingMusk;			 // クリッピングマスク
-    int m_nNumWep;                           // 武器のモデル番号
     RANK m_rank;                             // 順位
     D3DXVECTOR3 m_hipPosOld;                 // 1F前の腰の位置
 
-    bool m_bSpBarrier;						 // 必殺技によるバリアを獲得しているかどうか
-    int m_nCntSpGaugeMaxTime;                // 必殺ゲージMAX時間
+    int m_nCntCurrentEnergyMaxTime;          // 必殺ゲージMAX時間
     int m_voiceSet;                          // ボイスセット
 
     //===================================    
     // 特殊能力対応周り                      
     //===================================    
-    bool m_bUsedThreeJump;                   // 三段ジャンプを使ったかどうか
 
     //===================================    
     // Secondで追加したメンバ変数
@@ -492,6 +487,8 @@ private:
     int m_nCntGuards;           // ガード回数
     CModelEffect *m_pLightGuard;// 光の盾モデル
     CBullet *m_pHealingCircle;  // 回復魔方陣
+    int m_nCntRespawnTime;      // リスポーン時間を数える
+    int m_nContributionPoint;   // 貢献度
 
     //===================================
     // このクラス内でのみ使う処理

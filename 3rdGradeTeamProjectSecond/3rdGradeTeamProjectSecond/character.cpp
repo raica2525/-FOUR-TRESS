@@ -613,6 +613,9 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
 
             // 死亡用ノックバック
             fKnockbackValue = KNOCK_BACK_DEATH;
+
+            // 表示を切る
+            m_bDisp = false;
         }
         else
         {
@@ -702,12 +705,18 @@ bool CCharacter::PullToCenter(D3DXVECTOR3 centerPos)
 // 回復処理
 // Author : 後藤慎之助
 //=============================================================================
-void CCharacter::Healing(float fHealValue)
+bool CCharacter::Healing(float fHealValue)
 {
     // 表示されていないなら、関数を抜ける
     if (!m_bDisp)
     {
-        return;
+        return false;
+    }
+
+    // すでに最大値なら、回復失敗
+    if (m_fLife >= m_fMaxLife)
+    {
+        return false;
     }
 
     // 最大値より超えないように回復
@@ -718,6 +727,9 @@ void CCharacter::Healing(float fHealValue)
     }
 
     // 自身の位置から回復エフェクトを発生
+
+    // 回復成功
+    return true;
 }
 
 //=============================================================================

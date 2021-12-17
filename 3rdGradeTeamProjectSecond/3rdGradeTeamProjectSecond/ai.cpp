@@ -11,6 +11,7 @@
 #include "ai.h"
 #include "game.h"
 #include "library.h"
+#include "fortress.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -259,24 +260,7 @@ CAi * CAi::Create(CPlayer *pPlayer)
     pAI->m_pPlayer = pPlayer;
     pAI->GetThinkingTime();
 
-    switch (pPlayer->GetRole())
-    {
-    case CPlayer::ROLE_WARRIOR:
-        pAI->m_fAttackRange = ATTACK_RANGE_WARRIOR;
-        break;
-    case CPlayer::ROLE_HUNTER:
-        pAI->m_fAttackRange = ATTACK_RANGE_HUNTER;
-        break;
-    case CPlayer::ROLE_CARRIER:
-        pAI->m_fAttackRange = ATTACK_RANGE_CARRIER;
-        break;
-    case CPlayer::ROLE_TANK:
-        pAI->m_fAttackRange = ATTACK_RANGE_TANK;
-        break;
-    case CPlayer::ROLE_HEALER:
-        pAI->m_fAttackRange = ATTACK_RANGE_HEALER;
-        break;
-    }
+    pAI->GetAttackAngle();
 
     return pAI;
 }
@@ -782,7 +766,18 @@ void CAi::GetAttackAngle(void)
 void CAi::GetTargetPos(void)
 {
     // 何を標的とみなすかによって、得る位置が変わる
-    m_targetPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
+    if (m_pPlayer->GetCurrentEnergy() >= m_pPlayer->GetCurrentEnergyMax())
+    {
+        // エナジー量が最大に達していたら、移動要塞を狙う
+        m_targetPos = CGame::GetFortress()->GetPos();
+        m_fAttackRange = 0.0f;
+    }
+    else
+    {
+        // 近くの敵
+        m_targetPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
+        GetAttackRange();
+    }
 
     // 次の標的取得時間を得る
     switch (m_pPlayer->GetAILevel())
@@ -795,6 +790,32 @@ void CAi::GetTargetPos(void)
         break;
     case CPlayer::AI_LEVEL_3:
         m_nCntSearchTarget = GetRandNum(TARGETTING_INTERVAL_AI_LEVEL_3_MAX, TARGETTING_INTERVAL_AI_LEVEL_3_MIN);
+        break;
+    }
+}
+
+//=============================================================================
+// 攻撃の射程の取得
+// Author : 後藤慎之助
+//=============================================================================
+void CAi::GetAttackRange(void)
+{
+    switch (m_pPlayer->GetRole())
+    {
+    case CPlayer::ROLE_WARRIOR:
+        m_fAttackRange = ATTACK_RANGE_WARRIOR;
+        break;
+    case CPlayer::ROLE_HUNTER:
+        m_fAttackRange = ATTACK_RANGE_HUNTER;
+        break;
+    case CPlayer::ROLE_CARRIER:
+        m_fAttackRange = ATTACK_RANGE_CARRIER;
+        break;
+    case CPlayer::ROLE_TANK:
+        m_fAttackRange = ATTACK_RANGE_TANK;
+        break;
+    case CPlayer::ROLE_HEALER:
+        m_fAttackRange = ATTACK_RANGE_HEALER;
         break;
     }
 }

@@ -61,6 +61,7 @@ public:
     void GetAttackAngle(void);                  // 攻撃時にどの方向にスティックを倒すか
 
     void GetTargetPos(void);                    // ターゲットの位置を決める
+    void GetAttackRange(void);                  // 攻撃の射程を得る
 
 private:
     CPlayer *m_pPlayer;

@@ -55,7 +55,7 @@ CItem::CItem() :CScene3D(CScene::OBJTYPE_ITEM)
     m_bUseDraw = true;
     m_pEffect3d_Shadow = NULL;
     m_bGround = false;
-    m_pTarget = NULL;
+    m_pTargetPlayer = NULL;
 
     m_bUseCollision = false;
 }
@@ -150,9 +150,9 @@ void CItem::Update(void)
     else
     {
         // プレイヤーの方を追従（プレイヤーのポインタがないなら、プレイヤーを探す）
-        if (m_pTarget)
+        if (m_pTargetPlayer)
         {
-            if (m_pTarget->GetDisp())
+            if (m_pTargetPlayer->GetDisp())
             {
                 MoveTowardPlayer(myPos);
             }
@@ -274,6 +274,16 @@ CItem * CItem::Create(int type, D3DXVECTOR3 pos, float fEnergy)
 //=============================================================================
 void CItem::MoveTowardPlayer(D3DXVECTOR3 myPos)
 {
+    // ターゲットのプレイヤーが追従中に電力マックスになったら、ターゲットを切る
+    if (m_pTargetPlayer)
+    {
+        if (m_pTargetPlayer->GetCurrentEnergy() >= m_pTargetPlayer->GetCurrentEnergyMax())
+        {
+            m_pTargetPlayer = NULL;
+            return;
+        }
+    }
+
     // 移動速度を徐々に速める
     m_fSpeed += ITEM_SPEED_UP_VALUE;
     if (m_fSpeed > ITEM_SPEED_MAX)
@@ -282,7 +292,7 @@ void CItem::MoveTowardPlayer(D3DXVECTOR3 myPos)
     }
 
     // 変数宣言
-    D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+    D3DXVECTOR3 targetPos = m_pTargetPlayer->GetPos();
     float fAngle = 0.0f;
 
     // 角度を求める
@@ -326,7 +336,7 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
 
     // プレイヤーを探す
     float fKeepDistance = 0.0f;
-    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Player(myPos, fKeepDistance);
+    CPlayer *pKeepPlayer = CGame::GetDistanceAndPointerToClosestPlayer_Denti(myPos, fKeepDistance);
 
     // プレイヤーがキャリアーなら、検知距離が伸びる
     float fDiscoveryPlayerDistance = ITEM_CLOSE_DISTANCE_DEFAULT;
@@ -344,7 +354,7 @@ void CItem::SearchPlayer(D3DXVECTOR3 myPos)
         // プレイヤーを結びつける
         if (pKeepPlayer)
         {
-            m_pTarget = pKeepPlayer;
+            m_pTargetPlayer = pKeepPlayer;
         }
     }
     else
@@ -375,11 +385,18 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             // 表示しているかどうか
             if (!pPlayer->GetDisp())
             {
+                // 次のシーンにする
+                pScene = pNextScene;
                 continue;
             }
 
             // 現在のエナジー量が、そのプレイヤーの最大数に達しているなら次のプレイヤーへ
-
+            if (pPlayer->GetCurrentEnergy() >= pPlayer->GetCurrentEnergyMax())
+            {
+                // 次のシーンにする
+                pScene = pNextScene;
+                continue;
+            }
           
             // プレイヤーの位置を取得
             D3DXVECTOR3 playerPos= pPlayer->GetPos();

@@ -89,6 +89,7 @@ public:
     void SetHealValue(float fHealValue) { m_fHealValue = fHealValue; }
     void SetUseUpdate(bool bUseUpdate) { m_bUseUpdate = bUseUpdate; }
     void SetCntTime(int nCntTime) { m_nCntTime = nCntTime; }
+    void SetWhoContribution(int nWho) { m_nWhoContribution = nWho; }
 
 private:
     int m_type;                     // 種類
@@ -120,6 +121,8 @@ private:
     int m_trailEffectType;          // 軌跡エフェクトの種類
     int m_nCntTrailInterval;        // 軌跡の発生間隔
     int m_nCntTrailEffect;          // 軌跡のカウンタ
+    int m_nWhoContribution;         // 誰の貢献か
+    int m_nHitContributionPoint;    // 当たった際の貢献度
 
     //=============================
     // 種類ごとの処理

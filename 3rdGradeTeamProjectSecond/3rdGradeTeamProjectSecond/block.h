@@ -38,7 +38,7 @@ public:
     void Draw(void);                                                                    // •`‰æˆ—
     static CBlock *Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 collisionSize, D3DXVECTOR3 rot);        // ¶¬ˆ—
 
-    void TakeDamage(bool bBreakGoalGate);
+    bool TakeDamage(bool bBreakGoalGate);
 
     // ƒuƒƒbƒN‚Ìí—Ş
     typedef enum

@@ -330,7 +330,7 @@ void CRenderer::DrawDebugData(void)
     {
     case CManager::MODE_DEBUG_MENU:
         rect = { 200, 200, SCREEN_WIDTH, SCREEN_HEIGHT };
-        wsprintf(str, "●デバッグステージ\n●カスタマイズ\n●タイトル\n●アリーナ（2人（人VS人））\n●アリーナ（2人（人VSCOM（Level1）））\n●アリーナ（2人（人VSCOM（Level2）））\n●アリーナ（2人（人VSCOM（Level3）））\n●アリーナ（4人（人VSCOM（各Level）））\n●アリーナ（4人（全員人））");
+        wsprintf(str, "●デバッグステージ\n●カスタマイズ\n●タイトル\n●ステージ（2人（人と人））\n●ステージ（2人（人とCOM（Level1）））\n●ステージ（2人（人とCOM（Level2）））\n●ステージ（2人（人とCOM（Level3）））\n●ステージ（4人（人とCOM（各Level）））\n●ステージ（4人（全員人））");
         m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
         break;
     case CManager::MODE_TITLE:
@@ -390,7 +390,7 @@ void CRenderer::GameDebugData(void)
     //wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
 
     // デフォルト
-    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue());
+    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d\n\n-PLAYER1-\nENERGY:%d\nPOINT:%d\n", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue(), (int)pPlayer->GetCurrentEnergy(), pPlayer->GetContributionPoint());
 
     // テキスト描画
     m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));

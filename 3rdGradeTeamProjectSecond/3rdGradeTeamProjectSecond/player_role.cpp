@@ -134,7 +134,7 @@ typedef enum
 // タンク地上1_盾構え
 //==========================
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define TANK_GROUND1_WHOLE_FRAME 300
+#define TANK_GROUND1_WHOLE_FRAME 380
 #define TANK_GROUND1_CREATE_SHIELD_FRAME (TANK_GROUND1_WHOLE_FRAME - 20)
 // その他
 #define TANK_GROUND1_WALK_SPEED 8.5f
@@ -457,6 +457,9 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
                         // 敵にダメージが入ったら
                         if (pEnemy->TakeDamage(fPower, attackPos, playerPos, OBJTYPE_PLAYER))
                         {
+                            // 貢献した人を設定
+                            pEnemy->SetWhoContribution(m_nIdxCreate);
+
                             // 当たった
                             bHit = true;
 
@@ -505,6 +508,9 @@ void CPlayer::RideFortress(void)
 //=============================================================================
 void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
 {
+    // この攻撃中は無敵
+    SetInvincible(true);
+
     // 移動要塞を取得
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)
@@ -524,7 +530,7 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     {
         if (pFortress)
         {
-            pFortress->SetAttackPhase(true);
+            pFortress->SetAttackPhase(true, m_nIdxCreate);
         }
     }
     else if (m_controlInput.bTriggerB)
@@ -611,8 +617,13 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
             ResetAttack();
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND2;
-            SetRotY(m_controlInput.fPlayerAngle);
-            SetRotDestY(m_controlInput.fPlayerAngle);
+
+            // 向きを即座に変えれる
+            if (!m_controlInput.bPressR2)
+            {
+                SetRotY(m_controlInput.fPlayerAngle);
+                SetRotDestY(m_controlInput.fPlayerAngle);
+            }
         }
     }
 }
@@ -678,8 +689,13 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
             ResetAttack();
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
-            SetRotY(m_controlInput.fPlayerAngle);
-            SetRotDestY(m_controlInput.fPlayerAngle);
+
+            // 向きを即座に変えれる
+            if (!m_controlInput.bPressR2)
+            {
+                SetRotY(m_controlInput.fPlayerAngle);
+                SetRotDestY(m_controlInput.fPlayerAngle);
+            }
         }
     }
 }
@@ -754,7 +770,8 @@ void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
     if (m_nCntAttackTime == HUNTER_GROUND_FIRE_FRAME)
     {
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
-        CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
+        CBullet *pBullet = CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
+        pBullet->SetWhoContribution(m_nIdxCreate);
     }
     else if (m_nCntAttackTime > HUNTER_GROUND_FIRE_FRAME)
     {
@@ -783,6 +800,7 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             pBullet->SetParam(0, m_afParam[PARAM_HUNTER_TARGET_POS_X]);
             pBullet->SetParam(1, m_afParam[PARAM_HUNTER_TARGET_POS_Y]);
             pBullet->SetParam(2, m_afParam[PARAM_HUNTER_TARGET_POS_Z]);
+            pBullet->SetWhoContribution(m_nIdxCreate);
         }
     }
     else if (m_nCntAttackTime > HUNTER_SKY_FIRE_FRAME)
@@ -866,8 +884,13 @@ void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
             ResetAttack();
             m_nCntAttackTime = CARRIER_GROUND_SECOND_ATTACK_WHOLE_FRAME;
             m_attackState = ATTACK_STATE_CARRIER_GROUND2;
-            SetRotY(m_controlInput.fPlayerAngle);
-            SetRotDestY(m_controlInput.fPlayerAngle);
+
+            // 向きを即座に変えれる
+            if (!m_controlInput.bPressR2)
+            {
+                SetRotY(m_controlInput.fPlayerAngle);
+                SetRotDestY(m_controlInput.fPlayerAngle);
+            }
         }
     }
 }
@@ -981,7 +1004,8 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_nCntAttackTime == CARRIER_SKY_START_WIND_FRAME)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
-            CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
+            CBullet*pBullet = CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
+            pBullet->SetWhoContribution(m_nIdxCreate);
         }
     }
 }
@@ -995,6 +1019,9 @@ void CPlayer::AtkTankGround1(D3DXVECTOR3& playerPos)
     // 攻撃発生フレームと終了フレームを考慮
     if (m_nCntAttackTime <= TANK_GROUND1_CREATE_SHIELD_FRAME && m_nCntAttackTime > 1)
     {
+        // スーパーアーマー
+        SetTakeKnockBack(false);
+
         // ガード中
         m_bUsingGuard = true;
 
@@ -1039,17 +1066,22 @@ void CPlayer::AtkTankGround2(D3DXVECTOR3& playerPos)
         D3DXVECTOR3 firePos = playerPos + D3DXVECTOR3(0.0f, collisionSize.y / 2.0f, 0.0f);
 
         // ガード回数に応じて、発射するタイプを変える
+        CBullet *pBullet = NULL;
         if (m_nCntGuards < TANK_GROUND1_LV2)
         {
-            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV1, firePos, moveAngle, OBJTYPE_PLAYER);
+            pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_LV1, firePos, moveAngle, OBJTYPE_PLAYER);
         }
         else if (m_nCntGuards >= TANK_GROUND1_LV2 && m_nCntGuards < TANK_GROUND1_LV3)
         {
-            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV2, firePos, moveAngle, OBJTYPE_PLAYER);
+            pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_LV2, firePos, moveAngle, OBJTYPE_PLAYER);
         }
         else if (m_nCntGuards >= TANK_GROUND1_LV3)
         {
-            CBullet::Create(CBullet::TYPE_TANK_GROUND_LV3, firePos, moveAngle, OBJTYPE_PLAYER);
+            pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_LV3, firePos, moveAngle, OBJTYPE_PLAYER);
+        }
+        if (pBullet)
+        {
+            pBullet->SetWhoContribution(m_nIdxCreate);
         }
 
         // 撃てたなら、ガード回数をリセット
@@ -1088,8 +1120,12 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
     if (fAngleToDamagePos <= fPlayerAngle + (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f)&&
         fAngleToDamagePos >= fPlayerAngle - (m_afParam[PARAM_TANK_GUARD_WIDTH] / 2.0f))
     {
-        // ガード回数加算
+        // ガード回数加算（2回に一回のガードで貢献度を得る）
         m_nCntGuards++;
+        if (m_nCntGuards % 2 == 0)
+        {
+            GainContribution(1);
+        }
         if (m_nCntGuards > TANK_GROUND1_LV3)
         {
             m_nCntGuards = TANK_GROUND1_LV3;
@@ -1169,6 +1205,7 @@ void CPlayer::AtkHealerGround(D3DXVECTOR3& playerPos)
             pBullet->SetDamage(fDamage);
             float fHealing = HEALER_GROUND_BASE_HEALING + (m_fCurrentEnergy * HEALER_GROUND_ADD_HEALING_RATE);
             pBullet->SetHealValue(fHealing);
+            pBullet->SetWhoContribution(m_nIdxCreate);
         }
     }
     else if (m_nCntAttackTime > HEALER_GROUND_FIRE_FRAME)
