@@ -61,7 +61,7 @@ CEffect2D *CGame::m_pEffect2d_Posi = NULL;
 
 CGame::TYPE CGame::m_type = TYPE_TRAINING;
 int CGame::m_nNumAllPlayer = 0;
-bool CGame::m_bUseKeyboard = true;      // デバッグ時はここを変える
+bool CGame::m_bUseKeyboard = false;      // デバッグ時はここを変える
 int CGame::m_anMemoryIdxPlayer[] = {};
 CPlayer::AI_LEVEL CGame::m_aMemoryAILevel[] = {};
 int CGame::m_anMemoryRole[] = {};
@@ -73,6 +73,8 @@ CText *CGame::m_pSpText = NULL;
 
 CFortress *CGame::m_pFortress = NULL;
 int CGame::m_nCharacterIdx = 0;
+CNumberArray *CGame::m_pScore = NULL;
+int CGame::m_nScore = 0;
 
 //=============================================================================
 // ゲームのコンストラクタ
@@ -104,6 +106,8 @@ CGame::CGame()
 
     m_pFortress = NULL;
     m_nCharacterIdx = 0;
+    m_pScore = NULL;
+    m_nScore = 0;
 }
 
 //=============================================================================
@@ -134,10 +138,10 @@ HRESULT CGame::Init(void)
         CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
         m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
         m_pFortress->SetSpeed(0.0f);
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
-        CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
+        //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
 
         CBg::Create(66, D3DXVECTOR3(1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
         CBg::Create(66, D3DXVECTOR3(-1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
@@ -148,6 +152,70 @@ HRESULT CGame::Init(void)
         CBg::Create(67, D3DXVECTOR3(-1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+    }
+    else if (m_type == TYPE_ARENA)
+    {
+        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
+        // 仮の道生成
+        D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
+        for (int nCnt = 0; nCnt < 20; nCnt++)
+        {
+            D3DXVECTOR3 rot = DEFAULT_VECTOR;
+            roadPos.x += 1000.0f;
+            rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
+            CRoad::Create(roadPos, rot);
+        }
+
+        // 仮の敵（最初の壁に至るまで）
+        D3DXVECTOR3 enemyPos = D3DXVECTOR3(3000.0f, 0.0f, 1500.0f);
+        for (int nCnt = 0; nCnt < 3; nCnt++)
+        {
+            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+            enemyPos.x += 2000.0f;
+        }
+        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, 1500.0f);
+        for (int nCnt = 0; nCnt < 3; nCnt++)
+        {
+            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+            enemyPos.x += 2000.0f;
+        }
+        enemyPos = D3DXVECTOR3(3000.0f, 0.0f, -1500.0f);
+        for (int nCnt = 0; nCnt < 3; nCnt++)
+        {
+            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+            enemyPos.x += 2000.0f;
+        }
+        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, -1500.0f);
+        for (int nCnt = 0; nCnt < 3; nCnt++)
+        {
+            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+            enemyPos.x += 2000.0f;
+        }
+        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(10000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(15000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(17000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(14000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(16000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+
+        // 仮のゴールゲート
+        CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
+        CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(22000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
     }
 
     // ステージのモデルを生成
@@ -218,6 +286,9 @@ HRESULT CGame::Init(void)
     m_pEffect2d_Nega->SetUseUpdate(false);
     m_pEffect2d_Posi = CEffect2D::Create(3, DEFAULT_VECTOR);
     m_pEffect2d_Posi->SetUseUpdate(false);
+
+    // スコア表示を生成
+    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(640.0f, 675.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), 0, false);
 
     // BGMをランダム再生
     int nRand = GetRandNum(2, 0);
@@ -890,10 +961,10 @@ CCharacter *CGame::GetDistanceAndPointerToClosestPlayer(D3DXVECTOR3 myPos, float
 }
 
 //========================================
-// 一番近いプレイヤーとの距離とポインタを得る
+// 一番近いプレイヤーとの距離とポインタを得る_電池バージョン
 // Author : 後藤慎之助
 //========================================
-CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
+CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Denti(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer)
 {
     // 変数宣言
     CPlayer*pTarget = NULL;
@@ -908,8 +979,8 @@ CPlayer *CGame::GetDistanceAndPointerToClosestPlayer_Player(D3DXVECTOR3 myPos, f
             continue;
         }
 
-        // 生存しているなら
-        if (m_apPlayer[nCntPlayer]->GetDisp())
+        // 生存しているかつ、チャージ量が最大でないなら
+        if (m_apPlayer[nCntPlayer]->GetDisp() && m_apPlayer[nCntPlayer]->GetCurrentEnergy() < m_apPlayer[nCntPlayer]->GetCurrentEnergyMax())
         {
             // 他のプレイヤーの位置
             D3DXVECTOR3 otherPlayerPos = m_apPlayer[nCntPlayer]->GetPos();
@@ -1161,4 +1232,32 @@ float CGame::GetDistanceToClosestEnemyBullet(D3DXVECTOR3 myPos)
     }
 
     return fFirstDistance;
+}
+
+//========================================
+// スコアを加算する処理
+// Author : 後藤慎之助
+//========================================
+void CGame::AddScore(const int nScore)
+{
+    m_nScore += nScore;
+    m_pScore->SetDispNumber(m_nScore);
+}
+
+//========================================
+// プレイヤーが誰かしら存在しているか取得する
+// Author : 後藤慎之助
+//========================================
+bool CGame::GetDispAnyPlayer(void)
+{
+    for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+    {
+        // 生存しているなら
+        if (m_apPlayer[nCntPlayer]->GetDisp())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

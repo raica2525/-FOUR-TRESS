@@ -67,7 +67,7 @@ public:
     // セッター
     //=============================
     void SetNowWhoRiding(bool bRiding) { m_bNowWhoRiding = bRiding; }
-    void SetAttackPhase(bool bAttackPhase) { m_bAttackPhase = bAttackPhase; }
+    void SetAttackPhase(bool bAttackPhase, int nWho) { m_bAttackPhase = bAttackPhase; m_nWhoAttackPhase = nWho; }
     void SetSpeed(float fSpeed) { m_fSpeed = fSpeed; }
 
     //=============================
@@ -90,6 +90,7 @@ private:
     int m_nCntTime;             // 時間をカウント
 
     bool m_bDisp;               // 表示しているかどうか
+    int m_nWhoAttackPhase;      // 誰がアタックフェーズに変えたか
 
     CEffectData::IntervalEffect m_Effect[EFFECT_MAX];// エフェクト
 

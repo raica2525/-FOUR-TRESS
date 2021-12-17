@@ -24,43 +24,48 @@
 //========================================
 // マクロ定義
 //========================================
-#define DEFAULT_PATROL_DISTANCE 2500                    // デフォルトの巡回距離
-#define DEFAULT_DISCOVERY_PLAYER_DISTANCE 2000.0f       // デフォルトの発見距離
-#define DEFAULT_ENEMY_TURN_SPEED 5.0f                   // デフォルトの振り向き速度
-#define DEFAULT_FOLLOW_WHOLE_FRAME 60                   // デフォルトの追従フレーム（メンバ変数には置いていない）
-#define DEFAULT_FOLLOW_WAIT_FRAME 30                    // デフォルトの追従後の待機フレーム（メンバ変数には置いていない）
+#define DEFAULT_PATROL_DISTANCE 2000        // デフォルトの巡回距離
+#define DEFAULT_DISCOVERY_DISTANCE 2000.0f  // デフォルトの発見距離
+#define DEFAULT_ENEMY_TURN_SPEED 5.0f       // デフォルトの振り向き速度
+#define DEFAULT_FOLLOW_WHOLE_FRAME 60       // デフォルトの追従フレーム（メンバ変数には置いていない）
+#define DEFAULT_FOLLOW_WAIT_FRAME 30        // デフォルトの追従後の待機フレーム（メンバ変数には置いていない）
 
 //===========================
 // アーミー
 //===========================
-#define ARMY_WHOLE_FRAME 80     // 全体フレーム
-#define ARMY_FIRE_FRAME 60      // 発射フレーム
-#define ARMY_WAIT_COUNT 35      // 攻撃後の待機フレーム（初期30）
+#define ARMY_WHOLE_FRAME 80                 // 全体フレーム
+#define ARMY_FIRE_FRAME 60                  // 発射フレーム
+#define ARMY_WAIT_COUNT 35                  // 攻撃後の待機フレーム（初期30）
+#define ARMY_DISCOVERY_DISTANCE 2000.0f     // 検知距離
 
 //===========================
 // カミカゼ
 //===========================
-#define KAMIKAZE_ATK_SPEED 10.0f // 攻撃中のスピード
-#define KAMIKAZE_WHOLE_FRAME 180 // 全体フレーム
-#define KAMIKAZE_TARGET_FRAME 2  // ターゲットを決めるフレーム
+#define KAMIKAZE_ATK_SPEED 10.0f            // 攻撃中のスピード
+#define KAMIKAZE_WHOLE_FRAME 180            // 全体フレーム
+#define KAMIKAZE_TARGET_FRAME 2             // ターゲットを決めるフレーム
+#define KAMIKAZE_WAIT_COUNT 25              // 攻撃後の待機フレーム
+#define KAMIKAZE_DISCOVERY_DISTANCE 2500.0f // 検知距離
 
 //===========================
 // キャノン
 //===========================
-#define CANNON_WHOLE_FRAME 180       // 全体フレーム
-#define CANNON_FIRE_START_FRAME 60   // 発射開始フレーム
-#define CANNON_FIRE_INTERVAL_FRAME 6 // 発射間隔フレーム
-#define CANNON_FIRE_END_FRAME 120    // 発射終了フレーム
-#define CANNON_WAIT_COUNT 30         // 攻撃後の待機フレーム
+#define CANNON_WHOLE_FRAME 180              // 全体フレーム
+#define CANNON_FIRE_START_FRAME 60          // 発射開始フレーム
+#define CANNON_FIRE_INTERVAL_FRAME 6        // 発射間隔フレーム
+#define CANNON_FIRE_END_FRAME 120           // 発射終了フレーム
+#define CANNON_WAIT_COUNT 30                // 攻撃後の待機フレーム
+#define CANNON_DISCOVERY_DISTANCE 2500.0f   // 検知距離
 
 //===========================
 // コマンダー
 //===========================
-#define COMMANDER_WHOLE_FRAME 50     // 全体フレーム
-#define COMMANDER_FIRE_FRAME 30      // 発射フレーム
-#define COMMANDER_WAIT_COUNT 60      // 攻撃後の待機フレーム
-#define COMMANDER_ONCE_SPAWN 5       // 一度の生成個数
+#define COMMANDER_WHOLE_FRAME 50            // 全体フレーム
+#define COMMANDER_FIRE_FRAME 30             // 発射フレーム
+#define COMMANDER_WAIT_COUNT 60             // 攻撃後の待機フレーム
+#define COMMANDER_ONCE_SPAWN 3              // 一度の生成個数
 #define COMMANDER_SPAWN_ANGLE_Y D3DXToRadian(80.0f) // 生成角度Y
+#define COMMANDER_DISCOVERY_DISTANCE 1750.0f// 検知距離
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -72,7 +77,6 @@ void CEnemy::SetupInfoByType(void)
     CCharacter::SetHPDisp(CCharacter::HP_DISP_FOLLOW);  // HP表示は基本追従
     float fHP = 0.0f;
     m_nPatrolDistance = DEFAULT_PATROL_DISTANCE;
-    m_fDiscoveryTargetDistance = DEFAULT_DISCOVERY_PLAYER_DISTANCE;     // 主に攻撃周りの検知で使う
     SetTurnSpeed(DEFAULT_ENEMY_TURN_SPEED);
 
     switch (m_type)
@@ -85,6 +89,7 @@ void CEnemy::SetupInfoByType(void)
         m_fChargeValue = 3.0f;
         m_walkMotion = SPIDER_ANIM_WALK;
         m_attackMotion = SPIDER_ANIM_ATTACK;
+        m_nAddScore = 9999;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(SPIDER_PARTS_MAX);
         CCharacter::BindParts(SPIDER_PARTS_BODY, 18);
@@ -104,13 +109,15 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_ARMY:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
         m_fSpeed = 5.0f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = ARMY_ANIM_WALK;
         m_attackMotion = ARMY_ANIM_ATTACK;
         m_deathMotion = ARMY_ANIM_DEATH;
+        m_nAddScore = 50;
+        m_fDiscoveryTargetDistance = ARMY_DISCOVERY_DISTANCE;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(ARMY_PARTS_MAX);
         CCharacter::BindParts(ARMY_PARTS_BODY, 43);
@@ -120,7 +127,7 @@ void CEnemy::SetupInfoByType(void)
         break;
     case TYPE_KAMIKAZE:
         // 固有の情報
-        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 400.0f));
+        SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
         m_fSpeed = 5.0f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;
@@ -128,6 +135,8 @@ void CEnemy::SetupInfoByType(void)
         m_attackMotion = KAMIKAZE_ANIM_ATTACK;
         m_deathMotion = KAMIKAZE_ANIM_DEATH;
         m_targetTrend = TARGET_TREND_FORTRESS;
+        m_nAddScore = 100;
+        m_fDiscoveryTargetDistance = KAMIKAZE_DISCOVERY_DISTANCE;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(KAMIKAZE_PARTS_MAX);
         CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
@@ -149,6 +158,8 @@ void CEnemy::SetupInfoByType(void)
         SetTakeKnockBack(false);
         SetTurnSpeed(1.2f);
         m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
+        m_nAddScore = 300;
+        m_fDiscoveryTargetDistance = CANNON_DISCOVERY_DISTANCE;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(CANNON_PARTS_MAX);
         CCharacter::BindParts(CANNON_PARTS_BODY, 51);
@@ -163,6 +174,8 @@ void CEnemy::SetupInfoByType(void)
         fHP = 850.0f;
         m_fChargeValue = 20.0f;
         m_attackMotion = COMMANDER_ANIM_SPAWN_ENEMY;
+        m_nAddScore = 400;
+        m_fDiscoveryTargetDistance = COMMANDER_DISCOVERY_DISTANCE;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
         CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);
@@ -239,7 +252,7 @@ void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
     if (m_nCntTime >= KAMIKAZE_WHOLE_FRAME)
     {
         // 待機AIに
-        SetBaseState(BASE_STATE_WAIT, DEFAULT_FOLLOW_WAIT_FRAME);
+        SetBaseState(BASE_STATE_WAIT, KAMIKAZE_WAIT_COUNT);
 
     }
     else if (m_nCntTime == KAMIKAZE_TARGET_FRAME)

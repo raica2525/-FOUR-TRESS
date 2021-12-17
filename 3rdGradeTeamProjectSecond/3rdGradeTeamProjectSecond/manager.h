@@ -67,9 +67,6 @@ public:
     static MODE GetMode(void);
     static void SetMode(MODE mode);
 
-    static void SetScore(int nScore) { m_nScore = nScore; }
-    static int GetScore(void) { return m_nScore; }
-
     /*========================================================
     // 音周り
     //======================================================*/
@@ -90,8 +87,6 @@ private:
     static CTexture *m_pTexture;                // テクスチャのポインタ
     static CModelData *m_pModelData;            // モデルデータのポインタ
     static CEffectData *m_pEffectData;          // エフェクトデータ管理へのポインタ
-
-    static int m_nScore;                        // スコア
 };
 
 #endif

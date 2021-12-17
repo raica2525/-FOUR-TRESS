@@ -82,7 +82,7 @@ public:
     void RotControl(void);                                        // 向きを調整
     bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack = true, int effectType = 20);   // ダメージを受ける
     bool PullToCenter(D3DXVECTOR3 centerPos);                     // 中心に引き寄せる
-    void Healing(float fHealValue);                               // 回復処理
+    bool Healing(float fHealValue);                               // 回復処理
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
     void ControlMove(float& fMove, bool bGround = true);          // 移動量制御
 
@@ -158,6 +158,7 @@ public:
     bool GetDisp(void) { return m_bDisp; }
     int GetIdx(void) { return m_nIdx; }
     OBJTYPE GetLastHit(void) { return m_lastHit; }
+    float GetMaxLife(void) { return m_fMaxLife; }
 
     // アニメーションを使用しない場合のセッター
     void SetDontUseAnimation(void) { m_bUseAnimation = false; }

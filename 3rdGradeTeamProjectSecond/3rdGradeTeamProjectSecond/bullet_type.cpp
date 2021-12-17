@@ -73,29 +73,43 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_Effect.type = 0;
         m_Effect.interval = 5;
         break;
+    case TYPE_THUNDER:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(3000.0f, 1000.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 60;
+        m_fDamage = 9999.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;// 貫通
+        bUseShadow = false; // 影を使用しない
+        break;
     case TYPE_RAILGUN_LV2:
         // 固有の情報
         m_collisionSize = D3DXVECTOR2(500.0f, 500.0f);
-        m_fSpeed = 15.0f;
+        m_fSpeed = 17.5f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 180;
         m_fDamage = 5000.0f;
         m_bUseDraw = true;  // 仮
         m_bHitErase = false;// 貫通
         m_bBreakGoalGate = true;    // ゴールゲートを壊せる
+        m_nHitContributionPoint = 16;   // 壊した時の貢献ポイント
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
     case TYPE_RAILGUN_LV3:
         // 固有の情報
         m_collisionSize = D3DXVECTOR2(1000.0f, 1000.0f);
-        m_fSpeed = 15.0f;
+        m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
-        m_nLife = 300;
+        m_nLife = 240;
         m_fDamage = 10000.0f;
         m_bUseDraw = true;  // 仮
         m_bHitErase = false;// 貫通
         m_bBreakGoalGate = true;    // ゴールゲートを壊せる
+        m_nHitContributionPoint = 24;   // 壊した時の貢献ポイント
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -158,7 +172,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fSpeed = 20.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
-        m_fDamage = 40.0f;
+        m_fDamage = 50.0f;
         m_bUseDraw = true;
         m_bHitErase = false;// 貫通
         // モデルをバインド
@@ -188,6 +202,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 60;
         m_fDamage = 50.0f;
         m_bUseDraw = true;
+        m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -199,6 +214,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nLife = 60;
         m_fDamage = 150.0f;
         m_bUseDraw = true;
+        m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -236,6 +252,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 0.0f;   // 生成時に、現在のチャージ量に応じたものに変える
         m_bUseDraw = true;
         m_bHitErase = false;// 貫通（要調整）
+        m_nHitContributionPoint = 1;
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
@@ -254,6 +271,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;    // 貫通
         m_bUseKnockBack = false;// ノックバックは利用しない
         bUseShadow = false;     // 影を使用しない
+        m_nHitContributionPoint = 1;
         break;
     }
 

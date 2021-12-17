@@ -11,7 +11,7 @@
 // インクルードファイル
 //=============================================================================
 #include "main.h"
-
+#include <map>
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -40,7 +40,20 @@ public:
 
     Info* GetInfo(const int nNum);	// テクスチャ情報
 
+    int GetCntLoadTextureByTxt(void) { return m_nCntLoadTextureByTxt; }
+	int GetIndexByName(std::string name) { return m_nameIndexMap.at(name); }	//名前から番号を取得
+
 private:
     Info m_aInfo[MAX_TEXTURE];	// テクスチャ情報
+
+    //=====================================
+    // Second以降で追加したもの
+    //=====================================
+    int m_nCntLoadTextureByTxt; // テキストファイルから読み込んだテクスチャの数
+	std::map<std::string, int> m_nameIndexMap;	//名前と番号の対応配列
+
+	HRESULT LoadTextureFromTxt(std::string path);	//テキストからテクスチャを読み込み
+	HRESULT LoadTextureFromJson(std::string path);	//JSONからテクスチャを読み込み
+	
 };
 #endif

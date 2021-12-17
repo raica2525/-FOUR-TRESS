@@ -14,12 +14,16 @@
 #include "manager.h"
 #include "renderer.h"
 #include "player.h"
+#include "fileio.h"
+#include "json.h"
+#include "enemy.h"
 
 //=============================================================================
 // マクロ定義
 //=============================================================================
 #define MODEL_DATA_FILENAME ("data/TXT/modelData.txt")	    // モデルデータを読み込むファイルの名前
 #define MODEL_POS_DEF_FILENAME ("data/TXT/modelPosDef.txt")	// モデルの初期位置データを読み込むファイルの名前
+#define MAP_MODEL_FILENAME ("data/TXT/models.json")			// マップで使用するモデルデータのファイル
 #define PARTS_LIST_FILENAME ("data/TXT/partsList.txt")	    // パーツリストを読み込むファイルの名前
 #define PARTS_RATE_FILENAME ("data/TXT/partsRate.txt")	    // パーツレートを読み込むファイルの名前
 
@@ -46,6 +50,9 @@ CModelData::CModelData()
     }
 
     memset(m_aPartsRate, 0, sizeof(m_aPartsRate));
+    m_nCntLoadModelByTxt = 0;
+
+    m_nameIndexMap.clear();
 }
 
 //=============================================================================
@@ -58,95 +65,13 @@ CModelData::~CModelData()
 
 //=============================================================================
 // 初期化処理
-// Author : 後藤慎之助
+// Author : 後藤慎之助 池田悠希
 //=============================================================================
 HRESULT CModelData::Init(void)
 {
-    // ファイルポイント
-    FILE *pFile = NULL;
 
-    // 変数宣言
-    char cReadText[2048];	               // 文字として読み取り用
-    char cHeadText[2048];	               // 文字の判別用
-    char cDie[2048];		               // 使わない文字
-    int nNumType = 0;                      // タイプのナンバー
-    char cLoadModelName[256];              // 読み込み時のモデル名
-
-                                           // モデルを読み込むためのデバイス取得
-    LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-
-    //======================================================================================
-    // モデルデータファイルを開く
-    pFile = fopen(MODEL_DATA_FILENAME, "r");
-
-    // 開けたら
-    if (pFile != NULL)
-    {
-        // SCRIPTの文字が見つかるまで
-        while (strcmp(cHeadText, "SCRIPT") != 0)
-        {
-            // テキストからcReadText分文字を受け取る
-            fgets(cReadText, sizeof(cReadText), pFile);
-
-            // cReedTextをcHeadTextに格納
-            sscanf(cReadText, "%s", &cHeadText);
-        }
-
-        // cHeadTextがSCRIPTの時
-        if (strcmp(cHeadText, "SCRIPT") == 0)
-        {
-            // cHeadTextがEND_SCRIPTになるまで
-            while (strcmp(cHeadText, "END_SCRIPT") != 0)
-            {
-                fgets(cReadText, sizeof(cReadText), pFile);
-                sscanf(cReadText, "%s", &cHeadText);
-
-                // cHeadTextがMODEL_DATASETの時
-                if (strcmp(cHeadText, "MODEL_DATASET") == 0)
-                {
-                    // cHeadTextがEND_MODEL_DATASETになるまで
-                    while (strcmp(cHeadText, "END_MODEL_DATASET") != 0)
-                    {
-                        fgets(cReadText, sizeof(cReadText), pFile);
-                        sscanf(cReadText, "%s", &cHeadText);
-
-                        if (strcmp(cHeadText, "TYPE") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nNumType);
-                        }
-                        else if (strcmp(cHeadText, "NAME") == 0)
-                        {
-                            sscanf(cReadText, "%s %s %s", &cDie, &cDie, &cLoadModelName);
-
-                            // モデルデータの読み込み
-                            D3DXLoadMeshFromX(LPCSTR(cLoadModelName), D3DXMESH_SYSTEMMEM, pDevice, NULL,
-                                &m_aModelData[nNumType].pBuffMat, NULL, &m_aModelData[nNumType].nNumMat, &m_aModelData[nNumType].pMesh);
-
-                            // マテリアルのポインタを取得
-                            D3DXMATERIAL *pMat = (D3DXMATERIAL*)m_aModelData[nNumType].pBuffMat->GetBufferPointer();
-
-                            // マテリアルのテクスチャを結びつける
-                            for (int nCntMat = 0; nCntMat < (int)m_aModelData[nNumType].nNumMat; nCntMat++)
-                            {
-                                D3DXCreateTextureFromFile(pDevice, pMat[nCntMat].pTextureFilename, &m_aModelData[nNumType].apTexMat[nCntMat]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // ファイルを閉じる
-        fclose(pFile);
-    }
-    // 開けなかったら
-    else
-    {
-        printf("開けれませんでした\n");
-
-        return E_FAIL;
-    }
-    //======================================================================================
-
+	HRESULT hr = LoadModelDataFromTxt(MODEL_DATA_FILENAME);
+	//LoadModelDataFromJson(MAP_MODEL_FILENAME);
     // モデルの初期位置データ読み込み
     LoadModelPosDef();
 
@@ -648,4 +573,173 @@ CModelData::PartsRate* CModelData::GetPartsRate(const int nNum)
     }
 
     return NULL;
+}
+
+//=============================================================================
+// 名前から敵の種類を読み込む
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+int CModelData::GetEnemyTypeByName(std::string name)
+{
+    int nReturnNumber = 0;
+
+    if (name.compare("data/model/army.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_ARMY;
+    }
+    else if (name.compare("data/model/kamikaze.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_KAMIKAZE;
+    }
+    else if (name.compare("data/model/cannon.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_CANNON;
+    }
+    else if (name.compare("data/model/commander.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_COMMANDER;
+    }
+
+    return nReturnNumber;
+}
+
+//=============================================================================
+// テキストファイルからモデルデータの情報を読み込む
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+HRESULT CModelData::LoadModelDataFromTxt(std::string path)
+{
+
+	// ファイルポイント
+	FILE *pFile = NULL;
+
+	// 変数宣言
+	char cReadText[2048];	               // 文字として読み取り用
+	char cHeadText[2048];	               // 文字の判別用
+	char cDie[2048];		               // 使わない文字
+	int nNumType = 0;                      // タイプのナンバー
+	char cLoadModelName[256];              // 読み込み時のモデル名
+
+										 
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();   // モデルを読み込むためのデバイス取得
+
+	//======================================================================================
+	// モデルデータファイルを開く
+	pFile = fopen(path.c_str(), "r");
+
+	// 開けたら
+	if (pFile != NULL)
+	{
+		// SCRIPTの文字が見つかるまで
+		while (strcmp(cHeadText, "SCRIPT") != 0)
+		{
+			// テキストからcReadText分文字を受け取る
+			fgets(cReadText, sizeof(cReadText), pFile);
+
+			// cReedTextをcHeadTextに格納
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		// cHeadTextがSCRIPTの時
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			// cHeadTextがEND_SCRIPTになるまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);
+				sscanf(cReadText, "%s", &cHeadText);
+
+				// cHeadTextがMODEL_DATASETの時
+				if (strcmp(cHeadText, "MODEL_DATASET") == 0)
+				{
+					// cHeadTextがEND_MODEL_DATASETになるまで
+					while (strcmp(cHeadText, "END_MODEL_DATASET") != 0)
+					{
+						fgets(cReadText, sizeof(cReadText), pFile);
+						sscanf(cReadText, "%s", &cHeadText);
+
+						if (strcmp(cHeadText, "TYPE") == 0)
+						{
+							sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nNumType);
+							if (nNumType > m_nCntLoadModelByTxt)
+							{
+								m_nCntLoadModelByTxt = nNumType;    // 読み込んだ中で一番大きいTypeを取得する
+							}
+						}
+						else if (strcmp(cHeadText, "NAME") == 0)
+						{
+							sscanf(cReadText, "%s %s %s", &cDie, &cDie, &cLoadModelName);
+							m_aModelData[nNumType] = LoadModelFromX(cLoadModelName);
+						}
+					}
+				}
+			}
+		}
+		// ファイルを閉じる
+		fclose(pFile);
+		return S_OK;
+	}
+	// 開けなかったら
+	else
+	{
+		printf("開けれませんでした\n");
+		return E_FAIL;
+	}
+	//======================================================================================
+}
+
+//=============================================================================
+// JSONファイルからモデルデータの情報を読み込む
+// Author : 池田悠希
+//=============================================================================
+HRESULT CModelData::LoadModelDataFromJson(std::string path)
+{
+	std::string str;
+	// ファイルから文字列を読み込み
+	CFileIO::Load(&str, path);
+	// 文字列をJsonオブジェクトに変換
+	picojson::object obj = CJson::FromJson(str);
+
+	int nIndex = GetCntLoadModelByTxt() + 1;
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// ファイル形式の確認
+	if (obj["models"].is<picojson::null>())
+	{
+		return E_FAIL;
+	}
+
+	//Jsonオブジェクトをゲームオブジェクトに変換
+	picojson::array arr = obj["models"].get<picojson::array>();
+	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++, nIndex++)
+	{
+		picojson::object obj = it->get<picojson::object>();
+		m_aModelData[nIndex] = LoadModelFromX(CJson::Nullcheck<std::string>(obj, "path"));
+		m_nameIndexMap.insert(std::make_pair(CJson::Nullcheck<std::string>(obj, "name"),nIndex));
+	}
+	return S_OK;
+}
+
+//=============================================================================
+// XファイルからModelData型に変換
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+CModelData::ModelData CModelData::LoadModelFromX(std::string path)
+{
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	ModelData modelData;
+	ZeroMemory(&modelData, sizeof(modelData));
+	// モデルデータの読み込み
+	D3DXLoadMeshFromX(path.c_str(), D3DXMESH_SYSTEMMEM, pDevice, NULL,
+		&modelData.pBuffMat, NULL, &modelData.nNumMat, &modelData.pMesh);
+
+	// マテリアルのポインタを取得
+	D3DXMATERIAL *pMat = (D3DXMATERIAL*)modelData.pBuffMat->GetBufferPointer();
+
+	// マテリアルのテクスチャを結びつける
+	for (int nCntMat = 0; nCntMat < (int)modelData.nNumMat; nCntMat++)
+	{
+		D3DXCreateTextureFromFile(pDevice, pMat[nCntMat].pTextureFilename, &modelData.apTexMat[nCntMat]);
+	}
+	return modelData;
 }

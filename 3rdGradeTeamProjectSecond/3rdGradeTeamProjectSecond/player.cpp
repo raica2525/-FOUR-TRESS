@@ -52,7 +52,11 @@
 
 // 持ち運びエナジー量
 #define CARRY_ENERGY_DEFAULT 50.0f
-#define CARRY_ENERGY_CARRIER 80.0f
+#define CARRY_ENERGY_CARRIER 80.0f 
+
+// リスポーン時間
+#define RESPAWN_FRAME 900
+#define RESPAWN_HEIGHT 1500.0f
 
 //=======================
 // ウォーリアー
@@ -137,9 +141,6 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
 
     m_nIdxCreate = PLAYER_1;
     m_nIdxControlAndColor = PLAYER_1;
-    m_nPoint = 0;
-    m_startPos = DEFAULT_VECTOR;
-    m_startRot = DEFAULT_VECTOR;
 
     m_exFlag = EX_FLAG_NONE;
     m_bGround = true;
@@ -168,18 +169,15 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_fCurrentEnergyMax = 0.0f;
 
     m_pClipingMusk = NULL;
-    m_nNumWep = 0;
     m_rank = RANK_1;
     m_hipPosOld = DEFAULT_VECTOR;
 
-    m_bSpBarrier = false;
-    m_nCntSpGaugeMaxTime = 0;
+    m_nCntCurrentEnergyMaxTime = 0;
     m_voiceSet = VOICE_SET_ROBO;
 
     //===================================
     // 特殊能力対応周り
     //===================================
-    m_bUsedThreeJump = false;
 
     //===================================    
     // Secondで追加したメンバ変数
@@ -195,6 +193,8 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nCntGuards = 0;
     m_pLightGuard = NULL;
     m_pHealingCircle = NULL;
+    m_nCntRespawnTime = 0;
+    m_nContributionPoint = 0;
 }
 
 //=============================================================================
@@ -710,6 +710,10 @@ void CPlayer::Update(void)
         m_nCntGuards = 0;   // 攻撃を受けた時のみ、タンクのガード回数はリセットされる
         ResetAttack();
         SetResetAttackByDamage(false);
+        if (GetLife() <= 0.0f)
+        {
+            m_nCntStopTime = PLAYER_DEATH_STOP_FRAME;
+        }
     }
 
     // 負傷していないor起き上がり中は、無敵
@@ -1113,10 +1117,10 @@ void CPlayer::UpdateGameUI(void)
     // 必殺ゲージMAXエフェクト
     if (m_fCurrentEnergy >= m_fCurrentEnergyMax)
     {
-        m_nCntSpGaugeMaxTime++;
-        if (m_nCntSpGaugeMaxTime > PLAYER_SP_GAUGE_MAX_EFFECT_INTERVAL)
+        m_nCntCurrentEnergyMaxTime++;
+        if (m_nCntCurrentEnergyMaxTime > PLAYER_SP_GAUGE_MAX_EFFECT_INTERVAL)
         {
-            m_nCntSpGaugeMaxTime = 0;
+            m_nCntCurrentEnergyMaxTime = 0;
             D3DXVECTOR3 bodyPos = GetPartsPos(PARTS_BODY);
             CEffect2D *pSp1 = CEffect2D::Create(CEffectData::TYPE_SP_MAX_1, ConvertScreenPos(bodyPos));
             pSp1->SetPlayer(this);
@@ -1145,14 +1149,22 @@ void CPlayer::UpdateGameUI(void)
     //}
 
     // 何Pかの表示の位置更新（しゃがみ、もしくはダウンか起き上がり中なら表示の位置を下げる）
-    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-    float fSizeY = collisionSizeDefence.y;
-    DAMAGE_STATE damageState = GetDamageState();
-    if (damageState == DAMAGE_STATE_BIG || damageState == DAMAGE_STATE_STAND_UP)
+    if (GetDisp())
     {
-        fSizeY *= PLAYER_SQUAT_CUT_COLLISION_SIZE;
+        D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+        float fSizeY = collisionSizeDefence.y;
+        DAMAGE_STATE damageState = GetDamageState();
+        if (damageState == DAMAGE_STATE_BIG || damageState == DAMAGE_STATE_STAND_UP)
+        {
+            fSizeY *= PLAYER_SQUAT_CUT_COLLISION_SIZE;
+        }
+        m_pUI_Playable->SetPosTo2D(GetPos() + D3DXVECTOR3(0.0f, fSizeY + 50.0f, 0.0f));
+        m_pUI_Playable->SetDisp(true);
     }
-    m_pUI_Playable->SetPosTo2D(GetPos() + D3DXVECTOR3(0.0f, fSizeY + 50.0f, 0.0f));
+    else
+    {
+        m_pUI_Playable->SetDisp(false);
+    }
 }
 
 //=============================================================================
@@ -1164,6 +1176,9 @@ void CPlayer::DeadMove(void)
     // 硬直していないなら
     if (m_nCntStopTime <= 0)
     {
+        // リスポーン時間を数える
+        m_nCntRespawnTime++;
+
         // 位置を取得
         D3DXVECTOR3 pos = DEFAULT_VECTOR;
         pos = GetPos();
@@ -1193,6 +1208,12 @@ void CPlayer::DeadMove(void)
 
         // アニメーション更新
         CCharacter::Update();
+
+        // リスポーン
+        if (m_nCntRespawnTime >= RESPAWN_FRAME)
+        {
+            Respawn();
+        }
     }
     else
     {
@@ -1209,7 +1230,6 @@ void CPlayer::ResetOnGround(void)
 {
     m_nCntPressJump = 0;
     m_bUsedSecondJump = false;
-    m_bUsedThreeJump = false;
     m_nCntStartGlide = 0;
 }
 
@@ -1224,6 +1244,7 @@ void CPlayer::ResetAttack(void)
     m_attackState = ATTACK_STATE_NONE;
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     m_bUsingGuard = false;
+    SetTakeKnockBack(true);
 }
 
 //=============================================================================
@@ -1233,10 +1254,12 @@ void CPlayer::ResetAttack(void)
 void CPlayer::Respawn(void)
 {
     // リスポーン
-    SetPos(m_startPos);
-    SetRot(m_startRot);
+    CFortress *pFortress = CGame::GetFortress();
+    D3DXVECTOR3 respawnPos = pFortress->GetPos() + D3DXVECTOR3(0.0f, RESPAWN_HEIGHT, 0.0f);
+    SetPos(respawnPos);
+    SetRot(pFortress->GetRot());
     SetDisp(true);
-    SetUpLife(m_fDef);
+    SetUpLife(GetMaxLife());
 
     // 既存のリセット関数
     ResetOnGround();
@@ -1247,6 +1270,7 @@ void CPlayer::Respawn(void)
     m_nCntLandingTime = 0;
     m_bGroundOld = false;
     m_nCntStopTime = 0;
+    m_nCntRespawnTime = 0;
 
     SetTakeDamageTime(0);
     SetDamageState(DAMAGE_STATE_NONE);
@@ -1260,18 +1284,18 @@ void CPlayer::Respawn(void)
 //=============================================================================
 void CPlayer::Draw(void)
 {
-    // 必殺技を撃っているときは、表示を消す
-    if (m_pUI_Playable)
-    {
-        if (CGame::GetCurrentSpShot())
-        {
-            m_pUI_Playable->SetDisp(false);
-        }
-        else
-        {
-            m_pUI_Playable->SetDisp(true);
-        }
-    }
+    //// 必殺技を撃っているときは、表示を消す
+    //if (m_pUI_Playable)
+    //{
+    //    if (CGame::GetCurrentSpShot())
+    //    {
+    //        m_pUI_Playable->SetDisp(false);
+    //    }
+    //    else
+    //    {
+    //        m_pUI_Playable->SetDisp(true);
+    //    }
+    //}
 
     // 表示するなら、描画
     if (GetDisp())
@@ -1338,8 +1362,6 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
     pPlayer->Init(pos, DEFAULT_SCALE);
 
     // 結びつけるメンバ変数の初期化
-    pPlayer->m_startPos = pos;
-    pPlayer->m_startRot = rot;
     pPlayer->m_nIdxCreate = nIdxCreate;
     pPlayer->m_AIlevel = AIlevel;
     pPlayer->m_bUseKeyboard = bUseKeyboard;
@@ -1516,8 +1538,6 @@ CPlayer * CPlayer::CreateInCustom(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCont
     pPlayer->Init(pos, DEFAULT_SCALE);
 
     // 結びつけるメンバ変数の初期化
-    pPlayer->m_startPos = pos;
-    pPlayer->m_startRot = rot;
     pPlayer->SetDisp(bDisp);
 
     // マネキンモードに
@@ -1719,21 +1739,14 @@ void CPlayer::MoveMotion(void)
         }
         else
         {
-            // どのジャンプにするか
-            if (m_bUsedThreeJump)
+            // 二段ジャンプを使かったかどうか
+            if (m_bUsedSecondJump)
             {
-                //GetAnimation()->SetAnimation(ANIM_THIRD_JUMP);
+                GetAnimation()->SetAnimation(ANIM_SECOND_JUMP);
             }
             else
             {
-                if (m_bUsedSecondJump)
-                {
-                    GetAnimation()->SetAnimation(ANIM_SECOND_JUMP);
-                }
-                else
-                {
-                    GetAnimation()->SetAnimation(ANIM_JUMP);
-                }
+                GetAnimation()->SetAnimation(ANIM_JUMP);
             }
         }
     }
@@ -1891,39 +1904,6 @@ void CPlayer::Jump(D3DXVECTOR3& move)
             }
             else
             {
-                // 特殊能力:三段ジャンプ
-                if (IS_BITON(m_exFlag, EX_FLAG_THREE_JUMP))
-                {
-                    // 地面にいなく、三段ジャンプをしていなく、二段ジャンプ後なら
-                    if (!m_bUsedThreeJump && m_bUsedSecondJump)
-                    {
-                        // 多段ジャンプの空気の輪と砂煙（当たり判定の半分の大きさ）
-                        CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_AIR_RING, GetPos(), GetPos(), collisionSizeDefence.x * 0.5f);
-                        CEffect3D::Emit(CEffectData::TYPE_SECOND_JUMP_SMOKE, GetPos(), GetPos());
-
-                        // ジャンプ音
-                        CManager::SoundPlay(CSound::LABEL_SE_JUMP);
-
-                        //// 1Fだけ向きを変えることができる
-                        //RotControl();
-
-                        // ジャンプの初期量
-                        move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;
-
-                        // 滑空までのカウンタを設定
-                        m_nCntStartGlide = PLAYER_NEXT_JUMP_MOTION_TO_GLIDE;
-
-                        // 三段ジャンプを使ったフラグをtrueに
-                        m_bUsedThreeJump = true;
-
-                        // 念のため着地時間をリセット
-                        m_nCntLandingTime = 0;
-
-                        // ジャンプのカウンタ加算
-                        m_nCntPressJump++;
-                    }
-                }
-
                 // 地面にいなく、二段ジャンプをしていないなら
                 if (!m_bUsedSecondJump)
                 {
@@ -1954,61 +1934,6 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                 }
             }
         }
-    }
-}
-
-//=============================================================================
-// 武器の残像を残す
-// Author : 後藤慎之助
-//=============================================================================
-void CPlayer::LeaveWepAfterimage(void)
-{
-    // 攻撃アニメーションの最低保証期間なら
-    if (m_nCntAttackAnimTime > 0)
-    {
-        // 武器の位置を取得
-        D3DXVECTOR3 wepPos = CCharacter::GetPartsPos(PARTS_WEP);
-
-        // プレイヤーの向きに合わせて、モデルエフェクトの向きを合わせる
-        D3DXVECTOR3 playerRot = GetRot();
-        D3DXVECTOR3 wepRot = DEFAULT_VECTOR;
-        float fAngle = D3DXToRadian(12.5f);
-        if (playerRot.y == PLAYER_ROT_LEFT)
-        {
-            fAngle = D3DXToRadian(-12.5f);
-        }
-        wepRot.z = fAngle * m_nCntAttackAnimTime;
-
-        // モデルエフェクトを生成
-        D3DXCOLOR col = DEFAULT_COLOR;
-        switch (m_nIdxControlAndColor)
-        {
-        case PLAYER_1:
-            col = PLAYER_COLOR_1;
-            break;
-        case PLAYER_2:
-            col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-            break;
-        case PLAYER_3:
-            col = PLAYER_COLOR_3;
-            break;
-        case PLAYER_4:
-            col = PLAYER_COLOR_4;
-            break;
-        }
-
-        // 武器個別対応
-        if (IS_BITON(m_exFlag, EX_FLAG_TRAIL_GREEN))
-        {
-            col = PLAYER_COLOR_3;
-        }
-        else if (IS_BITON(m_exFlag, EX_FLAG_TRAIL_PURPLE))
-        {
-            col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-        }
-
-        CModelEffect *pCopy = CModelEffect::Create(m_nNumWep, wepPos, wepRot, col, D3DXCOLOR(0.0f, 0.0f, 0.0f, -0.025f));
-        pCopy->SetAdditive();
     }
 }
 
@@ -2146,11 +2071,11 @@ void CPlayer::ResetStatusEveryRound(void)
     //    m_fSpGaugeCurrent = 0.0f;
     //}
 
-    // バリア状態をリセット
-    if (m_bSpBarrier)
-    {
-        m_bSpBarrier = false;
-    }
+    //// バリア状態をリセット
+    //if (m_bSpBarrier)
+    //{
+    //    m_bSpBarrier = false;
+    //}
 }
 
 //=============================================================================
@@ -2223,10 +2148,12 @@ void CPlayer::SendEnergyForFortress(void)
         // 当たっているなら
         if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
         {
-            // エナジーを送る
-            if (m_fCurrentEnergy > 0.0f)
+            // 攻撃フェーズ中以外かつ、エナジーがあるなら送る
+            if (!pFortress->GetAttackPhase() && m_fCurrentEnergy > 0.0f)
             {
                 pFortress->AddChargeValue(m_fCurrentEnergy);
+                // 貢献度も加算
+                GainContribution((int)m_fCurrentEnergy);
                 m_fCurrentEnergy = 0.0f;
             }
         }

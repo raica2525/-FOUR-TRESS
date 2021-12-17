@@ -51,8 +51,6 @@ CTexture *CManager::m_pTexture = NULL;
 CModelData *CManager::m_pModelData = NULL;
 CEffectData *CManager::m_pEffectData = NULL;
 
-int CManager::m_nScore = 0;
-
 //========================================
 // 生成の管理のデフォルトコンストラクタ
 // Author : 後藤慎之助
@@ -151,7 +149,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
     CText::Load();
 
     // フェードの生成
-    m_pFade = CFade::Create(MODE_GAME);    // 最初はタイトル
+    m_pFade = CFade::Create(MODE_DEBUG_MENU);    // 最初はタイトル
 
     return S_OK;
 }

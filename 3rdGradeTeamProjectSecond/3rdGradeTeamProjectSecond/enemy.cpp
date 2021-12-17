@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// ƒGƒlƒ~[ˆ— (enemy.cpp)
-// Author : Œã“¡T”V•
+// ã‚¨ãƒãƒŸãƒ¼å‡¦ç† (enemy.cpp)
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //
 //======================================================================================
 
 //========================
-// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
+// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
 //========================
 #include "enemy.h"
 #include "manager.h"
@@ -24,34 +24,37 @@
 #include "item.h"
 
 //========================================
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 //========================================
-// oŒ»ˆ—ü‚è
-#define APPEAR_WAIT_FRAME 30    // ‰½ƒtƒŒ[ƒ€‚Éˆê‰ñŒŸ’m‚·‚é‚©‚Ì‘Ò‹@ƒtƒŒ[ƒ€
+// åŸºæœ¬æ­»äº¡æ™‚è²¢çŒ®åº¦
+#define DEFAULT_DEATH_CONTRIBUTION 1
 
-// ”­Ë‚Ü‚Å‚Ìƒ`ƒƒ[ƒWŠÔ
+// å‡ºç¾å‡¦ç†å‘¨ã‚Š
+#define APPEAR_WAIT_FRAME 30    // ä½•ãƒ•ãƒ¬ãƒ¼ãƒ ã«ä¸€å›æ¤œçŸ¥ã™ã‚‹ã‹ã®å¾…æ©Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
+
+// ç™ºå°„ã¾ã§ã®ãƒãƒ£ãƒ¼ã‚¸æ™‚é–“
 #define CHARGE_FIRE_FRAME 90
 
-// „‰ñ‚ªI‚í‚éƒJƒEƒ“ƒ^
+// å·¡å›ãŒçµ‚ã‚ã‚‹ã‚«ã‚¦ãƒ³ã‚¿
 #define PATROL_COUNT_MAX 180
 #define PATROL_COUNT_MIN 60
 
-// ‘Ò‹@‚ªI‚í‚éƒJƒEƒ“ƒ^
+// å¾…æ©ŸãŒçµ‚ã‚ã‚‹ã‚«ã‚¦ãƒ³ã‚¿
 #define WAIT_COUNT_AFTER_PATROL 30
 #define WAIT_COUNT_AFTER_DISCOVERY 20
 #define WAIT_COUNT_AFTER_DAMAGE 25
 
-// ƒ`ƒƒ[ƒW—Ê‚É‰‚¶‚½A—‚Æ‚·“d’r‚ÌŒ©‚½–Ú‚Ì•Ï‰»
+// ãƒãƒ£ãƒ¼ã‚¸é‡ã«å¿œã˜ãŸã€è½ã¨ã™é›»æ± ã®è¦‹ãŸç›®ã®å¤‰åŒ–
 #define CHARGE_VALUE_DENTI_3 10.0f
 #define CHARGE_VALUE_DENTI_1 50.0f
 
-// ƒ_ƒ[ƒW‚ğó‚¯‚½Û‚ÌƒtƒŒ[ƒ€
+// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸéš›ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 #define DAMAGE_FRAME 30
 #define DEATH_FRAME 50
 
 //=============================================================================
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-// Author : Œã“¡T”V•
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 {
@@ -89,34 +92,40 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
     m_Effect.type = NOT_EXIST;
     m_Effect.interval = 1;
     m_Effect.nCntTrail = 0;
+  
+    m_nAddScore = 1;
+    m_nWhoContribution = NOT_EXIST;
+    m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;
+
+    m_bDeathBySquashed = false;
 }
 
 //=============================================================================
-// ƒfƒXƒgƒ‰ƒNƒ^
-// Author : Œã“¡T”V•
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 CEnemy::~CEnemy()
 {
 }
 
 //=============================================================================
-// ‰Šú‰»ˆ—
-// Author : Œã“¡T”V•
+// åˆæœŸåŒ–å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-    // í—Ş‚²‚Æ‚Ì‰Šúİ’è
+    // ç¨®é¡ã”ã¨ã®åˆæœŸè¨­å®š
     SetupInfoByType();
 
-    // ƒLƒƒƒ‰ƒNƒ^[‚É”½‰f
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã«åæ˜ 
     CCharacter::Init(pos, DEFAULT_SCALE);
 
     return S_OK;
 }
 
 //=============================================================================
-// I—¹ˆ—
-// Author : Œã“¡T”V•
+// çµ‚äº†å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::Uninit(void)
 {
@@ -124,52 +133,52 @@ void CEnemy::Uninit(void)
 }
 
 //=============================================================================
-// XVˆ—
-// Author : Œã“¡T”V•
+// æ›´æ–°å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::Update(void)
 {
-    // ƒ_ƒ[ƒW‚É‚æ‚Á‚ÄUŒ‚‚ğƒŠƒZƒbƒg‚·‚éƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚È‚ç
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸ã«ã‚ˆã£ã¦æ”»æ’ƒã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹ãªã‚‰
     if (GetResetAttackByDamage())
     {
         SetBaseState(BASE_STATE_DAMAGE, DAMAGE_FRAME);
         SetResetAttackByDamage(false);
     }
 
-    // •‰ŠÔ‚ª‚ ‚é‚È‚çAƒJƒEƒ“ƒ^‚ğ‰º‚°‚é
+    // è² å‚·æ™‚é–“ãŒã‚ã‚‹ãªã‚‰ã€ã‚«ã‚¦ãƒ³ã‚¿ã‚’ä¸‹ã’ã‚‹
     CntDownTakeDamageTime();
 
-    // oŒ»‚µ‚Ä‚¢‚È‚¢‚È‚çAoŒ»ˆ—
+    // å‡ºç¾ã—ã¦ã„ãªã„ãªã‚‰ã€å‡ºç¾å‡¦ç†
     if (m_appearState != APPEAR_STATE_EXIST)
     {
         Appear();
     }
     else
     {
-        // ƒ‚[ƒVƒ‡ƒ“‚ğ‚Ü‚¸‚Í‘Ò‹@‚É‚·‚é
+        // ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ã¾ãšã¯å¾…æ©Ÿã«ã™ã‚‹
         m_setAnimationThisFrame = 0;
 
-        // ˆÊ’uAˆÚ“®—ÊA•‰ó‘Ô‚ğæ“¾
+        // ä½ç½®ã€ç§»å‹•é‡ã€è² å‚·çŠ¶æ…‹ã‚’å–å¾—
         D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
         D3DXVECTOR3 myPos = DEFAULT_VECTOR;
         D3DXVECTOR3 move = DEFAULT_VECTOR;
         myPos = GetPos();
         move = GetMove();
 
-        // 1F‘O‚ÌˆÊ’u‚ğ‹L‰¯
+        // 1Få‰ã®ä½ç½®ã‚’è¨˜æ†¶
         SetPosOld(myPos);
 
-        // 1F‘O‚ÌˆÚ“®—Ê‚ğ‹L‰¯
+        // 1Få‰ã®ç§»å‹•é‡ã‚’è¨˜æ†¶
         SetMoveOld(move);
 
-        // ‰¡‚Æ‰œs‚«‚ÌˆÚ“®—Ê§Œä
+        // æ¨ªã¨å¥¥è¡Œãã®ç§»å‹•é‡åˆ¶å¾¡
         ControlMove(move.x);
         ControlMove(move.z);
 
-        // ˆÚ“®—Ê‚ÆˆÊ’u‚ğŒ‹‚Ñ‚Â‚¯‚é
+        // ç§»å‹•é‡ã¨ä½ç½®ã‚’çµã³ã¤ã‘ã‚‹
         myPos += move;
 
-        // AIˆ—
+        // AIå‡¦ç†
         switch (m_baseState)
         {
         case BASE_STATE_WAIT:
@@ -190,18 +199,18 @@ void CEnemy::Update(void)
             break;
         }
 
-        // ˆÚ“®—vÇ‚É“¥‚İ‚Â‚Ô‚³‚ê‚é‚©‚Ç‚¤‚©
+        // ç§»å‹•è¦å¡ã«è¸ã¿ã¤ã¶ã•ã‚Œã‚‹ã‹ã©ã†ã‹
         SquashedByFortress(myPos);
 
-        // ƒ}ƒbƒv§ŒÀ
+        // ãƒãƒƒãƒ—åˆ¶é™
         D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
         CGame::MapLimit(myPos, GetPosOld(), myCubeSize);
 
-        // ˆÊ’uAˆÚ“®—Ê‚ğ”½‰f
+        // ä½ç½®ã€ç§»å‹•é‡ã‚’åæ˜ 
         SetPos(myPos);
         SetMove(move);
 
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚³‚¹‚é
+        // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã•ã›ã‚‹
         if (GetAnimation())
         {
             GetAnimation()->SetAnimation(m_setAnimationThisFrame);
@@ -213,31 +222,40 @@ void CEnemy::Update(void)
         CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
 #endif // COLLISION_TEST
 
-        // ƒ‰ƒCƒt‚ª‚È‚­‚È‚Á‚½‚çÁ‚·
+        // ãƒ©ã‚¤ãƒ•ãŒãªããªã£ãŸã‚‰æ¶ˆã™
         float fLife = GetLife();
         if (fLife <= 0.0f)
         {
-            // ‘Ì—Í‚Ì‰ºŒÀ
+            // ä½“åŠ›ã®ä¸‹é™
             fLife = 0.0f;
 
-            // ˆÚ“®—vÇ‚É“¥‚İ‚Â‚Ô‚³‚ê‚È‚­‚È‚é
+            // ç§»å‹•è¦å¡ã«è¸ã¿ã¤ã¶ã•ã‚Œãªããªã‚‹
             m_bSquashedByFortress = false;
 
-            // €–Sƒ‚[ƒVƒ‡ƒ“‚ª‚È‚¢‚È‚ç
+            // æ­»äº¡ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ãŒãªã„ãªã‚‰
             if (m_deathMotion == 0)
             {
-                // ‘¦À‚ÉÁ‚·
+                // å³åº§ã«æ¶ˆã™
                 DeathOneFrame(myPos);
             }
             else
             {
-                // ‚ ‚é‚È‚çA€–Só‘Ô‚É
-                m_baseState = BASE_STATE_DEATH;
-
-                // ˆê’èƒJƒEƒ“ƒ^‚ÅAÁ‚·
-                if (m_nCntTime >= DEATH_FRAME)
+                // ç§»å‹•è¦å¡ã«è¸ã¿ã¤ã¶ã•ã‚ŒãŸãªã‚‰
+                if (m_bDeathBySquashed)
                 {
+                    // å³åº§ã«æ¶ˆã™
                     DeathOneFrame(myPos);
+                }
+                else
+                {
+                    // æ­»äº¡çŠ¶æ…‹æ¼”å‡º
+                    m_baseState = BASE_STATE_DEATH;
+
+                    // ä¸€å®šã‚«ã‚¦ãƒ³ã‚¿ã§ã€æ¶ˆã™
+                    if (m_nCntTime >= DEATH_FRAME)
+                    {
+                        DeathOneFrame(myPos);
+                    }
                 }
             }
         }
@@ -245,15 +263,16 @@ void CEnemy::Update(void)
 }
 
 //=============================================================================
-// €–S1F‚¾‚¯’Ê‚éˆ—
-// Author : Œã“¡T”V•
+// æ­»äº¡æ™‚1Fã ã‘é€šã‚‹å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
 {
-    // ƒ‰ƒXƒgƒqƒbƒg‚ªƒvƒŒƒCƒ„[‚È‚çAƒAƒCƒeƒ€‚ğo‚·
+    // ãƒ©ã‚¹ãƒˆãƒ’ãƒƒãƒˆãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã‚‰ã€ã‚¢ã‚¤ãƒ†ãƒ ã‚’å‡ºã—ã‚¹ã‚³ã‚¢ã‚‚åŠ ç®—
     OBJTYPE lastHit = GetLastHit();
     if (lastHit == OBJTYPE_PLAYER)
     {
+        // ã‚¢ã‚¤ãƒ†ãƒ 
         CItem::TYPE dentiType = CItem::TYPE_DENTI_5;
         if (m_fChargeValue >= CHARGE_VALUE_DENTI_3 && m_fChargeValue < CHARGE_VALUE_DENTI_1)
         {
@@ -263,17 +282,26 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         {
             dentiType = CItem::TYPE_DENTI_1;
         }
-        // Å’á•ÛØ
+        // æœ€ä½ä¿è¨¼
         if (m_fChargeValue < 1.0f)
         {
             m_fChargeValue = 1.0f;
         }
         CItem::Create(dentiType, myPos, m_fChargeValue);
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
+
+        // ã‚¹ã‚³ã‚¢åŠ ç®—
+        CGame::AddScore(m_nAddScore);
+
+        // è²¢çŒ®è€…ã®ãƒã‚¤ãƒ³ãƒˆåŠ ç®—
+        if (m_nWhoContribution != NOT_EXIST)
+        {
+            CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nDeathContributionPoint);
+        }
     }
     else
     {
-        // ƒJƒ~ƒJƒ[‚Ìê‡AƒvƒŒƒCƒ„[ˆÈŠO‚É‚â‚ç‚ê‚½‚ç”š”­‚ğ¶‚İo‚·
+        // ã‚«ãƒŸã‚«ã‚¼ã®å ´åˆã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä»¥å¤–ã«ã‚„ã‚‰ã‚ŒãŸã‚‰çˆ†ç™ºã‚’ç”Ÿã¿å‡ºã™
         if (m_type == TYPE_KAMIKAZE)
         {
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
@@ -282,32 +310,42 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
             CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, myPos, myPos);
         }
         else
-        {// ƒJƒ~ƒJƒ[ˆÈŠO‚Í’Êí‚ÌƒGƒtƒFƒNƒg‚ğo‚·
+        {// ã‚«ãƒŸã‚«ã‚¼ä»¥å¤–ã¯é€šå¸¸ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’å‡ºã™
             CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
         }
     }
 
-    // I—¹ˆ—
+    // çµ‚äº†å‡¦ç†
     Uninit();
 }
 
 //=============================================================================
-// Ä„‰ñˆ—
-// Author : Œã“¡T”V•
+// å†å·¡å›å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::RePatrol(void)
 {
-    m_bWarning = false;
-    SetBaseState(BASE_STATE_PATROL);
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå…¨å“¡ã‚„ã‚‰ã‚Œã¦ã„ã‚‹ãªã‚‰ã€ç§»å‹•è¦å¡ã‚’ç‹™ã†ï¼ˆã»ã¼è©°ã¿ï¼‰
+    if (!CGame::GetDispAnyPlayer())
+    {
+        m_bWarning = true;
+        m_pTarget = (CCharacter*)CGame::GetFortress();
+        SetBaseState(BASE_STATE_ATTACK);
+    }
+    else
+    {
+        m_bWarning = false;
+        SetBaseState(BASE_STATE_PATROL);
+    }
 }
 
 //=============================================================================
-// •`‰æˆ—
-// Author : Œã“¡T”V•
+// æç”»å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::Draw(void)
 {
-    // oŒ»‚µ‚Ä‚¢‚é‚È‚ç•`‰æ
+    // å‡ºç¾ã—ã¦ã„ã‚‹ãªã‚‰æç”»
     if (m_appearState == APPEAR_STATE_EXIST)
     {
         CCharacter::Draw();
@@ -315,16 +353,16 @@ void CEnemy::Draw(void)
 }
 
 //=============================================================================
-// ¶¬ˆ—
-// Author : Œã“¡T”V•
+// ç”Ÿæˆå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearState, float fSearchDistanceForAppear, float fChargeValue)
 {
-    // ƒƒ‚ƒŠŠm•Û
+    // ãƒ¡ãƒ¢ãƒªç¢ºä¿
     CEnemy *pEnemy = NULL;
     pEnemy = new CEnemy;
 
-    // æ‚Éˆø”‚ğŒ‹‚Ñ‚Â‚¯‚Ä‚¨‚­
+    // å…ˆã«å¼•æ•°ã‚’çµã³ã¤ã‘ã¦ãŠã
     pEnemy->m_type = type;
     pEnemy->CCharacter::SetPos(pos);
     pEnemy->m_fStrength = fStrength;
@@ -332,19 +370,19 @@ CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearSta
     pEnemy->m_fSearchDistanceForAppear = fSearchDistanceForAppear;
     pEnemy->m_patrolCentralPos = pos;
 
-    // ‰¼‚ÉŒü‚«‚ğ³–Ê‚É
+    // ä»®ã«å‘ãã‚’æ­£é¢ã«
     pEnemy->CCharacter::SetRot(DEFAULT_VECTOR);
 
-    // ‰Šú‰»
+    // åˆæœŸåŒ–
     pEnemy->Init(pos, DEFAULT_SCALE);
 
-    // oŒ»‚µ‚Ä‚¢‚È‚¢‚È‚çA–³“G‚É‚µ‚Ä‚¨‚­
+    // å‡ºç¾ã—ã¦ã„ãªã„ãªã‚‰ã€ç„¡æ•µã«ã—ã¦ãŠã
     if (pEnemy->m_appearState != APPEAR_STATE_EXIST)
     {
         pEnemy->SetInvincible(true);
     }
 
-    // ƒ`ƒƒ[ƒW—Ê‚ğƒfƒtƒHƒ‹ƒgˆÈŠO‚Ì’l‚É‚µ‚Ä‚¢‚é‚È‚çA‚»‚ê‚ğ—Dæ
+    // ãƒãƒ£ãƒ¼ã‚¸é‡ã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆä»¥å¤–ã®å€¤ã«ã—ã¦ã„ã‚‹ãªã‚‰ã€ãã‚Œã‚’å„ªå…ˆ
     if (fChargeValue != NOT_EXIST_F)
     {
         pEnemy->m_fChargeValue = fChargeValue;
@@ -354,38 +392,38 @@ CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearSta
 }
 
 //=============================================================================
-// ƒ^[ƒQƒbƒg”­Œ©ˆ—
-// Author : Œã“¡T”V•
+// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™ºè¦‹å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::DiscoveryTarget(CCharacter *pTarget)
 {
-    // Œx‰ú’†‚Å‚È‚©‚Á‚½‚ç
+    // è­¦æˆ’ä¸­ã§ãªã‹ã£ãŸã‚‰
     if (!m_bWarning)
     {
-        // ‘Ò‹@ó‘Ô‚É‚·‚é
+        // å¾…æ©ŸçŠ¶æ…‹ã«ã™ã‚‹
         SetBaseState(BASE_STATE_WAIT, WAIT_COUNT_AFTER_DISCOVERY);
     }
 
-    // Œx‰ú’†‚É
+    // è­¦æˆ’ä¸­ã«
     m_bWarning = true;
 
-    // ƒ^[ƒQƒbƒg‚ğŒ‹‚Ñ‚Â‚¯‚é
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’çµã³ã¤ã‘ã‚‹
     if (pTarget)
     {
         m_pTarget = pTarget;
     }
 
-    // ‚±‚±‚ÅAƒrƒbƒNƒŠƒ}[ƒN“I‚È‚à‚Ì‚ğo‚·
+    // ã“ã“ã§ã€ãƒ“ãƒƒã‚¯ãƒªãƒãƒ¼ã‚¯çš„ãªã‚‚ã®ã‚’å‡ºã™
 
 }
 
 //=============================================================================
-// oŒ»ˆ—
-// Author : Œã“¡T”V•
+// å‡ºç¾å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::Appear(void)
 {
-    // ”ƒtƒŒ[ƒ€‚Éˆê‰ñ‚Ìˆ—‚É‚·‚é
+    // æ•°ãƒ•ãƒ¬ãƒ¼ãƒ ã«ä¸€å›ã®å‡¦ç†ã«ã™ã‚‹
     m_nCntTime++;
     if (m_nCntTime < APPEAR_WAIT_FRAME)
     {
@@ -393,16 +431,16 @@ void CEnemy::Appear(void)
     }
     m_nCntTime = 0;
 
-    // ˆÊ’u‚ğæ“¾
+    // ä½ç½®ã‚’å–å¾—
     D3DXVECTOR3 myPos = GetPos();
     D3DXVECTOR3 targetPos = DEFAULT_VECTOR;
 
-    // oŒ»ó‘Ô‚É‚æ‚Á‚Äê‡•ª‚¯
+    // å‡ºç¾çŠ¶æ…‹ã«ã‚ˆã£ã¦å ´åˆåˆ†ã‘
     switch (m_appearState)
     {
     case APPEAR_STATE_WAIT_FORTRESS:
     {
-        // ˆÚ“®—vÇ‚ğæ“¾
+        // ç§»å‹•è¦å¡ã‚’å–å¾—
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
@@ -412,33 +450,33 @@ void CEnemy::Appear(void)
     break;
     case APPEAR_STATE_WAIT_PLAYER:
     {
-        // ƒvƒŒƒCƒ„[‚ğæ“¾
-        float fKeepDistance = 999999.9f;        // ‹——£
-        bool bIsKeepDistanceChanged = false;    // ‹——£‚ªXV‚³‚ê‚½‚©‚Ç‚¤‚©
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å–å¾—
+        float fKeepDistance = 999999.9f;        // è·é›¢
+        bool bIsKeepDistanceChanged = false;    // è·é›¢ãŒæ›´æ–°ã•ã‚ŒãŸã‹ã©ã†ã‹
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
         {
-            // ’†g‚ª‚ ‚é‚È‚ç
+            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
             if (pScene)
             {
-                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
+                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // ƒvƒŒƒCƒ„[‚ÉƒLƒƒƒXƒg
+                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚­ãƒ£ã‚¹ãƒˆ
                 CPlayer *pPlayer = (CPlayer*)pScene;
 
-                // ƒvƒŒƒCƒ„[‚ª•\¦‚³‚ê‚Ä‚¢‚é‚È‚ç
+                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¡¨ç¤ºã•ã‚Œã¦ã„ã‚‹ãªã‚‰
                 if (pPlayer->GetDisp())
                 {
-                    // ƒvƒŒƒCƒ„[‚ÌˆÊ’u
+                    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®
                     D3DXVECTOR3 playerPos = pPlayer->GetPos();
 
-                    // ‹——£ŒvZ
+                    // è·é›¢è¨ˆç®—
                     float fCurrentDistance = sqrtf(
                         powf((myPos.x - playerPos.x), 2.0f) +
                         powf((myPos.z - playerPos.z), 2.0f));
 
-                    // ‹——£‚ª¡ƒL[ƒv‚µ‚Ä‚¢‚é‚à‚Ì‚æ‚è‹ß‚¢‚È‚çAŒü‚«‚ğXV
+                    // è·é›¢ãŒä»Šã‚­ãƒ¼ãƒ—ã—ã¦ã„ã‚‹ã‚‚ã®ã‚ˆã‚Šè¿‘ã„ãªã‚‰ã€å‘ãã‚’æ›´æ–°
                     if (fKeepDistance > fCurrentDistance)
                     {
                         fKeepDistance = fCurrentDistance;
@@ -447,12 +485,12 @@ void CEnemy::Appear(void)
                     }
                 }
 
-                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
+                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
                 pScene = pNextScene;
             }
         }
 
-        // ‹——£‚ªXV‚³‚ê‚Ä‚¢‚È‚¢‚È‚çAŠÖ”‚ğ”²‚¯‚é
+        // è·é›¢ãŒæ›´æ–°ã•ã‚Œã¦ã„ãªã„ãªã‚‰ã€é–¢æ•°ã‚’æŠœã‘ã‚‹
         if (!bIsKeepDistanceChanged)
         {
             return;
@@ -464,7 +502,7 @@ void CEnemy::Appear(void)
         break;
     }
 
-    // ŒŸ’m‹——£‚É“ü‚Á‚½‚çAŒü‚«‚ğƒ^[ƒQƒbƒg‚É•Ï‚¦‚ÄoŒ»i‚±‚±‚Å–³“G‰ğœj
+    // æ¤œçŸ¥è·é›¢ã«å…¥ã£ãŸã‚‰ã€å‘ãã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«å¤‰ãˆã¦å‡ºç¾ï¼ˆã“ã“ã§ç„¡æ•µè§£é™¤ï¼‰
     if (IsInsideCircleXZ(myPos, targetPos, m_fSearchDistanceForAppear))
     {
         float fAngleToTarget = GetAngleToTargetXZ(targetPos, myPos);
@@ -472,58 +510,61 @@ void CEnemy::Appear(void)
         SetRotY(fAngleToTarget);
         m_appearState = APPEAR_STATE_EXIST;
         SetInvincible(false);
-        // “GoŒ»ƒGƒtƒFƒNƒg
+        // æ•µå‡ºç¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
     }
 }
 
 //=============================================================================
-// ˆÚ“®—vÇ‚É“¥‚İ‚Â‚Ô‚³‚ê‚é‚©‚Ç‚¤‚©‚Ìˆ—
-// Author : Œã“¡T”V•
+// ç§»å‹•è¦å¡ã«è¸ã¿ã¤ã¶ã•ã‚Œã‚‹ã‹ã©ã†ã‹ã®å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
 {
     if (m_bSquashedByFortress)
     {
-        // ˆÚ“®—vÇ‚ğæ“¾
+        // ç§»å‹•è¦å¡ã‚’å–å¾—
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
-            // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
+            // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
             D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
             if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
             {
-                // HP0‚É
+                // HP0ã«
                 TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
+
+                // ç§»å‹•è¦å¡ã«è¸ã¿ã¤ã¶ã•ã‚ŒãŸ
+                m_bDeathBySquashed = true;
             }
         }
     }
 }
 
 //=============================================================================
-// Šî–{ó‘Ôİ’è ˆ—
-// Author : Œã“¡T”V•
+// åŸºæœ¬çŠ¶æ…‹è¨­å®š å‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
 {
-    // €–Só‘Ô‚©‚ç‚ÍA‚¢‚©‚È‚éó‘Ô‚É‚à‚È‚ç‚È‚¢
+    // æ­»äº¡çŠ¶æ…‹ã‹ã‚‰ã¯ã€ã„ã‹ãªã‚‹çŠ¶æ…‹ã«ã‚‚ãªã‚‰ãªã„
     if (m_baseState != BASE_STATE_DEATH)
     {
-        // ó‘Ô‚É‚©‚©‚í‚éƒƒ“ƒo•Ï”‚ğÄİ’è
+        // çŠ¶æ…‹ã«ã‹ã‹ã‚ã‚‹ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’å†è¨­å®š
         m_baseState = nextBaseState;
         m_nCntTime = 0;
         m_bUseCommonAtkFollow = false;
 
-        // Ÿ‚Ìó‘Ô‚É‚æ‚Á‚ÄAæ“¾‚·‚é‚à‚Ì
+        // æ¬¡ã®çŠ¶æ…‹ã«ã‚ˆã£ã¦ã€å–å¾—ã™ã‚‹ã‚‚ã®
         switch (nextBaseState)
         {
         case BASE_STATE_ATTACK:
         {
-            // Œx‰ú’†‚È‚çA‘ÎÛ‚Æ‚Ì‹——£‚ª—£‚ê‚Ä‚¢‚é‚Æ‚«‚É’Ç]‚É‚·‚é
+            // è­¦æˆ’ä¸­ãªã‚‰ã€å¯¾è±¡ã¨ã®è·é›¢ãŒé›¢ã‚Œã¦ã„ã‚‹ã¨ãã«è¿½å¾“ã«ã™ã‚‹
             if (m_bWarning)
             {
-                // ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ª‰“‚¢‚È‚çA’Ç]
+                // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ãŒé ã„ãªã‚‰ã€è¿½å¾“
                 if (m_pTarget)
                 {
                     D3DXVECTOR3 myPos = GetPos();
@@ -533,11 +574,11 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
                         powf((myPos.z - targetPos.z), 2.0f));
                     if (fCurrentDistance > m_fDiscoveryTargetDistance)
                     {
-                        // Œ»İ‚ÌˆÊ’u‚ÆA–Ú“I’n‚Ü‚Å‚ÌˆÚ“®Šp“x/Œü‚«‚ğ‹‚ß‚é
+                        // ç¾åœ¨ã®ä½ç½®ã¨ã€ç›®çš„åœ°ã¾ã§ã®ç§»å‹•è§’åº¦/å‘ãã‚’æ±‚ã‚ã‚‹
                         float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
                         m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
                         SetRotDestY(fDestAngle);
-                        m_bUseCommonAtkFollow = true;   // ‹¤’Ê‚ÌUŒ‚ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+                        m_bUseCommonAtkFollow = true;   // å…±é€šã®æ”»æ’ƒãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
                     }
                 }
             }
@@ -545,24 +586,24 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
         break;
         case BASE_STATE_PATROL:
         {
-            // Ÿ‚Ì–Ú“I’n‚ğŒˆ‚ß‚é
+            // æ¬¡ã®ç›®çš„åœ°ã‚’æ±ºã‚ã‚‹
             D3DXVECTOR3 destPos = DEFAULT_VECTOR;
             destPos.x = float(rand() % m_nPatrolDistance) - float(rand() % m_nPatrolDistance) + m_patrolCentralPos.x;
             destPos.z = float(rand() % m_nPatrolDistance) - float(rand() % m_nPatrolDistance) + m_patrolCentralPos.z;
 
-            // Œ»İ‚ÌˆÊ’u‚ÆA–Ú“I’n‚Ü‚Å‚ÌˆÚ“®Šp“x/Œü‚«‚ğ‹‚ß‚é
+            // ç¾åœ¨ã®ä½ç½®ã¨ã€ç›®çš„åœ°ã¾ã§ã®ç§»å‹•è§’åº¦/å‘ãã‚’æ±‚ã‚ã‚‹
             D3DXVECTOR3 myPos = GetPos();
             float fDestAngle = atan2((myPos.x - destPos.x), (myPos.z - destPos.z));
             m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
             SetRotDestY(fDestAngle);
 
-            // „‰ñŠÔ‚ğ“¾‚é
+            // å·¡å›æ™‚é–“ã‚’å¾—ã‚‹
             m_nCurrentStateEndFrame = GetRandNum(PATROL_COUNT_MAX, PATROL_COUNT_MIN);
         }
         break;
         }
 
-        // Ÿ‚Ìó‘Ô‚ÌI—¹ŠÔ‚ğ“¾‚é
+        // æ¬¡ã®çŠ¶æ…‹ã®çµ‚äº†æ™‚é–“ã‚’å¾—ã‚‹
         if (nNextStateEndFrame != NOT_EXIST)
         {
             m_nCurrentStateEndFrame = nNextStateEndFrame;
@@ -571,15 +612,15 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
 }
 
 //=============================================================================
-// ‘Ò‹@AIˆ—
-// Author : Œã“¡T”V•
+// å¾…æ©ŸAIå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::WaitAI(D3DXVECTOR3& myPos)
 {
-    // ƒJƒEƒ“ƒ^‚ğ‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿ã‚’åŠ ç®—
     m_nCntTime++;
 
-    // Œx‰ú’†‚È‚çAŒü‚«‚ğƒ^[ƒQƒbƒg‚É’Ç]
+    // è­¦æˆ’ä¸­ãªã‚‰ã€å‘ãã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«è¿½å¾“
     if (m_bWarning)
     {
         if (m_pTarget)
@@ -591,50 +632,50 @@ void CEnemy::WaitAI(D3DXVECTOR3& myPos)
             }
             else
             {
-                // ƒ^[ƒQƒbƒg‚ª‚â‚ç‚ê‚½‚È‚çA‘¦À‚ÉŒx‰ú‚ğ‰ğ‚¢‚ÄÄ„‰ñ
+                // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã‚„ã‚‰ã‚ŒãŸãªã‚‰ã€å³åº§ã«è­¦æˆ’ã‚’è§£ã„ã¦å†å·¡å›
                 RePatrol();
             }
         }
     }
 
-    // ‘Ò‹@‚ªI‚í‚éƒJƒEƒ“ƒ^‚È‚ç
+    // å¾…æ©ŸãŒçµ‚ã‚ã‚‹ã‚«ã‚¦ãƒ³ã‚¿ãªã‚‰
     if (m_nCntTime >= m_nCurrentStateEndFrame)
     {
-        // Œx‰ú’†‚È‚ç
+        // è­¦æˆ’ä¸­ãªã‚‰
         if (m_bWarning)
         {
-            // UŒ‚ó‘Ô‚É
+            // æ”»æ’ƒçŠ¶æ…‹ã«
             SetBaseState(BASE_STATE_ATTACK);
         }
         else
         {
-            // „‰ñó‘Ô‚É
+            // å·¡å›çŠ¶æ…‹ã«
             SetBaseState(BASE_STATE_PATROL);
         }
     }
 }
 
 //=============================================================================
-// „‰ñAIˆ—
-// Author : Œã“¡T”V•
+// å·¡å›AIå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::PatrolAI(D3DXVECTOR3& myPos)
 {
-    // ƒJƒEƒ“ƒ^‚ğ‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿ã‚’åŠ ç®—
     m_nCntTime++;
 
-    // „‰ñ‚ªI‚í‚éƒJƒEƒ“ƒ^‚È‚ç
+    // å·¡å›ãŒçµ‚ã‚ã‚‹ã‚«ã‚¦ãƒ³ã‚¿ãªã‚‰
     if (m_nCntTime >= m_nCurrentStateEndFrame)
     {
-        // ‘Ò‹@AI‚É
+        // å¾…æ©ŸAIã«
         SetBaseState(BASE_STATE_WAIT, WAIT_COUNT_AFTER_PATROL);
         return;
     }
 
-    // ˆÊ’u‚ÉˆÚ“®—Ê‚ğŒ‹‚Ñ‚Â‚¯‚é
+    // ä½ç½®ã«ç§»å‹•é‡ã‚’çµã³ã¤ã‘ã‚‹
     myPos += m_moveAngle * m_fSpeed;
 
-    // ƒ^[ƒQƒbƒg”­Œ©ˆ—
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆç™ºè¦‹å‡¦ç†
     float fKeepDistance = 0.0f;
     CCharacter *pTarget = NULL;
     switch (m_targetTrend)
@@ -650,7 +691,7 @@ void CEnemy::PatrolAI(D3DXVECTOR3& myPos)
         break;
     }
 
-    // ƒ^[ƒQƒbƒg‚Æ‚Ì‹——£‚ª”­Œ©‹——£‚æ‚è¬‚³‚¢‚È‚çA”­Œ©ˆ—‚Ö
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã®è·é›¢ãŒç™ºè¦‹è·é›¢ã‚ˆã‚Šå°ã•ã„ãªã‚‰ã€ç™ºè¦‹å‡¦ç†ã¸
     if (fKeepDistance <= m_fDiscoveryTargetDistance)
     {
         if (pTarget)
@@ -659,33 +700,33 @@ void CEnemy::PatrolAI(D3DXVECTOR3& myPos)
         }
     }
 
-    // •àsƒ‚[ƒVƒ‡ƒ“‚É
+    // æ­©è¡Œãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã«
     m_setAnimationThisFrame = m_walkMotion;
 
-    // Œü‚«‚ğ’²®
+    // å‘ãã‚’èª¿æ•´
     RotControl();
 }
 
 //=============================================================================
-// UŒ‚AIˆ—
-// Author : Œã“¡T”V•
+// æ”»æ’ƒAIå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
 {
-    // ƒJƒEƒ“ƒ^‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿åŠ ç®—
     m_nCntTime++;
 
-    // ’Ç]‚·‚é‚È‚ç
+    // è¿½å¾“ã™ã‚‹ãªã‚‰
     if (m_bUseCommonAtkFollow)
     {
         AtkCommonFollow(myPos);
 
-        // ˆÚ“®ƒ‚[ƒVƒ‡ƒ“‚É
+        // ç§»å‹•ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã«
         m_setAnimationThisFrame = m_walkMotion;
     }
     else
     {
-        // í—Ş‚²‚Æ‚Ìˆ—
+        // ç¨®é¡ã”ã¨ã®å‡¦ç†
         switch (m_type)
         {
         case TYPE_ARMY:
@@ -693,7 +734,7 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             break;
         case TYPE_KAMIKAZE:
 
-            // ”š’e‚©‚ç‰Î‰Ô‚ğo‚·
+            // çˆ†å¼¾ã‹ã‚‰ç«èŠ±ã‚’å‡ºã™
             if (m_Effect.type != NOT_EXIST)
             {
                 m_Effect.nCntTrail++;
@@ -713,35 +754,35 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             break;
         }
 
-        // UŒ‚ƒ‚[ƒVƒ‡ƒ“‚É
+        // æ”»æ’ƒãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã«
         m_setAnimationThisFrame = m_attackMotion;
     }
 }
 
 //=============================================================================
-// ƒ_ƒ[ƒWAIˆ—
-// Author : Œã“¡T”V•
+// ãƒ€ãƒ¡ãƒ¼ã‚¸AIå‡¦ç†
+// Author : å¾Œè—¤æ…ä¹‹åŠ©
 //=============================================================================
 void CEnemy::DamageAI(void)
 {
-    // ƒJƒEƒ“ƒ^‚ğ‰ÁZ
+    // ã‚«ã‚¦ãƒ³ã‚¿ã‚’åŠ ç®—
     m_nCntTime++;
 
-    // ƒ_ƒ[ƒWƒ‚[ƒVƒ‡ƒ“‚ªI‚í‚éƒJƒEƒ“ƒ^‚È‚ç
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã‚‹ã‚«ã‚¦ãƒ³ã‚¿ãªã‚‰
     if (m_nCntTime >= m_nCurrentStateEndFrame)
     {
-        // ƒ^[ƒQƒbƒg‚ª‚¢‚é‚È‚çUŒ‚AI‚É
+        // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ã‚‹ãªã‚‰æ”»æ’ƒAIã«
         if (m_pTarget)
         {
             SetBaseState(BASE_STATE_ATTACK, WAIT_COUNT_AFTER_DAMAGE);
         }
         else
         {
-            // ƒ^[ƒQƒbƒg‚ª‚¢‚È‚¢‚È‚ç„‰ñ‚Ö
+            // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒã„ãªã„ãªã‚‰å·¡å›ã¸
             RePatrol();
         }
     }
 
-    // ƒ_ƒ[ƒWƒ‚[ƒVƒ‡ƒ“‚É
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã«
     m_setAnimationThisFrame = m_damageMotion;
 }

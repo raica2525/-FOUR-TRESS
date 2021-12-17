@@ -96,8 +96,8 @@ private:
     D3DXMATRIX	m_mtxProjection;    // プロジェクションマトリクス
     D3DXMATRIX	m_mtxView;          // ビューマトリクス
     float		m_fDistance;        // 距離
-    float		m_fPhi;             // ファイ
-    float		m_fTheta;           // シータ
+    float		m_fPhi;             // 横回転
+    float		m_fTheta;           // 縦回転
     int m_nCntState;                // 状態カウンタ
     int m_shakePhase;               // 振動段階
     float m_fShakeValue;            // 振動量

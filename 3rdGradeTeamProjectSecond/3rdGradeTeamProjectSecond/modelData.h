@@ -11,7 +11,7 @@
 // インクルードファイル
 //=============================================================================
 #include "main.h"
-
+#include <map>
 //=============================================================================
 // マクロ定義
 //=============================================================================
@@ -83,10 +83,25 @@ public:
     PartsParam* GetPartsList(const int nNum);   // パーツリスト情報
     PartsRate* GetPartsRate(const int nNum);    // パーツレート情報
 
+    int GetCntLoadModelByTxt(void) { return m_nCntLoadModelByTxt; }
+
+	int GetIndexByName(std::string name) { return m_nameIndexMap.at(name); }	// 名前から番号を取得
+    int GetEnemyTypeByName(std::string name);                                   // 名前から敵の種類を取得
+
 private:
     ModelData m_aModelData[MAX_MODEL_DATA];         // モデルデータ
     ModelPosDef m_aModelPosDef[MAX_MODEL_POS_DEF];  // モデルの初期位置データ
     PartsParam m_aPartsList[MAX_PARTS_LIST];        // パーツリスト
     PartsRate m_aPartsRate[MAX_PARTS];              // パーツレート
+
+    //=====================================
+    // Second以降で追加したもの
+    //=====================================
+    int m_nCntLoadModelByTxt;							// テキストファイルから読み込んだモデルの数
+	std::map<std::string, int> m_nameIndexMap;			// 名前とモデル番号の対応配列
+
+	HRESULT LoadModelDataFromTxt(std::string path);		// テキストファイルからモデルデータを読み込み
+	HRESULT LoadModelDataFromJson(std::string path);	// JSONファイルからモデルデータ読み込み
+	ModelData LoadModelFromX(std::string path);			// Xファイルからモデルデータに変換
 };
 #endif
