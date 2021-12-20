@@ -56,6 +56,12 @@ public:
         STATE_MAX			       // 状態の最大数
     }STATE;
 
+    typedef struct
+    {
+        int nIdxControlAndColor;   // コントローラーと色のインデックス
+        int nContributionPoint;    // 貢献度
+    }INFO_IN_RESULT;    // リザルト画面で使う情報
+
     CGame();
     ~CGame();
     HRESULT Init(void);
@@ -87,6 +93,7 @@ public:
     static void SetUseKeyboard(bool bUseKeyboard) { m_bUseKeyboard = bUseKeyboard; }
     static void SetSpPlayer(CPlayer *pPlayer) { m_bCurrentSpShot = true; m_pSpPlayer = pPlayer; }
     static void SetCurrentSpShot(bool bStopUpdate) { m_bCurrentSpShot = bStopUpdate; }
+    static void SetFinish(bool bWin);
 
     /*========================================================
     // ゲッター
@@ -104,6 +111,7 @@ public:
     static CText *GetSpText(void) { return m_pSpText; }
     static CFortress *GetFortress(void) { return m_pFortress; }
     static int GetScore(void) { return m_nScore; }
+    static INFO_IN_RESULT GetInfoInResult(int nCnt) { return m_aInfoInResult[nCnt]; }
 
     /*========================================================
     // 便利な関数
@@ -157,6 +165,9 @@ private:
     static int m_nCharacterIdx;                            // キャラクターのインデックス
     static CNumberArray *m_pScore;                         // スコア表示へのポインタ
     static int m_nScore;                                   // スコア
+
+    static INFO_IN_RESULT m_aInfoInResult[MAX_PLAYER];     // リザルト画面で使う情報
+    static bool m_bWin;                                    // 勝ったかどうか
 };
 
 #endif

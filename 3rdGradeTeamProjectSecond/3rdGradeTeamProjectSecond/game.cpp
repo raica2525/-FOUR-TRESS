@@ -76,6 +76,9 @@ int CGame::m_nCharacterIdx = 0;
 CNumberArray *CGame::m_pScore = NULL;
 int CGame::m_nScore = 0;
 
+CGame::INFO_IN_RESULT CGame::m_aInfoInResult[] = {};
+bool CGame::m_bWin = false;
+
 //=============================================================================
 // ゲームのコンストラクタ
 // Author : 後藤慎之助
@@ -108,6 +111,9 @@ CGame::CGame()
     m_nCharacterIdx = 0;
     m_pScore = NULL;
     m_nScore = 0;
+
+    memset(m_aInfoInResult, 0, sizeof(m_aInfoInResult));
+    m_bWin = false;
 }
 
 //=============================================================================
@@ -780,11 +786,18 @@ void CGame::JudgmentFinish(void)
         // カウンタをリセット
         m_nCntGameTime = 0;
 
+        // リザルト画面に渡すための情報を持っておく
+        for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+        {
+            m_aInfoInResult[nCntPlayer].nIdxControlAndColor = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
+            m_aInfoInResult[nCntPlayer].nContributionPoint = m_apPlayer[nCntPlayer]->GetContributionPoint();
+        }
+
         //// 死んだプレイヤーが全体のプレイヤー-1に達したら
         //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
         //{
-        //    // リザルトに移行
-        //    CFade::SetFade(CManager::MODE_RESULT);
+            // リザルトに移行
+            CFade::SetFade(CManager::MODE_RESULT);
         //}
         //else
         //{
@@ -822,6 +835,16 @@ void CGame::JudgmentFinish(void)
         //    }
         //}
     }
+}
+
+//========================================
+// 決着状態にするための関数
+// Author : 後藤慎之助
+//========================================
+void CGame::SetFinish(bool bWin)
+{
+    m_bWin = bWin;
+    m_state = STATE_FINISH;
 }
 
 //========================================

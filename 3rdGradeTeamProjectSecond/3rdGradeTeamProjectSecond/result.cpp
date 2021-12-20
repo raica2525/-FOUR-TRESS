@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "effect2d.h"
 #include "effectData.h"
+#include "number_array.h"
 
 //========================================
 // マクロ定義
@@ -46,6 +47,16 @@ HRESULT CResult::Init(void)
 {
     // UIを生成
     CUI::Place(CUI::SET_RESULT);
+
+    // 貢献度を表示
+    float fDigitY = 0.0f;
+    for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
+    {
+        CGame::INFO_IN_RESULT infoInResult = CGame::GetInfoInResult(nCntPlayer);
+        CNumberArray::Create(12, D3DXVECTOR3(640.0f, 175.0f + fDigitY, 0.0f), NUMBER_SIZE_X_RESULT_CONTRIBUTION, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), infoInResult.nContributionPoint, false);
+
+        fDigitY += 100.0f;
+    }
 
     //// プレイヤー生成
     //for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)

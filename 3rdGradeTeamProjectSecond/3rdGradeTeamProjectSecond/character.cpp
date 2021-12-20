@@ -535,6 +535,12 @@ void CCharacter::RotControl(void)
 //=============================================================================
 bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack, int effectType)
 {
+    // 決着がついたら、ダメージを受けなくする
+    if (CGame::GetState() == CGame::STATE_FINISH)
+    {
+        return false;
+    }
+
     // 無敵でないなら
     if (!m_bIsInvincible)
     {

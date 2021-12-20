@@ -196,8 +196,8 @@ float fLife = GetLife();// 移動要塞の体力取得
             // 仮に非表示に
             m_bDisp = false;
 
-            // 仮にリザルトに移行
-            CFade::SetFade(CManager::MODE_RESULT);
+            // 敗北状態に
+            CGame::SetFinish(false);
         }
         else
         {
