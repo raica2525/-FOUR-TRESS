@@ -27,12 +27,12 @@ typedef struct
 // マクロ定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 
-class CInput
+class CInputJoypad
 {
 public:
 
-	CInput();
-	~CInput();
+	CInputJoypad();
+	~CInputJoypad();
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -44,7 +44,7 @@ public:
 	D3DXVECTOR2 GetStickValue(int nPad,int LR);
 	void StartVibration(int nPad, int LMoter, int RMoter);
 	void StopVibration(int nPad);
-	static CInput* Create(void);
+	static CInputJoypad* Create(void);
 private:
 	bool m_abConnected[XUSER_MAX_COUNT];
 };

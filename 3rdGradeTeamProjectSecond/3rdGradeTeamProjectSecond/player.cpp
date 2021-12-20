@@ -655,25 +655,30 @@ void CPlayer::Input(void)
     {
         // コントローラを取得
         CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-        DIJOYSTATE2 Controller = pInputJoypad->GetController(m_nIdxControlAndColor);
 
         // ボタン情報を取得
-        m_controlInput.bTriggerA = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_A);
-        m_controlInput.bPressA = pInputJoypad->GetJoypadPress(m_nIdxControlAndColor, CInputJoypad::BUTTON_A);
-        m_controlInput.bTriggerX = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
-        m_controlInput.bPressX = pInputJoypad->GetJoypadPress(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
-        m_controlInput.bReleaseX = pInputJoypad->GetJoypadRelease(m_nIdxControlAndColor, CInputJoypad::BUTTON_X);
-        m_controlInput.bPressR2 = pInputJoypad->GetJoypadPress(m_nIdxControlAndColor, CInputJoypad::BUTTON_R2);
-        m_controlInput.bTriggerB = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, CInputJoypad::BUTTON_B);
+        m_controlInput.bTriggerA = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, XINPUT_GAMEPAD_A);
+        m_controlInput.bPressA = pInputJoypad->GetButtonState(m_nIdxControlAndColor, XINPUT_GAMEPAD_A);
+        m_controlInput.bTriggerX = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, XINPUT_GAMEPAD_X);
+        m_controlInput.bPressX = pInputJoypad->GetButtonState(m_nIdxControlAndColor, XINPUT_GAMEPAD_X);
+        m_controlInput.bReleaseX = pInputJoypad->GetJoypadRelease(m_nIdxControlAndColor, XINPUT_GAMEPAD_X);
+        m_controlInput.bPressR2 = pInputJoypad->GetTriggerState(m_nIdxControlAndColor, CInputJoypad::RIGHT);
+        m_controlInput.bTriggerB = pInputJoypad->GetJoypadTrigger(m_nIdxControlAndColor, XINPUT_GAMEPAD_B);
+
+		D3DXVECTOR2 stickValue[CInputJoypad::LR_MAX];
+		for (int nCount = 0; nCount < CInputJoypad::LR_MAX; nCount++)
+		{
+			stickValue[nCount] = pInputJoypad->GetStickValue(m_nIdxControlAndColor, (CInputJoypad::LR)nCount);
+		}
 
         // 左スティックが傾いているかどうか
-        if (Controller.lY != 0 || Controller.lX != 0)
+        if (pInputJoypad->GetStickValue(m_nIdxControlAndColor, CInputJoypad::LEFT))
         {
             m_controlInput.bTiltedLeftStick = true;
 
             // 角度を求める
-            m_controlInput.fLeftStickAngle = atan2(Controller.lX, Controller.lY*-1);
-            m_controlInput.fPlayerAngle = atan2(Controller.lX*-1, Controller.lY);
+			m_controlInput.fLeftStickAngle = atan2f(stickValue[CInputJoypad::LEFT].x, stickValue[CInputJoypad::LEFT].y*-1);
+			m_controlInput.fPlayerAngle = atan2f(stickValue[CInputJoypad::LEFT].x*-1, stickValue[CInputJoypad::LEFT].y);
         }
         else
         {
@@ -681,12 +686,12 @@ void CPlayer::Input(void)
         }
 
         // 右スティックが傾いているかどうか
-        if (Controller.lZ != 0 || Controller.lRz != 0)
+        if (pInputJoypad->GetStickValue(m_nIdxControlAndColor, CInputJoypad::RIGHT))
         {
             m_controlInput.bTiltedRightStick = true;
 
             // 角度を求める
-            m_controlInput.fRightStickAngle = atan2(Controller.lZ, Controller.lRz*-1);
+            m_controlInput.fRightStickAngle = atan2(stickValue[CInputJoypad::RIGHT].x, stickValue[CInputJoypad::RIGHT].y*-1);
         }
         else
         {

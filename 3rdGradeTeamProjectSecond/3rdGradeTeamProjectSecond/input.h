@@ -11,7 +11,7 @@
 // インクルードファイル
 //================================================
 #include "main.h"
-
+#include <XInput.h>
 //================================================
 // マクロ定義
 //================================================
@@ -36,11 +36,11 @@
 #define STICK_DOWN(angle) angle > D3DXToRadian(135.0f) && angle <= D3DXToRadian(180.0f) || angle < D3DXToRadian(-135.0f) && angle > D3DXToRadian(-180.0f)
 #define STICK_LEFT(angle) angle <= D3DXToRadian(-45.0f) && angle >= D3DXToRadian(-135.0f)
 
-// スティックニュートラル
-#define STICK_NEUTRAL -1000
+// バイブレーションの最大強さ
+#define MAX_VIBRATION_POWER (65535)
 
 // スティックの最大傾き
-#define STICK_MAX_TILT 10000.0f
+#define STICK_MAX_TILT (32767)
 
 //================================================
 // クラス宣言
@@ -81,59 +81,102 @@ private:
 };
 
 // ジョイパッドのクラス
-class CInputJoypad :public CInput
+class CInputJoypad : public CInput
 {
 public:
 
-    // ボタンの種類
-    typedef enum
-    {
-        BUTTON_X = 0,
-        BUTTON_Y,
-        BUTTON_A,
-        BUTTON_B,
-        BUTTON_L1,
-        BUTTON_R1,
-        BUTTON_L2,
-        BUTTON_R2,
-        BUTTON_L3,
-        BUTTON_R3,
-        BUTTON_SELECT,
-        BUTTON_START,
-        BUTTON_GUIDE,
-        MAX_BUTTON
-    }BUTTON;
+	enum LR
+	{
+		LEFT = 0,
+		RIGHT,
+		LR_MAX,
+	};
 
-    // コントローラの情報
-    typedef struct
-    {
-        LPDIRECTINPUTDEVICE8 pDIJoypad = NULL; // コントローラーデバイス
-        DIJOYSTATE2 State;       // コントローラーのプレス情報
-        DIJOYSTATE2 Trigger;     // コントローラーのトリガー情報
-        DIJOYSTATE2 Release;     // コントローラーのプレス情報
-    }CONTROLLER;
+	enum BEHAVIOR
+	{
+		BEHAVIOR_AND = 0,
+		BEHAVIOR_OR,
+		BEHAVIOR_MAX
+	};
 
-    CInputJoypad();
-    ~CInputJoypad();
-    HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-    void Update(void);
-    void Release(void);
-    bool GetJoypadPress(int nController, int nButton);
-    bool GetJoypadTrigger(int nController, int nButton);
-    bool GetJoypadRelease(int nController, int nButton);
-    DIJOYSTATE2 GetController(int nController);
-    static LPDIRECTINPUT8 GetInput(void) { return m_pInput; }
-    HRESULT CreateDevice(LPDIDEVICEINSTANCE lpddi);
-    HRESULT StartEffect(int nController, int nFrame);	//池田追加
-    HRESULT StopEffect(int nController);				//池田追加
-    static HRESULT CALLBACK EnumObjectCallBack(const LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
+	CInputJoypad();
+	~CInputJoypad();
+	HRESULT Init(void);
+	void Uninit(void);
+	void Update(void);
+
+	HRESULT GetState(int nPad, XINPUT_STATE* state);
+	bool GetButtonState(int nPad, WORD wButtons, BEHAVIOR behavir = BEHAVIOR_AND);
+	bool GetTriggerState(int nPad, LR LR, int nDeadzone = XINPUT_GAMEPAD_TRIGGER_THRESHOLD);
+	int GetConnectedPadNum(void);
+	D3DXVECTOR2 GetStickValue(int nPad, LR LR);
+	void StartVibration(int nPad, int LMoter, int RMoter, int nFrame = -1);
+	void StopVibration(int nPad);
+	static CInputJoypad* Create(void);
+
+	bool GetJoypadTrigger(int nPad, WORD wButtons, BEHAVIOR behavir = BEHAVIOR_AND);
+	bool GetJoypadRelease(int nPad, WORD wButtons, BEHAVIOR behavir = BEHAVIOR_AND);
 private:
-    static CONTROLLER m_aController[MAX_PLAYER];    // コントローラーの情報	//池田修正
-    static int m_nCntController;					// コントローラーの接続数
-    LPDIRECTINPUTEFFECT m_aEffectInput[MAX_PLAYER];	// エフェクトのポインタ//池田
-    int m_anFrameEffect[MAX_PLAYER];				// 振動する残りフレーム//池田
-    DWORD m_adwNumFFBAxis[MAX_PLAYER];				// 振動の軸の数//池田
+	bool m_abConnected[XUSER_MAX_COUNT];
+	int m_anRemainFrameVibration[XUSER_MAX_COUNT]; 
+	XINPUT_STATE m_aJoyStateOld[XUSER_MAX_COUNT];
+	WORD m_aJoyStateTrigger[XUSER_MAX_COUNT];	// ジョイパッドのトリガー情報
+	WORD m_aJoyStateRelease[XUSER_MAX_COUNT];	// ジョイパッドのリリース情報
 };
+
+//class CInputJoypad :public CInput
+//{
+//public:
+//
+//    // ボタンの種類
+//    typedef enum
+//    {
+//        BUTTON_X = 0,
+//        BUTTON_Y,
+//        BUTTON_A,
+//        BUTTON_B,
+//        BUTTON_L1,
+//        BUTTON_R1,
+//        BUTTON_L2,
+//        BUTTON_R2,
+//        BUTTON_L3,
+//        BUTTON_R3,
+//        BUTTON_SELECT,
+//        BUTTON_START,
+//        BUTTON_GUIDE,
+//        MAX_BUTTON
+//    }BUTTON;
+//
+//    // コントローラの情報
+//    typedef struct
+//    {
+//        LPDIRECTINPUTDEVICE8 pDIJoypad = NULL; // コントローラーデバイス
+//        DIJOYSTATE2 State;       // コントローラーのプレス情報
+//        DIJOYSTATE2 Trigger;     // コントローラーのトリガー情報
+//        DIJOYSTATE2 Release;     // コントローラーのプレス情報
+//    }CONTROLLER;
+//
+//    CInputJoypad();
+//    ~CInputJoypad();
+//    HRESULT Init(HINSTANCE hInstance, HWND hWnd);
+//    void Update(void);
+//    void Release(void);
+//    bool GetJoypadPress(int nController, int nButton);
+//    bool GetJoypadTrigger(int nController, int nButton);
+//    bool GetJoypadRelease(int nController, int nButton);
+//    DIJOYSTATE2 GetController(int nController);
+//    static LPDIRECTINPUT8 GetInput(void) { return m_pInput; }
+//    HRESULT CreateDevice(LPDIDEVICEINSTANCE lpddi);
+//    HRESULT StartEffect(int nController, int nFrame);	//池田追加
+//    HRESULT StopEffect(int nController);				//池田追加
+//    static HRESULT CALLBACK EnumObjectCallBack(const LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
+//private:
+//    static CONTROLLER m_aController[MAX_PLAYER];    // コントローラーの情報	//池田修正
+//    static int m_nCntController;					// コントローラーの接続数
+//    LPDIRECTINPUTEFFECT m_aEffectInput[MAX_PLAYER];	// エフェクトのポインタ//池田
+//    int m_anFrameEffect[MAX_PLAYER];				// 振動する残りフレーム//池田
+//    DWORD m_adwNumFFBAxis[MAX_PLAYER];				// 振動の軸の数//池田
+//};
 
 // マウスのクラス
 class CMouse : public CInput

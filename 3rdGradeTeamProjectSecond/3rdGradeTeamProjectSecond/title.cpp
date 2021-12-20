@@ -62,7 +62,7 @@ void CTitle::Uninit(void)
 
 //=============================================================================
 // 更新処理
-// Author : 後藤慎之助
+// Author : 後藤慎之助 池田悠
 //=============================================================================
 void CTitle::Update(void)
 {
@@ -106,29 +106,18 @@ void CTitle::Update(void)
 
             // コントローラを取得
             CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
+			bool bPressedAnyButtons = false;
 
+			for (int nCount = 0; nCount < XUSER_MAX_COUNT; nCount++)
+			{
+				if (pInputJoypad->GetJoypadTrigger(nCount, XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B | XINPUT_GAMEPAD_X | XINPUT_GAMEPAD_Y | XINPUT_GAMEPAD_START), CInputJoypad::BEHAVIOR_OR)
+				{
+					bPressedAnyButtons = true;
+					break;
+				}
+			}
             // エンター、または何かボタンを押したら
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_A)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_X)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_Y)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_START)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_A)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_B)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_X)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_Y)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_START)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_A)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_B)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_X)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_Y)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_START)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_A)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_B)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_X)
-                || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_Y))
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || bPressedAnyButtons)
             {
                 // 仮にカスタマイズ画面に移行
                 CFade::SetFade(CManager::MODE_GAME);

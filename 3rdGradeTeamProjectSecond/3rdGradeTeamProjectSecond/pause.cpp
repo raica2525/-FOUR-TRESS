@@ -157,7 +157,6 @@ void CPause::Update(void)
 
     // コントローラを取得
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    DIJOYSTATE2 Controller = pInputJoypad->GetController(m_nWho);
 
     // カメラ取得
     CCamera*pCamera = CManager::GetCamera();
@@ -201,7 +200,7 @@ void CPause::Update(void)
     case STATE_PAUSE:
 
         // スタートボタンが押されたら
-        if (pInputKeyboard->GetKeyboardTrigger(DIK_P) || pInputJoypad->GetJoypadTrigger(m_nWho, CInputJoypad::BUTTON_START))
+        if (pInputKeyboard->GetKeyboardTrigger(DIK_P) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_START))
         {
             // SE
             CManager::SoundPlay(CSound::LABEL_SE_CANCEL);
@@ -376,7 +375,6 @@ void CPause::SelectPauseMenu(void)
 
     // コントローラを取得
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    DIJOYSTATE2 Controller = pInputJoypad->GetController(m_nWho);
 
     // カメラ取得
     CCamera*pCamera = CManager::GetCamera();
@@ -389,7 +387,7 @@ void CPause::SelectPauseMenu(void)
         case TYPE_CONTINUE:
 
             // Aが押された(決定)
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, CInputJoypad::BUTTON_A))
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_A))
             {
                 // SE
                 CManager::SoundPlay(CSound::LABEL_SE_SELECT);
@@ -404,7 +402,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // 上移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || Controller.lY < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho,CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -417,7 +415,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // 下移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || Controller.lY > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -435,7 +433,7 @@ void CPause::SelectPauseMenu(void)
         case TYPE_RETRY:
 
             // Aが押された(決定)
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, CInputJoypad::BUTTON_A))
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_A))
             {
                 // SE
                 CManager::SoundPlay(CSound::LABEL_SE_SELECT);
@@ -449,7 +447,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // 上移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || Controller.lY < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -462,7 +460,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // 下移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || Controller.lY > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -480,7 +478,7 @@ void CPause::SelectPauseMenu(void)
         case TYPE_QUIT:
 
             // Aが押された(決定)
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, CInputJoypad::BUTTON_A))
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_A))
             {
                 // SE
                 CManager::SoundPlay(CSound::LABEL_SE_SELECT);
@@ -494,7 +492,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // 上移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || Controller.lY < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -507,7 +505,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // 下移動
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || Controller.lY > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
