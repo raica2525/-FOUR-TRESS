@@ -114,7 +114,7 @@ CBg* CMapManager::CreateBgFromJsonObject(picojson::object obj)
 	std::string modelname	= CJson::Nullcheck<std::string>(obj, "modelname");
 
 	// オブジェクトの生成
-	return CBg::Create();
+	return CBg::Create(CManager::GetModelData()->GetIndexByName(modelname), pos);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -136,8 +136,8 @@ CBlock* CMapManager::CreateBlockFromJsonObject(picojson::object obj)
 	D3DXVECTOR3 collPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(collObj, "pos"));
 	D3DXVECTOR3 collSize = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(collObj, "size"));
 
-	//オブジェクトの生成
-	return CBlock::Create();
+	//オブジェクトの生成（のちに、ゴールオブジェクト周り対応、今は仮でブロックはすべてフレーム）
+	return CBlock::Create(CBlock::TYPE_FRAME, pos, size, rot);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -154,7 +154,7 @@ CEnemy* CMapManager::CreateEnemyFromJsonObject(picojson::object obj)
 	float fSearchDistance = (float)CJson::Nullcheck<double>(obj, "searchdistance");
 
 	// オブジェクトの生成
-	return CEnemy::Create();
+    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -167,7 +167,7 @@ CBlock* CMapManager::CreateCollisionFromJsonObject(picojson::object obj)
 	D3DXVECTOR3 size = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(obj, "size"));
 
 	// オブジェクトの生成
-	return CBlock::Create();
+	return CBlock::Create(CBlock::TYPE_FRAME, pos, size, DEFAULT_VECTOR);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

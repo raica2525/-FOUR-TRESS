@@ -60,9 +60,10 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_bUseUninit = true;
     m_bUseKnockBack = true;
 
-    m_trailEffectType = NOT_EXIST;
-    m_nCntTrailInterval = 1;
-    m_nCntTrailEffect = 0;
+    m_Effect.type = NOT_EXIST;
+    m_Effect.interval = 1;
+    m_Effect.nCntTrail = 0;
+  
     m_nWhoContribution = NOT_EXIST;
     m_nHitContributionPoint = 0;
 }
@@ -158,13 +159,13 @@ void CBullet::Update(void)
     }
 
     // 軌跡エフェクト発生
-    if (m_trailEffectType != NOT_EXIST)
+    if (m_Effect.type != NOT_EXIST)
     {
-        m_nCntTrailEffect++;
-        if (m_nCntTrailEffect >= m_nCntTrailInterval)
+        m_Effect.nCntTrail++;
+        if (m_Effect.nCntTrail >= m_Effect.interval)
         {
-            m_nCntTrailEffect = 0;
-            CEffect3D::Create(m_trailEffectType, myPos);
+            m_Effect.nCntTrail = 0;
+            CEffect3D::Create(m_Effect.type, myPos);
         }
     }
 

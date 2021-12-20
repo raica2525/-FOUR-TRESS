@@ -1004,6 +1004,11 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_nCntAttackTime == CARRIER_SKY_START_WIND_FRAME)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
+
+            CEffect3D::Emit(CEffectData::TYPE_WIND_0, windPos, windPos);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+
             CBullet*pBullet = CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
             pBullet->SetWhoContribution(m_nIdxCreate);
         }

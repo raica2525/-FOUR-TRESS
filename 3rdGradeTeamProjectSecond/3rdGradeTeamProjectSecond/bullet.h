@@ -13,6 +13,7 @@
 #include "main.h"
 #include "scene3d.h"
 #include "effect3d.h"
+#include "effectData.h"
 
 //================================================
 // マクロ定義
@@ -118,12 +119,11 @@ private:
     bool m_bUseUninit;              // 終了処理を使うかどうか
     bool m_bUseKnockBack;           // ノックバックを使うかどうか
 
-    int m_trailEffectType;          // 軌跡エフェクトの種類
-    int m_nCntTrailInterval;        // 軌跡の発生間隔
-    int m_nCntTrailEffect;          // 軌跡のカウンタ
+    CEffectData::IntervalEffect m_Effect;   // 軌跡エフェクトの情報
+    
     int m_nWhoContribution;         // 誰の貢献か
     int m_nHitContributionPoint;    // 当たった際の貢献度
-
+    
     //=============================
     // 種類ごとの処理
     //=============================

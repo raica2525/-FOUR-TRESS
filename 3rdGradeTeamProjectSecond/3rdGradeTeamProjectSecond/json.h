@@ -26,14 +26,14 @@ public:
 	static picojson::array D3DColToArray(D3DCOLOR col);
 	template<typename T> static T Nullcheck(picojson::object& obj, const char* key)
 	{
-		if (obj[key].is<picojson::null>())
-		{
-			return NULL;
-		}
-		else
-		{
+		//if (obj[key].is<picojson::null>())
+		//{
+		//	return NULL;
+		//}
+		//else
+		//{
 			return obj[key].get<T>();
-		}
+		//}
 	};
 
 private:

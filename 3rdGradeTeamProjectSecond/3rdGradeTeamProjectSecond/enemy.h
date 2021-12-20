@@ -14,6 +14,7 @@
 #include "character.h"
 #include "model.h"
 #include "player.h"
+#include "effectData.h"
 
 //================================================
 // マクロ定義
@@ -229,6 +230,8 @@ private:
     int m_nDeathContributionPoint;           // 死亡した際に、プレイヤーに入る貢献度
 
     bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+
+    CEffectData::IntervalEffect m_Effect;   // カミカゼの火花用エフェクト
 
     //=============================
     // 種類ごとの処理

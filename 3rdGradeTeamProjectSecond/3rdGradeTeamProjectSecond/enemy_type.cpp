@@ -19,6 +19,7 @@
 #include "effect3d.h"
 #include "modelEffect.h"
 #include "bullet.h"
+#include "effectData.h"
 
 //========================================
 // マクロ定義
@@ -144,6 +145,9 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(KAMIKAZE_PARTS_BOMB, 49);
         CCharacter::BindParts(KAMIKAZE_PARTS_BOMB_CUBE, 50);
         CCharacter::LoadModelData("./data/ANIMATION/motion_kamikaze.txt");
+        m_Effect.type = CEffectData::TYPE_SPARK;
+        m_Effect.interval = 5;
+        m_Effect.nCntTrail = 0;
         break;
     case TYPE_CANNON:
         // 固有の情報
@@ -239,6 +243,17 @@ void CEnemy::AtkArmy(D3DXVECTOR3& myPos)
 //=============================================================================
 void CEnemy::AtkKamikaze(D3DXVECTOR3 &myPos)
 {
+    // 爆弾から火花を出す
+    if (m_Effect.type != NOT_EXIST)
+    {
+        m_Effect.nCntTrail++;
+        if (m_Effect.nCntTrail >= m_Effect.interval)
+        {
+            m_Effect.nCntTrail = 0;
+            CEffect3D::Emit(m_Effect.type, GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE), GetPartsPos(KAMIKAZE_PARTS_BOMB_CUBE));
+        }
+    }
+
     // 位置に移動量を結びつける
     myPos += m_moveAngle * KAMIKAZE_ATK_SPEED;
 

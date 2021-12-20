@@ -37,6 +37,14 @@ void CGround::Update(void)
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// 終了処理
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+void CGround::Uninit(void)
+{
+    CPolygon3D::Uninit();
+}
+
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 名前でテクスチャを指定
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void CGround::SetTexKey(const std::string &key)

@@ -88,6 +88,11 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
+
+    m_Effect.type = NOT_EXIST;
+    m_Effect.interval = 1;
+    m_Effect.nCntTrail = 0;
+  
     m_nAddScore = 1;
     m_nWhoContribution = NOT_EXIST;
     m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;

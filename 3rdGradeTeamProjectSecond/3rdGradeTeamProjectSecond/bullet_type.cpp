@@ -18,6 +18,7 @@
 #include "modelData.h"
 #include "effect3d.h"
 #include "modelEffect.h"
+#include "effectData.h"
 
 //========================================
 // マクロ定義（特徴的な処理をするもののみ）
@@ -69,8 +70,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         // エフェクト番号と発生間隔
-        m_trailEffectType = 0;
-        m_nCntTrailInterval = 5;
+        m_Effect.type = 0;
+        m_Effect.interval = 5;
         break;
     case TYPE_THUNDER:
         // 固有の情報
@@ -161,6 +162,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        // エフェクト番号と発生間隔
+        m_Effect.type = 24;
+        m_Effect.interval = 3;
         break;
     case TYPE_HUNTER_SKY:
         // 固有の情報
@@ -173,6 +177,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        // エフェクト番号と発生間隔
+        m_Effect.type = 24;
+        m_Effect.interval = 5;
         break;
     case TYPE_CARRIER_SKY:
         // 固有の情報
