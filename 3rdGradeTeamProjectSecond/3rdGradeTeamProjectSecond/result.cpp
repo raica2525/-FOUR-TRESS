@@ -127,27 +127,17 @@ void CResult::Update(void)
     // エンター、または何かボタンを押したら
     CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_Y))
+
+	bool bPressedAnyButtons = false;
+	for (int nCount = 0; nCount < XUSER_MAX_COUNT; nCount++)
+	{
+		if (pInputJoypad->GetJoypadTrigger(nCount, XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B | XINPUT_GAMEPAD_X | XINPUT_GAMEPAD_Y | XINPUT_GAMEPAD_START, CInputJoypad::BEHAVIOR_OR))
+		{
+			bPressedAnyButtons = true;
+			break;
+		}
+	}
+    if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || bPressedAnyButtons)
     {
         // 仮にタイトル画面に移行
         CManager::SoundPlay(CSound::LABEL_SE_OK);

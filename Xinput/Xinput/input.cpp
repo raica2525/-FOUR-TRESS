@@ -13,7 +13,7 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // コンストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CInput::CInput()
+CInputJoypad::CInputJoypad()
 {
 	ZeroMemory(m_abConnected, sizeof(m_abConnected));
 }
@@ -21,7 +21,7 @@ CInput::CInput()
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // デストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CInput::~CInput()
+CInputJoypad::~CInputJoypad()
 {
 
 }
@@ -29,7 +29,7 @@ CInput::~CInput()
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 初期化処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-HRESULT CInput::Init(void)
+HRESULT CInputJoypad::Init(void)
 {
 	//XInputを有効化
 	XInputEnable(true);
@@ -39,7 +39,7 @@ HRESULT CInput::Init(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 更新処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void CInput::Update(void)
+void CInputJoypad::Update(void)
 {
 	XINPUT_STATE state;
 	for (int nCount = 0; nCount < XUSER_MAX_COUNT; nCount++)
@@ -57,7 +57,7 @@ void CInput::Update(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 終了処理
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void CInput::Uninit(void)
+void CInputJoypad::Uninit(void)
 {
 	XInputEnable(false);
 }
@@ -65,7 +65,7 @@ void CInput::Uninit(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // コントローラーの状態を取得
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-HRESULT CInput::GetState(int nPad, XINPUT_STATE* pState)
+HRESULT CInputJoypad::GetState(int nPad, XINPUT_STATE* pState)
 {
 	if (nPad < XUSER_MAX_COUNT)
 	{
@@ -82,7 +82,7 @@ HRESULT CInput::GetState(int nPad, XINPUT_STATE* pState)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // ボタンの状態を取得
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-bool CInput::GetButtonState(int nPad, WORD wButtons)
+bool CInputJoypad::GetButtonState(int nPad, WORD wButtons)
 {
 	XINPUT_STATE state;
 	if ((GetState(nPad, &state)) == S_OK)
@@ -98,7 +98,7 @@ bool CInput::GetButtonState(int nPad, WORD wButtons)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 接続されているコントローラーの数を取得
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-int CInput::GetConnectedPadNum(void)
+int CInputJoypad::GetConnectedPadNum(void)
 {
 	XINPUT_STATE state;
 	int nPads = 0;
@@ -115,7 +115,7 @@ int CInput::GetConnectedPadNum(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // トリガーの押下状況を取得(LTrigger = 0,RTrigger = 1)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-bool CInput::GetTriggerState(int nPad, int LR, int nDeadzone)
+bool CInputJoypad::GetTriggerState(int nPad, int LR, int nDeadzone)
 {
 	XINPUT_STATE state;
 	if (XInputGetState(nPad, &state) == ERROR_SUCCESS)
@@ -141,7 +141,7 @@ bool CInput::GetTriggerState(int nPad, int LR, int nDeadzone)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // スティックの傾き具合を取得（LStick = 0, RStick = 1)（X軸 = 0, Y軸 = 1)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-D3DXVECTOR2 CInput::GetStickValue(int nPad, int LR)
+D3DXVECTOR2 CInputJoypad::GetStickValue(int nPad, int LR)
 {
 	XINPUT_STATE state;
 	D3DXVECTOR2 vec2 = {};
@@ -186,7 +186,7 @@ D3DXVECTOR2 CInput::GetStickValue(int nPad, int LR)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 振動を開始
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void CInput::StartVibration(int nPad, int LMoter, int RMoter)
+void CInputJoypad::StartVibration(int nPad, int LMoter, int RMoter)
 {
 	XINPUT_VIBRATION vibration;
 	vibration.wLeftMotorSpeed = LMoter;
@@ -197,7 +197,7 @@ void CInput::StartVibration(int nPad, int LMoter, int RMoter)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // 振動を終了
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-void CInput::StopVibration(int nPad)
+void CInputJoypad::StopVibration(int nPad)
 {
 	StartVibration(nPad, 0, 0);
 }
@@ -205,9 +205,9 @@ void CInput::StopVibration(int nPad)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // クリエイト関数
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
-CInput* CInput::Create(void)
+CInputJoypad* CInputJoypad::Create(void)
 {
-	CInput* pInput = new CInput;
+	CInputJoypad* pInput = new CInputJoypad;
 	pInput->Init();
 
 	return pInput;

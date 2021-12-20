@@ -653,19 +653,19 @@ void CGame::InButtle(void)
         int nNumPausePlayer = NO_PAUSE_PLAYER;  // ポーズを押したプレイヤー
 
                                                 // スタートボタンを押した人を結びつける
-        if (pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START))
+        if (pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_1;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_2, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_2;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_3, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_3;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_4, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_4;
         }

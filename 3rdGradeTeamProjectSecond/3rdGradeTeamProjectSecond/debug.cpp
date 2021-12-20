@@ -252,13 +252,12 @@ void CDebugMenu::Update(void)
 
     // コントローラを取得
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    DIJOYSTATE2 Controller = pInputJoypad->GetController(PLAYER_1);
 
     // フェードしていないなら、選択可能
     if (CFade::GetFade() == CFade::FADE_NONE)
     {
         // Aが押された(決定)
-        if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_A))
+        if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_A))
         {
             // 選んだモードに移行
             switch (m_select)
@@ -466,7 +465,7 @@ void CDebugMenu::Update(void)
             }
 
             // 上移動
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_UP) || Controller.lY < 0 && m_nSelectCoolTime <= 0)
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_UP) || pInputJoypad->GetStickValue(PLAYER_1,CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
             {
                 // 上の選択肢に
                 m_select--;
@@ -482,7 +481,7 @@ void CDebugMenu::Update(void)
             }
 
             // 下移動
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_DOWN) || Controller.lY > 0 && m_nSelectCoolTime <= 0)
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_DOWN) || pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
             {
                 // 下の選択肢に
                 m_select++;

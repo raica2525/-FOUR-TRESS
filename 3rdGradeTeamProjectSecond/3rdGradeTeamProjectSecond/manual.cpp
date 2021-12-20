@@ -72,7 +72,6 @@ void CManual::Update(void)
 
     // コントローラを取得
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    DIJOYSTATE2 Controller = pInputJoypad->GetController(PLAYER_1);
 
     // 選択のクールタイムを数える
     if (m_nSelectCoolTime > 0)
@@ -92,8 +91,8 @@ void CManual::Update(void)
 
             // 移動キーを押したら(右)
             if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputKeyboard->GetKeyboardTrigger(DIK_D) || pInputKeyboard->GetKeyboardTrigger(DIK_RIGHT) ||
-                pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B) || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START) ||
-                Controller.lX > 0 && m_nSelectCoolTime <= 0)
+                pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_B) || pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_START) ||
+				pInputJoypad->GetStickValue(PLAYER_1,CInputJoypad::LEFT).x > 0 && m_nSelectCoolTime <= 0)
             {
                 //// 選択
                 //pSound->Play(CSound::LABEL_SE_SYSTEM_SELECT);
@@ -112,7 +111,7 @@ void CManual::Update(void)
 
             // 移動キーを押したら(左)
             if (pInputKeyboard->GetKeyboardTrigger(DIK_A) || pInputKeyboard->GetKeyboardTrigger(DIK_LEFT) ||
-                Controller.lX < 0 && m_nSelectCoolTime <= 0)
+				pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).x && m_nSelectCoolTime <= 0)
             {
                 //// 選択
                 //pSound->Play(CSound::LABEL_SE_SYSTEM_SELECT);
@@ -123,8 +122,8 @@ void CManual::Update(void)
             }
             // 移動キーを押したら(右)
             else if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputKeyboard->GetKeyboardTrigger(DIK_D) || pInputKeyboard->GetKeyboardTrigger(DIK_RIGHT) ||
-                pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B) || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START) ||
-                Controller.lX > 0 && m_nSelectCoolTime <= 0)
+                pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_B) || pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_START) ||
+				pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).x > 0 && m_nSelectCoolTime <= 0)
             {
                 //// 選択
                 //pSound->Play(CSound::LABEL_SE_SYSTEM_SELECT);
@@ -143,7 +142,7 @@ void CManual::Update(void)
 
             // 移動キーを押したら(左)
             if (pInputKeyboard->GetKeyboardTrigger(DIK_A) || pInputKeyboard->GetKeyboardTrigger(DIK_LEFT) ||
-                Controller.lX < 0 && m_nSelectCoolTime <= 0)
+				pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).x < 0 && m_nSelectCoolTime <= 0)
             {
                 //// 選択
                 //pSound->Play(CSound::LABEL_SE_SYSTEM_SELECT);
@@ -154,8 +153,8 @@ void CManual::Update(void)
             }
 
             // 決定キーを押したら
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START) ||
-                pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B))
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_START) ||
+                pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_B))
             {
                 //// ゲームモードに移行
                 //pSound->Play(CSound::LABEL_SE_SYSTEM_MODE_CHANGE);
