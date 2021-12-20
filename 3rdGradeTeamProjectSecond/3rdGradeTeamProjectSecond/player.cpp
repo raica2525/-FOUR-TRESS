@@ -672,13 +672,13 @@ void CPlayer::Input(void)
 		}
 
         // 左スティックが傾いているかどうか
-        if (pInputJoypad->GetStickValue(m_nIdxControlAndColor, CInputJoypad::LEFT))
+        if (stickValue[CInputJoypad::LEFT].x || stickValue[CInputJoypad::LEFT].y)
         {
             m_controlInput.bTiltedLeftStick = true;
 
             // 角度を求める
-			m_controlInput.fLeftStickAngle = atan2f(stickValue[CInputJoypad::LEFT].x, stickValue[CInputJoypad::LEFT].y*-1);
-			m_controlInput.fPlayerAngle = atan2f(stickValue[CInputJoypad::LEFT].x*-1, stickValue[CInputJoypad::LEFT].y);
+			m_controlInput.fLeftStickAngle = atan2f(stickValue[CInputJoypad::LEFT].x, stickValue[CInputJoypad::LEFT].y);
+			m_controlInput.fPlayerAngle = atan2f(stickValue[CInputJoypad::LEFT].x*-1, stickValue[CInputJoypad::LEFT].y * -1);
         }
         else
         {
@@ -686,12 +686,12 @@ void CPlayer::Input(void)
         }
 
         // 右スティックが傾いているかどうか
-        if (pInputJoypad->GetStickValue(m_nIdxControlAndColor, CInputJoypad::RIGHT))
+        if (stickValue[CInputJoypad::RIGHT].x || stickValue[CInputJoypad::RIGHT].y)
         {
             m_controlInput.bTiltedRightStick = true;
 
             // 角度を求める
-            m_controlInput.fRightStickAngle = atan2(stickValue[CInputJoypad::RIGHT].x, stickValue[CInputJoypad::RIGHT].y*-1);
+            m_controlInput.fRightStickAngle = atan2(stickValue[CInputJoypad::RIGHT].x, stickValue[CInputJoypad::RIGHT].y);
         }
         else
         {

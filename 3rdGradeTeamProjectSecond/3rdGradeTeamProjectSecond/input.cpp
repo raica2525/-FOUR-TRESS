@@ -610,8 +610,8 @@ void CInputJoypad::Update(void)
 		if (XInputGetState(nCount, &state) == ERROR_SUCCESS)
 		{
 			m_abConnected[nCount] = true;
-			m_aJoyStateTrigger[nCount] = m_aJoyStateOld[nCount].Gamepad.wButtons ^ state.Gamepad.wButtons & state.Gamepad.wButtons;
-			m_aJoyStateRelease[nCount] = m_aJoyStateOld[nCount].Gamepad.wButtons ^ state.Gamepad.wButtons & ~state.Gamepad.wButtons;
+			m_aJoyStateTrigger[nCount] = (m_aJoyStateOld[nCount].Gamepad.wButtons ^ state.Gamepad.wButtons) & state.Gamepad.wButtons;
+			m_aJoyStateRelease[nCount] = (m_aJoyStateOld[nCount].Gamepad.wButtons ^ state.Gamepad.wButtons) & ~state.Gamepad.wButtons;
 			m_aJoyStateOld[nCount] = state;
 			if (m_anRemainFrameVibration[nCount] >= 0)
 			{

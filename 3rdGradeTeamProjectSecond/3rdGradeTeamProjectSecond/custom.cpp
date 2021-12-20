@@ -368,7 +368,7 @@ void CCustom::MoveCursor(void)
             bTiltedStick = true;
 
             // Šp“x‚ğ‹‚ß‚é
-            fStickAngle = atan2f(leftStickValue.x, leftStickValue.y*-1);
+            fStickAngle = atan2f(leftStickValue.x, leftStickValue.y);
 
             // ‘å‚«‚³‚ğ‹‚ß‚é
 			fTiltedStickValue = D3DXVec2Length(&leftStickValue);

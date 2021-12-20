@@ -465,7 +465,7 @@ void CDebugMenu::Update(void)
             }
 
             // ãˆÚ“®
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_UP) || pInputJoypad->GetStickValue(PLAYER_1,CInputJoypad::LEFT).x < 0 && m_nSelectCoolTime <= 0)
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_UP) || pInputJoypad->GetStickValue(PLAYER_1,CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
             {
                 // ã‚Ì‘I‘ðŽˆ‚É
                 m_select--;
@@ -481,7 +481,7 @@ void CDebugMenu::Update(void)
             }
 
             // ‰ºˆÚ“®
-            if (pInputKeyboard->GetKeyboardTrigger(DIK_DOWN) || pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
+            if (pInputKeyboard->GetKeyboardTrigger(DIK_DOWN) || pInputJoypad->GetStickValue(PLAYER_1, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
             {
                 // ‰º‚Ì‘I‘ðŽˆ‚É
                 m_select++;
