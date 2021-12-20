@@ -120,7 +120,7 @@ void CResult::Update(void)
 	bool bPressedAnyButtons = false;
 	for (int nCount = 0; nCount < XUSER_MAX_COUNT; nCount++)
 	{
-		if (pInputJoypad->GetJoypadTrigger(nCount, XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B | XINPUT_GAMEPAD_X | XINPUT_GAMEPAD_Y | XINPUT_GAMEPAD_START), CInputJoypad::BEHAVIOR_OR)
+		if (pInputJoypad->GetJoypadTrigger(nCount, XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B | XINPUT_GAMEPAD_X | XINPUT_GAMEPAD_Y | XINPUT_GAMEPAD_START, CInputJoypad::BEHAVIOR_OR))
 		{
 			bPressedAnyButtons = true;
 			break;

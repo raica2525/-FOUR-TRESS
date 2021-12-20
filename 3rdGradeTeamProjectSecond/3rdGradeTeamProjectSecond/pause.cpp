@@ -402,7 +402,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // ãˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho,CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho,CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -415,7 +415,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // ‰ºˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -447,7 +447,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // ãˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -460,7 +460,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // ‰ºˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -492,7 +492,7 @@ void CPause::SelectPauseMenu(void)
             else
             {
                 // ãˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_W) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);
@@ -505,7 +505,7 @@ void CPause::SelectPauseMenu(void)
                 }
 
                 // ‰ºˆÚ“®
-                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y > 0 && m_nSelectCoolTime <= 0)
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_S) || pInputJoypad->GetStickValue(m_nWho, CInputJoypad::LEFT).y < 0 && m_nSelectCoolTime <= 0)
                 {
                     // SE
                     CManager::SoundPlay(CSound::LABEL_SE_CUSTOM);

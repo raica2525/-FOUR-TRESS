@@ -576,6 +576,9 @@ CInputJoypad::CInputJoypad()
 {
 	ZeroMemory(m_abConnected, sizeof(m_abConnected));
 	ZeroMemory(m_aJoyStateOld, sizeof(m_aJoyStateOld));
+	ZeroMemory(m_anRemainFrameVibration, sizeof(m_anRemainFrameVibration));
+	ZeroMemory(m_aJoyStateRelease, sizeof(m_aJoyStateRelease));
+	ZeroMemory(m_aJoyStateTrigger, sizeof(m_aJoyStateTrigger));
 }
 
 //========================================
@@ -738,7 +741,7 @@ bool CInputJoypad::GetTriggerState(int nPad, LR LR, int nDeadzone)
 D3DXVECTOR2 CInputJoypad::GetStickValue(int nPad, LR LR)
 {
 	XINPUT_STATE state;
-	D3DXVECTOR2 vec2 = {};
+	D3DXVECTOR2 vec2 = DEFAULT_VECTOR;
 	if (XInputGetState(nPad, &state) == ERROR_SUCCESS)
 	{
 		if (LR == 0)
@@ -805,6 +808,7 @@ void CInputJoypad::StopVibration(int nPad)
 //========================================
 bool CInputJoypad::GetJoypadTrigger(int nPad, WORD wButtons, BEHAVIOR behavir)
 {
+	bool b = (m_aJoyStateTrigger[nPad] & wButtons) == wButtons;
 	switch (behavir)
 	{
 	case BEHAVIOR_AND:

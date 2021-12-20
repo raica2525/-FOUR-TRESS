@@ -363,7 +363,7 @@ void CCustom::MoveCursor(void)
         float fTiltedStickValue = 0.0f;
 		D3DXVECTOR2 leftStickValue = pInputJoypad->GetStickValue(nCntPlayer, CInputJoypad::LEFT);
         // 左スティックが傾いているかどうか
-        if (leftStickValue)
+        if (leftStickValue.x != 0 || leftStickValue.y != 0)
         {
             bTiltedStick = true;
 
@@ -400,7 +400,7 @@ void CCustom::MoveCursor(void)
                 // 移動
                 if (bTiltedStick)
                 {
-                    const float ADJUST_RATE = 0.0008f;   // スティックの傾きの値を、位置に足せるよう調整
+                    const float ADJUST_RATE = 0.00025f;   // スティックの傾きの値を、位置に足せるよう調整
                     cursorPos.x += sinf(fStickAngle)* fTiltedStickValue * ADJUST_RATE;
                     cursorPos.y += -cosf(fStickAngle)* fTiltedStickValue * ADJUST_RATE;
                 }
