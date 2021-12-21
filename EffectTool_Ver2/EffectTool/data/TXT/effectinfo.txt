@@ -5,94 +5,62 @@ SCRIPT		# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 
 #-------------------------------------------------------------
-# [0] 着地砂埃
+# [0] （エフェクト名）
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 0
-	TEX_TYPE = 10
-	ONCE = 6
-	PLANE = 1
-	ON_CIRCLE = 1
-	EMIT_INSIDE = 0
-	SCATTER_ANGLE = 0
-	SCATTER_WIDTH = 0
-	SPEED_MAX = 200
-	SPEED_MIN = 200
-	SPEED_AA_MAX = 0
-	SPEED_AA_MIN = 0
-	ACCEL = 1.100
-	GRAVITY = 0.000
-	GRAVITYLIMIT = 0.000
-	ROT_LAY = 0
-	ROT_EQUAL_MOVE = 0	
-	ROT_SPEED_MAX = 0
-	ROT_SPEED_MIN = 0
-	COL = 0.803 0.622 0.372 1.000
-	COL_CHANGE = 0.000 0.000 0.000 0.000
-	FADE_OUT_RATE = 0.062
-	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 10000
-	SIZE_MIN = 5000
-	SIZE_CHANGE = 1.0 1.0 0.0
-	EMITRADIUS = 56
-	ADD_BLEND = 0
-	USE_ZBUFFER = 0
-	ALPHA_TEST_BORDER = 0
-END_EFFECT_DATASET
-
-#-------------------------------------------------------------
-# [2] ジャンプ砂埃
-#-------------------------------------------------------------
-EFFECT_DATASET
-	TYPE = 2
-	TEX_TYPE = 10
-	ONCE = 4
+	TEX_TYPE = 21
+	ONCE = 5
 	PLANE = 1
 	ON_CIRCLE = 0
 	EMIT_INSIDE = 0
-	SCATTER_ANGLE = 180
-	SCATTER_WIDTH = 100
-	SPEED_MAX = 760
-	SPEED_MIN = 716
+	SCATTER_ANGLE = 120
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
 	SPEED_AA_MAX = 0
 	SPEED_AA_MIN = 0
-	ACCEL = 1.100
+	ACCEL = 0.000
 	GRAVITY = 0.000
 	GRAVITYLIMIT = 0.000
 	ROT_LAY = 0
 	ROT_EQUAL_MOVE = 1	
-	ROT_SPEED_MAX = 800
-	ROT_SPEED_MIN = 0
-	COL = 0.710 0.588 0.420 1.000
+	ROT_SPEED_MAX = 2
+	ROT_SPEED_MIN = 2
+	COL = 0.317 0.911 0.877 1.000
 	COL_CHANGE = 0.000 0.000 0.000 0.000
-	FADE_OUT_RATE = 0.080
+	FADE_OUT_RATE = 0.062
 	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 2500
-	SIZE_MIN = 1500
-	SIZE_CHANGE = 5.0 5.0 0.0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 50.0 -20.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
 	EMITRADIUS = 0
-	ADD_BLEND = 0
+	ADD_BLEND = 1
 	USE_ZBUFFER = 0
 	ALPHA_TEST_BORDER = 0
 END_EFFECT_DATASET
 
+
+
 #-------------------------------------------------------------
-# [1] 火花
+# [1] （エフェクト名）
 #-------------------------------------------------------------
 EFFECT_DATASET
 	TYPE = 1
-	TEX_TYPE = 20
-	ONCE = 7
-	PLANE = 1
-	ON_CIRCLE = 0
+	TEX_TYPE = 0
+	ONCE = 24
+	PLANE = 0
+	ON_CIRCLE = 1
 	EMIT_INSIDE = 0
 	SCATTER_ANGLE = 0
 	SCATTER_WIDTH = 0
-	SPEED_MAX = 86
-	SPEED_MIN = 0
+	SPEED_MAX = 204
+	SPEED_MIN = 204
 	SPEED_AA_MAX = 0
 	SPEED_AA_MIN = 0
-	ACCEL = 1.000
+	ACCEL = 1.040
 	GRAVITY = 0.000
 	GRAVITYLIMIT = 0.000
 	ROT_LAY = 1
@@ -101,15 +69,19 @@ EFFECT_DATASET
 	ROT_SPEED_MIN = 0
 	COL = 1.000 0.347 0.110 1.000
 	COL_CHANGE = 0.000 0.028 0.000 0.000
-	FADE_OUT_RATE = 0.000
+	FADE_OUT_RATE = 0.030
 	FADE_OUT_LOCK_COUNT = 0
-	SIZE_MAX = 15000
-	SIZE_MIN = 10000
-	SIZE_CHANGE = -10.0 -8.0 0.0
-	EMITRADIUS = 52
+	SIZE_MAX = 0
+	SIZE_MIN = 0
+	SIZE_CHANGE = 6.0 6.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 8
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 48
 	ADD_BLEND = 1
 	USE_ZBUFFER = 0
 	ALPHA_TEST_BORDER = 0
 END_EFFECT_DATASET
+
+
 
 END_SCRIPT		# この行は絶対消さないこと！

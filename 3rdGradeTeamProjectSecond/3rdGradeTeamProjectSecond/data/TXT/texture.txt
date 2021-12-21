@@ -25,7 +25,7 @@ END_TEXTURESET
 #---------------------------------------
 TEXTURESET
 	TYPE = 2
-	NAME = data/TEXTURE/002_title_logo.png
+	NAME = data/TEXTURE/title/title_logo.png
 END_TEXTURESET
 
 #---------------------------------------
@@ -1061,4 +1061,122 @@ TEXTURESET
     TYPE = 128
     NAME = data/TEXTURE/effect/29_wind.png
 END_TEXTURESET
+
+#---------------------------------------
+# [129] タイトルロゴ彩
+#---------------------------------------
+TEXTURESET
+    TYPE = 129
+    NAME = data/TEXTURE/title/titlelogo_irodori.png
+END_TEXTURESET
+
+#---------------------------------------
+# [130] タイトルロゴ切断_0
+#---------------------------------------
+TEXTURESET
+    TYPE = 130
+    NAME = data/TEXTURE/title/titlelogo001.png
+END_TEXTURESET
+
+#---------------------------------------
+# [131] タイトルロゴ切断_1
+#---------------------------------------
+TEXTURESET
+    TYPE = 131
+    NAME = data/TEXTURE/title/titlelogo002.png
+END_TEXTURESET
+
+#---------------------------------------
+# [132] タイトルロゴ切断_2
+#---------------------------------------
+TEXTURESET
+    TYPE = 132
+    NAME = data/TEXTURE/title/titlelogo003.png
+END_TEXTURESET
+
+#---------------------------------------
+# [132] タイトルロゴ切断_3
+#---------------------------------------
+TEXTURESET
+    TYPE = 132
+    NAME = data/TEXTURE/title/titlelogo004.png
+END_TEXTURESET
+
+#---------------------------------------
+# [133] 貢献度1P
+#---------------------------------------
+TEXTURESET
+    TYPE = 133
+    NAME = data/TEXTURE/result/1pbar.png
+    
+END_TEXTURESET
+#---------------------------------------
+# [134]  貢献度2P
+#---------------------------------------
+TEXTURESET
+    TYPE = 134
+    NAME = data/TEXTURE/result/2pbar.png
+    
+END_TEXTURESET
+#---------------------------------------
+# [135]  貢献度3P
+#---------------------------------------
+TEXTURESET
+    TYPE = 135
+    NAME = data/TEXTURE/result/3pbar.png
+    
+END_TEXTURESET
+#---------------------------------------
+# [136] 貢献度4P
+#---------------------------------------
+TEXTURESET
+    TYPE = 136
+    NAME = data/TEXTURE/result/4pbar.png
+    
+END_TEXTURESET
+
+#---------------------------------------
+# [137] リザルト1位
+#---------------------------------------
+TEXTURESET
+    TYPE = 137
+    NAME = data/TEXTURE/result/no1.png
+    
+END_TEXTURESET
+
+#---------------------------------------
+# [138] リザルト2位
+#---------------------------------------
+TEXTURESET
+    TYPE = 138
+    NAME = data/TEXTURE/result/no2.png
+    
+END_TEXTURESET
+
+#---------------------------------------
+# [139] リザルト3位
+#---------------------------------------
+TEXTURESET
+    TYPE = 139
+    NAME = data/TEXTURE/result/no3.png
+    
+END_TEXTURESET
+
+#---------------------------------------
+# [140] リザルト4位
+#---------------------------------------
+TEXTURESET
+    TYPE = 140
+    NAME = data/TEXTURE/result/no4.png
+    
+END_TEXTURESET
+
+#---------------------------------------
+# [141] リザルト背景
+#---------------------------------------
+TEXTURESET
+    TYPE = 141
+    NAME = data/TEXTURE/result/result001.jpg
+    END_TEXTURESET
+    
 END_SCRIPT		# この行は絶対消さないこと！
