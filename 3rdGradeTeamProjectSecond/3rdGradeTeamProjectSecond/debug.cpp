@@ -155,8 +155,8 @@ void CDebug::CommonCommand(void)
         case CManager::MODE_RESULT:
             ReloadUI(CUI::SET_RESULT);
             break;
-        case CManager::MODE_MENU:
-            ReloadUI(CUI::SET_MENU);
+        case CManager::MODE_RANKING:
+            ReloadUI(CUI::SET_RANKING);
             break;
         case CManager::MODE_GAME:
         {

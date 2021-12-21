@@ -29,7 +29,8 @@
 #include "debug.h"
 #include "custom.h"
 #include "text.h"
-#include "menu.h"
+#include "ranking.h"
+#include "mapmanager.h"
 
 //========================================
 // マクロ定義
@@ -50,6 +51,7 @@ CLight *CManager::m_pLight = NULL;
 CTexture *CManager::m_pTexture = NULL;
 CModelData *CManager::m_pModelData = NULL;
 CEffectData *CManager::m_pEffectData = NULL;
+CMapManager *CManager::m_pMapManager = NULL;
 
 //========================================
 // 生成の管理のデフォルトコンストラクタ
@@ -145,6 +147,10 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
         return E_FAIL;
     }
 
+    // マップマネージャーの生成
+    m_pMapManager = new CMapManager;
+    m_pMapManager->Init();
+
     // フォントの読み込み
     CText::Load();
 
@@ -186,6 +192,17 @@ void CManager::Uninit(void)
         // フェードのメモリの開放
         delete m_pFade;
         m_pFade = NULL;
+    }
+
+    // マップマネージャー管理破棄
+    if (m_pMapManager != NULL)
+    {
+        // マップマネージャーの終了処理
+        m_pMapManager->Uninit();
+
+        // マップマネージャーのメモリの開放
+        delete m_pMapManager;
+        m_pMapManager = NULL;
     }
 
     // エフェクトデータ管理破棄
@@ -403,9 +420,9 @@ CManager::MODE CManager::GetMode(void)
     {
         mode = MODE_RESULT;
     }
-    else if (typeid(*m_pMode) == typeid(CMenu))
+    else if (typeid(*m_pMode) == typeid(CRanking))
     {
-        mode = MODE_MENU;
+        mode = MODE_RANKING;
     }
 
     return mode;
@@ -459,8 +476,8 @@ void CManager::SetMode(MODE mode)
         m_pMode = new CResult;
         break;
 
-    case MODE_MENU:
-        m_pMode = new CMenu;
+    case MODE_RANKING:
+        m_pMode = new CRanking;
         break;
     }
 

@@ -286,8 +286,8 @@ void CUI::Place(SET set)
     case SET_RESULT:
         pFile = fopen("data/TXT/ui_result.txt", "r");
         break;
-    case SET_MENU:
-        pFile = fopen("data/TXT/ui_menu.txt", "r");
+    case SET_RANKING:
+        pFile = fopen("data/TXT/ui_ranking.txt", "r");
         break;
     }
 

@@ -71,7 +71,7 @@ HRESULT CModelData::Init(void)
 {
 
 	HRESULT hr = LoadModelDataFromTxt(MODEL_DATA_FILENAME);
-	//LoadModelDataFromJson(MAP_MODEL_FILENAME);
+	LoadModelDataFromJson(MAP_MODEL_FILENAME);
     // モデルの初期位置データ読み込み
     LoadModelPosDef();
 
