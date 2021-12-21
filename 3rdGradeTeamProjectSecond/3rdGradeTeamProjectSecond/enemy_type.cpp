@@ -67,6 +67,12 @@
 #define COMMANDER_SPAWN_ANGLE_Y D3DXToRadian(80.0f) // 生成角度Y
 #define COMMANDER_DISCOVERY_DISTANCE 1750.0f// 検知距離
 
+//===========================
+// 死神
+//===========================
+#define SHINIGAMI_WHOLE_FRAME 55
+#define SHINIGAMI_FIRE_FRAME 40
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -323,4 +329,36 @@ void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
         // 待機AIに
         SetBaseState(BASE_STATE_WAIT, COMMANDER_WAIT_COUNT);
     }
+}
+
+//=============================================================================
+// 死神の攻撃
+// Author : 
+//=============================================================================
+void CEnemy::AtkShinigami(D3DXVECTOR3 &myPos)
+{
+	if (m_pTarget)
+	{
+		// 現在の位置と、目的地までの移動角度/向きを求める
+		D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+		float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+		m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
+		SetRotDestY(fDestAngle);
+
+	}
+	if (m_nCntTime == COMMANDER_FIRE_FRAME)
+	{
+		// 発射
+		for (int nCnt = 0; nCnt < COMMANDER_ONCE_SPAWN; nCnt++)
+		{
+			float fAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
+			D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngle), COMMANDER_SPAWN_ANGLE_Y, -cosf(fAngle));
+			CBullet::Create(CBullet::TYPE_COMMANDER_ATTACK, GetPartsPos(COMMANDER_PARTS_SPAWN_POS), moveAngle, OBJTYPE_ENEMY, m_fStrength);
+		}
+	}
+	else if (m_nCntTime == COMMANDER_WHOLE_FRAME)
+	{
+		// 待機AIに
+		SetBaseState(BASE_STATE_WAIT, COMMANDER_WAIT_COUNT);
+	}
 }

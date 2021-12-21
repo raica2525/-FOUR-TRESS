@@ -242,7 +242,7 @@ private:
     void AtkKamikaze(D3DXVECTOR3& myPos);
     void AtkCannon(D3DXVECTOR3& myPos);
     void AtkCommander(D3DXVECTOR3& myPos);
-
+	void AtkShinigami(D3DXVECTOR3& myPos);
     //=============================
     // Ç±ÇÃÉNÉâÉXì‡Ç≈ÇÃÇ›égÇ§èàóù
     //=============================
