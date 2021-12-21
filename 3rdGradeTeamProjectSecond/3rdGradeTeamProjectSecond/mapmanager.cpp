@@ -89,7 +89,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// ground‚ğ¶¬
-	obj["grounds"].get<picojson::array>();
+	arr = obj["grounds"].get<picojson::array>();
 	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
 	{
 		CreateGroundFromJsonObject(it->get<picojson::object>());
