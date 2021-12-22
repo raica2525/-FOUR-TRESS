@@ -66,6 +66,7 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
   
     m_nWhoContribution = NOT_EXIST;
     m_nHitContributionPoint = 0;
+    m_nIdxHitEffect = DEFAULT_HIT_EFFECT_NUM;
 }
 
 //=============================================================================
@@ -306,11 +307,11 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                             // ダメージを受けるなら、ガードしているかどうか
                             if (pPlayer->GetUsingGuard())
                             {
-                                bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld, m_bUseKnockBack);
+                                bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld, m_bUseKnockBack, m_nIdxHitEffect);
                             }
                             else
                             {
-                                bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                                bDamaged = pPlayer->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack, m_nIdxHitEffect);
                             }
                         }
 
@@ -345,7 +346,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
                         // ダメージ
-                        bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                        bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack, m_nIdxHitEffect);
                         if (bDamaged && m_bHitErase)
                         {
                             m_nLife = HIT_NOT_EXIST;
@@ -410,7 +411,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         }
                         else
                         {
-                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack);
+                            bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack, m_nIdxHitEffect);
                             if (bDamaged)
                             {
                                 // 貢献した人を設定

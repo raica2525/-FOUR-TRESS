@@ -124,7 +124,8 @@ private:
     
     int m_nWhoContribution;         // 誰の貢献か
     int m_nHitContributionPoint;    // 当たった際の貢献度
-    
+    int m_nIdxHitEffect;            // ヒットエフェクト
+
     //=============================
     // 種類ごとの処理
     //=============================

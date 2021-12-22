@@ -197,28 +197,22 @@ void CEnemy::SetupInfoByType(void)
         break;
 	case TYPE_SHINIGAMI:
 		// 固有の情報
-		SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f)); //後で変える
+		SetCollisionSizeDefence(D3DXVECTOR2(500.0f, 500.0f)); //後で変える
 		m_fSpeed = 5.0f;
 		fHP = 1260.0f;
 		m_fChargeValue = 44.0f;
 		m_walkMotion = SHINIGAMI_ANIM_WALK;
 		m_attackMotion = SHINIGAMI_ANIM_ATTACK;
 		m_deathMotion = SHINIGAMI_ANIM_DEATH;
-		m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
+		m_targetTrend = TARGET_TREND_PLAYER;
 		m_nAddScore = 3000;
 		m_bSquashedByFortress = false;
 		m_fDiscoveryTargetDistance = SHINIGAMI_DISCOVERY_DISTANCE;
 		// パーツ数を設定、モデルをバインド、アニメーションをバインド
-		CCharacter::SetPartNum(SHINIGAMI_ANIM_MAX);
-		//CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
-		//CCharacter::BindParts(KAMIKAZE_PARTS_ARML, 47);
-		//CCharacter::BindParts(KAMIKAZE_PARTS_ARMR, 48);
-		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB, 49);
-		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB_CUBE, 50);
+		CCharacter::SetPartNum(SHINIGAMI_PARTS_MAX);
+		CCharacter::BindParts(SHINIGAMI_PARTS_BODY, 56);
+		CCharacter::BindParts(SHINIGAMI_PARTS_WEP, 57);
 		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
-		//m_Effect.type = CEffectData::TYPE_SPARK;
-		//m_Effect.interval = 5;
-		//m_Effect.nCntTrail = 0;
 		break;
 
     }
