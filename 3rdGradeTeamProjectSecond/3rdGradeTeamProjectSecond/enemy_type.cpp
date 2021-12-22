@@ -70,8 +70,10 @@
 //===========================
 // 死神
 //===========================
-#define SHINIGAMI_WHOLE_FRAME 55
-#define SHINIGAMI_FIRE_FRAME 40
+#define SHINIGAMI_WHOLE_FRAME 55			// 全体フレーム	
+#define SHINIGAMI_FIRE_FRAME 40				// 発射フレーム
+#define SHINIGAMI_FIRE_DISTANCE 50
+#define SHINIGAMI_DISCOVERY_DISTANCE 2500.0f   // 検知距離
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -193,6 +195,32 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(COMMANDER_PARTS_SPAWN_POS, 50);
         CCharacter::LoadModelData("./data/ANIMATION/motion_commander.txt");
         break;
+	case TYPE_SHINIGAMI:
+		// 固有の情報
+		SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f)); //後で変える
+		m_fSpeed = 5.0f;
+		fHP = 1260.0f;
+		m_fChargeValue = 44.0f;
+		m_walkMotion = SHINIGAMI_ANIM_WALK;
+		m_attackMotion = SHINIGAMI_ANIM_ATTACK;
+		m_deathMotion = SHINIGAMI_ANIM_DEATH;
+		m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
+		m_nAddScore = 3000;
+		m_bSquashedByFortress = false;
+		m_fDiscoveryTargetDistance = SHINIGAMI_DISCOVERY_DISTANCE;
+		// パーツ数を設定、モデルをバインド、アニメーションをバインド
+		CCharacter::SetPartNum(SHINIGAMI_ANIM_MAX);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_ARML, 47);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_ARMR, 48);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB, 49);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB_CUBE, 50);
+		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
+		//m_Effect.type = CEffectData::TYPE_SPARK;
+		//m_Effect.interval = 5;
+		//m_Effect.nCntTrail = 0;
+		break;
+
     }
 
     // 強さを反映
@@ -333,7 +361,7 @@ void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
 
 //=============================================================================
 // 死神の攻撃
-// Author : 
+// Author : 池田悠希
 //=============================================================================
 void CEnemy::AtkShinigami(D3DXVECTOR3 &myPos)
 {
@@ -344,21 +372,9 @@ void CEnemy::AtkShinigami(D3DXVECTOR3 &myPos)
 		float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
 		m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
 		SetRotDestY(fDestAngle);
+	}
+	else
+	{
 
-	}
-	if (m_nCntTime == COMMANDER_FIRE_FRAME)
-	{
-		// 発射
-		for (int nCnt = 0; nCnt < COMMANDER_ONCE_SPAWN; nCnt++)
-		{
-			float fAngle = float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT - float(rand() % EFFECT_PI) / EFFECT_FLOATING_POINT;
-			D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(fAngle), COMMANDER_SPAWN_ANGLE_Y, -cosf(fAngle));
-			CBullet::Create(CBullet::TYPE_COMMANDER_ATTACK, GetPartsPos(COMMANDER_PARTS_SPAWN_POS), moveAngle, OBJTYPE_ENEMY, m_fStrength);
-		}
-	}
-	else if (m_nCntTime == COMMANDER_WHOLE_FRAME)
-	{
-		// 待機AIに
-		SetBaseState(BASE_STATE_WAIT, COMMANDER_WAIT_COUNT);
 	}
 }
