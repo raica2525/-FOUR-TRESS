@@ -125,6 +125,27 @@ void CTitle::Update(void)
                 // SE
                 //CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
 
+                // 仮にベータ用のステージへ
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN))
+                {
+                    CGame::SetNextGameInDebug(CGame::TYPE_ARENA, 4, true);
+                }
+                else
+                {
+                    CGame::SetNextGameInDebug(CGame::TYPE_ARENA, 4);
+                }
+                CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
+                CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_1);
+                CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_2);
+                CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_3);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
+                CGame::SetIdxPlayer(2, 2);
+                CGame::SetIdxPlayer(3, 3);
+                CGame::SetRole(PLAYER_2, CPlayer::ROLE_HUNTER);
+                CGame::SetRole(PLAYER_3, CPlayer::ROLE_CARRIER);
+                CGame::SetRole(PLAYER_4, CPlayer::ROLE_TANK);
+
                 // プレスボタンを点滅させる
                 if (pPressButton)
                 {
