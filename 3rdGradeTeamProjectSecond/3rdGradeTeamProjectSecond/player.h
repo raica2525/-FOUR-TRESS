@@ -489,6 +489,7 @@ private:
     CBullet *m_pHealingCircle;  // 回復魔方陣
     int m_nCntRespawnTime;      // リスポーン時間を数える
     int m_nContributionPoint;   // 貢献度
+    bool m_bGetOffFortressInThisFrame;  // ゴリ押し
 
     //===================================
     // このクラス内でのみ使う処理

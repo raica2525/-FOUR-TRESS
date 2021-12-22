@@ -195,6 +195,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_pHealingCircle = NULL;
     m_nCntRespawnTime = 0;
     m_nContributionPoint = 0;
+    m_bGetOffFortressInThisFrame = false;
 }
 
 //=============================================================================
@@ -706,6 +707,9 @@ void CPlayer::Input(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
+    // ÉSÉäâüÇµ
+    m_bGetOffFortressInThisFrame = false;
+
     // 1FëOÇÃçòÇÃà íuÇãLâØ
     m_hipPosOld = GetPartsPos(PARTS_HIP);
 
@@ -1063,27 +1067,27 @@ void CPlayer::UpdateMannequin(void)
             }
             else if (m_nCntAttackAnimTime == PLAYER_VICTORY_VOICE_FRAME)
             {
-                switch (m_voiceSet)
-                {
-                case VOICE_SET_ROBO:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_ICARUS);
-                    break;
-                case VOICE_SET_WOMAN:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_KLEINOD);
-                    break;
-                case VOICE_SET_GHOST:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_KNIGHT);
-                    break;
-                case VOICE_SET_OOO:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_OOO);
-                    break;
-                case VOICE_SET_MAN:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_RANGER);
-                    break;
-                case VOICE_SET_BOY:
-                    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_X);
-                    break;
-                }
+                //switch (m_voiceSet)
+                //{
+                //case VOICE_SET_ROBO:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_ICARUS);
+                //    break;
+                //case VOICE_SET_WOMAN:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_KLEINOD);
+                //    break;
+                //case VOICE_SET_GHOST:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_KNIGHT);
+                //    break;
+                //case VOICE_SET_OOO:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_OOO);
+                //    break;
+                //case VOICE_SET_MAN:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_RANGER);
+                //    break;
+                //case VOICE_SET_BOY:
+                //    CManager::SoundPlay(CSound::LABEL_VOICE_WIN_X);
+                //    break;
+                //}
             }
             break;
         case RANK_2:
@@ -1698,7 +1702,7 @@ void CPlayer::Movement(float fSpeed)
     if (!bIsInvincible)
     {
         D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
-        CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 118);
+        CDebug::Create(pos, size, CDebug::TYPE_MOMENT, 65);
     }
 #endif // COLLISION_TEST
 }

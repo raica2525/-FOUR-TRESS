@@ -338,6 +338,9 @@ void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
 {
     if (m_nCntTime == COMMANDER_FIRE_FRAME)
     {
+        // –EŽq‰¹
+        CManager::SoundPlay(CSound::LABEL_SE_ATTACK_COMMANDER);
+
         // ”­ŽË
         for (int nCnt = 0; nCnt < COMMANDER_ONCE_SPAWN; nCnt++)
         {

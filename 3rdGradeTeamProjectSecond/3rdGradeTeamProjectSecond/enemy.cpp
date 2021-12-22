@@ -219,7 +219,7 @@ void CEnemy::Update(void)
 
 #ifdef COLLISION_TEST
         D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
-        CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
+        CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 65);
 #endif // COLLISION_TEST
 
         // ライフがなくなったら消す
@@ -304,6 +304,8 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         // カミカゼの場合、プレイヤー以外にやられたら爆発を生み出す
         if (m_type == TYPE_KAMIKAZE)
         {
+            // カミカゼ爆発音
+            CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
             CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, myPos, myPos);
             CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, myPos, myPos);

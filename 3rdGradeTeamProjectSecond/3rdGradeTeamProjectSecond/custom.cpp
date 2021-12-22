@@ -1142,7 +1142,7 @@ void CCustom::JudgmentReadyToFight(void)
         CEffect2D::Emit(CEffectData::TYPE_READY_TO_FIGHT3, effectPos, effectPos);
         CEffect2D::Emit(CEffectData::TYPE_READY_TO_FIGHT4, effectPos, effectPos);
 
-        CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
+        //CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
         CFade::SetFade(CManager::MODE_GAME);
         CGame::SetNextGameInCustom(CGame::TYPE_ARENA, nNumCurrentEntryPlayer);
 

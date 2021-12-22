@@ -85,7 +85,7 @@ void CTitle::Update(void)
         // 翼エフェクトを放出
         if (m_bEmitWingEffect)
         {
-            CManager::SoundPlay(CSound::LABEL_SE_WING);
+            //CManager::SoundPlay(CSound::LABEL_SE_WING);
             m_bEmitWingEffect = false;
             //CEffect2D::Emit(CEffectData::TYPE_RED_WING, D3DXVECTOR3(640.0f, 160.0f, 0.0f), D3DXVECTOR3(640.0f, 360.0f, 0.0f));
             //CEffect2D::Emit(CEffectData::TYPE_BLUE_WING, D3DXVECTOR3(640.0f, 160.0f, 0.0f), D3DXVECTOR3(640.0f, 360.0f, 0.0f));
@@ -123,7 +123,7 @@ void CTitle::Update(void)
                 CFade::SetFade(CManager::MODE_GAME);
 
                 // SE
-                CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
+                //CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
 
                 // プレスボタンを点滅させる
                 if (pPressButton)

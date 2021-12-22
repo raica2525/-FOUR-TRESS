@@ -693,7 +693,7 @@ void CGame::InButtle(void)
         if (pInputKeyboard->GetKeyboardTrigger(DIK_P) || nNumPausePlayer != NO_PAUSE_PLAYER)
         {
             // SE
-            CManager::SoundPlay(CSound::LABEL_SE_INFO);
+            CManager::SoundPlay(CSound::LABEL_SE_OPEN_POSE);
 
             // キーボード操作でポーズする際は、1Pのコントローラを使う
             if (nNumPausePlayer == NO_PAUSE_PLAYER)

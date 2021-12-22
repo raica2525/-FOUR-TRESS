@@ -18,6 +18,7 @@
 #include "item.h"
 #include "modelEffect.h"
 #include "wave.h"
+#include "manager.h"
 
 //========================================
 // マクロ定義
@@ -484,19 +485,22 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
 //=============================================================================
 void CPlayer::RideFortress(void)
 {
-    // 移動要塞を取得
-    CFortress *pFortress = CGame::GetFortress();
-    if (pFortress)
+    if (!m_bGetOffFortressInThisFrame)
     {
-        // 誰も座っていないなら
-        if (!pFortress->GetNowWhoRiding())
+        // 移動要塞を取得
+        CFortress *pFortress = CGame::GetFortress();
+        if (pFortress)
         {
-            // 当たっているなら
-            if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            // 誰も座っていないなら
+            if (!pFortress->GetNowWhoRiding())
             {
-                // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
-                m_attackState = ATTACK_STATE_SIT_DOWN;
-                pFortress->SetNowWhoRiding(true);
+                // 当たっているなら
+                if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+                {
+                    // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
+                    m_attackState = ATTACK_STATE_SIT_DOWN;
+                    pFortress->SetNowWhoRiding(true);
+                }
             }
         }
     }
@@ -522,6 +526,7 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
         move = DEFAULT_VECTOR;
 
         // 向きを合わせる
+        SetRotDest(pFortress->GetRot());
         SetRot(pFortress->GetRot());
     }
 
@@ -542,6 +547,7 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
             {
                 // 降りる処理（攻撃周りをリセット）
                 ResetAttack();
+                m_bGetOffFortressInThisFrame = true;
 
                 // 移動要塞側の座っているフラグを戻す
                 pFortress->SetNowWhoRiding(false);
@@ -551,6 +557,7 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
         {
             // 移動要塞がないなら、強制で降りる
             ResetAttack();
+            m_bGetOffFortressInThisFrame = true;
         }
     }
 }
@@ -565,6 +572,9 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
     if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
+        // 素振り音
+        CManager::SoundPlay(CSound::LABEL_SE_SWISH);
+
         // 変数宣言
         D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // プレイヤーの向いている向き
         D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ずらす位置
@@ -604,7 +614,7 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         }
 
 #ifdef COLLISION_TEST
-        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
 
@@ -637,6 +647,9 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
     if (m_nCntAttackTime <= WARRIOR_GROUND_START_FRAME &&
         m_nCntAttackTime >= WARRIOR_GROUND_END_FRAME)
     {
+        // 素振り音
+        CManager::SoundPlay(CSound::LABEL_SE_SWISH);
+
         // 変数宣言
         D3DXVECTOR3 playerRot = CCharacter::GetRot();                     // プレイヤーの向いている向き
         D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                            // ずらす位置
@@ -676,7 +689,7 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
         }
 
 #ifdef COLLISION_TEST
-        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
 
@@ -712,6 +725,9 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 着地したら、隙が発生し、攻撃は終了
         if (m_bGround)
         {
+            // 着地音
+            CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_SWORD);
+
             m_nCntAttackTime = WARRIOR_SKY_CHANCE_FRAME;
 
             // 空中攻撃のエフェクト
@@ -749,7 +765,7 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
 #ifdef COLLISION_TEST
-        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
     else if (m_nCntAttackTime > WARRIOR_SKY_START_FRAME)
@@ -768,6 +784,9 @@ void CPlayer::AtkHunterGround(D3DXVECTOR3& playerPos)
     // 攻撃発生フレーム
     if (m_nCntAttackTime == HUNTER_GROUND_FIRE_FRAME)
     {
+        // 射撃音
+        CManager::SoundPlay(CSound::LABEL_SE_BOW_SOUND_EFFECT);
+
         D3DXVECTOR3 moveAngle = D3DXVECTOR3(-sinf(GetRot().y), 0.0f, -cosf(GetRot().y));
         CBullet *pBullet = CBullet::Create(CBullet::TYPE_HUNTER_GROUND, GetPartsPos(PARTS_WEP), moveAngle, OBJTYPE_PLAYER);
         pBullet->SetWhoContribution(m_nIdxCreate);
@@ -788,6 +807,9 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
     // 攻撃発生フレーム
     if (m_nCntAttackTime == HUNTER_SKY_FIRE_FRAME)
     {
+        // 3射撃音
+        CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_BOW);
+
         // 一度に複数の矢を、均等に放つ
         for (int nCnt = 0; nCnt < HUNTER_SKY_ONCE_SHOT; nCnt++)
         {
@@ -833,6 +855,12 @@ void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
     if (m_nCntAttackTime <= CARRIER_GROUND_START_FRAME &&
         m_nCntAttackTime >= CARRIER_GROUND_END_FRAME)
     {
+        if (m_nCntAttackTime == CARRIER_GROUND_START_FRAME)
+        {
+            // 高速移動音
+            CManager::SoundPlay(CSound::LABEL_SE_HIGH_SPEED_MOVE);
+        }
+
         // この攻撃中は無敵
         SetInvincible(true);
 
@@ -865,7 +893,7 @@ void CPlayer::AtkCarrierGround1(D3DXVECTOR3& playerPos)
         }
 
 #ifdef COLLISION_TEST
-        CDebug::Create(playerPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(playerPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
     else if (m_nCntAttackTime > CARRIER_GROUND_START_FRAME)
@@ -903,6 +931,12 @@ void CPlayer::AtkCarrierGround2(D3DXVECTOR3& playerPos)
     // 攻撃発生フレームと終了フレームを考慮
     if (m_nCntAttackTime >= CARRIER_GROUND_END_FRAME)
     {
+        if (m_nCntAttackTime == CARRIER_GROUND_START_FRAME)
+        {
+            // 高速移動音
+            CManager::SoundPlay(CSound::LABEL_SE_HIGH_SPEED_MOVE);
+        }
+
         // この攻撃中は無敵
         SetInvincible(true);
 
@@ -935,7 +969,7 @@ void CPlayer::AtkCarrierGround2(D3DXVECTOR3& playerPos)
         }
 
 #ifdef COLLISION_TEST
-        CDebug::Create(playerPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(playerPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
 }
@@ -953,6 +987,9 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 着地したら、隙が発生し、攻撃は終了
         if (m_bGround)
         {
+            // 着地音
+            CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_NAIL);
+
             m_nCntAttackTime = CARRIER_SKY_CHANCE_FRAME;
 
             // 空中攻撃のエフェクト
@@ -989,7 +1026,7 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower);
 
 #ifdef COLLISION_TEST
-        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
     else if (m_nCntAttackTime > CARRIER_SKY_START_ATTACK_FRAME)
@@ -1023,6 +1060,12 @@ void CPlayer::AtkTankGround1(D3DXVECTOR3& playerPos)
     // 攻撃発生フレームと終了フレームを考慮
     if (m_nCntAttackTime <= TANK_GROUND1_CREATE_SHIELD_FRAME && m_nCntAttackTime > 1)
     {
+        if (m_nCntAttackTime == TANK_GROUND1_CREATE_SHIELD_FRAME)
+        {
+            // シールド構え音
+            CManager::SoundPlay(CSound::LABEL_SE_SHIELD);
+        }
+
         // スーパーアーマー
         SetTakeKnockBack(false);
 
@@ -1135,6 +1178,9 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
             m_nCntGuards = TANK_GROUND1_LV3;
         }
 
+        // ガード成功音
+        CManager::SoundPlay(CSound::LABEL_SE_OFFSET);
+
         // ガードエフェクト発生
         CEffect3D::Emit(CEffectData::TYPE_WALL_HIT_SHOCK, damagePos, damageOldPos);
         // ガード成功したため、関数を抜ける
@@ -1178,7 +1224,7 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         IsHitCloseRangeAttack(tauntPos, tauntPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), 0.0f, flag);
 
 #ifdef COLLISION_TEST
-        CDebug::Create(tauntPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 119);
+        CDebug::Create(tauntPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
     else if (m_nCntAttackTime > CARRIER_GROUND_START_FRAME)

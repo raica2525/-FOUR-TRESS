@@ -59,11 +59,11 @@ HRESULT CBlock::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
         break;
     case TYPE_GOAL_GATE:
         m_bBreak = true;
-        BindModelData(57);
+        BindModelData(34);
         break;
     case TYPE_NORMAL_GATE:
         m_bBreak = true;
-        BindModelData(1);
+        BindModelData(35);
         break;
     }
 

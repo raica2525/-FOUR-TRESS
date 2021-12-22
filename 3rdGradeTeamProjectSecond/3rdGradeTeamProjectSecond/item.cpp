@@ -194,7 +194,7 @@ void CItem::Update(void)
 
 #ifdef COLLISION_TEST
     D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
-    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
+    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 65);
 #endif // COLLISION_TEST
 
     // 影の位置を更新
@@ -404,6 +404,8 @@ void CItem::Collision(D3DXVECTOR3 myPos)
             // 当たっているなら
             if (IsCollisionCylinder(myPos, m_collisionSize, playerPos, pPlayer->GetCollisionSizeDefence()))
             {
+                // アイテム取得音
+                CManager::SoundPlay(CSound::LABEL_SE_GET_ITEM);
 
                 // プレイヤーのエナジー加算
                 pPlayer->GainEnergy(m_fGetEnergy);

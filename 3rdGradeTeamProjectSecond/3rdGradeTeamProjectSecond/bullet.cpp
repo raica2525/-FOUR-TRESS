@@ -540,6 +540,6 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 
 #ifdef COLLISION_TEST
     D3DXVECTOR3 size = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
-    CDebug::Create(bulletPos, size, CDebug::TYPE_MOMENT, 119);
+    CDebug::Create(bulletPos, size, CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
 }
