@@ -41,6 +41,11 @@ public:
 	CEnemy* CreateEnemyFromJsonObject(picojson::object obj);
 	CBlock* CreateCollisionFromJsonObject(picojson::object obj);
 	CGround* CreateGroundFromJsonObject(picojson::object obj);
+
+    D3DXVECTOR3 GetStartPos(void) { return m_startPos; }
+
+private:
+    D3DXVECTOR3 m_startPos; // スタート地点
 };
 
 #endif // !_MAPMANAGER_H_

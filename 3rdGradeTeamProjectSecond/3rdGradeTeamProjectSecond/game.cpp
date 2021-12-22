@@ -50,7 +50,7 @@
 #define DISTANCE_INIT_VALUE 999999.9f  // 距離初期化値
 #define DEFAULT_INIT_DISTANCE 2000.0f
 
-#define MAP_FILENAME ("data/TXT/test.json")			// マップで使用するモデルデータのファイル
+#define MAP_FILENAME ("data/TXT/testdata.json")			// マップで使用するモデルデータのファイル
 
 //=============================================================================
 // 静的メンバ変数宣言
@@ -141,11 +141,16 @@ HRESULT CGame::Init(void)
     // 定義
     const float SPLIT_RATE_UNDER_3 = 0.5f;
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
+
+    // プレイヤーの生成
+    D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player4Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+
     if (m_type == TYPE_TRAINING)
     {
         //m_nNumAllPlayer = 1;                // トレーニングは1人固定
-        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
-        m_pFortress->SetSpeed(0.0f);
         //CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
@@ -162,7 +167,16 @@ HRESULT CGame::Init(void)
         //CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         //CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
 
-        CManager::GetMapManager()->CreateMapFromJson(MAP_FILENAME);
+        // ジェイソンファイルからマップを生成し、初期地点も取得する
+        CMapManager *pMapManager = CManager::GetMapManager();
+        pMapManager->CreateMapFromJson(MAP_FILENAME);
+        D3DXVECTOR3 startPos = pMapManager->GetStartPos();
+        player1Pos = startPos;
+        player2Pos = startPos;
+        player3Pos = startPos;
+        player4Pos = startPos;
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
+        //m_pFortress->SetSpeed(0.0f);
     }
     else if (m_type == TYPE_ARENA)
     {
@@ -238,11 +252,7 @@ HRESULT CGame::Init(void)
     // ポーズの生成
     m_pPause = CPause::Create();
 
-    // プレイヤーの生成
-    D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player4Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    // プレイヤーの生成続き
     float fSplitXRate = 0.0f;
     switch (m_nNumAllPlayer)
     {
