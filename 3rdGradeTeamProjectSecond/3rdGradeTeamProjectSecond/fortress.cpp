@@ -93,7 +93,7 @@ CFortress::~CFortress()
 HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // èâä˙ê›íË
-    SetCollisionSizeDefence(D3DXVECTOR2(950.0f, 450.0f));
+    SetCollisionSizeDefence(D3DXVECTOR2(1200.0f, 1000.0f));
     m_fSpeed = 3.5f;
     SetUpLife(MAX_LIFE);
     SetTakeKnockBack(false);
