@@ -43,6 +43,10 @@ public:
         PARTS_CANNON_CENTER,    // 砲台中心
         PARTS_SEAT,             // 座席
         PARTS_FIRE_POS,         // 発射位置
+        PARTS_TIRE_1,           // タイヤ1
+        PARTS_TIRE_2,           // タイヤ2
+        PARTS_TIRE_3,           // タイヤ3
+        PARTS_TIRE_4,           // タイヤ4
         PARTS_MAX,
     }PARTS;
 
@@ -93,6 +97,7 @@ private:
     int m_nWhoAttackPhase;      // 誰がアタックフェーズに変えたか
 
     CEffectData::IntervalEffect m_Effect[EFFECT_MAX];// エフェクト
+    float m_fTireRotAngle;      // タイヤの回転角度
 
     //=============================
     // このクラス内でのみ使う処理

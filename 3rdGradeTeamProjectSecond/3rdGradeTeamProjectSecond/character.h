@@ -91,6 +91,7 @@ public:
     //======================================================*/
     void SetPartPos(int index, D3DXVECTOR3 pos) { m_apModel[index]->SetPos(pos); }
     void SetPartRot(int index, D3DXVECTOR3 rot) { m_apModel[index]->SetRot(rot); }
+    void SetPartRotX(int index, float fRotX) { m_apModel[index]->SetRotX(fRotX); }
     void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
     void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }
     void SetRotY(const float fRotY) { m_rot.y = fRotY; }

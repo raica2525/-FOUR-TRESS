@@ -153,8 +153,8 @@ bool CBlock::TakeDamage(bool bBreakGoalGate)
 
             if (bBreakGoalGate)
             {
-                // ƒŠƒUƒ‹ƒg‚ÉˆÚs
-                CFade::SetFade(CManager::MODE_RESULT);
+                // Ÿ—˜ó‘Ô‚É
+                CGame::SetFinish(true);
                 m_bUse = false;
                 bBreak = true;
             }

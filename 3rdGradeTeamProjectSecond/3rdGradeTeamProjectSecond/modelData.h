@@ -87,6 +87,7 @@ public:
 
 	int GetIndexByName(std::string name) { return m_nameIndexMap.at(name); }	// 名前から番号を取得
     int GetEnemyTypeByName(std::string name);                                   // 名前から敵の種類を取得
+    int GetBlockTypeByName(bool bBreakable, bool bGoalObject);                  // フラグからブロックの種類を取得
 
 private:
     ModelData m_aModelData[MAX_MODEL_DATA];         // モデルデータ

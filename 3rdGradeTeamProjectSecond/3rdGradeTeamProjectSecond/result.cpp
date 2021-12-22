@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "effect2d.h"
 #include "effectData.h"
+#include "number_array.h"
 
 //========================================
 // マクロ定義
@@ -46,6 +47,16 @@ HRESULT CResult::Init(void)
 {
     // UIを生成
     CUI::Place(CUI::SET_RESULT);
+
+    // 貢献度を表示
+    float fDigitY = 0.0f;
+    for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
+    {
+        CGame::INFO_IN_RESULT infoInResult = CGame::GetInfoInResult(nCntPlayer);
+        CNumberArray::Create(12, D3DXVECTOR3(640.0f, 175.0f + fDigitY, 0.0f), NUMBER_SIZE_X_RESULT_CONTRIBUTION, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), infoInResult.nContributionPoint, false);
+
+        fDigitY += 100.0f;
+    }
 
     //// プレイヤー生成
     //for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
@@ -82,8 +93,7 @@ HRESULT CResult::Init(void)
 //=============================================================================
 void CResult::Uninit(void)
 {
-    // BGMを停止
-    CManager::SoundStop(CSound::LABEL_BGM_RESULT);
+
 }
 
 //=============================================================================
@@ -116,30 +126,20 @@ void CResult::Update(void)
     // エンター、または何かボタンを押したら
     CInputKeyboard *pInputKeyboard = CManager::GetInputKeyboard();
     CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-    if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_Y)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_START)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_A)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_B)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_X)
-        || pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_Y))
+
+	bool bPressedAnyButtons = false;
+	for (int nCount = 0; nCount < XUSER_MAX_COUNT; nCount++)
+	{
+		if (pInputJoypad->GetJoypadTrigger(nCount, XINPUT_GAMEPAD_A | XINPUT_GAMEPAD_B | XINPUT_GAMEPAD_X | XINPUT_GAMEPAD_Y | XINPUT_GAMEPAD_START, CInputJoypad::BEHAVIOR_OR))
+		{
+			bPressedAnyButtons = true;
+			break;
+		}
+	}
+    if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || bPressedAnyButtons)
     {
-        // 仮にタイトル画面に移行
+        // ランキング画面に移行
         CManager::SoundPlay(CSound::LABEL_SE_OK);
-        CFade::SetFade(CManager::MODE_TITLE);
+        CFade::SetFade(CManager::MODE_RANKING);
     }
 }

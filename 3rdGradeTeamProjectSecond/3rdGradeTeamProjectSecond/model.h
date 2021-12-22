@@ -40,6 +40,7 @@ public:
     D3DXVECTOR3 GetPos(void) { return m_pos; }
     D3DXVECTOR3 GetRot(void) { return m_rot; }
     D3DXMATRIX GetWorldMtx(void) { return m_mtxWorld; }
+    void SetRotX(float fRotX) { m_rot.x = fRotX; }
 
 private:
     //======================================

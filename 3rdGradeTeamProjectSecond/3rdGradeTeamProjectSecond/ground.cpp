@@ -34,6 +34,7 @@ CGround::~CGround()
 void CGround::Update(void)
 {
 	SetRot(D3DXVECTOR3(90.0f, m_fAngle, 0.0f));
+	CPolygon3D::Update();
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -60,7 +61,10 @@ CGround* CGround::Create(D3DXVECTOR3 pos, float fAngle, D3DXVECTOR3 size, std::s
 {
 	CGround* pGround = new CGround;
 	pGround->m_fAngle = fAngle;
+	pGround->SetPos(pos);
+	pGround->SetSize(size);
 	pGround->SetTexKey(textureName);
+	pGround->Init();
 	return pGround;
 }
 

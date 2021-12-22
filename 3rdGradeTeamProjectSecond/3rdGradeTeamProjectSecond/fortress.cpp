@@ -45,6 +45,9 @@
 #define MAX_LIFE 1000.0f
 #define SMOKE_EFFECT_LIFE 250.0f
 
+// タイヤの回転
+#define TIRE_ROT_SPEED D3DXToRadian(1.0f)
+
 //=============================================================================
 // コンストラクタ
 // Author : 後藤慎之助
@@ -63,6 +66,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_nCntTime = 0;
 
     m_bDisp = true;
+    m_nWhoAttackPhase = 0;
 
     // エフェクト
     for (int nCnt = 0; nCnt < EFFECT_MAX; nCnt++)
@@ -71,8 +75,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
         m_Effect[nCnt].interval = 1;
         m_Effect[nCnt].nCntTrail = 0;
     }
-
-    m_nWhoAttackPhase = 0;
+    m_fTireRotAngle = 0.0f;
 }
 
 //=============================================================================
@@ -101,9 +104,12 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     CCharacter::BindParts(PARTS_CANNON_CENTER, 50);
     CCharacter::BindParts(PARTS_SEAT, 50);
     CCharacter::BindParts(PARTS_FIRE_POS, 50);
+    CCharacter::BindParts(PARTS_TIRE_1, 64);
+    CCharacter::BindParts(PARTS_TIRE_2, 64);
+    CCharacter::BindParts(PARTS_TIRE_3, 64);
+    CCharacter::BindParts(PARTS_TIRE_4, 64);
     CCharacter::SetDontUseAnimation();
     CCharacter::LoadModelData("./data/ANIMATION/motion_fortress.txt");
-    CCharacter::SetDontUseAnimation();
 
     // キャラクターに反映
     CCharacter::Init(pos, DEFAULT_SCALE);
@@ -149,6 +155,21 @@ void CFortress::Update(void)
     // 位置を設定
     SetPos(myPos);
 
+    // タイヤの回転
+    m_fTireRotAngle -= TIRE_ROT_SPEED;
+    if (m_fTireRotAngle > D3DX_PI)
+    {
+        m_fTireRotAngle -= D3DX_PI * 2.0f;
+    }
+    else if (m_fTireRotAngle < -D3DX_PI)
+    {
+        m_fTireRotAngle += D3DX_PI * 2.0f;
+    }
+    SetPartRotX(PARTS_TIRE_1, m_fTireRotAngle);
+    SetPartRotX(PARTS_TIRE_2, m_fTireRotAngle);
+    SetPartRotX(PARTS_TIRE_3, m_fTireRotAngle);
+    SetPartRotX(PARTS_TIRE_4, m_fTireRotAngle);
+
     // 壁に当たったかどうか
     if (!CollisionWall(myPos))
     {
@@ -176,7 +197,8 @@ void CFortress::Update(void)
             if (m_Effect[EFFECT_LIGHTNING].nCntTrail >= m_Effect[EFFECT_LIGHTNING].interval)
             {
                 m_Effect[EFFECT_LIGHTNING].nCntTrail = 0;
-                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING].type, myPos, myPos);
+                D3DXVECTOR3 lightningPos = GetPartsPos(PARTS_CANNON_CENTER);
+                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING].type, lightningPos, lightningPos);
             }
         }
     }
@@ -196,8 +218,8 @@ float fLife = GetLife();// 移動要塞の体力取得
             // 仮に非表示に
             m_bDisp = false;
 
-            // 仮にリザルトに移行
-            CFade::SetFade(CManager::MODE_RESULT);
+            // 敗北状態に
+            CGame::SetFinish(false);
         }
         else
         {
@@ -216,7 +238,8 @@ float fLife = GetLife();// 移動要塞の体力取得
             if (m_Effect[EFFECT_SMOKE].nCntTrail >= m_Effect[EFFECT_SMOKE].interval)
             {
                 m_Effect[EFFECT_SMOKE].nCntTrail = 0;
-                CEffect3D::Emit(m_Effect[EFFECT_SMOKE].type, myPos, myPos);
+                D3DXVECTOR3 smokePos = myPos + D3DXVECTOR3(0.0f, GetCollisionSizeDefence().y / 2.0f, 0.0f);
+                CEffect3D::Emit(m_Effect[EFFECT_SMOKE].type, smokePos, smokePos);
             }
         }
     }

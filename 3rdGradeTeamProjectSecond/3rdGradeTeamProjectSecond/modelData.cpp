@@ -17,6 +17,7 @@
 #include "fileio.h"
 #include "json.h"
 #include "enemy.h"
+#include "block.h"
 
 //=============================================================================
 // マクロ定義
@@ -71,7 +72,7 @@ HRESULT CModelData::Init(void)
 {
 
 	HRESULT hr = LoadModelDataFromTxt(MODEL_DATA_FILENAME);
-	//LoadModelDataFromJson(MAP_MODEL_FILENAME);
+	LoadModelDataFromJson(MAP_MODEL_FILENAME);
     // モデルの初期位置データ読み込み
     LoadModelPosDef();
 
@@ -576,34 +577,6 @@ CModelData::PartsRate* CModelData::GetPartsRate(const int nNum)
 }
 
 //=============================================================================
-// 名前から敵の種類を読み込む
-// Author : 後藤慎之助 池田悠希
-//=============================================================================
-int CModelData::GetEnemyTypeByName(std::string name)
-{
-    int nReturnNumber = 0;
-
-    if (name.compare("data/model/army.x") == 0)
-    {
-        nReturnNumber = CEnemy::TYPE_ARMY;
-    }
-    else if (name.compare("data/model/kamikaze.x") == 0)
-    {
-        nReturnNumber = CEnemy::TYPE_KAMIKAZE;
-    }
-    else if (name.compare("data/model/cannon.x") == 0)
-    {
-        nReturnNumber = CEnemy::TYPE_CANNON;
-    }
-    else if (name.compare("data/model/commander.x") == 0)
-    {
-        nReturnNumber = CEnemy::TYPE_COMMANDER;
-    }
-
-    return nReturnNumber;
-}
-
-//=============================================================================
 // テキストファイルからモデルデータの情報を読み込む
 // Author : 後藤慎之助 池田悠希
 //=============================================================================
@@ -742,4 +715,55 @@ CModelData::ModelData CModelData::LoadModelFromX(std::string path)
 		D3DXCreateTextureFromFile(pDevice, pMat[nCntMat].pTextureFilename, &modelData.apTexMat[nCntMat]);
 	}
 	return modelData;
+}
+
+//=============================================================================
+// 名前から敵の種類を読み込む
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+int CModelData::GetEnemyTypeByName(std::string name)
+{
+    int nReturnNumber = 0;
+
+    if (name.compare("army.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_ARMY;
+    }
+    else if (name.compare("kamikaze.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_KAMIKAZE;
+    }
+    else if (name.compare("cannon.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_CANNON;
+    }
+    else if (name.compare("commander.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_COMMANDER;
+    }
+
+    return nReturnNumber;
+}
+
+//=============================================================================
+// フラグから敵の種類を読み込む
+// Author : 後藤慎之助 池田悠希
+//=============================================================================
+int CModelData::GetBlockTypeByName(bool bBreakable, bool bGoalObject)
+{
+    int nReturnNumber = CBlock::TYPE_FRAME;
+
+    if (bBreakable)
+    {
+        if (bGoalObject)
+        {
+            nReturnNumber = CBlock::TYPE_GOAL_GATE;
+        }
+        else
+        {
+            nReturnNumber = CBlock::TYPE_NORMAL_GATE;
+        }
+    }
+
+    return nReturnNumber;
 }

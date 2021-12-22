@@ -535,6 +535,12 @@ void CCharacter::RotControl(void)
 //=============================================================================
 bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack, int effectType)
 {
+    // 決着がついたら、ダメージを受けなくする
+    if (CGame::GetState() == CGame::STATE_FINISH)
+    {
+        return false;
+    }
+
     // 無敵でないなら
     if (!m_bIsInvincible)
     {
@@ -644,13 +650,12 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
         // コントローラの振動
         if (m_bUseControllerEffectByTakeDamage)
         {
-            CManager::GetInputJoypad()->StartEffect(m_HPDisp, nEffectFrame);
+            CManager::GetInputJoypad()->StartVibration(m_HPDisp, MAX_VIBRATION_POWER, MAX_VIBRATION_POWER, nEffectFrame);
         }
     }
 
     // ダメージが入ったかどうか
-    bool bHit = !m_bIsInvincible;
-    return bHit;
+    return !m_bIsInvincible;
 }
 
 //=============================================================================

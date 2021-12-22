@@ -358,23 +358,20 @@ void CCustom::MoveCursor(void)
     {
         // コントローラを取得
         CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
-        DIJOYSTATE2 Controller = pInputJoypad->GetController(nCntPlayer);
         float fStickAngle = 0.0f;
         bool bTiltedStick = false;
         float fTiltedStickValue = 0.0f;
-
+		D3DXVECTOR2 leftStickValue = pInputJoypad->GetStickValue(nCntPlayer, CInputJoypad::LEFT);
         // 左スティックが傾いているかどうか
-        if (Controller.lY != 0 || Controller.lX != 0)
+        if (leftStickValue.x != 0 || leftStickValue.y != 0)
         {
             bTiltedStick = true;
 
             // 角度を求める
-            fStickAngle = atan2(Controller.lX, Controller.lY*-1);
+            fStickAngle = atan2f(leftStickValue.x, leftStickValue.y);
 
             // 大きさを求める
-            fTiltedStickValue = sqrtf(
-                powf(float(Controller.lX), 2) +
-                powf((float(Controller.lY)*-1), 2));
+			fTiltedStickValue = D3DXVec2Length(&leftStickValue);
 
             // 最大傾きより大きいなら、制限（正方形の対角線は、各辺よりも長いため）
             if (fTiltedStickValue > STICK_MAX_TILT)
@@ -403,7 +400,7 @@ void CCustom::MoveCursor(void)
                 // 移動
                 if (bTiltedStick)
                 {
-                    const float ADJUST_RATE = 0.0008f;   // スティックの傾きの値を、位置に足せるよう調整
+                    const float ADJUST_RATE = 0.00025f;   // スティックの傾きの値を、位置に足せるよう調整
                     cursorPos.x += sinf(fStickAngle)* fTiltedStickValue * ADJUST_RATE;
                     cursorPos.y += -cosf(fStickAngle)* fTiltedStickValue * ADJUST_RATE;
                 }
@@ -482,7 +479,7 @@ void CCustom::PressFire(int nNumWho)
 
     // Aボタンがプレスで押されたら
     bool bPressA = false;
-    if (pInputJoypad->GetJoypadPress(nNumWho, CInputJoypad::BUTTON_A) ||
+    if (pInputJoypad->GetButtonState(nNumWho, XINPUT_GAMEPAD_A) ||
         pInputKeyboard->GetKeyboardPress(DIK_RETURN) && nNumWho == PLAYER_1)
     {
         bPressA = true;
@@ -644,7 +641,7 @@ void CCustom::ClickSelect(int nNumWho, CUI* pSelectUI, D3DXVECTOR3 cursorPos)
         // Aボタンがトリガーで押されたら
         bool bTriggerA = false;
         bool bTriggerReturn = false;
-        if (pInputJoypad->GetJoypadTrigger(nNumWho, CInputJoypad::BUTTON_A) ||
+        if (pInputJoypad->GetButtonState(nNumWho, XINPUT_GAMEPAD_A) ||
             pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) && nNumWho == PLAYER_1)
         {
             bTriggerA = true;

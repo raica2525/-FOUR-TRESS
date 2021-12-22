@@ -352,7 +352,7 @@ void CRenderer::DrawDebugData(void)
         wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
         m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
         break;
-    case CManager::MODE_MENU:
+    case CManager::MODE_RANKING:
         wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
         m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
         break;
@@ -390,7 +390,7 @@ void CRenderer::GameDebugData(void)
     //wsprintf(str, "FPS:%d\nOBJ:%d", GetFPS(), CScene::GetNumObjAll());
 
     // デフォルト
-    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d\n\n-PLAYER1-\nENERGY:%d\nPOINT:%d\n", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue(), (int)pPlayer->GetCurrentEnergy(), pPlayer->GetContributionPoint());
+    wsprintf(str, "FPS:%d\nOBJ:%d\n\n-FORTRESS-\nLIFE:%d\nCHARGE:%d\n\n-PLAYER1-\nPOS:%d %d %d\nENERGY:%d\nPOINT:%d\n", GetFPS(), CScene::GetNumObjAll(), (int)pFortress->GetLife(), (int)pFortress->GetChargeValue(), (int)pPlayer->GetPos().x, (int)pPlayer->GetPos().y, (int)pPlayer->GetPos().z, (int)pPlayer->GetCurrentEnergy(), pPlayer->GetContributionPoint());
 
     // テキスト描画
     m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));

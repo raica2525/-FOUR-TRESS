@@ -16,7 +16,7 @@
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 CMapManager::CMapManager()
 {
-
+    m_startPos = DEFAULT_VECTOR;
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -89,7 +89,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// groundを生成
-	obj["grounds"].get<picojson::array>();
+	arr = obj["grounds"].get<picojson::array>();
 	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
 	{
 		CreateGroundFromJsonObject(it->get<picojson::object>());
@@ -97,8 +97,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 
 	// スポーン地点を設定
 	picojson::object spawn = obj["spawn"].get<picojson::object>();
-	D3DXVECTOR3 pos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(spawn, "pos"));
-	// TODO スポーン地点設定
+	m_startPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(spawn, "pos"));
 } 
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -136,8 +135,8 @@ CBlock* CMapManager::CreateBlockFromJsonObject(picojson::object obj)
 	D3DXVECTOR3 collPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(collObj, "pos"));
 	D3DXVECTOR3 collSize = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(collObj, "size"));
 
-	//オブジェクトの生成（のちに、ゴールオブジェクト周り対応、今は仮でブロックはすべてフレーム）
-	return CBlock::Create(CBlock::TYPE_FRAME, pos, size, rot);
+	//オブジェクトの生成（当たり判定の位置、ずらす？）
+	return CBlock::Create(CManager::GetModelData()->GetBlockTypeByName(bBreakable, bGoalObject), pos, collSize, rot);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -154,7 +153,7 @@ CEnemy* CMapManager::CreateEnemyFromJsonObject(picojson::object obj)
 	float fSearchDistance = (float)CJson::Nullcheck<double>(obj, "searchdistance");
 
 	// オブジェクトの生成
-    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos);
+    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos, fStrength, appearState, fSearchDistance, fChargeValue);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

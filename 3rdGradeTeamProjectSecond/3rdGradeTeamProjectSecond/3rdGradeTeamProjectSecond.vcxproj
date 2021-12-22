@@ -178,7 +178,7 @@
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="manual.cpp" />
     <ClCompile Include="mapmanager.cpp" />
-    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="ranking.cpp" />
     <ClCompile Include="mode.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelData.cpp" />
@@ -191,6 +191,7 @@
     <ClCompile Include="player_custom.cpp" />
     <ClCompile Include="player_role.cpp" />
     <ClCompile Include="polygon3d.cpp" />
+    <ClCompile Include="ranking2.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="road.cpp" />
@@ -235,7 +236,7 @@
     <ClInclude Include="manager.h" />
     <ClInclude Include="manual.h" />
     <ClInclude Include="mapmanager.h" />
-    <ClInclude Include="menu.h" />
+    <ClInclude Include="ranking.h" />
     <ClInclude Include="mode.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="modelData.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="picojson.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon3d.h" />
+    <ClInclude Include="ranking2.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="road.h" />

@@ -26,6 +26,7 @@ class CNumber;
 // Šeê–Ê‚Ì”Žš‚Ì‘å‚«‚³
 #define NUMBER_SIZE_X_BALL_SPD 20.0f
 #define NUMBER_SIZE_X_DAMAGE 17.5f
+#define NUMBER_SIZE_X_RESULT_CONTRIBUTION 25.0f
 
 //================================================
 // ƒNƒ‰ƒXéŒ¾

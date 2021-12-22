@@ -33,6 +33,7 @@
 #include "fortress.h"
 #include "block.h"
 #include "bullet.h"
+#include "mapmanager.h"
 
 //========================================
 // マクロ定義
@@ -48,6 +49,8 @@
 
 #define DISTANCE_INIT_VALUE 999999.9f  // 距離初期化値
 #define DEFAULT_INIT_DISTANCE 2000.0f
+
+#define MAP_FILENAME ("data/TXT/testdata.json")			// マップで使用するモデルデータのファイル
 
 //=============================================================================
 // 静的メンバ変数宣言
@@ -75,6 +78,9 @@ CFortress *CGame::m_pFortress = NULL;
 int CGame::m_nCharacterIdx = 0;
 CNumberArray *CGame::m_pScore = NULL;
 int CGame::m_nScore = 0;
+
+CGame::INFO_IN_RESULT CGame::m_aInfoInResult[] = {};
+bool CGame::m_bWin = false;
 
 //=============================================================================
 // ゲームのコンストラクタ
@@ -108,6 +114,9 @@ CGame::CGame()
     m_nCharacterIdx = 0;
     m_pScore = NULL;
     m_nScore = 0;
+
+    memset(m_aInfoInResult, 0, sizeof(m_aInfoInResult));
+    m_bWin = false;
 }
 
 //=============================================================================
@@ -132,26 +141,42 @@ HRESULT CGame::Init(void)
     // 定義
     const float SPLIT_RATE_UNDER_3 = 0.5f;
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
+
+    // プレイヤーの生成
+    D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    D3DXVECTOR3 player4Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+
     if (m_type == TYPE_TRAINING)
     {
         //m_nNumAllPlayer = 1;                // トレーニングは1人固定
-        CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
-        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成（無敵状態）
-        m_pFortress->SetSpeed(0.0f);
+        //CBg::Create(84, DEFAULT_VECTOR);    // デバッグステージの床
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, 3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(0.0f, 0.0f, -3300.0f), D3DXVECTOR3(6500.0f, 500.0f, 500.0f), DEFAULT_VECTOR);  // ブロック生成
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
         //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-3300.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 6500.0f), DEFAULT_VECTOR);  // ブロック生成
 
-        CBg::Create(66, D3DXVECTOR3(1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(66, D3DXVECTOR3(-1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(66, D3DXVECTOR3(3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(66, D3DXVECTOR3(-3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(66, D3DXVECTOR3(1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(66, D3DXVECTOR3(-1000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(66, D3DXVECTOR3(3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(66, D3DXVECTOR3(-3000.0f, 0.0f, 4000.0f), CBg::COLOR_PHASE_G_UP);
 
-        CBg::Create(67, D3DXVECTOR3(1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(67, D3DXVECTOR3(-1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
-        CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(67, D3DXVECTOR3(1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(67, D3DXVECTOR3(-1000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+        //CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
+
+        // ジェイソンファイルからマップを生成し、初期地点も取得する
+        CMapManager *pMapManager = CManager::GetMapManager();
+        pMapManager->CreateMapFromJson(MAP_FILENAME);
+        D3DXVECTOR3 startPos = pMapManager->GetStartPos();
+        player1Pos = startPos;
+        player2Pos = startPos;
+        player3Pos = startPos;
+        player4Pos = startPos;
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
+        //m_pFortress->SetSpeed(0.0f);
     }
     else if (m_type == TYPE_ARENA)
     {
@@ -227,11 +252,7 @@ HRESULT CGame::Init(void)
     // ポーズの生成
     m_pPause = CPause::Create();
 
-    // プレイヤーの生成
-    D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
-    D3DXVECTOR3 player4Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
+    // プレイヤーの生成続き
     float fSplitXRate = 0.0f;
     switch (m_nNumAllPlayer)
     {
@@ -647,19 +668,19 @@ void CGame::InButtle(void)
         int nNumPausePlayer = NO_PAUSE_PLAYER;  // ポーズを押したプレイヤー
 
                                                 // スタートボタンを押した人を結びつける
-        if (pInputJoypad->GetJoypadTrigger(PLAYER_1, CInputJoypad::BUTTON_START))
+        if (pInputJoypad->GetJoypadTrigger(PLAYER_1, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_1;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_2, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_2, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_2;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_3, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_3, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_3;
         }
-        else if (pInputJoypad->GetJoypadTrigger(PLAYER_4, CInputJoypad::BUTTON_START))
+        else if (pInputJoypad->GetJoypadTrigger(PLAYER_4, XINPUT_GAMEPAD_START))
         {
             nNumPausePlayer = PLAYER_4;
         }
@@ -780,11 +801,18 @@ void CGame::JudgmentFinish(void)
         // カウンタをリセット
         m_nCntGameTime = 0;
 
+        // リザルト画面に渡すための情報を持っておく
+        for (int nCntPlayer = 0; nCntPlayer < m_nNumAllPlayer; nCntPlayer++)
+        {
+            m_aInfoInResult[nCntPlayer].nIdxControlAndColor = m_apPlayer[nCntPlayer]->GetIdxControlAndColor();
+            m_aInfoInResult[nCntPlayer].nContributionPoint = m_apPlayer[nCntPlayer]->GetContributionPoint();
+        }
+
         //// 死んだプレイヤーが全体のプレイヤー-1に達したら
         //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
         //{
-        //    // リザルトに移行
-        //    CFade::SetFade(CManager::MODE_RESULT);
+            // リザルトに移行
+            CFade::SetFade(CManager::MODE_RESULT);
         //}
         //else
         //{
@@ -822,6 +850,16 @@ void CGame::JudgmentFinish(void)
         //    }
         //}
     }
+}
+
+//========================================
+// 決着状態にするための関数
+// Author : 後藤慎之助
+//========================================
+void CGame::SetFinish(bool bWin)
+{
+    m_bWin = bWin;
+    m_state = STATE_FINISH;
 }
 
 //========================================

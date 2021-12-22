@@ -27,6 +27,7 @@ class CLight;
 class CTexture;
 class CModelData;
 class CEffectData;
+class CMapManager;
 
 //================================================
 // クラス宣言
@@ -46,7 +47,7 @@ public:
         MODE_CUSTOM,        // カスタマイズ画面
         MODE_GAME,          // ゲーム
         MODE_RESULT,        // リザルト
-        MODE_MENU,          // メニュー
+        MODE_RANKING,       // ランキング
         MODE_MAX
     }MODE;
 
@@ -64,6 +65,7 @@ public:
     static CTexture *GetTexture(void) { return m_pTexture; }
     static CModelData *GetModelData(void) { return m_pModelData; }
     static CEffectData *GetEffectData(void) { return m_pEffectData; }
+    static CMapManager *GetMapManager(void) { return m_pMapManager; }
     static MODE GetMode(void);
     static void SetMode(MODE mode);
 
@@ -87,6 +89,7 @@ private:
     static CTexture *m_pTexture;                // テクスチャのポインタ
     static CModelData *m_pModelData;            // モデルデータのポインタ
     static CEffectData *m_pEffectData;          // エフェクトデータ管理へのポインタ
+    static CMapManager *m_pMapManager;          // マップマネージャーへのポインタ
 };
 
 #endif

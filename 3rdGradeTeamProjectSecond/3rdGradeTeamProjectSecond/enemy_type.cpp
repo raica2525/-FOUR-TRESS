@@ -67,6 +67,14 @@
 #define COMMANDER_SPAWN_ANGLE_Y D3DXToRadian(80.0f) // 生成角度Y
 #define COMMANDER_DISCOVERY_DISTANCE 1750.0f// 検知距離
 
+//===========================
+// 死神
+//===========================
+#define SHINIGAMI_WHOLE_FRAME 55			// 全体フレーム	
+#define SHINIGAMI_FIRE_FRAME 40				// 発射フレーム
+#define SHINIGAMI_FIRE_DISTANCE 50
+#define SHINIGAMI_DISCOVERY_DISTANCE 2500.0f   // 検知距離
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -187,6 +195,32 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(COMMANDER_PARTS_SPAWN_POS, 50);
         CCharacter::LoadModelData("./data/ANIMATION/motion_commander.txt");
         break;
+	case TYPE_SHINIGAMI:
+		// 固有の情報
+		SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f)); //後で変える
+		m_fSpeed = 5.0f;
+		fHP = 1260.0f;
+		m_fChargeValue = 44.0f;
+		m_walkMotion = SHINIGAMI_ANIM_WALK;
+		m_attackMotion = SHINIGAMI_ANIM_ATTACK;
+		m_deathMotion = SHINIGAMI_ANIM_DEATH;
+		m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;
+		m_nAddScore = 3000;
+		m_bSquashedByFortress = false;
+		m_fDiscoveryTargetDistance = SHINIGAMI_DISCOVERY_DISTANCE;
+		// パーツ数を設定、モデルをバインド、アニメーションをバインド
+		CCharacter::SetPartNum(SHINIGAMI_ANIM_MAX);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BODY, 46);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_ARML, 47);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_ARMR, 48);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB, 49);
+		//CCharacter::BindParts(KAMIKAZE_PARTS_BOMB_CUBE, 50);
+		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
+		//m_Effect.type = CEffectData::TYPE_SPARK;
+		//m_Effect.interval = 5;
+		//m_Effect.nCntTrail = 0;
+		break;
+
     }
 
     // 強さを反映
@@ -323,4 +357,24 @@ void CEnemy::AtkCommander(D3DXVECTOR3 &myPos)
         // 待機AIに
         SetBaseState(BASE_STATE_WAIT, COMMANDER_WAIT_COUNT);
     }
+}
+
+//=============================================================================
+// 死神の攻撃
+// Author : 池田悠希
+//=============================================================================
+void CEnemy::AtkShinigami(D3DXVECTOR3 &myPos)
+{
+	if (m_pTarget)
+	{
+		// 現在の位置と、目的地までの移動角度/向きを求める
+		D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+		float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+		m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
+		SetRotDestY(fDestAngle);
+	}
+	else
+	{
+
+	}
 }
