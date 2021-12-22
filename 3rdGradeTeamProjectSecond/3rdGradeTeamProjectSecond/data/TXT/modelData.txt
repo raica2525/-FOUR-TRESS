@@ -229,19 +229,19 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [28] スパイダーの左足2
+# [28] ヒーラーの顔
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 28
-	NAME = data/MODEL/spider/10_leg_left_02.x
+	NAME = data/MODEL/player5/02_head.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [29] スパイダーの左足3
+# [29] ヒーラーの武器
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 29
-	NAME = data/MODEL/spider/11_leg_left_03.x
+	NAME = data/MODEL/player5/15_weapon.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -517,11 +517,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [64] ブロック1
+# [64] タイヤ
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 64
-	NAME = data/MODEL/block1.x
+	NAME = data/MODEL/fortress/04_tire.x
 END_MODEL_DATASET
 
 #---------------------------------------

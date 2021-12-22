@@ -506,8 +506,8 @@ void CPlayer::LoadCustom(void)
         m_afParam[0] = TANK_GUARD_WIDTH;
         break;
     case ROLE_HEALER:
-        BindParts(PARTS_HEAD, 25);
-        BindParts(PARTS_WEP, 26);
+        BindParts(PARTS_HEAD, 28);
+        BindParts(PARTS_WEP, 29);
         fLife = HEALER_LIFE;
         collisionSizeDefence = HEALER_COLLISION_SIZE;
         m_fSpd = HEALER_SPD;
