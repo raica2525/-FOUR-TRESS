@@ -741,6 +741,8 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
         case TYPE_COMMANDER:
             AtkCommander(myPos);
             break;
+		case TYPE_SHINIGAMI:
+			AtkShinigami(myPos);
         }
 
         // UŒ‚ƒ‚[ƒVƒ‡ƒ“‚É

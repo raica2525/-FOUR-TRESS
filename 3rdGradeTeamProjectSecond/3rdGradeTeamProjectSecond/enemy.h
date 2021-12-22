@@ -59,6 +59,7 @@ public:
         TYPE_KAMIKAZE,      // カミカゼ
         TYPE_CANNON,        // キャノン
         TYPE_COMMANDER,     // コマンダー
+		TYPE_SHINIGAMI		// 死神
     }TYPE;
 
     // 基本状態
@@ -174,6 +175,31 @@ public:
         COMMANDER_PARTS_MAX,
     }COMMANDER_PARTS;
 
+	//=========================
+	// 死神
+	//=========================
+	typedef enum
+	{
+		SHINIGAMI_ANIM_IDLE = 0,      // 待機
+		SHINIGAMI_ANIM_WALK,          // 歩き
+		SHINIGAMI_ANIM_ATTACK,        // 攻撃
+		SHINIGAMI_ANIM_DAMAGE,        // ダメージ
+		SHINIGAMI_ANIM_DEATH,         // 死亡
+		SHINIGAMI_ANIM_MAX,           // 最大数
+	}SHINIGAMI_ANIMATION;
+	typedef enum
+	{
+		SHINIGAMI_PARTS_BODY = 0,
+		SHINIGAMI_PARTS_PETAL1,
+		SHINIGAMI_PARTS_PETAL2,
+		SHINIGAMI_PARTS_PETAL3,
+		SHINIGAMI_PARTS_PETAL4,
+		SHINIGAMI_PARTS_PETAL5,
+		SHINIGAMI_PARTS_SPAWN_POS,
+		SHINIGAMI_PARTS_MAX,
+	}SHINIGAMI_PARTS;
+
+
     HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // 初期化処理
     void Uninit(void);                                                                  // 終了処理
     void Update(void);                                                                  // 更新処理
@@ -242,7 +268,7 @@ private:
     void AtkKamikaze(D3DXVECTOR3& myPos);
     void AtkCannon(D3DXVECTOR3& myPos);
     void AtkCommander(D3DXVECTOR3& myPos);
-
+	void AtkShinigami(D3DXVECTOR3& myPos);
     //=============================
     // このクラス内でのみ使う処理
     //=============================
