@@ -453,19 +453,19 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [56] ブロック1
+# [56] 死神の体
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 56
-	NAME = data/MODEL/block1.x
+	NAME = data/MODEL/shinigami/00_body.x
 END_MODEL_DATASET
 
 #---------------------------------------
-# [57] ゴールゲート
+# [57] 死神の武器
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 57
-	NAME = data/MODEL/goal.x
+	NAME = data/MODEL/shinigami/01_weapon.x
 END_MODEL_DATASET
 
 #---------------------------------------

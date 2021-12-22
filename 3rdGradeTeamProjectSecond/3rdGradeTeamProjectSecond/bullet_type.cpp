@@ -72,6 +72,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // エフェクト番号と発生間隔
         m_Effect.type = 0;
         m_Effect.interval = 5;
+        // ヒットエフェクト番号
+        m_nIdxHitEffect = 20;
         break;
     case TYPE_THUNDER:
         // 固有の情報

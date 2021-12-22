@@ -625,6 +625,10 @@ void CGame::InButtle(void)
         {
             CEnemy::Create(CEnemy::TYPE_COMMANDER, spawnPos);
         }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_5))
+        {
+            CEnemy::Create(CEnemy::TYPE_SHINIGAMI, spawnPos);
+        }
     }
         break;
     case TYPE_ARENA:

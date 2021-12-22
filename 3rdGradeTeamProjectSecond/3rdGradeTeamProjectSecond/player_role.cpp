@@ -398,7 +398,7 @@ void CPlayer::AttackMotion(void)
 // 近接攻撃が当たったかどうかのチェック
 // Author : 後藤慎之助
 //=============================================================================
-bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, float fPower, int flag)
+bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos, D3DXVECTOR2 attackSize, float fPower, int flag, int hitEffect)
 {
     // 防御当たり判定の大きさを取得
     D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
@@ -455,7 +455,7 @@ bool CPlayer::IsHitCloseRangeAttack(D3DXVECTOR3 playerPos, D3DXVECTOR3 attackPos
                     else
                     {
                         // 敵にダメージが入ったら
-                        if (pEnemy->TakeDamage(fPower, attackPos, playerPos, OBJTYPE_PLAYER))
+                        if (pEnemy->TakeDamage(fPower, attackPos, playerPos, OBJTYPE_PLAYER, true, hitEffect))
                         {
                             // 貢献した人を設定
                             pEnemy->SetWhoContribution(m_nIdxCreate);
@@ -597,11 +597,10 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
-        // 当たったかどうか
-        if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
+        // 当たったかどうか（ヒットエフェクトは、ここの引数に）
+        if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower, 0, CEffectData::TYPE_THRUST))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
-            CEffect3D::Emit(CEffectData::TYPE_THRUST, attackPos, attackPos);// 攻撃発生位置にエフェクト発生
         }
 
 #ifdef COLLISION_TEST
@@ -670,8 +669,8 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
         playerPos.x += -sinf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
         playerPos.z += -cosf(rot.y)*WARRIOR_GROUND_DUSH_SPEED;
 
-        // 当たったかどうか
-        if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
+        // 当たったかどうか（ヒットエフェクトは、ここの引数に）
+        if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower, 0, CEffectData::TYPE_THRUST))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
         }

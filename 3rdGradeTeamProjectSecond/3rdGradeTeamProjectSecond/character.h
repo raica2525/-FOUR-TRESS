@@ -80,7 +80,7 @@ public:
     void LoadModelData(char* cFilePass);                          // テキストファイルから直接読み込む時に使う関数
     void LoadModelData(int nModelPosDefUp, int nModelPosDefDown); // モデルの初期位置データから読み込むときに使う関数
     void RotControl(void);                                        // 向きを調整
-    bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack = true, int effectType = 20);   // ダメージを受ける
+    bool TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 damageOldPos, OBJTYPE lastHit, bool bUseKnockBack = true, int effectType = DEFAULT_HIT_EFFECT_NUM);   // ダメージを受ける
     bool PullToCenter(D3DXVECTOR3 centerPos);                     // 中心に引き寄せる
     bool Healing(float fHealValue);                               // 回復処理
     void CntDownTakeDamageTime(void);                             // ダメージを受けた時間をカウント
