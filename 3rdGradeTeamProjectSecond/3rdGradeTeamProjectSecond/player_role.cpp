@@ -601,7 +601,7 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         if (IsHitCloseRangeAttack(playerPos, attackPos, D3DXVECTOR2(ATTACK_RADIUS, ATTACK_HEIGHT), fFinalPower))
         {
             m_nCntStopTime = WARRIOR_GROUND_STOP_FRAME;
-
+            CEffect3D::Emit(CEffectData::TYPE_THRUST, attackPos, attackPos);// 攻撃発生位置にエフェクト発生
         }
 
 #ifdef COLLISION_TEST
@@ -1137,7 +1137,7 @@ bool CPlayer::TakeDamage_TankUsingGuard(float fDamage, D3DXVECTOR3 damagePos, D3
         }
 
         // ガードエフェクト発生
-
+        CEffect3D::Emit(CEffectData::TYPE_WALL_HIT_SHOCK, damagePos, damageOldPos);
         // ガード成功したため、関数を抜ける
         return true;
     }
@@ -1249,6 +1249,9 @@ void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             // 攻撃発生位置を決める
             bulletPos = D3DXVECTOR3(playerPos.x, 0.0f, playerPos.z) + slidePos;
 
+            // ガードエフェクト発生
+            CEffect3D::Emit(CEffectData::TYPE_MAGIC_CIRCLE_0, bulletPos, bulletPos);
+            CEffect3D::Emit(CEffectData::TYPE_MAGIC_CIRCLE_2, bulletPos, bulletPos);
             // 現在のエナジー量に応じて、ダメージを設定する
             float fDamage = HEALER_SKY_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_SKY_ADD_DAMAGE_RATE);
             float fHealing = HEALER_SKY_BASE_HEALING + (m_fCurrentEnergy * HEALER_SKY_ADD_HEALING_RATE);
