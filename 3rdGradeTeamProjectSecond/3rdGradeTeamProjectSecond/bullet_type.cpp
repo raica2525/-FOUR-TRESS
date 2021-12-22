@@ -255,6 +255,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = true;
         m_bHitErase = false;// 貫通（要調整）
         m_nHitContributionPoint = 1;
+        // エフェクト番号と発生間隔
+        m_Effect.type = 1;
+        m_Effect.interval = 5;
+        
         // モデルをバインド
         BindModelData(32);  // 仮にボール
         break;
