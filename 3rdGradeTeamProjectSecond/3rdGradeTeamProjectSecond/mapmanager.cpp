@@ -11,6 +11,7 @@
 #include "block.h"
 #include "enemy.h"
 #include "ground.h"
+#include "road.h"
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // コンストラクタ
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -93,6 +94,13 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
 	{
 		CreateGroundFromJsonObject(it->get<picojson::object>());
+	}
+
+	// roadを生成
+	arr = obj["roads"].get<picojson::array>();
+	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	{
+		CreateRoadFromJsonObject(it->get<picojson::object>());
 	}
 
 	// スポーン地点を設定
@@ -182,4 +190,17 @@ CGround* CMapManager::CreateGroundFromJsonObject(picojson::object obj)
 
 	// オブジェクトの生成
 	return CGround::Create(pos,fAngle,size,textureName);
+}
+
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+// Roadを生成
+//・・・・・・・・・・・・・・・・・・・・・・・・・・・
+CRoad* CMapManager::CreateRoadFromJsonObject(picojson::object obj)
+{
+	// 各種情報を変数に変換
+	D3DXVECTOR3 pos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(obj, "pos"));
+	D3DXVECTOR3 rot = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(obj, "rot"));
+
+	// オブジェクトの生成
+	return CRoad::Create(pos, rot);
 }
