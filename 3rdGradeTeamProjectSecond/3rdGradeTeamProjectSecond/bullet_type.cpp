@@ -150,6 +150,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        // エフェクト番号と発生間隔
+        m_Effect.type = 46;
+        m_Effect.interval = 3;
         break;
     case TYPE_HUNTER_GROUND:
         // 固有の情報
