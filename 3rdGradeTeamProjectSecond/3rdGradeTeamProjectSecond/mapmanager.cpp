@@ -62,7 +62,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	picojson::object obj = CJson::FromJson(str);
 	picojson::array arr;
 	// BGを生成
-	if (obj["buildings"].is<picojson::null>())
+	if (!obj["buildings"].is<picojson::null>())
 	{
 		arr = obj["buildings"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -72,7 +72,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// Blockを生成
-	if (obj["blocks"].is<picojson::null>())
+	if (!obj["blocks"].is<picojson::null>())
 	{
 		arr = obj["blocks"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -82,7 +82,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// enemyを生成
-	if (obj["enemys"].is<picojson::null>())
+	if (!obj["enemys"].is<picojson::null>())
 	{
 		arr = obj["enemys"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -92,7 +92,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// collisionを生成
-	if (obj["collisions"].is<picojson::null>())
+	if (!obj["collisions"].is<picojson::null>())
 	{
 		arr = obj["collisions"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -102,7 +102,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// groundを生成
-	if (obj["grounds"].is<picojson::null>())
+	if (!obj["grounds"].is<picojson::null>())
 	{
 		arr = obj["grounds"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -112,7 +112,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// roadを生成
-	if (obj["roads"].is<picojson::null>())
+	if (!obj["roads"].is<picojson::null>())
 	{
 		arr = obj["roads"].get<picojson::array>();
 		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
@@ -122,7 +122,7 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	}
 
 	// スポーン地点を設定
-	if (obj["spawn"].is<picojson::null>())
+	if (!obj["spawn"].is<picojson::null>())
 	{
 		picojson::object spawn = obj["spawn"].get<picojson::object>();
 		m_startPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(spawn, "pos"));
