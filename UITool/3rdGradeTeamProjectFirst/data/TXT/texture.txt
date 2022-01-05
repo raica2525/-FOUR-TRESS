@@ -1095,7 +1095,126 @@ END_TEXTURESET
 TEXTURESET
     TYPE = 132
     NAME = data/TEXTURE/result/result001.jpg
-    
+END_TEXTURESET
+
+#---------------------------------------
+# [133] ランキング1位
+#---------------------------------------
+TEXTURESET
+    TYPE = 133
+    NAME = data/TEXTURE/ranking/1i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [134] ランキング2位
+#---------------------------------------
+TEXTURESET
+    TYPE = 134
+    NAME = data/TEXTURE/ranking/2i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [135] ランキング3位
+#---------------------------------------
+TEXTURESET
+    TYPE = 135
+    NAME = data/TEXTURE/ranking/3i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [136] ランキング4位
+#---------------------------------------
+TEXTURESET
+    TYPE = 136
+    NAME = data/TEXTURE/ranking/4i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [137] ランキング4位
+#---------------------------------------
+TEXTURESET
+    TYPE = 137
+    NAME = data/TEXTURE/ranking/5i.png
+END_TEXTURESET
+#---------------------------------------
+# [138] ランキング背景
+#---------------------------------------
+TEXTURESET
+    TYPE = 138
+    NAME = data/TEXTURE/ranking/result002.jpg
+END_TEXTURESET
+
+#---------------------------------------
+# [138] HPバー土台
+#---------------------------------------
+TEXTURESET
+    TYPE = 138
+    NAME = data/TEXTURE/ingame/hpbar01.png
+END_TEXTURESET
+
+#---------------------------------------
+# [139] HPバー黒部分
+#---------------------------------------
+TEXTURESET
+    TYPE = 139
+    NAME = data/TEXTURE/ingame/hpbar_black.png
+END_TEXTURESET
+
+#---------------------------------------
+# [140] HPバー赤部分
+#---------------------------------------
+TEXTURESET
+    TYPE = 140
+    NAME = data/TEXTURE/ingame/hpbar_red.png
+END_TEXTURESET
+
+#---------------------------------------
+# [141] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 141
+    NAME = data/TEXTURE/ingame/hpbar_color.png
+END_TEXTURESET
+
+
+#---------------------------------------
+# [142] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 142
+    NAME = data/TEXTURE/ingame/energybar01.png
+END_TEXTURESET
+
+#---------------------------------------
+# [143] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 143
+    NAME = data/TEXTURE/ingame/energybar_color.png
+END_TEXTURESET
+
+#---------------------------------------
+# [144] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 144
+    NAME = data/TEXTURE/ingame/Despenalty.png
+END_TEXTURESET
+
+#---------------------------------------
+# [145] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 145
+    NAME = data/TEXTURE/ingame/stageclear.png
+END_TEXTURESET
+
+#---------------------------------------
+# [146] 
+#---------------------------------------
+TEXTURESET
+    TYPE = 146
+    NAME = data/TEXTURE/ingame/gameover.png
 END_TEXTURESET
 
 END_SCRIPT		# この行は絶対消さないこと！

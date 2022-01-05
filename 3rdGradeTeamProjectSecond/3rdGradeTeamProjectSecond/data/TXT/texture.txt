@@ -1179,4 +1179,51 @@ TEXTURESET
     NAME = data/TEXTURE/result/result001.jpg
     END_TEXTURESET
     
+#---------------------------------------
+# [142] ランキング1位
+#---------------------------------------
+TEXTURESET
+    TYPE = 142
+    NAME = data/TEXTURE/ranking/1i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [143] ランキング2位
+#---------------------------------------
+TEXTURESET
+    TYPE = 143
+    NAME = data/TEXTURE/ranking/2i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [144] ランキング3位
+#---------------------------------------
+TEXTURESET
+    TYPE = 144
+    NAME = data/TEXTURE/ranking/3i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [145] ランキング4位
+#---------------------------------------
+TEXTURESET
+    TYPE = 145
+    NAME = data/TEXTURE/ranking/4i.png
+END_TEXTURESET
+
+#---------------------------------------
+# [146] ランキング4位
+#---------------------------------------
+TEXTURESET
+    TYPE = 146
+    NAME = data/TEXTURE/ranking/5i.png
+END_TEXTURESET
+#---------------------------------------
+# [147] ランキング背景
+#---------------------------------------
+TEXTURESET
+    TYPE = 147
+    NAME = data/TEXTURE/ranking/result002.jpg
+END_TEXTURESET
+
 END_SCRIPT		# この行は絶対消さないこと！
