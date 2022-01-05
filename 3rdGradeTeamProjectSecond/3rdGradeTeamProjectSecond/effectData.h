@@ -86,9 +86,9 @@ public:
         TYPE_READY_TO_FIGHT2,       // 準備完了2
         TYPE_READY_TO_FIGHT3,       // 準備完了3
         TYPE_READY_TO_FIGHT4,       // 準備完了4
-        TYPE_CHARGE_SWING_LEFT,     // チャージスイングエフェクト左
-        TYPE_CHARGE_SWING_RIGHT,    // チャージスイングエフェクト右
-        TYPE_CHARGE_LIGHT,          // チャージ時の光
+        TYPE_ATTRACT_WIND_0,        // [44]引き寄せ風_0
+        TYPE_ATTRACT_WIND_1,        // [45]引き寄せ風_1
+        TYPE_SPORE,                 // [46]胞子
         TYPE_BARRIER,               // バリア
         TYPE_SP_MAX_1,              // 必殺ゲージMAX1
         TYPE_SP_MAX_2,              // 必殺ゲージMAX2
