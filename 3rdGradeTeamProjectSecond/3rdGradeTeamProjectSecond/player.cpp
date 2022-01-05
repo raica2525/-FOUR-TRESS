@@ -55,7 +55,7 @@
 #define CARRY_ENERGY_CARRIER 80.0f 
 
 // ÉäÉXÉ|Å[Éìéûä‘
-#define RESPAWN_FRAME 900
+#define RESPAWN_FRAME 600
 #define RESPAWN_HEIGHT 1500.0f
 
 //=======================

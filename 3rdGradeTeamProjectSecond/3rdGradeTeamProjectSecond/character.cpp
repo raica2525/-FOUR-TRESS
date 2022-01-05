@@ -623,11 +623,14 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
             // 表示を切る
             m_bDisp = false;
         }
-        else
-        {
-            // 生存しているなら、ダメージ音（ヒット音を、ヒットエフェクトのように分けるのもあり）
-            CManager::SoundPlay(CSound::LABEL_SE_DAMAGE);
-        }
+        //else
+        //{
+        //    // 生存しているなら、ダメージ音（ヒット音を、ヒットエフェクトのように分けるのもあり）
+        //    CManager::SoundPlay(CSound::LABEL_SE_DAMAGE);
+        //}
+
+        // 上記と要相談のダメージ音（ヒット音を、ヒットエフェクトのように分けるのもあり）
+        CManager::SoundPlay(CSound::LABEL_SE_DAMAGE);
 
         // ノックバックがある攻撃かつ、ノックバックを利用する状態なら
         if (bUseKnockBack && m_bTakeKnockBack)

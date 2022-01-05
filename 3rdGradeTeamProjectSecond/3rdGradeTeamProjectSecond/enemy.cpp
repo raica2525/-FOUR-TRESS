@@ -88,16 +88,16 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
-
-    m_Effect.type = NOT_EXIST;
-    m_Effect.interval = 1;
-    m_Effect.nCntTrail = 0;
-  
     m_nAddScore = 1;
     m_nWhoContribution = NOT_EXIST;
     m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;
 
+    m_Effect.type = NOT_EXIST;
+    m_Effect.interval = 1;
+    m_Effect.nCntTrail = 0;
+ 
     m_bDeathBySquashed = false;
+    m_bAtkStartFlag = false;
 }
 
 //=============================================================================
@@ -557,6 +557,7 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
         m_baseState = nextBaseState;
         m_nCntTime = 0;
         m_bUseCommonAtkFollow = false;
+        m_bAtkStartFlag = false;
 
         // 次の状態によって、取得するもの
         switch (nextBaseState)
@@ -728,6 +729,9 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
     }
     else
     {
+        // 攻撃モーションに（種類ごとの処理で、攻撃モーション以外に変える場合があるので、先に設定）
+        m_setAnimationThisFrame = m_attackMotion;
+
         // 種類ごとの処理
         switch (m_type)
         {
@@ -745,10 +749,8 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             break;
 		case TYPE_SHINIGAMI:
 			AtkShinigami(myPos);
+            break;
         }
-
-        // 攻撃モーションに
-        m_setAnimationThisFrame = m_attackMotion;
     }
 }
 

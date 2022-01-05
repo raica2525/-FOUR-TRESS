@@ -281,15 +281,14 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         break;
 
 	case TYPE_SHINIGAMI_ATTACK:
-		m_collisionSize = D3DXVECTOR2(200.0f, 100.0f);
+		m_collisionSize = D3DXVECTOR2(525.0f, 500.0f);
 		m_fSpeed = 0.0f;
 		BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
 		BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-		m_nLife = 10;
+		m_nLife = 15;
 		m_fDamage = 9999.0f;       // 即死攻撃
 		m_bUseDraw = false;
 		m_bHitErase = false;    // 貫通
-		m_bUseKnockBack = false;// ノックバックは利用しない
 		bUseShadow = false;     // 影を使用しない
 		break;
     }

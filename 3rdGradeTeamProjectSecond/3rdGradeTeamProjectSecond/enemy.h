@@ -59,7 +59,7 @@ public:
         TYPE_KAMIKAZE,      // カミカゼ
         TYPE_CANNON,        // キャノン
         TYPE_COMMANDER,     // コマンダー
-		TYPE_SHINIGAMI		// 死神
+		TYPE_SHINIGAMI		// シニガミ
     }TYPE;
 
     // 基本状態
@@ -176,7 +176,7 @@ public:
     }COMMANDER_PARTS;
 
 	//=========================
-	// 死神
+	// シニガミ
 	//=========================
 	typedef enum
 	{
@@ -250,9 +250,10 @@ private:
     int m_nWhoContribution;                  // 誰の貢献か
     int m_nDeathContributionPoint;           // 死亡した際に、プレイヤーに入る貢献度
 
-    bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+    CEffectData::IntervalEffect m_Effect;    // 一定間隔で発生させるエフェクト（カミカゼの火花など）
 
-    CEffectData::IntervalEffect m_Effect;   // カミカゼの火花用エフェクト
+    bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+    bool m_bAtkStartFlag;                    // 攻撃が不定間隔のものに使う、攻撃開始フラグ
 
     //=============================
     // 種類ごとの処理
