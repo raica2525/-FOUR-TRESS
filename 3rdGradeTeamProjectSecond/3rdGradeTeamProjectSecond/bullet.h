@@ -59,7 +59,8 @@ public:
         TYPE_TANK_GROUND_EX,    // タンクの地上攻撃の爆発
         TYPE_HEALER_GROUND,     // ヒーラーの地上攻撃
         TYPE_HEALER_SKY,        // ヒーラーの空中攻撃
-		TYPE_SHINIGAMI_ATTACK	// シニガミの攻撃
+		TYPE_SHINIGAMI_ATTACK,	// シニガミの攻撃
+        TYPE_PENPEN_ATTACK,     // ペンペンの攻撃
     }TYPE;
 
     // 何に当たるかのフラグ

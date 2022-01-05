@@ -98,6 +98,7 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
  
     m_bDeathBySquashed = false;
     m_bAtkStartFlag = false;
+    m_pModelEffect = NULL;
 }
 
 //=============================================================================
@@ -129,6 +130,12 @@ HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CEnemy::Uninit(void)
 {
+    // モデルエフェクトを使っていたものは、消すフラグを立てる（アルファ値が0を下回ったら消す処理を代用）
+    if (m_pModelEffect)
+    {
+        m_pModelEffect->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, -1.0f));
+    }
+
     CCharacter::Uninit();
 }
 
@@ -559,6 +566,15 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
         m_bUseCommonAtkFollow = false;
         m_bAtkStartFlag = false;
 
+        // 自分の種類によって、再設定するもの
+        if (m_type == TYPE_PENPEN)
+        {
+            m_pModelEffect->SetUseDraw(false);
+            SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
+            SetPartsDisp(PENPEN_PARTS_CUTTER_R, true);
+            SetPartsDisp(PENPEN_PARTS_CUTTER_L, true);
+        }
+
         // 次の状態によって、取得するもの
         switch (nextBaseState)
         {
@@ -749,6 +765,9 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             break;
 		case TYPE_SHINIGAMI:
 			AtkShinigami(myPos);
+            break;
+        case TYPE_PENPEN:
+            AtkPenpen(myPos);
             break;
         }
     }

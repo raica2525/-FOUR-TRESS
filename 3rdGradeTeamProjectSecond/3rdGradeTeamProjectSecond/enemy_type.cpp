@@ -78,6 +78,17 @@
 #define SHINIGAMI_DISCOVERY_DISTANCE 2500.0f    // 検知距離
 #define SHINIGAMI_TURN_SPEED 1.5f               // 回転速度
 
+//===========================
+// ペンペン
+//===========================
+#define PENPEN_WHOLE_FRAME 150                // 全体フレーム
+#define PENPEN_START_FRAME 30                 // 攻撃開始フレーム
+#define PENPEN_INTERVAL_FRAME 5               // 発生間隔フレーム
+#define PENPEN_WAIT_COUNT 50                  // 攻撃後の待機フレーム
+#define PENPEN_DISCOVERY_DISTANCE 1750.0f     // 検知距離
+#define PENPEN_ATK_SPEED 8.75f                // 攻撃中のスピード
+#define PENPEN_CUTTER_ROT_SPEED D3DXToRadian(15.0f) // カッターの回転速度
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -127,6 +138,7 @@ void CEnemy::SetupInfoByType(void)
         m_walkMotion = ARMY_ANIM_WALK;
         m_attackMotion = ARMY_ANIM_ATTACK;
         m_deathMotion = ARMY_ANIM_DEATH;
+        m_damageMotion = ARMY_ANIM_DAMAGE;
         m_nAddScore = 50;
         m_fDiscoveryTargetDistance = ARMY_DISCOVERY_DISTANCE;
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
@@ -145,6 +157,7 @@ void CEnemy::SetupInfoByType(void)
         m_walkMotion = KAMIKAZE_ANIM_WALK;
         m_attackMotion = KAMIKAZE_ANIM_ATTACK;
         m_deathMotion = KAMIKAZE_ANIM_DEATH;
+        m_damageMotion = KAMIKAZE_ANIM_DAMAGE;
         m_targetTrend = TARGET_TREND_FORTRESS;
         m_nAddScore = 100;
         m_fDiscoveryTargetDistance = KAMIKAZE_DISCOVERY_DISTANCE;
@@ -207,6 +220,7 @@ void CEnemy::SetupInfoByType(void)
 		m_walkMotion = SHINIGAMI_ANIM_WALK;
 		m_attackMotion = SHINIGAMI_ANIM_ATTACK;
 		m_deathMotion = SHINIGAMI_ANIM_DEATH;
+        m_damageMotion = SHINIGAMI_ANIM_DAMAGE;
         SetTurnSpeed(SHINIGAMI_TURN_SPEED);
 		m_targetTrend = TARGET_TREND_PLAYER;
 		m_nAddScore = 3000;
@@ -218,7 +232,27 @@ void CEnemy::SetupInfoByType(void)
 		CCharacter::BindParts(SHINIGAMI_PARTS_WEP, 57);
 		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
 		break;
-
+    case TYPE_PENPEN:
+        // 固有の情報
+        SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
+        m_fSpeed = 5.0f;
+        fHP = 100.0f;
+        m_fChargeValue = 3.0f;
+        m_walkMotion = PENPEN_ANIM_WALK;
+        m_attackMotion = PENPEN_ANIM_ATTACK;
+        m_deathMotion = PENPEN_ANIM_DEATH;
+        m_damageMotion = PENPEN_ANIM_DAMAGE;
+        m_nAddScore = 50;
+        m_fDiscoveryTargetDistance = PENPEN_DISCOVERY_DISTANCE;
+        // パーツ数を設定、モデルをバインド、アニメーションをバインド（ペンペンは、専用のモデルも）
+        m_pModelEffect = CModelEffect::Create(39, DEFAULT_VECTOR, DEFAULT_VECTOR, DEFAULT_COLOR);
+        m_pModelEffect->SetUseDraw(false);
+        CCharacter::SetPartNum(PENPEN_PARTS_MAX);
+        CCharacter::BindParts(PENPEN_PARTS_BODY, 36);
+        CCharacter::BindParts(PENPEN_PARTS_CUTTER_R, 37);
+        CCharacter::BindParts(PENPEN_PARTS_CUTTER_L, 38);
+        CCharacter::LoadModelData("./data/ANIMATION/motion_penpen.txt");
+        break;
     }
 
     // 強さを反映
@@ -435,6 +469,64 @@ void CEnemy::AtkShinigami(D3DXVECTOR3 &myPos)
         {
             // 待機AIに
             SetBaseState(BASE_STATE_WAIT, SHINIGAMI_WAIT_COUNT);
+        }
+    }
+}
+
+//=============================================================================
+// ペンペンの攻撃
+// Author : 後藤慎之助
+//=============================================================================
+void CEnemy::AtkPenpen(D3DXVECTOR3 &myPos)
+{
+    if (m_nCntTime >= PENPEN_WHOLE_FRAME)
+    {
+        // 待機AIに
+        SetBaseState(BASE_STATE_WAIT, PENPEN_WAIT_COUNT);
+    }
+    else if (m_nCntTime == PENPEN_START_FRAME)
+    {
+        if (m_pTarget)
+        {
+            // 現在の位置と、目的地までの移動角度/向きを求める
+            D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+            float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+            m_moveAngle = D3DXVECTOR3(-sinf(fDestAngle), 0.0f, -cosf(fDestAngle));
+            SetRotDestY(fDestAngle);
+        }
+    }
+    else if (m_nCntTime < PENPEN_WHOLE_FRAME && m_nCntTime > PENPEN_START_FRAME)
+    {
+        // 自身の当たり判定を拡大
+        SetCollisionSizeDefence(D3DXVECTOR2(500.0f, 350.0f));
+
+        // 位置に移動量を結びつける
+        myPos += m_moveAngle * PENPEN_ATK_SPEED;
+
+        // 向きを調整
+        RotControl();
+
+        // 刃を回転、見えるようにも
+        D3DXVECTOR3 cutterRot = m_pModelEffect->GetRot();
+        cutterRot.y += PENPEN_CUTTER_ROT_SPEED;
+        if (cutterRot.y > D3DX_PI)
+        {
+            cutterRot.y -= D3DX_PI * 2.0f;
+        }
+        else if (cutterRot.y < -D3DX_PI)
+        {
+            cutterRot.y += D3DX_PI * 2.0f;
+        }
+        m_pModelEffect->SetRot(cutterRot);
+        m_pModelEffect->SetUseDraw(true);
+        m_pModelEffect->SetPos(myPos + D3DXVECTOR3(0.0f, 200.0f, 0.0f));
+        SetPartsDisp(PENPEN_PARTS_CUTTER_R, false);
+        SetPartsDisp(PENPEN_PARTS_CUTTER_L, false);
+
+        // 攻撃発生
+        if (m_nCntTime % PENPEN_INTERVAL_FRAME == 0)
+        {
+            CBullet::Create(CBullet::TYPE_PENPEN_ATTACK, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
         }
     }
 }

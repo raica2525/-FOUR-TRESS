@@ -49,8 +49,8 @@
 #define CAMERA_VIEW_ANGLE D3DXToRadian(45.0f)
 
 // –Ú•WˆÊ’u‚Æ‚Ì‹——£
-#define DISTANCE_DEST_POS_MIN -6500.0f
-#define DISTANCE_DEST_POS_MAX -12500.0f
+#define DISTANCE_DEST_POS_MIN -7000.0f
+#define DISTANCE_DEST_POS_MAX -13000.0f
 #define DISTANCE_RATE 1.5f
 
 //=============================================================================
