@@ -1041,9 +1041,16 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         {
             D3DXVECTOR3 windPos = D3DXVECTOR3(playerPos.x, 1.0f, playerPos.z);
 
+            // キャリアーにつけるエフェクト
             CEffect3D::Emit(CEffectData::TYPE_WIND_0, windPos, windPos);
             CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
             CEffect3D::Emit(CEffectData::TYPE_WIND_1, playerPos, playerPos);
+
+            // 引き寄せる風のエフェクト
+            CEffect3D::Emit(CEffectData::TYPE_ATTRACT_WIND_0, windPos, windPos);
+            CEffect3D::Emit(CEffectData::TYPE_ATTRACT_WIND_1, windPos, windPos);
+            CEffect3D::Emit(CEffectData::TYPE_ATTRACT_WIND_1,{ windPos.x,windPos.y+100,windPos.z}, windPos);
+            CEffect3D::Emit(CEffectData::TYPE_ATTRACT_WIND_1, { windPos.x,windPos.y + 200,windPos.z }, windPos);
 
             CBullet*pBullet = CBullet::Create(CBullet::TYPE_CARRIER_SKY, windPos, DEFAULT_VECTOR, OBJTYPE_PLAYER);
             pBullet->SetWhoContribution(m_nIdxCreate);
