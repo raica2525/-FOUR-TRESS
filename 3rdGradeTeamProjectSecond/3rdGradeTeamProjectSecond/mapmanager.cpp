@@ -60,52 +60,73 @@ void CMapManager::CreateMapFromJson(std::string filePath)
 	std::string str;
 	CFileIO::Load(&str, filePath);
 	picojson::object obj = CJson::FromJson(str);
-	
+	picojson::array arr;
 	// BGを生成
-	picojson::array arr = obj["buildings"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["buildings"].is<picojson::null>())
 	{
-		CreateBgFromJsonObject(it->get<picojson::object>());
+		arr = obj["buildings"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateBgFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// Blockを生成
-	arr = obj["blocks"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["blocks"].is<picojson::null>())
 	{
-		CreateBlockFromJsonObject(it->get<picojson::object>());
+		arr = obj["blocks"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateBlockFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// enemyを生成
-	arr = obj["enemys"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["enemys"].is<picojson::null>())
 	{
-		CreateEnemyFromJsonObject(it->get<picojson::object>());
+		arr = obj["enemys"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateEnemyFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// collisionを生成
-	arr = obj["collisions"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["collisions"].is<picojson::null>())
 	{
-		CreateCollisionFromJsonObject(it->get<picojson::object>());
+		arr = obj["collisions"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateCollisionFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// groundを生成
-	arr = obj["grounds"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["grounds"].is<picojson::null>())
 	{
-		CreateGroundFromJsonObject(it->get<picojson::object>());
+		arr = obj["grounds"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateGroundFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// roadを生成
-	arr = obj["roads"].get<picojson::array>();
-	for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+	if (obj["roads"].is<picojson::null>())
 	{
-		CreateRoadFromJsonObject(it->get<picojson::object>());
+		arr = obj["roads"].get<picojson::array>();
+		for (picojson::array::iterator it = arr.begin(); it < arr.end(); it++)
+		{
+			CreateRoadFromJsonObject(it->get<picojson::object>());
+		}
 	}
 
 	// スポーン地点を設定
-	picojson::object spawn = obj["spawn"].get<picojson::object>();
-	m_startPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(spawn, "pos"));
+	if (obj["spawn"].is<picojson::null>())
+	{
+		picojson::object spawn = obj["spawn"].get<picojson::object>();
+		m_startPos = CJson::ArrayToD3DXVec3(CJson::Nullcheck<picojson::array>(spawn, "pos"));
+	}
 } 
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
