@@ -132,6 +132,7 @@ private:
     //=============================
     void SetupInfoByType(float fStrength, const D3DXVECTOR3 pos);
     void CommanderAttackMove(D3DXVECTOR3 &myPos);
+    void HunterGroundMove(D3DXVECTOR3 &myPos);
     void HunterSkyMove(D3DXVECTOR3 &myPos);
     bool HealerSkyUseCollision(void);
 

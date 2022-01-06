@@ -169,8 +169,8 @@ typedef enum
 // ヒーラー地上
 //==========================
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define HEALER_GROUND_WHOLE_FRAME 60
-#define HEALER_GROUND_FIRE_FRAME (HEALER_GROUND_WHOLE_FRAME - 30)
+#define HEALER_GROUND_WHOLE_FRAME 50
+#define HEALER_GROUND_FIRE_FRAME (HEALER_GROUND_WHOLE_FRAME - 25)
 // その他
 #define HEALER_GROUND_BASE_DAMAGE 40.0f
 #define HEALER_GROUND_ADD_DAMAGE_RATE 1.0f

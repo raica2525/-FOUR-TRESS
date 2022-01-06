@@ -325,11 +325,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [40] 予備
+# [40] 矢
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 40
-	NAME = data/MODEL/ball.x
+	NAME = data/MODEL/ya.x
 END_MODEL_DATASET
 
 #---------------------------------------

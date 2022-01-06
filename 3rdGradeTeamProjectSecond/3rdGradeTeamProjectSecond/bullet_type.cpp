@@ -40,6 +40,7 @@ typedef enum
     PARAM_HUNTER_SKY_TARGET_POS_X = 0,
     PARAM_HUNTER_SKY_TARGET_POS_Y,
     PARAM_HUNTER_SKY_TARGET_POS_Z,
+    PARAM_HUNTER_SKY_TARGET_ANGLE_Y,
 }PARAM_HUNTER_SKY;
 
 //===========================
@@ -145,11 +146,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
         m_fSpeed = 5.0f;
         m_nLife = 999;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
-        // モデルをバインド
-        BindModelData(32);  // 仮にボール
         // エフェクト番号と発生間隔
         m_Effect.type = 46;
         m_Effect.interval = 3;
@@ -163,10 +162,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);
         m_nLife = 45;
         m_fDamage = 70.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(40);  // 矢
         // エフェクト番号と発生間隔
         m_Effect.type = 24;
         m_Effect.interval = 3;
@@ -178,10 +177,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
         m_fDamage = 50.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(40);  // 矢
         // エフェクト番号と発生間隔
         m_Effect.type = 24;
         m_Effect.interval = 5;
@@ -255,15 +254,12 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 65;
         m_fDamage = 0.0f;   // 生成時に、現在のチャージ量に応じたものに変える
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
         m_nHitContributionPoint = 1;
         // エフェクト番号と発生間隔
         m_Effect.type = 1;
         m_Effect.interval = 5;
-        
-        // モデルをバインド
-        BindModelData(32);  // 仮にボール
         break;
     case TYPE_HEALER_SKY:
         // 固有の情報
@@ -340,6 +336,25 @@ void CBullet::CommanderAttackMove(D3DXVECTOR3 &myPos)
 }
 
 //=============================================================================
+// ハンターの地上攻撃弾の移動処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::HunterGroundMove(D3DXVECTOR3 &myPos)
+{
+    // 移動
+    myPos += m_moveAngle * m_fSpeed;
+
+    // 向きを移動の向きに合わせる
+    m_nCntTime++;
+    if (m_nCntTime >= 1)
+    {
+        m_bUseDraw = true;
+        float fAngle = GetAngleToTargetXZ(m_posOld, myPos);
+        SetRot(D3DXVECTOR3(0.0f, fAngle, 0.0f));
+    }
+}
+
+//=============================================================================
 // ハンターの空中攻撃弾の移動処理
 // Author : 後藤慎之助
 //=============================================================================
@@ -362,16 +377,29 @@ void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X] - myPos.x), 2.0f) +
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z] - myPos.z), 2.0f));
         float fHeight = fabsf(m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Y] - myPos.y);
-        float fAngleY = atan2(fDistance, fHeight);
+        m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y] = atan2(fDistance, fHeight);
 
         // 移動の角度に反映
         m_moveAngle.x = -sinf(fAngleXZ);
-        m_moveAngle.y = -cosf(fAngleY);
+        m_moveAngle.y = -cosf(m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y]);
         m_moveAngle.z = -cosf(fAngleXZ);
     }
 
     // 移動
     myPos += m_moveAngle * m_fSpeed;
+
+    // 向きを移動の向きに合わせる
+    if (m_nCntTime >= 1)
+    {
+        m_bUseDraw = true;
+        float fAngle = GetAngleToTargetXZ(m_posOld, myPos);
+        float fAngleY = D3DXToRadian(50.0f);
+        if (m_posOld.y < myPos.y)
+        {
+            fAngleY = m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y];
+        }
+        SetRot(D3DXVECTOR3(fAngleY, fAngle, 0.0f));
+    }
 }
 
 //=============================================================================

@@ -132,6 +132,9 @@ void CBullet::Update(void)
     case TYPE_COMMANDER_ATTACK:
         CommanderAttackMove(myPos);
         break;
+    case TYPE_HUNTER_GROUND:
+        HunterGroundMove(myPos);
+        break;
     case TYPE_HUNTER_SKY:
         HunterSkyMove(myPos);
         break;
