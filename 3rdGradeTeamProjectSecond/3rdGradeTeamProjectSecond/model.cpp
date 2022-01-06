@@ -29,10 +29,12 @@ CModel::CModel()
     m_pBuffMat = NULL;
     m_pMesh = NULL;
     m_nNumMat = 0;
+
     D3DXMatrixIdentity(&m_mtxWorld);
     m_pos = DEFAULT_VECTOR;
     m_rot = DEFAULT_VECTOR;
     m_scale = DEFAULT_SCALE;
+    m_bDisp = true;
 
     memset(m_aDiffuse, 0, sizeof(m_aDiffuse));
 }
@@ -78,6 +80,11 @@ void CModel::Update(void)
 //=============================================================================
 void CModel::Draw(CModel *model, bool bDeath)
 {
+    if (!m_bDisp)
+    {
+        return;
+    }
+
     LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
     D3DXMATRIX mtxRot, mtxTrans, mtxScale;
     D3DMATERIAL9 matDef;

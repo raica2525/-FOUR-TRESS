@@ -294,6 +294,18 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
 		m_bHitErase = false;    // ŠÑ’Ê
 		bUseShadow = false;     // ‰e‚ðŽg—p‚µ‚È‚¢
 		break;
+
+    case TYPE_PENPEN_ATTACK:
+        m_collisionSize = D3DXVECTOR2(575.0f, 350.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 5;
+        m_fDamage = 30.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;    // ŠÑ’Ê
+        bUseShadow = false;     // ‰e‚ðŽg—p‚µ‚È‚¢
+        break;
     }
 
     // ‹­‚³‚ð”½‰f

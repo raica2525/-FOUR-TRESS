@@ -41,6 +41,7 @@ public:
     D3DXVECTOR3 GetRot(void) { return m_rot; }
     D3DXMATRIX GetWorldMtx(void) { return m_mtxWorld; }
     void SetRotX(float fRotX) { m_rot.x = fRotX; }
+    void SetDisp(bool bDisp) { m_bDisp = bDisp; }
 
 private:
     //======================================
@@ -55,6 +56,7 @@ private:
     D3DXVECTOR3				m_pos;			// ç¿ïW
     D3DXVECTOR3				m_rot;			// âÒì]
     D3DXVECTOR3				m_scale;
+    bool                    m_bDisp;
 
     D3DCOLORVALUE m_aDiffuse[MAX_MATERIAL];  // ägéUåı
 };
