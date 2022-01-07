@@ -246,4 +246,20 @@ TEXTURESET
     NAME = data/TEXTURE/29_wind.png
 END_TEXTURESET
 
+#---------------------------------------
+# [30] リスポーン
+#---------------------------------------
+TEXTURESET
+    TYPE = 30
+    NAME = data/TEXTURE/respawn_000.png
+END_TEXTURESET
+
+#---------------------------------------
+# [30] リスポーン
+#---------------------------------------
+TEXTURESET
+    TYPE = 31
+    NAME = data/TEXTURE/respawn_001.png
+END_TEXTURESET
+
 END_SCRIPT		# この行は絶対消さないこと！

@@ -1226,4 +1226,21 @@ TEXTURESET
     NAME = data/TEXTURE/ranking/result002.jpg
 END_TEXTURESET
 
+
+#---------------------------------------
+# [148] リスポーン0
+#---------------------------------------
+TEXTURESET
+    TYPE = 148
+    NAME = data/TEXTURE/effect/respawn_000.png
+END_TEXTURESET
+
+#---------------------------------------
+# [149] リスポーン1
+#---------------------------------------
+TEXTURESET
+    TYPE = 149
+    NAME = data/TEXTURE/effect/respawn_001.png
+END_TEXTURESET
+
 END_SCRIPT		# この行は絶対消さないこと！
