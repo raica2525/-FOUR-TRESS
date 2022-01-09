@@ -129,6 +129,13 @@ void CBullet::Update(void)
     bool bUseCollisionThisFrame = true;
     switch (m_type)
     {
+    case TYPE_ARMY_ATTACK:
+    case TYPE_CANNON_ATTACK:
+    case TYPE_TANK_GROUND_LV1:
+    case TYPE_TANK_GROUND_LV2:
+    case TYPE_TANK_GROUND_LV3:
+        CommonRotateZ(myPos);
+        break;
     case TYPE_COMMANDER_ATTACK:
         CommanderAttackMove(myPos);
         break;
@@ -538,6 +545,10 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         {
             CBullet *pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
             pBullet->SetWhoContribution(m_nWhoContribution);
+            CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, bulletPos, bulletPos);
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, bulletPos, bulletPos);
+            CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, bulletPos, bulletPos);
         }
     }
 

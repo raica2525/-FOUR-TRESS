@@ -131,6 +131,7 @@ private:
     // éÌóﬁÇ≤Ç∆ÇÃèàóù
     //=============================
     void SetupInfoByType(float fStrength, const D3DXVECTOR3 pos);
+    void CommonRotateZ(D3DXVECTOR3 &myPos);
     void CommanderAttackMove(D3DXVECTOR3 &myPos);
     void HunterGroundMove(D3DXVECTOR3 &myPos);
     void HunterSkyMove(D3DXVECTOR3 &myPos);

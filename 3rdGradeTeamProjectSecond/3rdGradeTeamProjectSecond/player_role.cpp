@@ -151,8 +151,8 @@ typedef enum
 // タンク地上2_爆発弾
 //==========================
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define TANK_GROUND2_WHOLE_FRAME 45
-#define TANK_GROUND2_FIRE_FRAME (TANK_GROUND2_WHOLE_FRAME - 25)
+#define TANK_GROUND2_WHOLE_FRAME 40
+#define TANK_GROUND2_FIRE_FRAME (TANK_GROUND2_WHOLE_FRAME - 20)
 
 //==========================
 // タンク空中
@@ -164,6 +164,8 @@ typedef enum
 // 当たり判定周り
 #define TANK_SKY_RADIUS 7500.0f
 #define TANK_SKY_HEIGHT 500.0f
+// その他
+#define TANK_SKY_FALL_VALUE -15.0f
 
 //==========================
 // ヒーラー地上
@@ -1211,14 +1213,14 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 挑発エフェクト
         if (m_nCntAttackTime == TANK_SKY_START_FRAME)
         {
+            // 咆哮音
+            CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_SHIELD);
+
             CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));
         }
 
-        // 移動できない
-        move = DEFAULT_VECTOR;
-
-        // この攻撃中は無敵
-        SetInvincible(true);
+        // 縦の移動量は一定
+        move.y = TANK_SKY_FALL_VALUE;
 
         // 変数宣言
         const float ATTACK_RADIUS = TANK_SKY_RADIUS;    // 攻撃の大きさ
@@ -1288,6 +1290,9 @@ void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 回復魔方陣をアクティブ化
         if (m_nCntAttackTime == HEALER_SKY_START_FRAME)
         {
+            // ヒーラーのボイス
+            CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_HEALER);
+
             // 変数宣言
             D3DXVECTOR3 playerRot = CCharacter::GetRot();                 // プレイヤーの向いている向き
             D3DXVECTOR3 slidePos = DEFAULT_VECTOR;                        // ずらす位置

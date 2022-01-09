@@ -97,6 +97,11 @@ HRESULT CItem::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     // スケールを設定
     SetScale(size);
 
+    // 影を生成
+    m_pEffect3d_Shadow = CEffect3D::Create(CEffectData::TYPE_SHADOW, D3DXVECTOR3(pos.x, SHADOW_POS_Y, pos.z));
+    m_pEffect3d_Shadow->SetSize(D3DXVECTOR3(m_collisionSize.x, m_collisionSize.x, 0.0f));
+    m_pEffect3d_Shadow->SetDisp(false); // キャラクター側で描画を管理するため
+
     return S_OK;
 }
 

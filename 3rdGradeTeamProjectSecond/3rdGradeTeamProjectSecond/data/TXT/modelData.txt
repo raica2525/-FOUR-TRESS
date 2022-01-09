@@ -333,11 +333,11 @@ MODEL_DATASET
 END_MODEL_DATASET
 
 #---------------------------------------
-# [41] 予備
+# [41] 弾アーミー
 #---------------------------------------
 MODEL_DATASET
 	TYPE = 41
-	NAME = data/MODEL/ball.x
+	NAME = data/MODEL/b_army.x
 END_MODEL_DATASET
 
 #---------------------------------------
@@ -538,6 +538,30 @@ END_MODEL_DATASET
 MODEL_DATASET
 	TYPE = 66
 	NAME = data/MODEL/debug3.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [67] 弾キャノン
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 67
+	NAME = data/MODEL/b_cannon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [68] 弾タンク
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 68
+	NAME = data/MODEL/b_tank.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [69] 弾ハンター
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 69
+	NAME = data/MODEL/b_hunter.x
 END_MODEL_DATASET
 
 END_SCRIPT		# この行は絶対消さないこと！
