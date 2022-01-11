@@ -247,6 +247,7 @@ HRESULT CGame::Init(void)
         CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
         CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
         CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+		CEnemy::Create(CEnemy::TYPE_KIWI, D3DXVECTOR3(2000.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
 
         // âºÇÃÉSÅ[ÉãÉQÅ[Ég
         CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);

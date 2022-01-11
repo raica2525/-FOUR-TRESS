@@ -769,6 +769,8 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
         case TYPE_PENPEN:
             AtkPenpen(myPos);
             break;
+		case TYPE_KIWI:
+			AtkKiwi(myPos);
         }
     }
 }
