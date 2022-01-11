@@ -85,7 +85,7 @@ void CTitle::Update(void)
         // 翼エフェクトを放出
         if (m_bEmitWingEffect)
         {
-            CManager::SoundPlay(CSound::LABEL_SE_WING);
+            //CManager::SoundPlay(CSound::LABEL_SE_WING);
             m_bEmitWingEffect = false;
             //CEffect2D::Emit(CEffectData::TYPE_RED_WING, D3DXVECTOR3(640.0f, 160.0f, 0.0f), D3DXVECTOR3(640.0f, 360.0f, 0.0f));
             //CEffect2D::Emit(CEffectData::TYPE_BLUE_WING, D3DXVECTOR3(640.0f, 160.0f, 0.0f), D3DXVECTOR3(640.0f, 360.0f, 0.0f));
@@ -123,7 +123,28 @@ void CTitle::Update(void)
                 CFade::SetFade(CManager::MODE_GAME);
 
                 // SE
-                CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
+                //CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
+
+                // 仮にベータ用のステージへ
+                if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN))
+                {
+                    CGame::SetNextGameInDebug(CGame::TYPE_ARENA, 4, true);
+                }
+                else
+                {
+                    CGame::SetNextGameInDebug(CGame::TYPE_ARENA, 4);
+                }
+                CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
+                CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_1);
+                CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_2);
+                CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_3);
+                CGame::SetIdxPlayer(0, 0);
+                CGame::SetIdxPlayer(1, 1);
+                CGame::SetIdxPlayer(2, 2);
+                CGame::SetIdxPlayer(3, 3);
+                CGame::SetRole(PLAYER_2, CPlayer::ROLE_HUNTER);
+                CGame::SetRole(PLAYER_3, CPlayer::ROLE_CARRIER);
+                CGame::SetRole(PLAYER_4, CPlayer::ROLE_TANK);
 
                 // プレスボタンを点滅させる
                 if (pPressButton)

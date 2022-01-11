@@ -167,19 +167,29 @@ HRESULT CGame::Init(void)
         //CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         //CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
 
-        // ジェイソンファイルからマップを生成し、初期地点も取得する
-        CMapManager *pMapManager = CManager::GetMapManager();
-        pMapManager->CreateMapFromJson(MAP_FILENAME);
-        D3DXVECTOR3 startPos = pMapManager->GetStartPos();
+        D3DXVECTOR3 startPos = DEFAULT_VECTOR;
         player1Pos = startPos;
         player2Pos = startPos;
         player3Pos = startPos;
         player4Pos = startPos;
-        m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
-        //m_pFortress->SetSpeed(0.0f);
+        m_pFortress = CFortress::Create(DEFAULT_VECTOR); // 移動要塞生成（無敵状態）
+
+        CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(0.0f, 0.0f, 5000.0f), D3DXVECTOR3(500.0f, 500.0f, 500.0f), MODEL_DIRECT_LEFT);
     }
     else if (m_type == TYPE_ARENA)
     {
+        ////====================================================================
+        //// ジェイソンファイルからマップを生成し、初期地点も取得する
+        //CMapManager *pMapManager = CManager::GetMapManager();
+        //pMapManager->CreateMapFromJson(MAP_FILENAME);
+        //D3DXVECTOR3 startPos = pMapManager->GetStartPos();
+        //player1Pos = startPos;
+        //player2Pos = startPos;
+        //player3Pos = startPos;
+        //player4Pos = startPos;
+        //m_pFortress = CFortress::Create(startPos); // 移動要塞生成
+        ////====================================================================
+
         m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
         // 仮の道生成
         D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
@@ -629,6 +639,10 @@ void CGame::InButtle(void)
         {
             CEnemy::Create(CEnemy::TYPE_SHINIGAMI, spawnPos);
         }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_6))
+        {
+            CEnemy::Create(CEnemy::TYPE_PENPEN, spawnPos);
+        }
     }
         break;
     case TYPE_ARENA:
@@ -693,7 +707,7 @@ void CGame::InButtle(void)
         if (pInputKeyboard->GetKeyboardTrigger(DIK_P) || nNumPausePlayer != NO_PAUSE_PLAYER)
         {
             // SE
-            CManager::SoundPlay(CSound::LABEL_SE_INFO);
+            CManager::SoundPlay(CSound::LABEL_SE_OPEN_POSE);
 
             // キーボード操作でポーズする際は、1Pのコントローラを使う
             if (nNumPausePlayer == NO_PAUSE_PLAYER)

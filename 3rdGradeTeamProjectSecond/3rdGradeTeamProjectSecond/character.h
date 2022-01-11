@@ -124,6 +124,7 @@ public:
     void SetTurnSpeed(float fTurnSpeed) { m_fTurnSpeed = D3DXToRadian(fTurnSpeed); }
     void SetDisp(bool bDisp) { m_bDisp = bDisp; }
     void SetIdx(int nIdx) { m_nIdx = nIdx; }
+    void SetPartsDisp(int index, bool bDisp) { m_apModel[index]->SetDisp(bDisp); }
 
     void BindParts(int nPartsIndex, int nPartsType) { m_aPartsType[nPartsIndex] = nPartsType; }
 

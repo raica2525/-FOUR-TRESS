@@ -203,7 +203,7 @@ void CPause::Update(void)
         if (pInputKeyboard->GetKeyboardTrigger(DIK_P) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_START))
         {
             // SE
-            CManager::SoundPlay(CSound::LABEL_SE_CANCEL);
+            CManager::SoundPlay(CSound::LABEL_SE_CLAUSE_POSE);
 
             // ポーズ解除にする
             CGame::SetQuitPause();
@@ -390,7 +390,7 @@ void CPause::SelectPauseMenu(void)
             if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN) || pInputJoypad->GetJoypadTrigger(m_nWho, XINPUT_GAMEPAD_A))
             {
                 // SE
-                CManager::SoundPlay(CSound::LABEL_SE_SELECT);
+                CManager::SoundPlay(CSound::LABEL_SE_CLAUSE_POSE);
 
                 // ポーズ解除にする
                 CGame::SetQuitPause();

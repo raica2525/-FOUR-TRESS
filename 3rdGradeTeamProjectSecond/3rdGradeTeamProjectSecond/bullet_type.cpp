@@ -23,6 +23,9 @@
 //========================================
 // マクロ定義（特徴的な処理をするもののみ）
 //========================================
+
+#define COMMON_ROTATE_Z D3DXToRadian(15.0f)
+
 //===========================
 // コマンダーの弾
 //===========================
@@ -40,6 +43,7 @@ typedef enum
     PARAM_HUNTER_SKY_TARGET_POS_X = 0,
     PARAM_HUNTER_SKY_TARGET_POS_Y,
     PARAM_HUNTER_SKY_TARGET_POS_Z,
+    PARAM_HUNTER_SKY_TARGET_ANGLE_Y,
 }PARAM_HUNTER_SKY;
 
 //===========================
@@ -66,9 +70,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         m_nLife = 120;
         m_fDamage = 50.0f;
-        m_bUseDraw = true;  // 仮
+        m_bUseDraw = false;
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(41);  // 仮にボール
         // エフェクト番号と発生間隔
         m_Effect.type = 0;
         m_Effect.interval = 5;
@@ -135,21 +139,19 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         m_nLife = 120;
         m_fDamage = 15.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         //m_bUseKnockBack = false;// ノックバックは利用しない
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(67);
         break;
     case TYPE_COMMANDER_ATTACK:
         // 固有の情報
         m_collisionSize = D3DXVECTOR2(75.0f, 75.0f);
         m_fSpeed = 5.0f;
         m_nLife = 999;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
-        // モデルをバインド
-        BindModelData(32);  // 仮にボール
         // エフェクト番号と発生間隔
         m_Effect.type = 46;
         m_Effect.interval = 3;
@@ -163,10 +165,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);
         m_nLife = 45;
         m_fDamage = 70.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(40);  // 矢
         // エフェクト番号と発生間隔
         m_Effect.type = 24;
         m_Effect.interval = 3;
@@ -178,10 +180,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 300;
         m_fDamage = 50.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(69);
         // エフェクト番号と発生間隔
         m_Effect.type = 24;
         m_Effect.interval = 5;
@@ -206,10 +208,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 50.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(68);
         break;
     case TYPE_TANK_GROUND_LV2:
         // 固有の情報
@@ -218,10 +220,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 150.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(68);
         break;
     case TYPE_TANK_GROUND_LV3:
         // 固有の情報
@@ -230,9 +232,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 60;
         m_fDamage = 0.0f;
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         // モデルをバインド
-        BindModelData(32);  // 仮にボール
+        BindModelData(68);
         break;
     case TYPE_TANK_GROUND_EX:
         // 固有の情報
@@ -255,15 +257,12 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 65;
         m_fDamage = 0.0f;   // 生成時に、現在のチャージ量に応じたものに変える
-        m_bUseDraw = true;
+        m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
         m_nHitContributionPoint = 1;
         // エフェクト番号と発生間隔
         m_Effect.type = 1;
         m_Effect.interval = 5;
-        
-        // モデルをバインド
-        BindModelData(32);  // 仮にボール
         break;
     case TYPE_HEALER_SKY:
         // 固有の情報
@@ -284,17 +283,28 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         break;
 
 	case TYPE_SHINIGAMI_ATTACK:
-		m_collisionSize = D3DXVECTOR2(200.0f, 100.0f);
+		m_collisionSize = D3DXVECTOR2(525.0f, 500.0f);
 		m_fSpeed = 0.0f;
 		BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
 		BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-		m_nLife = 10;
+		m_nLife = 15;
 		m_fDamage = 9999.0f;       // 即死攻撃
 		m_bUseDraw = false;
 		m_bHitErase = false;    // 貫通
-		m_bUseKnockBack = false;// ノックバックは利用しない
 		bUseShadow = false;     // 影を使用しない
 		break;
+
+    case TYPE_PENPEN_ATTACK:
+        m_collisionSize = D3DXVECTOR2(575.0f, 350.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 5;
+        m_fDamage = 30.0f;
+        m_bUseDraw = false;
+        m_bHitErase = false;    // 貫通
+        bUseShadow = false;     // 影を使用しない
+        break;
     }
 
     // 強さを反映
@@ -308,6 +318,30 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_pEffect3d_Shadow->SetSize(D3DXVECTOR3(m_collisionSize.x, m_collisionSize.x, 0.0f));
         m_pEffect3d_Shadow->SetDisp(false); // バレット側で描画を管理するため
     }
+}
+
+//=============================================================================
+// Z軸を回転しながら移動する弾の共通処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::CommonRotateZ(D3DXVECTOR3 & myPos)
+{
+    // 移動
+    myPos += m_moveAngle * m_fSpeed;
+
+    // 向きを移動の向きに合わせる
+    m_nCntTime++;
+    if (m_nCntTime == 1)
+    {
+        m_bUseDraw = true;
+        float fAngle = GetAngleToTargetXZ(myPos, m_posOld);
+        SetRot(D3DXVECTOR3(0.0f, fAngle, 0.0f));
+    }
+
+    // 回転
+    D3DXVECTOR3 rot = GetRot();
+    rot.z += D3DXToRadian(COMMON_ROTATE_Z);
+    SetRot(rot);
 }
 
 //=============================================================================
@@ -326,6 +360,25 @@ void CBullet::CommanderAttackMove(D3DXVECTOR3 &myPos)
         fGravity = COMMANDER_ATTACK_GRAVITY_LIMIT;
     }
     myPos += m_moveAngle * m_fSpeed + D3DXVECTOR3(0.0f, fGravity, 0.0f);
+}
+
+//=============================================================================
+// ハンターの地上攻撃弾の移動処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::HunterGroundMove(D3DXVECTOR3 &myPos)
+{
+    // 移動
+    myPos += m_moveAngle * m_fSpeed;
+
+    // 向きを移動の向きに合わせる
+    m_nCntTime++;
+    if (m_nCntTime >= 1)
+    {
+        m_bUseDraw = true;
+        float fAngle = GetAngleToTargetXZ(myPos, m_posOld);
+        SetRot(D3DXVECTOR3(0.0f, fAngle, 0.0f));
+    }
 }
 
 //=============================================================================
@@ -351,16 +404,34 @@ void CBullet::HunterSkyMove(D3DXVECTOR3 &myPos)
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_X] - myPos.x), 2.0f) +
             powf((m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Z] - myPos.z), 2.0f));
         float fHeight = fabsf(m_afParam[PARAM_HUNTER_SKY_TARGET_POS_Y] - myPos.y);
-        float fAngleY = atan2(fDistance, fHeight);
+        m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y] = atan2(fDistance, fHeight);
 
         // 移動の角度に反映
         m_moveAngle.x = -sinf(fAngleXZ);
-        m_moveAngle.y = -cosf(fAngleY);
+        m_moveAngle.y = -cosf(m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y]);
         m_moveAngle.z = -cosf(fAngleXZ);
     }
 
     // 移動
     myPos += m_moveAngle * m_fSpeed;
+
+    // 向きを移動の向きに合わせる
+    if (m_nCntTime >= 1)
+    {
+        m_bUseDraw = true;
+        float fAngle = GetAngleToTargetXZ(myPos, m_posOld);
+        float fAngleY = D3DXToRadian(50.0f);
+        if (m_posOld.y < myPos.y)
+        {
+            fAngleY = m_afParam[PARAM_HUNTER_SKY_TARGET_ANGLE_Y];
+        }
+
+        // Z回転
+        D3DXVECTOR3 rot = GetRot();
+        rot.z += D3DXToRadian(COMMON_ROTATE_Z);
+
+        SetRot(D3DXVECTOR3(-fAngleY, fAngle, rot.z));
+    }
 }
 
 //=============================================================================

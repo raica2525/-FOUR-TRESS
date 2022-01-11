@@ -17,19 +17,11 @@
 CSound::PARAM CSound::m_aParam[LABEL_MAX] =
 {
     // SE
-    { "data/SOUND/SE/hit1.wav", 0 , CATEGORY_SE },								// ヒット音
     { "data/SOUND/SE/swish.wav", 0 , CATEGORY_SE },								// 素振り音
-    { "data/SOUND/SE/bound.wav", 0 , CATEGORY_SE },								// バウンド音
-    { "data/SOUND/SE/catch.wav", 0 , CATEGORY_SE },								// キャッチ音
-    { "data/SOUND/SE/throw.wav", 0 , CATEGORY_SE },								// 投げ音
     { "data/SOUND/SE/ko.wav", 0 , CATEGORY_SE },								// KO音
-    { "data/SOUND/SE/bunt.wav", 0 , CATEGORY_SE },								// バント音
     { "data/SOUND/SE/damage.wav", 0 , CATEGORY_SE },							// ダメージ音
     { "data/SOUND/SE/offset.wav", 0 , CATEGORY_SE },							// 相殺音
-    { "data/SOUND/SE/hit2.wav", 0 , CATEGORY_SE },								// 大ヒット音
-    { "data/SOUND/SE/ball_disping.wav", 0 , CATEGORY_SE },						// ボール配置音
     { "data/SOUND/SE/jump.wav", 0 , CATEGORY_SE },								// ジャンプ音
-    { "data/SOUND/SE/hit3.wav", 0 , CATEGORY_SE },								// ウルトラヒット音
     { "data/SOUND/SE/select.wav", 0 , CATEGORY_SE },							// 決定音
     { "data/SOUND/SE/custom.wav", 0 , CATEGORY_SE },							// カスタマイズ変更音
     { "data/SOUND/SE/cancel.wav", 0 , CATEGORY_SE },							// キャンセル音
@@ -38,29 +30,31 @@ CSound::PARAM CSound::m_aParam[LABEL_MAX] =
     { "data/SOUND/SE/heal.wav", 0 , CATEGORY_SE },								// 回復音
     { "data/SOUND/SE/info.wav", 0 , CATEGORY_SE },								// 詳細が出る時の音
     { "data/SOUND/SE/cursolon.wav", 0 , CATEGORY_SE },							// ボタンにカーソルが乗った時の音
-    { "data/SOUND/SE/warp.wav", 0 , CATEGORY_SE },								// ボールワープ音
-    { "data/SOUND/SE/skill.wav", 0 , CATEGORY_SE },								// 必殺技発動音
     { "data/SOUND/BGM/title.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },		// タイトルBGM
     { "data/SOUND/BGM/menu.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },		// メニュー&カスタマイズBGM
     { "data/SOUND/BGM/battle00.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },	// バトルBGM00
     { "data/SOUND/BGM/battle01.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },	// バトルBGM01
     { "data/SOUND/BGM/battle02.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },	// バトルBGM02
-    { "data/SOUND/VOICE/Icarus_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Kleinod_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Knight_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/OOO_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Ranger_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/X_WIN.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Icarus_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Kleinod_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Knight_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/OOO_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/Ranger_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/VOICE/X_SP.wav", 0 , CATEGORY_SE },
-    { "data/SOUND/SE/wing.wav", 0 , CATEGORY_SE },
     { "data/SOUND/SE/ok.wav", 0 , CATEGORY_SE },
     { "data/SOUND/BGM/result.wav", XAUDIO2_LOOP_INFINITE , CATEGORY_BGM },	// リザルトBGM
     { "data/SOUND/SE/finish.wav", 0 , CATEGORY_SE },
+    { "data/SOUND/SE/Bow_Sound.wav", 0 , CATEGORY_SE }, // 弓効果音by.マサラ
+    { "data/SOUND/SE/Electromagnetic_Cannon_Lv1.wav", 0 , CATEGORY_SE }, // 電磁砲Lv1by.マサラ
+    { "data/SOUND/SE/Electromagnetic_Cannon_Lv2.wav", 0 , CATEGORY_SE }, // 電磁砲Lv2by.マサラ
+    { "data/SOUND/SE/Charge_Electromagnetic_Cannon.wav", 0 , CATEGORY_SE }, // 電磁砲チャージby.マサラ
+    { "data/SOUND/SE/Open_Pose.wav", 0 , CATEGORY_SE }, // ポーズを開くby.マサラ
+    { "data/SOUND/SE/Clause_Pose.wav", 0 , CATEGORY_SE }, // ポーズを閉じるby.マサラ
+    { "data/SOUND/SE/Get_Item.wav", 0 , CATEGORY_SE }, // アイテム取得by.マサラ
+    { "data/SOUND/SE/shield.wav", 0 , CATEGORY_SE }, // シールドby.マサラ
+    { "data/SOUND/SE/Jump_Attack_Sword.wav", 0 , CATEGORY_SE }, // ジャンプ(剣)by.マサラ
+    { "data/SOUND/SE/Jump_Attack_Bow.wav", 0 , CATEGORY_SE }, // ジャンプ(弓)by.マサラ
+    { "data/SOUND/SE/Jump_Attack_Nail.wav", 0 , CATEGORY_SE }, // ジャンプ(爪)by.マサラ
+    { "data/SOUND/SE/Jump_Attack_Shield.wav", 0 , CATEGORY_SE }, // ジャンプ(盾)by.マサラ
+    { "data/SOUND/SE/Jump_Attack_healer.wav", 0 , CATEGORY_SE }, // ジャンプ(回復)by.マサラ
+    { "data/SOUND/SE/High_Speed_Move.wav", 0 , CATEGORY_SE }, // 高速移動by.マサラ
+    { "data/SOUND/SE/Nail_Attack.wav", 0 , CATEGORY_SE }, // 爪攻撃by.マサラ
+    { "data/SOUND/SE/Explosion_Kamikaze.wav", 0 , CATEGORY_SE }, // カミカゼ爆発by.マサラ
+    { "data/SOUND/SE/Commander_Attack.wav", 0 , CATEGORY_SE }, // コマンダー攻撃by.マサラ
 };
 
 //=============================================================================

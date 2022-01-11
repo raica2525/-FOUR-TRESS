@@ -741,6 +741,14 @@ int CModelData::GetEnemyTypeByName(std::string name)
     {
         nReturnNumber = CEnemy::TYPE_COMMANDER;
     }
+    else if (name.compare("shinigami.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_SHINIGAMI;
+    }
+    else if (name.compare("penpen.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_PENPEN;
+    }
 
     return nReturnNumber;
 }

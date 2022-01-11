@@ -23,6 +23,7 @@
 //================================================
 // 前方宣言
 //================================================
+class CModelEffect;
 
 //================================================
 // クラス宣言
@@ -59,7 +60,8 @@ public:
         TYPE_KAMIKAZE,      // カミカゼ
         TYPE_CANNON,        // キャノン
         TYPE_COMMANDER,     // コマンダー
-		TYPE_SHINIGAMI		// 死神
+		TYPE_SHINIGAMI,     // シニガミ
+        TYPE_PENPEN,        // ペンペン
     }TYPE;
 
     // 基本状態
@@ -176,7 +178,7 @@ public:
     }COMMANDER_PARTS;
 
 	//=========================
-	// 死神
+	// シニガミ
 	//=========================
 	typedef enum
 	{
@@ -193,6 +195,26 @@ public:
 		SHINIGAMI_PARTS_WEP,
 		SHINIGAMI_PARTS_MAX,
 	}SHINIGAMI_PARTS;
+
+    //=========================
+    // ペンペン
+    //=========================
+    typedef enum
+    {
+        PENPEN_ANIM_IDLE = 0,      // 待機
+        PENPEN_ANIM_WALK,          // 歩き
+        PENPEN_ANIM_ATTACK,        // 攻撃
+        PENPEN_ANIM_DAMAGE,        // ダメージ
+        PENPEN_ANIM_DEATH,         // 死亡
+        PENPEN_ANIM_MAX,           // 最大数
+    }PENPEN_ANIMATION;
+    typedef enum
+    {
+        PENPEN_PARTS_BODY = 0,
+        PENPEN_PARTS_CUTTER_R,
+        PENPEN_PARTS_CUTTER_L,
+        PENPEN_PARTS_MAX,
+    }PENPEN_PARTS;
 
 
     HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // 初期化処理
@@ -250,9 +272,11 @@ private:
     int m_nWhoContribution;                  // 誰の貢献か
     int m_nDeathContributionPoint;           // 死亡した際に、プレイヤーに入る貢献度
 
-    bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+    CEffectData::IntervalEffect m_Effect;    // 一定間隔で発生させるエフェクト（カミカゼの火花など）
 
-    CEffectData::IntervalEffect m_Effect;   // カミカゼの火花用エフェクト
+    bool m_bDeathBySquashed;                 // 踏みつぶされて死んだか
+    bool m_bAtkStartFlag;                    // 攻撃が不定間隔のものに使う、攻撃開始フラグ
+    CModelEffect *m_pModelEffect;            // 汎用のモデルエフェクト（ペンペンの回転攻撃の刃など）
 
     //=============================
     // 種類ごとの処理
@@ -264,6 +288,8 @@ private:
     void AtkCannon(D3DXVECTOR3& myPos);
     void AtkCommander(D3DXVECTOR3& myPos);
 	void AtkShinigami(D3DXVECTOR3& myPos);
+    void AtkPenpen(D3DXVECTOR3& myPos);
+
     //=============================
     // このクラス内でのみ使う処理
     //=============================

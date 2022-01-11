@@ -34,6 +34,8 @@ CBlock::CBlock() :CScene3D(CScene::OBJTYPE_BLOCK)
     
     m_bBreak = false;
     m_bUse = true;
+
+    m_pModelEffect = NULL;
 }
 
 //=============================================================================
@@ -59,11 +61,12 @@ HRESULT CBlock::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
         break;
     case TYPE_GOAL_GATE:
         m_bBreak = true;
-        BindModelData(57);
+        BindModelData(34);
+        m_pModelEffect = CModelEffect::Create(33, pos + D3DXVECTOR3(0.0f, 900.0f, 0.0f));
         break;
     case TYPE_NORMAL_GATE:
         m_bBreak = true;
-        BindModelData(1);
+        BindModelData(35);
         break;
     }
 
@@ -94,6 +97,35 @@ void CBlock::Update(void)
 #ifdef COLLISION_TEST
     CDebug::Create(GetPos(), m_collisionSize, CDebug::TYPE_MOMENT, 1);
 #endif // COLLISION_TEST
+
+    // 種類によっての処理
+    switch (m_type)
+    {
+    case TYPE_GOAL_GATE:
+    {
+        D3DXVECTOR3 rot = m_pModelEffect->GetRot();
+        rot.y += D3DXToRadian(1.0f);
+        if (rot.y > D3DX_PI)
+        {
+            rot.y -= D3DX_PI * 2.0f;
+        }
+        else if (rot.y < -D3DX_PI)
+        {
+            rot.y += D3DX_PI * 2.0f;
+        }
+        rot.x += D3DXToRadian(1.0f);
+        if (rot.x > D3DX_PI)
+        {
+            rot.x -= D3DX_PI * 2.0f;
+        }
+        else if (rot.x < -D3DX_PI)
+        {
+            rot.x += D3DX_PI * 2.0f;
+        }
+        m_pModelEffect->SetRot(rot);
+        break;
+    }
+    }
 
     // 使用フラグがなくなったら消滅
     if (!m_bUse)

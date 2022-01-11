@@ -21,7 +21,7 @@ class CBg;
 class CBlock;
 class CEnemy;
 class CGround;
-
+class CRoad;
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 // クラス定義
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -41,6 +41,7 @@ public:
 	CEnemy* CreateEnemyFromJsonObject(picojson::object obj);
 	CBlock* CreateCollisionFromJsonObject(picojson::object obj);
 	CGround* CreateGroundFromJsonObject(picojson::object obj);
+	CRoad* CreateRoadFromJsonObject(picojson::object obj);
 
     D3DXVECTOR3 GetStartPos(void) { return m_startPos; }
 

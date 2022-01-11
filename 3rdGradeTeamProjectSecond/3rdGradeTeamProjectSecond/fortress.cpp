@@ -186,7 +186,7 @@ void CFortress::Update(void)
 #ifdef COLLISION_TEST
     D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
     D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
-    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
+    CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 65);
 #endif // COLLISION_TEST
 
     if (m_fChargeValue >= CHARGE_VALUE_LV1)//電磁法が打てる状態のとき電撃エフェクト発生
@@ -393,6 +393,12 @@ void CFortress::AttackPhase(void)
         // カウンタを加算
         m_nCntTime++;
 
+        // チャージ音
+        if (m_nCntTime == 1)
+        {
+            CManager::SoundPlay(CSound::LABEL_SE_CHARGE_ELECTROMAGNETIC_CANNON);
+        }
+
         // チャージまでかかる時間
         int nCntMaxTime = 0;
         if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
@@ -418,16 +424,19 @@ void CFortress::AttackPhase(void)
             int nContributionPoint = 0;
             if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
             {
+                CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv1);
                 pBullet = CBullet::Create(CBullet::TYPE_THUNDER, GetPos(), DEFAULT_VECTOR, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV1;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
             {
+                CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv2);
                 pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV2;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV3)
             {
+                CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv2);
                 pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV3;
             }

@@ -88,16 +88,17 @@ CEnemy::CEnemy() :CCharacter(OBJTYPE::OBJTYPE_ENEMY)
 
     m_bUseCommonAtkFollow = false;
     m_targetTrend = TARGET_TREND_PLAYER;
-
-    m_Effect.type = NOT_EXIST;
-    m_Effect.interval = 1;
-    m_Effect.nCntTrail = 0;
-  
     m_nAddScore = 1;
     m_nWhoContribution = NOT_EXIST;
     m_nDeathContributionPoint = DEFAULT_DEATH_CONTRIBUTION;
 
+    m_Effect.type = NOT_EXIST;
+    m_Effect.interval = 1;
+    m_Effect.nCntTrail = 0;
+ 
     m_bDeathBySquashed = false;
+    m_bAtkStartFlag = false;
+    m_pModelEffect = NULL;
 }
 
 //=============================================================================
@@ -129,6 +130,12 @@ HRESULT CEnemy::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CEnemy::Uninit(void)
 {
+    // モデルエフェクトを使っていたものは、消すフラグを立てる（アルファ値が0を下回ったら消す処理を代用）
+    if (m_pModelEffect)
+    {
+        m_pModelEffect->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, -1.0f));
+    }
+
     CCharacter::Uninit();
 }
 
@@ -219,7 +226,7 @@ void CEnemy::Update(void)
 
 #ifdef COLLISION_TEST
         D3DXVECTOR3 size = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
-        CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 118);
+        CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 65);
 #endif // COLLISION_TEST
 
         // ライフがなくなったら消す
@@ -304,6 +311,8 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         // カミカゼの場合、プレイヤー以外にやられたら爆発を生み出す
         if (m_type == TYPE_KAMIKAZE)
         {
+            // カミカゼ爆発音
+            CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
             CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, myPos, myPos);
             CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, myPos, myPos);
@@ -555,6 +564,16 @@ void CEnemy::SetBaseState(BASE_STATE nextBaseState, int nNextStateEndFrame)
         m_baseState = nextBaseState;
         m_nCntTime = 0;
         m_bUseCommonAtkFollow = false;
+        m_bAtkStartFlag = false;
+
+        // 自分の種類によって、再設定するもの
+        if (m_type == TYPE_PENPEN)
+        {
+            m_pModelEffect->SetUseDraw(false);
+            SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
+            SetPartsDisp(PENPEN_PARTS_CUTTER_R, true);
+            SetPartsDisp(PENPEN_PARTS_CUTTER_L, true);
+        }
 
         // 次の状態によって、取得するもの
         switch (nextBaseState)
@@ -726,6 +745,9 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
     }
     else
     {
+        // 攻撃モーションに（種類ごとの処理で、攻撃モーション以外に変える場合があるので、先に設定）
+        m_setAnimationThisFrame = m_attackMotion;
+
         // 種類ごとの処理
         switch (m_type)
         {
@@ -743,10 +765,11 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
             break;
 		case TYPE_SHINIGAMI:
 			AtkShinigami(myPos);
+            break;
+        case TYPE_PENPEN:
+            AtkPenpen(myPos);
+            break;
         }
-
-        // 攻撃モーションに
-        m_setAnimationThisFrame = m_attackMotion;
     }
 }
 
