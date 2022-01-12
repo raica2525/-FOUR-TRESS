@@ -776,7 +776,17 @@ void CAi::GetTargetPos(void)
     {
         // ‹ß‚­‚Ì“G
         m_targetPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
-        GetAttackRange();
+
+        if (m_targetPos == DEFAULT_VECTOR)
+        {
+            // “G‚ª‚¢‚È‚¢‚Æ‚«‚ÍAˆÚ“®—vÇ‚ð‘_‚¤
+            m_targetPos = CGame::GetFortress()->GetPos();
+            m_fAttackRange = -100.0f;
+        }
+        else
+        {
+            GetAttackRange();
+        }
     }
 
     // ŽŸ‚Ì•W“IŽæ“¾ŽžŠÔ‚ð“¾‚é

@@ -209,6 +209,7 @@ void CEnemy::SetupInfoByType(void)
         m_attackMotion = COMMANDER_ANIM_SPAWN_ENEMY;
         m_nAddScore = 400;
         m_fDiscoveryTargetDistance = COMMANDER_DISCOVERY_DISTANCE;
+        m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;   // 移動要塞にも反応する
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
         CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);

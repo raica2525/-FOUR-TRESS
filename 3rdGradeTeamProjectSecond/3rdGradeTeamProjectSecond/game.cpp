@@ -1213,8 +1213,9 @@ D3DXVECTOR3 CGame::GetPosToClosestEnemy(D3DXVECTOR3 myPos)
     float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
     D3DXVECTOR3 targetPos = DEFAULT_VECTOR;     // 対象の位置
 
-    // 対象の位置を、自分の正面へ一度決めておく
-    targetPos = D3DXVECTOR3(myPos.x + DEFAULT_INIT_DISTANCE, 0.0f, myPos.z);
+    // AI処理を優先したため削除
+    //// 対象の位置を、自分の正面へ一度決めておく
+    //targetPos = D3DXVECTOR3(myPos.x + DEFAULT_INIT_DISTANCE, 0.0f, myPos.z);
 
     CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
     for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
