@@ -1,0 +1,608 @@
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデルの情報（リロード不可、起動前に前もって追加しておく）
+#------------------------------------------------------------------------------
+
+#---------------------------------------
+# [0] 仮モデル
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 0
+	NAME = data/MODEL/ball.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [1] 当たり判定可視化
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 1
+	NAME = data/MODEL/debug.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [2] 汎用プレイヤーの腰
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 2
+	NAME = data/MODEL/player1/00_bodyD.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [3] 汎用プレイヤーの胸部
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 3
+	NAME = data/MODEL/player1/01_bodyU.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [4] 汎用プレイヤーの頭
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 4
+	NAME = data/MODEL/player1/02_head.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [5] 汎用プレイヤーの右肩
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 5
+	NAME = data/MODEL/player1/03_armUR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [6] 汎用プレイヤーの右腕
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 6
+	NAME = data/MODEL/player1/04_armDR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [7] 汎用プレイヤーの右手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 7
+	NAME = data/MODEL/player1/05_handR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [8] 汎用プレイヤーの左肩
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 8
+	NAME = data/MODEL/player1/06_armUL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [9] 汎用プレイヤーの左腕
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 9
+	NAME = data/MODEL/player1/07_armDL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [10] 汎用プレイヤーの左手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 10
+	NAME = data/MODEL/player1/08_handL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [11] 汎用プレイヤーの右腿
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 11
+	NAME = data/MODEL/player1/09_legUR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [12] 汎用プレイヤーの右脚
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 12
+	NAME = data/MODEL/player1/10_legDR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [13] 汎用プレイヤーの右足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 13
+	NAME = data/MODEL/player1/11_footR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [14] 汎用プレイヤーの左腿
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 14
+	NAME = data/MODEL/player1/12_legUL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [15] 汎用プレイヤーの左脚
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 15
+	NAME = data/MODEL/player1/13_legDL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [16] 汎用プレイヤーの左足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 16
+	NAME = data/MODEL/player1/14_footL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [17] ウォーリアーの大剣
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 17
+	NAME = data/MODEL/player1/15_weapon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [18] ハンターの顔
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 18
+	NAME = data/MODEL/player2/02_head.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [19] ハンターの弓
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 19
+	NAME = data/MODEL/player2/15_weapon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [20] キャリアーの顔
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 20
+	NAME = data/MODEL/player4/02_head.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [21] キャリアーの右手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 21
+	NAME = data/MODEL/player4/05_handR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [22] キャリアーの左手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 22
+	NAME = data/MODEL/player4/08_handL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [23] キャリアーの右足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 23
+	NAME = data/MODEL/player4/11_footR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [24] キャリアーの左足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 24
+	NAME = data/MODEL/player4/14_footL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [25] タンクの顔
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 25
+	NAME = data/MODEL/player3/02_head.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [26] タンクの武器
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 26
+	NAME = data/MODEL/player3/15_weapon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [27] キャリアーの残像
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 27
+	NAME = data/MODEL/afterimage.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [28] ヒーラーの顔
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 28
+	NAME = data/MODEL/player5/02_head.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [29] ヒーラーの武器
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 29
+	NAME = data/MODEL/player5/15_weapon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [30] タンクの光の盾
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 30
+	NAME = data/MODEL/lightwall.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [31] アーミーの仮モデル
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 31
+	NAME = data/MODEL/example1.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [32] ボール
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 32
+	NAME = data/MODEL/ball.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [33] ゴール中
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 33
+	NAME = data/MODEL/goal_in.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [34] ゴール外
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 34
+	NAME = data/MODEL/goal_out.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [35] 障害物
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 35
+	NAME = data/MODEL/Debris.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [36] ペンペンの体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 36
+	NAME = data/MODEL/penpen/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [37] ペンペンの右刃
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 37
+	NAME = data/MODEL/penpen/01_R_Cutter.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [38] ペンペンの左刃
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 38
+	NAME = data/MODEL/penpen/02_L_Cutter.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [39] ペンペンの攻撃刃
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 39
+	NAME = data/MODEL/cutter.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [40] 矢
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 40
+	NAME = data/MODEL/ya.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [41] 弾アーミー
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 41
+	NAME = data/MODEL/b_army.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [42] 道
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 42
+	NAME = data/MODEL/road.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [43] アーミー体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 43
+	NAME = data/MODEL/army/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [44] アーミー右手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 44
+	NAME = data/MODEL/army/01_handR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [45] アーミー左手
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 45
+	NAME = data/MODEL/army/02_handL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [46] カミカゼ体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 46
+	NAME = data/MODEL/kamikaze/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [47] カミカゼ左腕
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 47
+	NAME = data/MODEL/kamikaze/01_armL.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [48] カミカゼ右腕
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 48
+	NAME = data/MODEL/kamikaze/02_armR.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [49] カミカゼ爆弾
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 49
+	NAME = data/MODEL/kamikaze/03_bomb.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [50] 箱
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 50
+	NAME = data/MODEL/kamikaze/04_cube.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [51] キャノン体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 51
+	NAME = data/MODEL/cannon/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [52] 単5電池
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 52
+	NAME = data/MODEL/battery05.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [53] 単3電池
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 53
+	NAME = data/MODEL/battery03.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [54] 単1電池
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 54
+	NAME = data/MODEL/battery01.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [55] 移動要塞
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 55
+	NAME = data/MODEL/fortress/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [56] 死神の体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 56
+	NAME = data/MODEL/shinigami/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [57] 死神の武器
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 57
+	NAME = data/MODEL/shinigami/01_weapon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [58] コマンダーの体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 58
+	NAME = data/MODEL/commander/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [59] コマンダーの花びら1
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 59
+	NAME = data/MODEL/commander/01_petal01.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [60] コマンダーの花びら2
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 60
+	NAME = data/MODEL/commander/02_petal02.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [61] コマンダーの花びら3
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 61
+	NAME = data/MODEL/commander/03_petal03.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [62] コマンダーの花びら4
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 62
+	NAME = data/MODEL/commander/04_petal04.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [63] コマンダーの花びら5
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 63
+	NAME = data/MODEL/commander/05_petal05.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [64] タイヤ
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 64
+	NAME = data/MODEL/fortress/04_tire.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [65] 当たり判定可視化2
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 65
+	NAME = data/MODEL/debug2.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [66] 当たり判定可視化3
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 66
+	NAME = data/MODEL/debug3.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [67] 弾キャノン
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 67
+	NAME = data/MODEL/b_cannon.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [68] 弾タンク
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 68
+	NAME = data/MODEL/b_tank.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [69] 弾ハンター
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 69
+	NAME = data/MODEL/b_hunter.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [70] キウイ体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 70
+	NAME = data/MODEL/scorekiwi/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [71] キウイ右翼
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 71
+	NAME = data/MODEL/scorekiwi/01_R_wing.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [72] キウイ左翼
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 72
+	NAME = data/MODEL/scorekiwi/02_L_wing.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [73] キウイ右足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 73
+	NAME = data/MODEL/scorekiwi/03_R_foot.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [74] キウイ左足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 74
+	NAME = data/MODEL/scorekiwi/04_L_foot.x
+END_MODEL_DATASET
+
+
+END_SCRIPT		# この行は絶対消さないこと！

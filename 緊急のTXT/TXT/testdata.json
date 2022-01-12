@@ -1,0 +1,166 @@
+{
+  "blocks": [
+    {
+      "breakable": false,
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "collision": {
+        "index": 0,
+        "pos": [
+          0,
+          956,
+          862
+        ],
+        "size": [
+          1055,
+          1829,
+          983
+        ]
+      },
+      "collisionindex": 0,
+      "goal": false,
+      "havecollision": true,
+      "modelname": "block1.x",
+      "name": "HaveCollision",
+      "pos": [
+        0,
+        0,
+        830
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "buildings": [
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "NotHaveCollision",
+      "pos": [
+        -1142,
+        0,
+        723
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "collisions": [
+    {
+      "index": 1,
+      "pos": [
+        1165,
+        515,
+        859
+      ],
+      "size": [
+        1000,
+        1000,
+        1000
+      ]
+    }
+  ],
+  "enemys": [
+    {
+      "appearstate": 0,
+      "chargevalue": -1,
+      "modelname": "cannon.x",
+      "name": "cannon",
+      "pos": [
+        -1193,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 0
+    },
+    {
+      "appearstate": 0,
+      "chargevalue": -1,
+      "modelname": "army.x",
+      "name": "army",
+      "pos": [
+        -678,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 0
+    },
+    {
+      "appearstate": 0,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kamikaze",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 0
+    },
+    {
+      "appearstate": 0,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "commander",
+      "pos": [
+        753,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 0
+    }
+  ],
+  "grounds": [
+    {
+      "angle": 0,
+      "name": "Ground",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        5000,
+        5000,
+        0
+      ],
+      "texturename": "000_default.png"
+    }
+  ],
+  "spawn": {
+    "pos": [
+      43,
+      0,
+      -1265
+    ]
+  }
+}
+

@@ -1,0 +1,2299 @@
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# エフェクトの情報（F4でリロード可能）
+#------------------------------------------------------------------------------
+
+#---------------------------------------
+# [0] 回復
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 0
+	TEX_TYPE = 104
+	ONCE = 4
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = -1.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 400
+	ROT_SPEED_MIN = 250
+	COL = 0.186 0.911 0.466 1.000
+	COL_CHANGE = 0.010 0.010 0.010 0.000
+	FADE_OUT_RATE = 0.020
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 1000
+	SIZE_CHANGE = -2.0 -2.0 0.0
+	EMITRADIUS = 200
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [1] ハート弾
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 1
+	TEX_TYPE = 122
+	ONCE = 1
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 50
+	SPEED_MIN = 50
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 0.174 0.174 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = -30.0 -30.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+#-------------------------------------------------------------
+# [2] ヒットエフェクト(突き、弓)
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 2
+	TEX_TYPE = 121
+	ONCE = 3
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 1		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 50	# 0～314
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.073 0.217 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.100	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+#---------------------------------------
+# [3] 反転合成用
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 3
+	TEX_TYPE = 20
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.000	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 0
+	SIZE_MIN = 0
+	SIZE_CHANGE = 75.0 75.0 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 1		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [4] ヒットエフェクト（斬撃）
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 4
+	TEX_TYPE = 120
+	ONCE = 3
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.942 0.246 0.087 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.150	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 60000
+	SIZE_MIN = 50000
+	SIZE_CHANGE = 10.0 10.0 0.0
+	EMITRADIUS = 200
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [5] 電撃弾
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 5
+	TEX_TYPE = 0
+	ONCE = 4
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 102
+	ROT_SPEED_MIN = 0
+	COL = 0.683 0.857 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.024
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 5000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [6] 電撃弾
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 6
+	TEX_TYPE = 123
+	ONCE = 6
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 200
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 76
+	SPEED_AA_MIN = -62
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 20
+	ROT_SPEED_MIN = 0
+	COL = 0.109 0.417 0.907 1.000
+	COL_CHANGE = 0.018 0.042 0.014 0.000
+	FADE_OUT_RATE = 0.060
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = 0.9 8.4 0.0
+	EMITRADIUS = 70
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [7] 二段ジャンプの空気の輪
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 7
+	TEX_TYPE = 34
+	ONCE = 20
+	PLANE = 1		# 0がXYで1がXZ
+	ON_CIRCLE = 1		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 1000
+	SPEED_MIN = 1000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.950	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.020	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = -9.0 -9.0 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 1		# bool
+	ALPHA_TEST_BORDER = 160
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [8] 二段ジャンプの砂埃
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 8
+	TEX_TYPE = 34
+	ONCE = 10
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 157	# 0～314
+	SCATTER_WIDTH = 90	# 0～314
+	SPEED_MAX = 800
+	SPEED_MIN = 700
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 314
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = -10.0 -10.0 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 1		# bool
+	ALPHA_TEST_BORDER = 100
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [9] 電撃(範囲)
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 9
+	TEX_TYPE = 123
+	ONCE = 8
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 160
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 20
+	ROT_SPEED_MIN = 0
+	COL = 0.000 0.201 1.000 1.000
+	COL_CHANGE = 0.040 0.089 0.935 0.000
+	FADE_OUT_RATE = 0.050
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 50000
+	SIZE_MIN = 30000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 300
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [10] 煙
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 10
+	TEX_TYPE = 36
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 50
+	SPEED_MAX = 300
+	SPEED_MIN = 200
+	SPEED_AA_MAX = 50
+	SPEED_AA_MIN = -50
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 99
+	ROT_SPEED_MIN = 26
+	COL = 0.958 0.343 0.078 0.600
+	COL_CHANGE = -0.096 -0.088 -0.060 -0.001
+	FADE_OUT_RATE = 0.001
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 50000
+	SIZE_MIN = 30000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [11] アイテム取得
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 11
+	TEX_TYPE = 104
+	ONCE = 2
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 900
+	ROT_SPEED_MIN = 800
+	COL = 1.000 0.946 0.772 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -2.0 -2.0 0.0
+	EMITRADIUS = 300
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [12] 爆発_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 12
+	TEX_TYPE = 36
+	ONCE = 10
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 42
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 588
+	SPEED_AA_MIN = 0
+	ACCEL = 0.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.981 0.898 0.401 1.000
+	COL_CHANGE = 0.032 -0.016 -0.010 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 100000
+	SIZE_MIN = 100000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [13] 爆発_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 13
+	TEX_TYPE = 113
+	ONCE = 6
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 1000
+	SPEED_MIN = 1000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.300
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.080
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 50
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [14] 爆発_2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 14
+	TEX_TYPE = 8
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 -0.098
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 50000
+	SIZE_MIN = 50000
+	SIZE_CHANGE = -30.0 -30.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [15] 敵出現_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 15
+	TEX_TYPE = 36
+	ONCE = 20
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 300
+	SPEED_AA_MIN = 0
+	ACCEL = 0.500
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.355 0.000 1.000 1.000
+	COL_CHANGE = 0.001 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 25000
+	SIZE_MIN = 25000
+	SIZE_CHANGE = 0.0 0.1 0.0
+	EMITRADIUS = 12
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [16] 敵出現_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 16
+	TEX_TYPE = 34
+	ONCE = 30
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 10
+	SPEED_MIN = 10
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.050
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 40
+	ROT_SPEED_MIN = 0
+	COL = 0.626 0.138 0.969 1.000
+	COL_CHANGE = -0.006 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 40000
+	SIZE_MIN = 25000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 10
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [17] 敵やられ
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 17
+	TEX_TYPE = 36
+	ONCE = 20
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 100
+	SPEED_AA_MIN = 40
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 40
+	ROT_SPEED_MIN = 0
+	COL = 0.313 0.051 0.880 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.040
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 25000
+	SIZE_CHANGE = 0.6 0.6 0.0
+	EMITRADIUS = 55
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [18] 風_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 18
+	TEX_TYPE = 128
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 32
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 8
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 396
+	ROT_SPEED_MIN = 136
+	COL = 0.757 0.923 0.666 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.06
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 30000
+	SIZE_CHANGE = 15 15 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [19] 風_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 19
+	TEX_TYPE = 126
+	ONCE = 1
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 150
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 256
+	SPEED_MIN = 128
+	SPEED_AA_MAX = 242
+	SPEED_AA_MIN = 0
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.572 0.892 0.762 1.000
+	COL_CHANGE = -0.002 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.080
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = -10.0 20.0 0.0
+	EMITRADIUS = 90
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [20] ボールが当たったときの衝撃みたいなやつ(角度はボールの当たった角度で)
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 20
+	TEX_TYPE = 11
+	ONCE = 15
+	PLANE = 1		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 70	# 0～314
+	SPEED_MAX = 2000
+	SPEED_MIN = 1800
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.000	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 10000
+	SIZE_MIN = 8000
+	SIZE_CHANGE = -5.0 25.0 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 70
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [21] 咆哮_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 21
+	TEX_TYPE = 8
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.678 0.741 0.788 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.018
+	FADE_OUT_RATE = 0.060
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 5.0 5.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [22] 咆哮_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 22
+	TEX_TYPE = 38
+	ONCE = 6
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 2000
+	SPEED_MIN = 2000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.787 0.883 0.927 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.082
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 14126
+	SIZE_CHANGE = 0.0 10.0 0.0
+	EMITRADIUS = 100
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [23] 咆哮_2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 23
+	TEX_TYPE = 8
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.532 0.556 0.641 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.020
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 0
+	SIZE_MIN = 0
+	SIZE_CHANGE = 50.0 50.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [24] 矢のエフェクト
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 24
+	TEX_TYPE = 102
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 50
+	SPEED_MAX = 200
+	SPEED_MIN = 150
+	SPEED_AA_MAX = 50
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 100
+	ROT_SPEED_MIN = 50
+	COL = 0.133 0.562 0.884 1.000
+	COL_CHANGE = 0.026 0.016 -0.002 -0.006
+	FADE_OUT_RATE = 0.03
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 10000
+	SIZE_MIN = 8000
+	SIZE_CHANGE = -0.2 -0.2 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#---------------------------------------
+# [25] カーソル選択時のキラキラ
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 25
+	TEX_TYPE = 74
+	ONCE = 15
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 314	# 0～314
+	SPEED_MAX = 500
+	SPEED_MIN = 250
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.0		# 1.0倍が基本
+	GRAVITY = 0.0
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 1000
+	ROT_SPEED_MIN = 0
+	COL = 1.0 1.0 1.0 1.0
+	COL_CHANGE = 0.0 0.0 0.0 0.0
+	FADE_OUT_RATE = 0.0	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 7500
+	SIZE_MIN = 5000
+	SIZE_CHANGE = -2.5 -2.5 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#---------------------------------------
+# [26] 影
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 26
+	TEX_TYPE = 87
+	ONCE = 1
+	PLANE = 1		# 0がXYで1がXZ
+	ROT_LAY = 1
+	COL = 1.0 1.0 1.0 1.0
+	SIZE_MAX = 1
+	SIZE_MIN = 1
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [27] 魔法陣_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 27
+	TEX_TYPE = 124
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 40
+	ROT_SPEED_MIN = 40
+	COL = 0.127 0.553 0.938 1.000
+	COL_CHANGE = 0.000 0.000 -0.002 0.000
+	FADE_OUT_RATE = 0.006
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 100000
+	SIZE_MIN = 100000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [28] 魔法陣_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 28
+	TEX_TYPE = 104
+	ONCE = 4
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 80
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 350
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = -0.200
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 316
+	ROT_SPEED_MIN = 0
+	COL = 0.522 0.876 0.261 0.631
+	COL_CHANGE = 0.000 0.006 0.300 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 100
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [29] 魔法陣_2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 29
+	TEX_TYPE = 124
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 150
+	ROT_SPEED_MIN = 150
+	COL = 0.142 0.676 0.946 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.006
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 90000
+	SIZE_MIN = 90000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [30] ウォーリアージャンプ攻撃0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 30
+	TEX_TYPE = 119
+	ONCE = 20
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 1522
+	SPEED_MIN = 856
+	SPEED_AA_MAX = 378
+	SPEED_AA_MIN = 150
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.043 0.177 0.795 1.000
+	COL_CHANGE = 0.030 0.030 0.010 0.000
+	FADE_OUT_RATE = 0.060
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -1.7 0.0 0.0
+	EMITRADIUS = 24
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [31] ウォーリアージャンプ攻撃1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 31
+	TEX_TYPE = 119
+	ONCE = 70
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 4000
+	SPEED_MIN = 4000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.522 0.965 0.960 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.022
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = 50.0 -17.0 0.0
+	EMITRADIUS = 5
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [32] ウォーリアージャンプ攻撃2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 32
+	TEX_TYPE = 6
+	ONCE = 21
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 157
+	SCATTER_WIDTH = 78
+	SPEED_MAX = 730
+	SPEED_MIN = 700
+	SPEED_AA_MAX = 192
+	SPEED_AA_MIN = 132
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 800
+	ROT_SPEED_MIN = 0
+	COL = 0.965 0.810 0.596 0.325
+	COL_CHANGE = 0.000 0.000 0.000 -0.010
+	FADE_OUT_RATE = 0.018
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 5000
+	SIZE_CHANGE = -0.8 0.2 0.0
+	EMITRADIUS = 28
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [33] 即死オーラ_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 33
+	TEX_TYPE = 11
+	ONCE = 6
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 86
+	SPEED_AA_MIN = 32
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 26
+	ROT_SPEED_MIN = 6
+	COL = 0.473 0.000 0.958 1.000
+	COL_CHANGE = 0.000 0.008 -0.020 0.000
+	FADE_OUT_RATE = 0.002
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 5000
+	SIZE_MIN = 4000
+	SIZE_CHANGE = -0.2 -0.2 0.0
+	EMITRADIUS = 26
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [34] 即死オーラ_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 34
+	TEX_TYPE = 125
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 138
+	SPEED_MIN = 138
+	SPEED_AA_MAX = 700
+	SPEED_AA_MIN = -700
+	ACCEL = 0.900
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 50
+	ROT_SPEED_MIN = 30
+	COL = 0.575 0.292 0.923 1.000
+	COL_CHANGE = -0.022 0.000 -0.020 0.000
+	FADE_OUT_RATE = 0.010
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 3000
+	SIZE_MIN = 1500
+	SIZE_CHANGE = 0.5 0.5 0.0
+	EMITRADIUS = 50
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [35] 着地砂埃
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 35
+	TEX_TYPE = 36
+	ONCE = 6
+	PLANE = 1
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 200
+	SPEED_MIN = 200
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.803 0.622 0.372 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.062
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 10000
+	SIZE_MIN = 5000
+	SIZE_CHANGE = 1.0 1.0 0.0
+	EMITRADIUS = 56
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [36] ジャンプ砂埃
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 36
+	TEX_TYPE = 36
+	ONCE = 4
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 180
+	SCATTER_WIDTH = 100
+	SPEED_MAX = 760
+	SPEED_MIN = 716
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.100
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 800
+	ROT_SPEED_MIN = 0
+	COL = 0.710 0.588 0.420 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.080
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 2500
+	SIZE_MIN = 1500
+	SIZE_CHANGE = 5.0 5.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [37] 火花
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 37
+	TEX_TYPE = 119
+	ONCE = 7
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 86
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 0.347 0.110 1.000
+	COL_CHANGE = 0.000 0.028 0.000 0.000
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -10.0 -8.0 0.0
+	EMITRADIUS = 52
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+ 
+#-------------------------------------------------------------
+# [38] ガードエフェクト
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 38
+	TEX_TYPE = 38
+	ONCE = 15
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 2000
+	SPEED_MIN = 2000
+	SPEED_AA_MAX = 2000
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 -0.048 -0.114 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = 50.0 -15.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 25
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [39] 立ち上がりの吸収
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 39
+	TEX_TYPE = 10
+	ONCE = 30
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 1		# bool
+	EMIT_INSIDE = 1		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 1500
+	SPEED_MIN = 1500
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.835 0.901 1.000 1.000
+	COL_CHANGE = -0.025 -0.05 0.000 0.000
+	FADE_OUT_RATE = 0.000	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = -6.0 5.0 0.0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 100
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [40] 飛び散る青い光
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 40
+	TEX_TYPE = 105
+	ONCE = 10
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 80	# 0～314
+	SCATTER_WIDTH = 60	# 0～314
+	SPEED_MAX = 20000
+	SPEED_MIN = 6000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.000 0.178 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.020	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 40000
+	SIZE_MIN = 40000
+	SIZE_CHANGE = 0.0 7.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+#-------------------------------------------------------------
+# [41] 飛び散る白い光
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 41
+	TEX_TYPE = 105
+	ONCE = 10
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 80	# 0～314
+	SCATTER_WIDTH = 60	# 0～314
+	SPEED_MAX = 20000
+	SPEED_MIN = 6000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.020	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 40000
+	SIZE_MIN = 40000
+	SIZE_CHANGE = 0.0 7.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [42] 飛び散る白い線
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 42
+	TEX_TYPE = 38
+	ONCE = 5
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 80	# 0～314
+	SCATTER_WIDTH = 60	# 0～314
+	SPEED_MAX = 20000
+	SPEED_MIN = 6000
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.040	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 0.0 7.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [43] 光が出てくるところの丸い青い光
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 43
+	TEX_TYPE = 4
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.359 0.696 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.030	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 150000
+	SIZE_MIN = 150000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 20
+END_EFFECT_DATASET
+
+
+#-------------------------------------------------------------
+# [44] 引き寄せ風_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 44
+	TEX_TYPE = 127
+	ONCE = 5
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 120
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 240
+	SPEED_AA_MIN = -240
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 500
+	ROT_SPEED_MIN = 300
+	COL = 0.726 0.969 0.758 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 180000
+	SIZE_MIN = 160000
+	SIZE_CHANGE = -40.0 -40.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 60
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [45] 引き寄せ風_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 45
+	TEX_TYPE = 128
+	ONCE = 2
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 500
+	ROT_SPEED_MIN = 300
+	COL = 0.992 1.000 0.997 0.165
+	COL_CHANGE = 0.000 0.028 0.000 0.000
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 150000
+	SIZE_MIN = 100000
+	SIZE_CHANGE = -20.0 -20.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 30
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [46] 胞子
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 46
+	TEX_TYPE = 4
+	ONCE = 6
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 100
+	SPEED_MAX = 300
+	SPEED_MIN = 300
+	SPEED_AA_MAX = 50
+	SPEED_AA_MIN = -50
+	ACCEL = 1.050
+	GRAVITY = 1.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.592 0.598 0.280 1.000
+	COL_CHANGE = 0.006 0.036 0.000 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = -1.0 -1.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#---------------------------------------
+# [47] バリア
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 47
+	TEX_TYPE = 106
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 0.750
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.1	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 25000
+	SIZE_MIN = 25000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	SIZE_CHANGE_LOCK_TIME = 0
+	SIZE_CHANGE_START_OR_FINISH = 0		# 0が開始で1が終わり
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [48] 必殺ゲージMAXのときのエフェクト1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 48
+	TEX_TYPE = 36
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.100 0.548 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 13000
+	SIZE_MIN = 13000
+	SIZE_CHANGE = 0.5 0.5 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [49] 必殺ゲージMAXのときのエフェクト2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 49
+	TEX_TYPE = 36
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 100
+	SPEED_MIN = 100
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.100 0.622 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 70
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [50] 紙吹雪のエフェクト
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 50
+	TEX_TYPE = 115
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 78	# 0～314
+	SPEED_MAX = 800
+	SPEED_MIN = 500
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 600
+	ROT_SPEED_MIN = 100
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.010	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 230
+	SIZE_MAX = 2500
+	SIZE_MIN = 1500
+	SIZE_CHANGE = 0.0 0.0 0.0
+	EMITRADIUS = 0
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [51] リスポーン0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 51
+	TEX_TYPE = 148
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 120
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 608
+	SPEED_MIN = 608
+	SPEED_AA_MAX = 240
+	SPEED_AA_MIN = -240
+	ACCEL = 0.000
+	GRAVITY = 10.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 500
+	ROT_SPEED_MIN = 300
+	COL = 1.000 0.951 0.494 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.028
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 25000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 40.0 40.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 60
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+#-------------------------------------------------------------
+# [52] リスポーン1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 52
+	TEX_TYPE = 149
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 120
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 608
+	SPEED_MIN = 608
+	SPEED_AA_MAX = 240
+	SPEED_AA_MIN = -240
+	ACCEL = 0.000
+	GRAVITY = 10.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 1
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 500
+	ROT_SPEED_MIN = 300
+	COL = 1.000 0.951 0.494 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.028
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 25000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 40.0 40.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 60
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [53] ストライクシュートの背後の周りに散るキラキラ
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 53
+	TEX_TYPE = 104
+	ONCE = 11
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 1		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 900
+	SPEED_MIN = 900
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 1	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.000 0.000 0.000 1.000
+	COL_CHANGE = 0.007 0.004 0.007 0.000
+	FADE_OUT_RATE = 0.000	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 50000
+	SIZE_MIN = 50000
+	SIZE_CHANGE = -10.0 -10.0 0.0
+	EMITRADIUS = 45
+	ADD_BLEND = 1		# bool
+	USE_ZBUFFER = 1		# bool
+	ALPHA_TEST_BORDER = 100
+END_EFFECT_DATASET
+
+#---------------------------------------
+# [54] ストライクシュートBG
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 54
+	TEX_TYPE = 117
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.1	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 0
+	SIZE_MAX = 0
+	SIZE_MIN = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#---------------------------------------
+# [55] ストライクシュート
+#---------------------------------------
+EFFECT_DATASET
+	TYPE = 55
+	TEX_TYPE = 118
+	ONCE = 1
+	PLANE = 0		# 0がXYで1がXZ
+	ON_CIRCLE = 0		# bool
+	EMIT_INSIDE = 0		# bool
+	SCATTER_ANGLE = 0	# 0～314
+	SCATTER_WIDTH = 0	# 0～314
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000	# 1.0倍が基本
+	GRAVITY = 0.000
+	GRAVITY_LIMIT = 0.0	# 0.0より大きいと適用
+	ROT_LAY = 0		# bool
+	ROT_EQUAL_MOVE = 0	# bool
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.1	# アルファ値減衰(0ならサイズを減衰させる)
+	FADE_OUT_LOCK_TIME = 75
+	SIZE_MAX = 0
+	SIZE_MIN = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 0		# bool
+	USE_ZBUFFER = 0		# bool
+	ALPHA_TEST_BORDER = 50
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [56] プレイヤー発見
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 56
+	TEX_TYPE = 150
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.000
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 30000
+	SIZE_MIN = 30000
+	SIZE_CHANGE = 250.0 -50.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 50
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+
+#-------------------------------------------------------------
+# [57] 電磁砲チャージ_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 57
+	TEX_TYPE = 123
+	ONCE = 8
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 210
+	SCATTER_WIDTH = 500
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 500
+	SPEED_AA_MIN = -500
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 1	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.440 0.894 0.934 1.000
+	COL_CHANGE = 0.020 0.000 -0.018 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 60000
+	SIZE_MIN = 40000
+	SIZE_CHANGE = -5.0 -15.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 200
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [58] 電磁砲チャージ_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 58
+	TEX_TYPE = 4
+	ONCE = 17
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 114
+	SCATTER_WIDTH = 2000
+	SPEED_MAX = 300
+	SPEED_MIN = 300
+	SPEED_AA_MAX = 122
+	SPEED_AA_MIN = -158
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.333 0.880 0.722 1.000
+	COL_CHANGE = 0.012 0.004 0.000 0.000
+	FADE_OUT_RATE = 0.032
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 15000
+	SIZE_MIN = 10000
+	SIZE_CHANGE = 5.0 5.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 16
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 132
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [59]  電磁砲チャージ_2
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 59
+	TEX_TYPE = 4
+	ONCE = 10
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 500
+	SPEED_MIN = 400
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 1.034
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 0.570 0.802 0.946 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.036
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 25000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 0.0 0.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 132
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [60] アーミー弾
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 60
+	TEX_TYPE = 102
+	ONCE = 3
+	PLANE = 1
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 50
+	SPEED_MAX = 200
+	SPEED_MIN = 150
+	SPEED_AA_MAX = 50
+	SPEED_AA_MIN = 0
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 150
+	ROT_SPEED_MIN = 50
+	COL = 0.295 0.133 0.884 1.000
+	COL_CHANGE = 0.026 0.016 -0.002 0.000
+	FADE_OUT_RATE = 0.030
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 10000
+	SIZE_MIN = 8000
+	SIZE_CHANGE = -0.2 -0.2 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [61] 電磁砲軌跡_0
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 61
+	TEX_TYPE = 24
+	ONCE = 10
+	PLANE = 0
+	ON_CIRCLE = 1
+	EMIT_INSIDE = 1
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 200
+	SPEED_MIN = 150
+	SPEED_AA_MAX = 800
+	SPEED_AA_MIN = -300
+	ACCEL = 1.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 150
+	ROT_SPEED_MIN = 50
+	COL = 0.141 0.473 0.869 1.000
+	COL_CHANGE = 0.010 -0.012 -0.182 0.000
+	FADE_OUT_RATE = 0.062
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 15000
+	SIZE_CHANGE = -0.2 -2.6 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 140
+	ADD_BLEND = 0
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+#-------------------------------------------------------------
+# [62] 電磁砲軌跡_1
+#-------------------------------------------------------------
+EFFECT_DATASET
+	TYPE = 62
+	TEX_TYPE = 0
+	ONCE = 1
+	PLANE = 0
+	ON_CIRCLE = 0
+	EMIT_INSIDE = 0
+	SCATTER_ANGLE = 0
+	SCATTER_WIDTH = 0
+	SPEED_MAX = 0
+	SPEED_MIN = 0
+	SPEED_AA_MAX = 0
+	SPEED_AA_MIN = 0
+	ACCEL = 0.000
+	GRAVITY = 0.000
+	GRAVITYLIMIT = 0.000
+	ROT_LAY = 0
+	ROT_EQUAL_MOVE = 0	
+	ROT_SPEED_MAX = 0
+	ROT_SPEED_MIN = 0
+	COL = 1.000 1.000 1.000 1.000
+	COL_CHANGE = 0.000 0.000 0.000 0.000
+	FADE_OUT_RATE = 0.018
+	FADE_OUT_LOCK_COUNT = 0
+	SIZE_MAX = 20000
+	SIZE_MIN = 20000
+	SIZE_CHANGE = 0.0 0.0 0.0
+    SIZE_CHANGE_LOCK_TIME  = 0
+    SIZE_CHANGE_START_OR_FINISH  = 0
+	EMITRADIUS = 0
+	ADD_BLEND = 1
+	USE_ZBUFFER = 0
+	ALPHA_TEST_BORDER = 0
+END_EFFECT_DATASET
+
+END_SCRIPT		# この行は絶対消さないこと！

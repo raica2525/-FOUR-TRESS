@@ -421,12 +421,12 @@ void CEnemy::DiscoveryTarget(CCharacter *pTarget)
     {
         m_pTarget = pTarget;
     }
-    D3DXVECTOR3 pos = GetPos();// 敵の位置を取得
-
-    pos.y += 500;// エフェクトを出す位置を調整
 
     // ここで、ビックリマーク的なものを出す
-    CEffect3D::Emit(CEffectData::TYPE_WARNING, pos, pos);
+    D3DXVECTOR3 effectPos = GetPos();                               // 敵の位置を取得
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();   // 当たり判定を取得
+    effectPos.y += collisionSizeDefence.y;                          // エフェクトを出す位置を調整
+    CEffect3D::Emit(CEffectData::TYPE_WARNING, effectPos, effectPos);
 }
 
 //=============================================================================
