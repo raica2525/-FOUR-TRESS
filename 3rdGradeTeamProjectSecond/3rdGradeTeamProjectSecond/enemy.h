@@ -222,7 +222,7 @@ public:
     void Update(void);                                                                  // 更新処理
     void Draw(void);                                                                    // 描画処理
     static CEnemy *Create(int type, D3DXVECTOR3 pos, float fStrength = 1.0f,
-        int appearState = APPEAR_STATE_EXIST, float fSearchDistanceForAppear = 2000.0f, float fChargeValue = NOT_EXIST_F);// 生成処理
+        int appearState = APPEAR_STATE_EXIST, float fChargeValue = NOT_EXIST_F, float fSearchDistanceForAppear = 2000.0f);// 生成処理
 
     void DiscoveryTarget(CCharacter *pTarget);                                          // ターゲット発見処理
 

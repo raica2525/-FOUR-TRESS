@@ -181,8 +181,8 @@ CEnemy* CMapManager::CreateEnemyFromJsonObject(picojson::object obj)
 	float fChargeValue = (float)CJson::Nullcheck<double>(obj, "chargevalue");
 	float fSearchDistance = (float)CJson::Nullcheck<double>(obj, "searchdistance");
 
-	// オブジェクトの生成
-    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos, fStrength, appearState, fSearchDistance, fChargeValue);
+	// オブジェクトの生成（サーチ距離は、デフォルト引数で固定した）
+    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos, fStrength, appearState, fChargeValue);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

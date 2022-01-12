@@ -365,7 +365,7 @@ void CEnemy::Draw(void)
 // ¶¬ˆ—
 // Author : Œã“¡T”V•
 //=============================================================================
-CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearState, float fSearchDistanceForAppear, float fChargeValue)
+CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearState, float fChargeValue, float fSearchDistanceForAppear)
 {
     // ƒƒ‚ƒŠŠm•Û
     CEnemy *pEnemy = NULL;
