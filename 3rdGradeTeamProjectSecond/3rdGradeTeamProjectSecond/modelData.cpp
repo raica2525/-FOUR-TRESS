@@ -749,6 +749,10 @@ int CModelData::GetEnemyTypeByName(std::string name)
     {
         nReturnNumber = CEnemy::TYPE_PENPEN;
     }
+    else if (name.compare("kiwi.x") == 0)
+    {
+        nReturnNumber = CEnemy::TYPE_KIWI;
+    }
 
     return nReturnNumber;
 }

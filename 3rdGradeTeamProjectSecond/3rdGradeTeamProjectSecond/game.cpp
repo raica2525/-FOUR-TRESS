@@ -178,80 +178,80 @@ HRESULT CGame::Init(void)
     }
     else if (m_type == TYPE_ARENA)
     {
-        ////====================================================================
-        //// ジェイソンファイルからマップを生成し、初期地点も取得する
-        //CMapManager *pMapManager = CManager::GetMapManager();
-        //pMapManager->CreateMapFromJson(MAP_FILENAME);
-        //D3DXVECTOR3 startPos = pMapManager->GetStartPos();
-        //player1Pos = startPos;
-        //player2Pos = startPos;
-        //player3Pos = startPos;
-        //player4Pos = startPos;
-        //m_pFortress = CFortress::Create(startPos); // 移動要塞生成
-        ////====================================================================
+        //====================================================================
+        // ジェイソンファイルからマップを生成し、初期地点も取得する
+        CMapManager *pMapManager = CManager::GetMapManager();
+        pMapManager->CreateMapFromJson(MAP_FILENAME);
+        D3DXVECTOR3 startPos = pMapManager->GetStartPos();
+        player1Pos = startPos;
+        player2Pos = startPos;
+        player3Pos = startPos;
+        player4Pos = startPos;
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成
+        //====================================================================
 
-        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
-        // 仮の道生成
-        D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
-        for (int nCnt = 0; nCnt < 20; nCnt++)
-        {
-            D3DXVECTOR3 rot = DEFAULT_VECTOR;
-            roadPos.x += 1000.0f;
-            rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
-            CRoad::Create(roadPos, rot);
-        }
+  //      m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
+  //      // 仮の道生成
+  //      D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
+  //      for (int nCnt = 0; nCnt < 20; nCnt++)
+  //      {
+  //          D3DXVECTOR3 rot = DEFAULT_VECTOR;
+  //          roadPos.x += 1000.0f;
+  //          rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
+  //          CRoad::Create(roadPos, rot);
+  //      }
 
-        // 仮の敵（最初の壁に至るまで）
-        D3DXVECTOR3 enemyPos = D3DXVECTOR3(3000.0f, 0.0f, 1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, 1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(3000.0f, 0.0f, -1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, -1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(10000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      // 仮の敵（最初の壁に至るまで）
+  //      D3DXVECTOR3 enemyPos = D3DXVECTOR3(3000.0f, 0.0f, 1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(4000.0f, 0.0f, 1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(3000.0f, 0.0f, -1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(4000.0f, 0.0f, -1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(10000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
 
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(15000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(17000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(14000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(16000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
-		CEnemy::Create(CEnemy::TYPE_KIWI, D3DXVECTOR3(2000.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(15000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(17000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(14000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(16000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+		//CEnemy::Create(CEnemy::TYPE_KIWI, D3DXVECTOR3(2000.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
 
-        // 仮のゴールゲート
-        CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
-        CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(22000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
+  //      // 仮のゴールゲート
+  //      CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
+  //      CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(22000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
     }
 
     // ステージのモデルを生成
