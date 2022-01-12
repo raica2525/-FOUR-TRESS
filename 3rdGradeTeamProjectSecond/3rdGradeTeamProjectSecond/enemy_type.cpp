@@ -270,6 +270,7 @@ void CEnemy::SetupInfoByType(void)
 		m_walkMotion = KIWI_ANIM_WALK;
 		m_deathMotion = KIWI_ANIM_DEATH;
 		m_damageMotion = KIWI_ANIM_DAMAGE;
+        m_attackMotion = KIWI_ANIM_RUN;
 		m_nAddScore = 10000;
 		m_fDiscoveryTargetDistance = KIWI_DISCOVERY_DISTANCE;
 		CCharacter::SetPartNum(KIWI_PARTS_MAX);

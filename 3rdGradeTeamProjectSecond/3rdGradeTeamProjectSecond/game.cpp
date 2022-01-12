@@ -269,14 +269,14 @@ HRESULT CGame::Init(void)
     {
     case 1:
         fSplitXRate = SPLIT_RATE_UNDER_3;
-        player1Pos.x *= -fSplitXRate;
+        //player1Pos.x *= -fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         break;
     case 2:
         fSplitXRate = SPLIT_RATE_UNDER_3;
-        player1Pos.x *= -fSplitXRate;
-        player2Pos.x *= fSplitXRate;
+        //player1Pos.x *= -fSplitXRate;
+        //player2Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
@@ -284,9 +284,9 @@ HRESULT CGame::Init(void)
         break;
     case 3:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2.0f;
-        player2Pos.x *= -fSplitXRate;
-        player3Pos.x *= fSplitXRate;
+        //player1Pos.x *= -fSplitXRate * 2.0f;
+        //player2Pos.x *= -fSplitXRate;
+        //player3Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
@@ -296,10 +296,10 @@ HRESULT CGame::Init(void)
         break;
     case 4:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2.0f;
-        player2Pos.x *= -fSplitXRate;
-        player3Pos.x *= fSplitXRate;
-        player4Pos.x *= fSplitXRate * 2.0f;
+        //player1Pos.x *= -fSplitXRate * 2.0f;
+        //player2Pos.x *= -fSplitXRate;
+        //player3Pos.x *= fSplitXRate;
+        //player4Pos.x *= fSplitXRate * 2.0f;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
@@ -643,6 +643,10 @@ void CGame::InButtle(void)
         else if (pInputKeyboard->GetKeyboardTrigger(DIK_6))
         {
             CEnemy::Create(CEnemy::TYPE_PENPEN, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_7))
+        {
+            CEnemy::Create(CEnemy::TYPE_KIWI, spawnPos);
         }
     }
         break;
