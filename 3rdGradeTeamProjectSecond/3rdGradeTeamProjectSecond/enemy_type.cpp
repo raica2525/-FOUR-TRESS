@@ -89,6 +89,15 @@
 #define PENPEN_ATK_SPEED 8.75f                // 攻撃中のスピード
 #define PENPEN_CUTTER_ROT_SPEED D3DXToRadian(15.0f) // カッターの回転速度
 
+//===========================
+// キウイ
+//===========================
+#define KIWI_WHOLE_FRAME 40                 // 全体フレーム
+#define KIWI_DISCOVERY_DISTANCE 2000.0f     // 検知距離
+#define KIWI_RUN_DISTANCE 2500.0f           // 逃げきったと判断する距離
+#define KIWI_WAIT_COUNT 1                   // 逃げ切った後の待機フレーム
+#define KIWI_ATK_SPEED 10.0f                // 攻撃中のスピード
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -253,6 +262,24 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(PENPEN_PARTS_CUTTER_L, 38);
         CCharacter::LoadModelData("./data/ANIMATION/motion_penpen.txt");
         break;
+	case TYPE_KIWI:
+		SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
+		m_fSpeed = 5.0f;
+		fHP = 100.0f;
+		m_fChargeValue = 1.0f;
+		m_walkMotion = KIWI_ANIM_WALK;
+		m_deathMotion = KIWI_ANIM_DEATH;
+		m_damageMotion = KIWI_ANIM_DAMAGE;
+		m_nAddScore = 10000;
+		m_fDiscoveryTargetDistance = KIWI_DISCOVERY_DISTANCE;
+		CCharacter::SetPartNum(KIWI_PARTS_MAX);
+		CCharacter::BindParts(KIWI_PARTS_BODY, 70);
+		CCharacter::BindParts(KIWI_PARTS_WING_R, 71);
+		CCharacter::BindParts(KIWI_PARTS_WING_L, 72);
+		CCharacter::BindParts(KIWI_PARTS_FOOT_R, 73);
+		CCharacter::BindParts(KIWI_PARTS_FOOT_L, 74);
+		CCharacter::LoadModelData("./data/ANIMATION/motion_kiwi.txt");
+		break;
     }
 
     // 強さを反映
@@ -529,4 +556,37 @@ void CEnemy::AtkPenpen(D3DXVECTOR3 &myPos)
             CBullet::Create(CBullet::TYPE_PENPEN_ATTACK, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
         }
     }
+}
+
+//=============================================================================
+// キウイの攻撃(逃げる)
+// Author : 池田悠希
+//=============================================================================
+void CEnemy::AtkKiwi(D3DXVECTOR3 &myPos)
+{
+	if (m_pTarget)
+	{
+		if (m_nCntTime >= KIWI_WHOLE_FRAME && D3DXVec3Length(&(m_pTarget->GetPos() - myPos)) > KIWI_RUN_DISTANCE)
+		{
+			// 待機AIに
+			SetBaseState(BASE_STATE_WAIT, KIWI_WAIT_COUNT);
+		}
+		else
+		{
+			// 現在の位置と、目的地までの移動角度/向きを求める
+			D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+			float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+			m_moveAngle = D3DXVECTOR3(sinf(fDestAngle), 0.0f, cosf(fDestAngle));
+			SetRotDestY(atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z)));
+			myPos += m_moveAngle * KIWI_ATK_SPEED;
+			float fKeepDistance;
+			m_pTarget = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
+			// 向きを調整
+			RotControl();
+		}
+	}
+	else
+	{
+		SetBaseState(BASE_STATE_WAIT, KIWI_WAIT_COUNT);
+	}
 }

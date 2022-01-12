@@ -564,4 +564,45 @@ MODEL_DATASET
 	NAME = data/MODEL/b_hunter.x
 END_MODEL_DATASET
 
+#---------------------------------------
+# [70] キウイ体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 70
+	NAME = data/MODEL/scorekiwi/00_body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [71] キウイ右翼
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 71
+	NAME = data/MODEL/scorekiwi/01_R_wing.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [72] キウイ左翼
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 72
+	NAME = data/MODEL/scorekiwi/02_L_wing.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [73] キウイ右足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 73
+	NAME = data/MODEL/scorekiwi/03_R_foot.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [74] キウイ左足
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 74
+	NAME = data/MODEL/scorekiwi/04_L_foot.x
+END_MODEL_DATASET
+
+
 END_SCRIPT		# この行は絶対消さないこと！
