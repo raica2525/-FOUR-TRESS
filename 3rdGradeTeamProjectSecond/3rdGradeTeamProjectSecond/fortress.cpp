@@ -42,7 +42,7 @@
 #define CHARGE_POINT_LV3 15
 
 // 体力周り
-#define MAX_LIFE 1000.0f
+#define MAX_LIFE 3000.0f
 #define SMOKE_EFFECT_LIFE 250.0f
 
 // タイヤの回転
@@ -94,7 +94,7 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // 初期設定
     SetCollisionSizeDefence(D3DXVECTOR2(1200.0f, 1000.0f));
-    m_fSpeed = 3.5f;
+    m_fSpeed = 4.0f;    // 要変更
     SetUpLife(MAX_LIFE);
     SetTakeKnockBack(false);
 

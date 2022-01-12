@@ -143,6 +143,7 @@ HRESULT CGame::Init(void)
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
 
     // プレイヤーの生成
+    D3DXVECTOR3 startPos = DEFAULT_VECTOR;
     D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
     D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
     D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
@@ -167,12 +168,11 @@ HRESULT CGame::Init(void)
         //CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         //CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
 
-        D3DXVECTOR3 startPos = DEFAULT_VECTOR;
         player1Pos = startPos;
         player2Pos = startPos;
         player3Pos = startPos;
         player4Pos = startPos;
-        m_pFortress = CFortress::Create(DEFAULT_VECTOR); // 移動要塞生成（無敵状態）
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
 
         CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(0.0f, 0.0f, 5000.0f), D3DXVECTOR3(500.0f, 500.0f, 500.0f), MODEL_DIRECT_LEFT);
     }
@@ -182,7 +182,6 @@ HRESULT CGame::Init(void)
         // ジェイソンファイルからマップを生成し、初期地点も取得する
         CMapManager *pMapManager = CManager::GetMapManager();
         pMapManager->CreateMapFromJson(MAP_FILENAME);
-        D3DXVECTOR3 startPos = pMapManager->GetStartPos();
         player1Pos = startPos;
         player2Pos = startPos;
         player3Pos = startPos;
@@ -311,7 +310,7 @@ HRESULT CGame::Init(void)
         break;
     }
     // カメラのロックオン場所を変える
-    CManager::GetCamera()->CCamera::ResetCamera(DEFAULT_VECTOR, CAMERA_DEFAULT_ROT, CCamera::SETTING_GAME);
+    CManager::GetCamera()->CCamera::ResetCamera(startPos, CAMERA_DEFAULT_ROT, CCamera::SETTING_GAME);
 
     // 反転合成用のエフェクトを生成
     m_pEffect2d_Nega = CEffect2D::Create(3, DEFAULT_VECTOR);
