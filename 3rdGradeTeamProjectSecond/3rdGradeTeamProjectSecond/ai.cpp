@@ -17,6 +17,10 @@
 // マクロ定義
 //*****************************************************************************
 
+// ターゲットを近いor遠いとみなす値
+#define TARGET_CLOSE_VALUE 200.0f
+#define TARGET_FAR_VALUE 5000.0f
+
 // 弾を近いとみなす値
 #define BULLET_CLOSE_VALUE 750.0f
 
@@ -26,6 +30,7 @@
 #define ATTACK_RANGE_CARRIER 1250.0f
 #define ATTACK_RANGE_TANK 1500.0f
 #define ATTACK_RANGE_HEALER 2500.0f
+#define ATTACK_RANGE_NONE -100.0f
 
 // 標的取得間隔
 #define TARGETTING_INTERVAL_AI_LEVEL_1_MAX 30
@@ -128,7 +133,15 @@ void CAi::Update(void)
     bool bCurrentButtonR2 = false;        // 現在のR2ボタン
 
     // 追加
-    RushToTarget();
+    if (m_nCntActionTime <= 0)
+    {
+        RushToTarget();
+    }
+    else
+    {
+        DontMove(false);
+        m_nCntActionTime--;
+    }
     bCurrentButtonA = JumpBecauseEnemyBulletClose();
     bCurrentButtonX = DecideAttack();
 
@@ -468,7 +481,7 @@ void CAi::GetWaitTime(void)
 //=============================================================================
 void CAi::DontMove(bool bUseTurn)
 {
-    //m_pPlayer->GetControlInput()->bTiltedLeftStick = false;
+    m_pPlayer->GetControlInput()->bTiltedLeftStick = false;
 
     //// 移動しない程度に敵を振り向くなら
     //if (bUseTurn)
@@ -770,22 +783,55 @@ void CAi::GetTargetPos(void)
     {
         // エナジー量が最大に達していたら、移動要塞を狙う
         m_targetPos = CGame::GetFortress()->GetPos();
-        m_fAttackRange = 0.0f;
+        m_fAttackRange = ATTACK_RANGE_NONE;
     }
     else
     {
-        // 近くの敵
-        m_targetPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
+        // 近くの敵を狙う
+        D3DXVECTOR3 enemyPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
 
-        if (m_targetPos == DEFAULT_VECTOR)
+        // 敵がいるかどうか
+        if (enemyPos == DEFAULT_VECTOR)
         {
-            // 敵がいないときは、移動要塞を狙う
-            m_targetPos = CGame::GetFortress()->GetPos();
-            m_fAttackRange = -100.0f;
+            // 敵がいないときは、近すぎない移動要塞を狙う
+            D3DXVECTOR3 fortressPos = CGame::GetFortress()->GetPlayerSpawnPos(m_pPlayer->GetIdxControlAndColor());
+            float fDistance_Fortress = GetDistanceXZ(m_pPlayer->GetPos(), fortressPos);
+            if (fDistance_Fortress > TARGET_CLOSE_VALUE)
+            {
+                m_targetPos = fortressPos;
+                m_fAttackRange = ATTACK_RANGE_NONE;
+            }
+            else
+            {
+                // 待機時間を得る
+                GetWaitTime();
+            }
         }
         else
         {
-            GetAttackRange();
+            // 敵が近いなら、狙う
+            float fDistance_enemy = GetDistanceXZ(m_pPlayer->GetPos(), enemyPos);
+            if (fDistance_enemy < TARGET_FAR_VALUE)
+            {
+                m_targetPos = enemyPos;
+                GetAttackRange();
+            }
+            else
+            {
+                // 敵が遠いときは、近すぎない移動要塞を狙う
+                D3DXVECTOR3 fortressPos = CGame::GetFortress()->GetPlayerSpawnPos(m_pPlayer->GetIdxControlAndColor());
+                float fDistance_Fortress = GetDistanceXZ(m_pPlayer->GetPos(), fortressPos);
+                if (fDistance_Fortress > TARGET_CLOSE_VALUE)
+                {
+                    m_targetPos = fortressPos;
+                    m_fAttackRange = ATTACK_RANGE_NONE;
+                }
+                else
+                {
+                    // 待機時間を得る
+                    GetWaitTime();
+                }
+            }
         }
     }
 

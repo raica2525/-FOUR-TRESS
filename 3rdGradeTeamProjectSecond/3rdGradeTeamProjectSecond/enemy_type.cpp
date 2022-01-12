@@ -94,9 +94,9 @@
 //===========================
 #define KIWI_WHOLE_FRAME 40                 // 全体フレーム
 #define KIWI_DISCOVERY_DISTANCE 2000.0f     // 検知距離
-#define KIWI_RUN_DISTANCE 2500.0f           // 逃げきったと判断する距離
+#define KIWI_RUN_DISTANCE 3000.0f           // 逃げきったと判断する距離
 #define KIWI_WAIT_COUNT 1                   // 逃げ切った後の待機フレーム
-#define KIWI_ATK_SPEED 10.0f                // 攻撃中のスピード
+#define KIWI_ATK_SPEED 12.0f                // 攻撃中のスピード
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -570,8 +570,10 @@ void CEnemy::AtkKiwi(D3DXVECTOR3 &myPos)
 	{
 		if (m_nCntTime >= KIWI_WHOLE_FRAME && D3DXVec3Length(&(m_pTarget->GetPos() - myPos)) > KIWI_RUN_DISTANCE)
 		{
-			// 待機AIに
-			SetBaseState(BASE_STATE_WAIT, KIWI_WAIT_COUNT);
+			// 消える
+            SetLife(-1.0f);
+            m_deathMotion = 0;
+            SetLastHit(OBJTYPE_ENEMY);
 		}
 		else
 		{
@@ -581,10 +583,16 @@ void CEnemy::AtkKiwi(D3DXVECTOR3 &myPos)
 			m_moveAngle = D3DXVECTOR3(sinf(fDestAngle), 0.0f, cosf(fDestAngle));
 			SetRotDestY(atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z)));
 			myPos += m_moveAngle * KIWI_ATK_SPEED;
-			float fKeepDistance;
+			float fKeepDistance = 0.0f;
 			m_pTarget = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
 			// 向きを調整
 			RotControl();
+
+            // オーバーフロー防止
+            if (m_nCntTime > KIWI_WHOLE_FRAME)
+            {
+                m_nCntTime = KIWI_WHOLE_FRAME;
+            }
 		}
 	}
 	else

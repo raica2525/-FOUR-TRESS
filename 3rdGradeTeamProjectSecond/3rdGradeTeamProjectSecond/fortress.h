@@ -80,6 +80,7 @@ public:
     bool GetNowWhoRiding(void) { return m_bNowWhoRiding; }
     bool GetAttackPhase(void) { return m_bAttackPhase; }
     float GetChargeValue(void) { return m_fChargeValue; }
+    D3DXVECTOR3 GetPlayerSpawnPos(int nIndex);
 
 private:
     float m_fSpeed;             // ‘¬‚³

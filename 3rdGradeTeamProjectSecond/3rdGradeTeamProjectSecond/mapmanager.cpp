@@ -141,8 +141,8 @@ CBg* CMapManager::CreateBgFromJsonObject(picojson::object obj)
 	D3DCOLOR col			= CJson::ArrayToD3DCol(CJson::Nullcheck<picojson::array>(obj, "col"));
 	std::string modelname	= CJson::Nullcheck<std::string>(obj, "modelname");
 
-	// オブジェクトの生成
-	return CBg::Create(CManager::GetModelData()->GetIndexByName(modelname), pos);
+	// オブジェクトの生成（強制的に色変え）
+	return CBg::Create(CManager::GetModelData()->GetIndexByName(modelname), pos, CBg::COLOR_PHASE_G_UP);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

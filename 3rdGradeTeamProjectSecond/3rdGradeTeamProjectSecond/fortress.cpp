@@ -302,6 +302,36 @@ void CFortress::AddChargeValue(const float fChargeValue)
 }
 
 //=============================================================================
+// プレイヤーのリスポーン位置を返す処理
+// Author : 後藤慎之助
+//=============================================================================
+D3DXVECTOR3 CFortress::GetPlayerSpawnPos(int nIndex)
+{
+    D3DXVECTOR3 returnPos = GetPos();
+    D3DXVECTOR3 addPos = DEFAULT_VECTOR;
+
+    switch (nIndex)
+    {
+    case PLAYER_1:
+        addPos = D3DXVECTOR3(-850.0f, 0.0f, 850.0f);
+        break;
+    case PLAYER_2:
+        addPos = D3DXVECTOR3(850.0f, 0.0f, 850.0f);
+        break;
+    case PLAYER_3:
+        addPos = D3DXVECTOR3(-850.0f, 0.0f, -850.0f);
+        break;
+    case PLAYER_4:
+        addPos = D3DXVECTOR3(850.0f, 0.0f, -850.0f);
+        break;
+    }
+
+    returnPos += addPos;
+
+    return returnPos;
+}
+
+//=============================================================================
 // 道を探す処理
 // Author : 後藤慎之助
 //=============================================================================

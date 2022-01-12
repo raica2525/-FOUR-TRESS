@@ -56,7 +56,7 @@
 
 // リスポーン時間
 #define RESPAWN_FRAME 600
-#define RESPAWN_HEIGHT 500.0f
+#define RESPAWN_HEIGHT 1500.0f
 
 //=======================
 // ウォーリアー
@@ -1264,7 +1264,7 @@ void CPlayer::Respawn(void)
 {
     // リスポーン
     CFortress *pFortress = CGame::GetFortress();
-    D3DXVECTOR3 respawnPos = pFortress->GetPartsPos(CFortress::PARTS_FIRE_POS) + D3DXVECTOR3(0.0f, RESPAWN_HEIGHT, 0.0f);
+    D3DXVECTOR3 respawnPos = pFortress->GetPlayerSpawnPos(m_nIdxControlAndColor) + D3DXVECTOR3(0.0f, RESPAWN_HEIGHT, 0.0f);
     SetPos(respawnPos);
     SetRot(pFortress->GetRot());
     SetDisp(true);
