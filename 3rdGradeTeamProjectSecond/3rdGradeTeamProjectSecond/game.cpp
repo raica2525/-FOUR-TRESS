@@ -182,6 +182,7 @@ HRESULT CGame::Init(void)
         // ジェイソンファイルからマップを生成し、初期地点も取得する
         CMapManager *pMapManager = CManager::GetMapManager();
         pMapManager->CreateMapFromJson(MAP_FILENAME);
+        startPos = pMapManager->GetStartPos();
         player1Pos = startPos;
         player2Pos = startPos;
         player3Pos = startPos;
