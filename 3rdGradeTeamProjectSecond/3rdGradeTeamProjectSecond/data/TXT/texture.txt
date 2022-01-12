@@ -1243,4 +1243,12 @@ TEXTURESET
     NAME = data/TEXTURE/effect/respawn_001.png
 END_TEXTURESET
 
+#---------------------------------------
+# [150] プレイヤー発見
+#---------------------------------------
+TEXTURESET
+    TYPE = 150
+    NAME = data/TEXTURE/warning.png
+END_TEXTURESET
+
 END_SCRIPT		# この行は絶対消さないこと！
