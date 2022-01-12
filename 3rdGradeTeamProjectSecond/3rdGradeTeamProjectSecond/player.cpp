@@ -1284,6 +1284,10 @@ void CPlayer::Respawn(void)
     SetTakeDamageTime(0);
     SetDamageState(DAMAGE_STATE_NONE);
 
+    // リスポーンエフェクト発生
+    CEffect3D::Emit(CEffectData::TYPE_RESPAWN_0, respawnPos, respawnPos);
+    CEffect3D::Emit(CEffectData::TYPE_RESPAWN_1, respawnPos, respawnPos);
+
     m_fCurrentEnergy = 0.0f;
 }
 
