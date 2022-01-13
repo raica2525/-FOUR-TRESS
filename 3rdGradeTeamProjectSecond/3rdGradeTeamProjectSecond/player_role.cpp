@@ -542,9 +542,9 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     }
     else if (m_controlInput.bTriggerB)
     {
-        // 攻撃フェーズ中は降りられない
-        if (pFortress)
+        if (pFortress->GetDisp())
         {
+            // 攻撃フェーズ中は降りられない
             if (!pFortress->GetAttackPhase())
             {
                 // 降りる処理（攻撃周りをリセット）
@@ -837,7 +837,7 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
         {
             // 位置を保存
-            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
+            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos, GetRot());
             m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
             m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
             m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
@@ -1217,6 +1217,10 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_SHIELD);
 
             CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));
+
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_2, playerPos, playerPos);
         }
 
         // 縦の移動量は一定

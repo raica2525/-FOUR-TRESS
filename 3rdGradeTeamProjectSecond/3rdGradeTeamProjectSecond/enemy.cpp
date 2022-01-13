@@ -217,6 +217,18 @@ void CEnemy::Update(void)
         SetPos(myPos);
         SetMove(move);
 
+        // 常に発生させるエフェクト
+        if (m_type == TYPE_SHINIGAMI)
+        {
+            m_Effect.nCntTrail++;
+            if (m_Effect.nCntTrail >= m_Effect.interval)
+            {
+                m_Effect.nCntTrail = 0;
+                CEffect3D::Emit(CEffectData::TYPE_DARKNESS_AURA_0, myPos, myPos);
+                CEffect3D::Emit(CEffectData::TYPE_DARKNESS_AURA_1, myPos, myPos);
+            }
+        }
+
         // アニメーションさせる
         if (GetAnimation())
         {
@@ -540,15 +552,18 @@ void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
-            // 当たっているなら
-            D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-            if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            if (pFortress->GetDisp())
             {
-                // HP0に
-                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
+                // 当たっているなら
+                D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+                if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+                {
+                    // HP0に
+                    TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
 
-                // 移動要塞に踏みつぶされた
-                m_bDeathBySquashed = true;
+                    // 移動要塞に踏みつぶされた
+                    m_bDeathBySquashed = true;
+                }
             }
         }
     }

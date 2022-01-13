@@ -258,6 +258,7 @@ public:
     // ƒQƒbƒ^[
     //=============================
     int GetAppearState(void) { return m_appearState; }
+    int GetType(void) { return m_type; }
 
 private:
     int m_type;                              // í—Ş

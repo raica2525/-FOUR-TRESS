@@ -92,7 +92,7 @@
 //===========================
 // キウイ
 //===========================
-#define KIWI_WHOLE_FRAME 40                 // 全体フレーム
+#define KIWI_WHOLE_FRAME 60                 // 全体フレーム
 #define KIWI_DISCOVERY_DISTANCE 2000.0f     // 検知距離
 #define KIWI_RUN_DISTANCE 3000.0f           // 逃げきったと判断する距離
 #define KIWI_WAIT_COUNT 1                   // 逃げ切った後の待機フレーム
@@ -141,7 +141,7 @@ void CEnemy::SetupInfoByType(void)
     case TYPE_ARMY:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = ARMY_ANIM_WALK;
@@ -160,7 +160,7 @@ void CEnemy::SetupInfoByType(void)
     case TYPE_KAMIKAZE:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;
         m_walkMotion = KAMIKAZE_ANIM_WALK;
@@ -236,16 +236,18 @@ void CEnemy::SetupInfoByType(void)
 		m_nAddScore = 3000;
 		m_bSquashedByFortress = false;
 		m_fDiscoveryTargetDistance = SHINIGAMI_DISCOVERY_DISTANCE;
+        SetTakeKnockBack(false);
 		// パーツ数を設定、モデルをバインド、アニメーションをバインド
 		CCharacter::SetPartNum(SHINIGAMI_PARTS_MAX);
 		CCharacter::BindParts(SHINIGAMI_PARTS_BODY, 56);
 		CCharacter::BindParts(SHINIGAMI_PARTS_WEP, 57);
 		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
+        m_Effect.interval = 12;
 		break;
     case TYPE_PENPEN:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 100.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = PENPEN_ANIM_WALK;
@@ -265,7 +267,7 @@ void CEnemy::SetupInfoByType(void)
         break;
 	case TYPE_KIWI:
 		SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
-		m_fSpeed = 5.0f;
+		m_fSpeed = 5.25f;
 		fHP = 100.0f;
 		m_fChargeValue = 1.0f;
 		m_walkMotion = KIWI_ANIM_WALK;

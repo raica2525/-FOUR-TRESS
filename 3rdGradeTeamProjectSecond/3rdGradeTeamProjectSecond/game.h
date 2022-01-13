@@ -133,10 +133,12 @@ public:
         return m_nCharacterIdx;
     }
     static HIT_SURFACE MapLimit(D3DXVECTOR3 &pos, D3DXVECTOR3 posOld, D3DXVECTOR3 myCubeSize); // マップ制限
-    static D3DXVECTOR3 GetPosToClosestEnemy(D3DXVECTOR3 myPos);       // 一番近い敵の位置を求める
+    static D3DXVECTOR3 GetPosToClosestEnemy(D3DXVECTOR3 myPos, D3DXVECTOR3 myRot);       // 一番近い敵の位置を求める
     static float GetDistanceToClosestEnemyBullet(D3DXVECTOR3 myPos);  // 一番近い弾の距離を求める
     static void AddScore(const int nScore);
     static bool GetDispAnyPlayer(void);
+
+    static D3DXVECTOR3 GetPosToClosestEnemy_AI(D3DXVECTOR3 myPos);       // 一番近い敵の位置を求める_AI
 
 private:
 

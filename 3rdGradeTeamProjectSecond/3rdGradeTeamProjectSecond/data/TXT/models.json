@@ -8,6 +8,69 @@
       ],
       "name": "block1.x",
       "path": "data\\MODEL\\map\\block1.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "block2.x",
+      "path": "data\\MODEL\\map\\block2.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "block3.x",
+      "path": "data\\MODEL\\map\\block3.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "block4.x",
+      "path": "data\\MODEL\\map\\block4.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "block5.x",
+      "path": "data\\MODEL\\map\\block5.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "Debris.x",
+      "path": "data\\MODEL\\map\\Debris.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "end outside.x",
+      "path": "data\\MODEL\\map\\end outside.x"
+    },
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "goal_out.x",
+      "path": "data\\MODEL\\map\\goal_out.x"
     }
   ]
 }

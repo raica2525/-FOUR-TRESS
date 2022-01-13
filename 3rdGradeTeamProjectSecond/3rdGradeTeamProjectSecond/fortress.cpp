@@ -93,7 +93,7 @@ CFortress::~CFortress()
 HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // èâä˙ê›íË
-    SetCollisionSizeDefence(D3DXVECTOR2(1200.0f, 1000.0f));
+    SetCollisionSizeDefence(D3DXVECTOR2(1450.0f, 1000.0f));
     m_fSpeed = 4.0f;    // óvïœçX
     SetUpLife(MAX_LIFE);
     SetTakeKnockBack(false);
@@ -313,16 +313,16 @@ D3DXVECTOR3 CFortress::GetPlayerSpawnPos(int nIndex)
     switch (nIndex)
     {
     case PLAYER_1:
-        addPos = D3DXVECTOR3(-850.0f, 0.0f, 850.0f);
+        addPos = D3DXVECTOR3(-850.0f, RESPAWN_HEIGHT, 850.0f);
         break;
     case PLAYER_2:
-        addPos = D3DXVECTOR3(850.0f, 0.0f, 850.0f);
+        addPos = D3DXVECTOR3(850.0f, RESPAWN_HEIGHT, 850.0f);
         break;
     case PLAYER_3:
-        addPos = D3DXVECTOR3(-850.0f, 0.0f, -850.0f);
+        addPos = D3DXVECTOR3(-850.0f, RESPAWN_HEIGHT, -850.0f);
         break;
     case PLAYER_4:
-        addPos = D3DXVECTOR3(850.0f, 0.0f, -850.0f);
+        addPos = D3DXVECTOR3(850.0f, RESPAWN_HEIGHT, -850.0f);
         break;
     }
 

@@ -148,6 +148,9 @@ void CBullet::Update(void)
     case TYPE_HEALER_SKY:
         bUseCollisionThisFrame = HealerSkyUseCollision();
         break;
+    case TYPE_ENERGY_BALL:
+        EnergyBallMove(myPos);
+        break;
     default:
         // 移動量を位置に反映
         myPos += m_moveAngle * m_fSpeed;
@@ -176,7 +179,7 @@ void CBullet::Update(void)
         if (m_Effect.nCntTrail >= m_Effect.interval)
         {
             m_Effect.nCntTrail = 0;
-            CEffect3D::Create(m_Effect.type, myPos);
+            CEffect3D::Emit(m_Effect.type, myPos, m_posOld);
         }
     }
 
@@ -516,6 +519,35 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 
                 // 次のシーンにする
                 pScene = pNextScene;
+            }
+        }
+    }
+
+    // 移動要塞をチャージするかどうか
+    if (IS_BITON(m_collisionFlag, COLLISION_FLAG_CHARGE_FORTRESS))
+    {
+        CFortress *pFortress = CGame::GetFortress();
+        if (pFortress)
+        {
+            // インデックスを取得
+            int nIdx = pFortress->GetIdx();
+
+            // 多段ヒット回避用フラグがfalseなら
+            if (!m_abUseAvoidMultipleHits[nIdx])
+            {
+                // 当たっているなら
+                if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), D3DXVECTOR2(700.0f, 1000.0f)))
+                {
+                    // 多段ヒット回避用のフラグをtrueに
+                    m_abUseAvoidMultipleHits[nIdx] = true;
+
+                    // チャージ(ダメージ量がそのままチャージ量に)
+                    pFortress->AddChargeValue(m_fDamage);
+                    if (m_bHitErase)
+                    {
+                        m_nLife = HIT_NOT_EXIST;
+                    }
+                }
             }
         }
     }

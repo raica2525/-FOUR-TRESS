@@ -788,7 +788,7 @@ void CAi::GetTargetPos(void)
     else
     {
         // ‹ß‚­‚Ì“G‚ð‘_‚¤
-        D3DXVECTOR3 enemyPos = CGame::GetPosToClosestEnemy(m_pPlayer->GetPos());
+        D3DXVECTOR3 enemyPos = CGame::GetPosToClosestEnemy_AI(m_pPlayer->GetPos());
 
         // “G‚ª‚¢‚é‚©‚Ç‚¤‚©
         if (enemyPos == DEFAULT_VECTOR)
