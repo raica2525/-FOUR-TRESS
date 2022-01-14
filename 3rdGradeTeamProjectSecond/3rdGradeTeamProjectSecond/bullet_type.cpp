@@ -57,7 +57,7 @@ typedef enum
 // エナジーボール
 //===========================
 #define ENERGY_BALL_ACCEL_VALUE 1.1f
-#define ENERGY_BALL_MAX_SPEED 20.0f
+#define ENERGY_BALL_MAX_SPEED 17.5f
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -161,7 +161,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
         // エフェクト番号と発生間隔
         m_Effect.type = 46;
-        m_Effect.interval = 3;
+        m_Effect.interval = 5;
         break;
     case TYPE_HUNTER_GROUND:
         // 固有の情報
@@ -325,7 +325,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         bUseShadow = false; // 影を使用しない
         // エフェクト番号と発生間隔
         m_Effect.type = CEffectData::TYPE_LIGHTNING_1;
-        m_Effect.interval = 5;
+        m_Effect.interval = 4;
         break;
     }
 

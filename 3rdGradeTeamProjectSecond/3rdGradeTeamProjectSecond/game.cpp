@@ -183,11 +183,15 @@ HRESULT CGame::Init(void)
         CMapManager *pMapManager = CManager::GetMapManager();
         pMapManager->CreateMapFromJson(MAP_FILENAME);
         startPos = pMapManager->GetStartPos();
-        player1Pos = startPos;
-        player2Pos = startPos;
-        player3Pos = startPos;
-        player4Pos = startPos;
         m_pFortress = CFortress::Create(startPos); // 移動要塞生成
+        player1Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_1);
+        player1Pos.y = 0.0f;
+        player2Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_2);
+        player2Pos.y = 0.0f;
+        player3Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_3);
+        player3Pos.y = 0.0f;
+        player4Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_4);
+        player4Pos.y = 0.0f;
         //====================================================================
 
   //      m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
@@ -336,65 +340,6 @@ HRESULT CGame::Init(void)
         CManager::SoundPlay(CSound::LABEL_BGM_BATTLE02);
         break;
     }
-
-    //// 仮の見た目確認用モデル生成
-    //CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
-    //CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
-
-    //// 仮の敵配置
-    //D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
-    //bool bNextParagraph = false;
-    //for (int nCnt = 1; nCnt < 26; nCnt++)
-    //{
-    //    if (bNextParagraph)
-    //    {
-    //        enemyPos.x = -2000.0f;
-    //        bNextParagraph = false;
-    //    }
-
-    //    CEnemy::Create(CEnemy::TYPE_SPIDER, enemyPos);
-
-    //    if (nCnt % 5 == 0)
-    //    {
-    //        enemyPos.z += 1000.0f;
-    //        bNextParagraph = true;
-    //    }
-    //    
-    //    enemyPos.x += 1000.0f;
-    //}
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(-1000.0f, 1000.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(0.0f, 0.0f, 1500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER);
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(1000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS);
-    //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(2000.0f, 0.0f, 3000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-
-    //// 仮の道生成
-    //D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
-    //for (int nCnt = 0; nCnt < 10; nCnt++)
-    //{
-    //    D3DXVECTOR3 rot = DEFAULT_VECTOR;
-    //    if (nCnt < 5)
-    //    {
-    //        roadPos.z += 500.0f;
-    //    }
-    //    else
-    //    {
-    //        roadPos.x += 500.0f;
-    //        rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
-    //    }
-    //    CRoad::Create(roadPos, rot);
-    //}
-    
-    //// 背景生成
-    //CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    //CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    //CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-
-    //// ブロック生成
-    //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), D3DXVECTOR3(5000.0f, 500.0f, 500.0f), DEFAULT_VECTOR);
-    //CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(5000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 5000.0f), MODEL_DIRECT_LEFT);
 
     return S_OK;
 }
