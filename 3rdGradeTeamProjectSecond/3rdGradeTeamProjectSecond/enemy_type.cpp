@@ -20,6 +20,7 @@
 #include "modelEffect.h"
 #include "bullet.h"
 #include "effectData.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -83,11 +84,20 @@
 //===========================
 #define PENPEN_WHOLE_FRAME 150                // 全体フレーム
 #define PENPEN_START_FRAME 30                 // 攻撃開始フレーム
-#define PENPEN_INTERVAL_FRAME 5               // 発生間隔フレーム
+#define PENPEN_INTERVAL_FRAME 10              // 発生間隔フレーム
 #define PENPEN_WAIT_COUNT 50                  // 攻撃後の待機フレーム
 #define PENPEN_DISCOVERY_DISTANCE 1750.0f     // 検知距離
 #define PENPEN_ATK_SPEED 8.75f                // 攻撃中のスピード
 #define PENPEN_CUTTER_ROT_SPEED D3DXToRadian(15.0f) // カッターの回転速度
+
+//===========================
+// キウイ
+//===========================
+#define KIWI_WHOLE_FRAME 60                 // 全体フレーム
+#define KIWI_DISCOVERY_DISTANCE 2000.0f     // 検知距離
+#define KIWI_RUN_DISTANCE 3000.0f           // 逃げきったと判断する距離
+#define KIWI_WAIT_COUNT 1                   // 逃げ切った後の待機フレーム
+#define KIWI_ATK_SPEED 12.0f                // 攻撃中のスピード
 
 //=============================================================================
 // 種類ごとの初期設定
@@ -132,7 +142,7 @@ void CEnemy::SetupInfoByType(void)
     case TYPE_ARMY:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 280.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = ARMY_ANIM_WALK;
@@ -151,7 +161,7 @@ void CEnemy::SetupInfoByType(void)
     case TYPE_KAMIKAZE:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(300.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 200.0f;
         m_fChargeValue = 5.0f;
         m_walkMotion = KAMIKAZE_ANIM_WALK;
@@ -200,6 +210,7 @@ void CEnemy::SetupInfoByType(void)
         m_attackMotion = COMMANDER_ANIM_SPAWN_ENEMY;
         m_nAddScore = 400;
         m_fDiscoveryTargetDistance = COMMANDER_DISCOVERY_DISTANCE;
+        m_targetTrend = TARGET_TREND_PLAYER_AND_FORTRESS;   // 移動要塞にも反応する
         // パーツ数を設定、モデルをバインド、アニメーションをバインド
         CCharacter::SetPartNum(COMMANDER_PARTS_MAX);
         CCharacter::BindParts(COMMANDER_PARTS_BODY, 58);
@@ -226,16 +237,18 @@ void CEnemy::SetupInfoByType(void)
 		m_nAddScore = 3000;
 		m_bSquashedByFortress = false;
 		m_fDiscoveryTargetDistance = SHINIGAMI_DISCOVERY_DISTANCE;
+        SetTakeKnockBack(false);
 		// パーツ数を設定、モデルをバインド、アニメーションをバインド
 		CCharacter::SetPartNum(SHINIGAMI_PARTS_MAX);
 		CCharacter::BindParts(SHINIGAMI_PARTS_BODY, 56);
 		CCharacter::BindParts(SHINIGAMI_PARTS_WEP, 57);
 		CCharacter::LoadModelData("./data/ANIMATION/motion_shinigami.txt");
+        m_Effect.interval = 12;
 		break;
     case TYPE_PENPEN:
         // 固有の情報
         SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
-        m_fSpeed = 5.0f;
+        m_fSpeed = 5.25f;
         fHP = 100.0f;
         m_fChargeValue = 3.0f;
         m_walkMotion = PENPEN_ANIM_WALK;
@@ -253,6 +266,25 @@ void CEnemy::SetupInfoByType(void)
         CCharacter::BindParts(PENPEN_PARTS_CUTTER_L, 38);
         CCharacter::LoadModelData("./data/ANIMATION/motion_penpen.txt");
         break;
+	case TYPE_KIWI:
+		SetCollisionSizeDefence(D3DXVECTOR2(350.0f, 350.0f));
+		m_fSpeed = 5.25f;
+		fHP = 100.0f;
+		m_fChargeValue = 1.0f;
+		m_walkMotion = KIWI_ANIM_WALK;
+		m_deathMotion = KIWI_ANIM_DEATH;
+		m_damageMotion = KIWI_ANIM_DAMAGE;
+        m_attackMotion = KIWI_ANIM_RUN;
+		m_nAddScore = 10000;
+		m_fDiscoveryTargetDistance = KIWI_DISCOVERY_DISTANCE;
+		CCharacter::SetPartNum(KIWI_PARTS_MAX);
+		CCharacter::BindParts(KIWI_PARTS_BODY, 70);
+		CCharacter::BindParts(KIWI_PARTS_WING_R, 71);
+		CCharacter::BindParts(KIWI_PARTS_WING_L, 72);
+		CCharacter::BindParts(KIWI_PARTS_FOOT_R, 73);
+		CCharacter::BindParts(KIWI_PARTS_FOOT_L, 74);
+		CCharacter::LoadModelData("./data/ANIMATION/motion_kiwi.txt");
+		break;
     }
 
     // 強さを反映
@@ -529,4 +561,43 @@ void CEnemy::AtkPenpen(D3DXVECTOR3 &myPos)
             CBullet::Create(CBullet::TYPE_PENPEN_ATTACK, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
         }
     }
+}
+
+//=============================================================================
+// キウイの攻撃(逃げる)
+// Author : 池田悠希
+//=============================================================================
+void CEnemy::AtkKiwi(D3DXVECTOR3 &myPos)
+{
+	if (m_pTarget)
+	{
+		if (m_nCntTime >= KIWI_WHOLE_FRAME && D3DXVec3Length(&(m_pTarget->GetPos() - myPos)) > KIWI_RUN_DISTANCE)
+		{
+			// 消える
+            SetLife(-1.0f);
+            m_deathMotion = 0;
+            SetLastHit(OBJTYPE_ENEMY);
+		}
+		else
+		{
+			// 現在の位置と、目的地までの移動角度/向きを求める
+			D3DXVECTOR3 targetPos = CManager::GetCamera()->GetPosR();   // カメラの中心点から逃げるようにした
+			float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+			m_moveAngle = D3DXVECTOR3(sinf(fDestAngle), 0.0f, cosf(fDestAngle));
+			SetRotDestY(atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z)));
+			myPos += m_moveAngle * KIWI_ATK_SPEED;
+			// 向きを調整
+			RotControl();
+
+            // オーバーフロー防止
+            if (m_nCntTime > KIWI_WHOLE_FRAME)
+            {
+                m_nCntTime = KIWI_WHOLE_FRAME;
+            }
+		}
+	}
+	else
+	{
+		SetBaseState(BASE_STATE_WAIT, KIWI_WAIT_COUNT);
+	}
 }

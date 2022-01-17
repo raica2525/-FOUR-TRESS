@@ -34,7 +34,7 @@
 #define ITEM_FLASH_START_FRAME (ITEM_LIFE - 420)            // 点滅開始フレーム
 #define ITEM_USE_COLLISION_FRAME (ITEM_LIFE - 10)           // 衝突判定を持たせるまでのフレーム
 #define ITEM_CLOSE_DISTANCE_DEFAULT 1000.0f                 // 近いとみなす距離(デフォルト)
-#define ITEM_CLOSE_DISTANCE_CARRIER 2000.0f                 // 近いとみなす距離(キャリアー)
+#define ITEM_CLOSE_DISTANCE_CARRIER 1500.0f                 // 近いとみなす距離(キャリアー)
 #define ITEM_ROT_SPEED D3DXToRadian(2.0f)                   // 回転速度
 
 //=============================================================================

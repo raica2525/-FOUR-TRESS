@@ -62,6 +62,7 @@ public:
         TYPE_HEALER_SKY,        // ヒーラーの空中攻撃
 		TYPE_SHINIGAMI_ATTACK,	// シニガミの攻撃
         TYPE_PENPEN_ATTACK,     // ペンペンの攻撃
+        TYPE_ENERGY_BALL,       // 移動要塞に送るエナジーボール
     }TYPE;
 
     // 何に当たるかのフラグ
@@ -75,6 +76,7 @@ public:
         COLLISION_FLAG_PULL_ENEMY = 0x001 << 4,     // 敵を引き寄せる
         COLLISION_FLAG_HEAL_PLAYER = 0x001 << 5,    // プレイヤーを回復する
         COLLISION_FLAG_HEAL_ENEMY = 0x001 << 6 ,    // 敵を回復する
+        COLLISION_FLAG_CHARGE_FORTRESS = 0x001 << 7,// 移動要塞にチャージする
     }COLLISION_FLAG;
 
     //=============================
@@ -137,6 +139,7 @@ private:
     void HunterGroundMove(D3DXVECTOR3 &myPos);
     void HunterSkyMove(D3DXVECTOR3 &myPos);
     bool HealerSkyUseCollision(void);
+    void EnergyBallMove(D3DXVECTOR3 &myPos);
 
     //=============================
     // このクラス内でのみ使う処理

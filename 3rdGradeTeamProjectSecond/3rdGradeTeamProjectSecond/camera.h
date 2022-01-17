@@ -84,6 +84,7 @@ public:
     D3DXVECTOR3 GetPos(void) { return m_posV; }
     D3DXMATRIX GetProjectionMtx(void) { return m_mtxProjection; }
     D3DXMATRIX GetViewMtx(void) { return m_mtxView; }
+    D3DXVECTOR3 GetPosR(void) { return m_posR; }
 
 private:
     D3DXVECTOR3	m_posRDest;         // カメラの注視点（目的値）

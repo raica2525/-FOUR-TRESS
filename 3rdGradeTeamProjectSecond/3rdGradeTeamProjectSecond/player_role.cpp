@@ -19,6 +19,7 @@
 #include "modelEffect.h"
 #include "wave.h"
 #include "manager.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -37,18 +38,18 @@ typedef enum
 // 基本ダメージ
 #define WARRIOR_GROUND_BASE_DAMAGE 100.0f
 // 当たり判定周り
-#define WARRIOR_GROUND_EMIT_DISTANCE 350.0f
-#define WARRIOR_GROUND_RADIUS 450.0f
-#define WARRIOR_GROUND_HEIGHT 300.0f
+#define WARRIOR_GROUND_EMIT_DISTANCE 375.0f
+#define WARRIOR_GROUND_RADIUS 500.0f
+#define WARRIOR_GROUND_HEIGHT 350.0f
 // 全体フレーム、攻撃発生フレーム、攻撃終了フレーム
-#define WARRIOR_GROUND_WHOLE_FRAME 30
+#define WARRIOR_GROUND_WHOLE_FRAME 25
 #define WARRIOR_GROUND_START_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 10)
 #define WARRIOR_GROUND_END_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 20)
 // 硬直フレーム
 #define WARRIOR_GROUND_STOP_FRAME 5
 // その他
 #define WARRIOR_GROUND_DUSH_SPEED 25.0f
-#define WARRIOR_GROUND_COMBO_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 15)
+#define WARRIOR_GROUND_COMBO_FRAME (WARRIOR_GROUND_WHOLE_FRAME - 10)
 #define WARRIOR_GROUND_SLIDE_SPEED 10.0f
 
 //==========================
@@ -62,7 +63,7 @@ typedef enum
 #define WARRIOR_SKY_HEIGHT 500.0f
 // 全体フレーム、攻撃発生フレーム
 #define WARRIOR_SKY_WHOLE_FRAME 9999
-#define WARRIOR_SKY_START_FRAME (WARRIOR_SKY_WHOLE_FRAME - 20)
+#define WARRIOR_SKY_START_FRAME (WARRIOR_SKY_WHOLE_FRAME - 23)
 // その他
 #define WARRIOR_SKY_UP_VALUE 20.0f
 #define WARRIOR_SKY_CHANCE_FRAME 30
@@ -97,7 +98,7 @@ typedef enum
 // キャリアー地上
 //==========================
 // 基本ダメージ
-#define CARRIER_GROUND_BASE_DAMAGE 40.0f
+#define CARRIER_GROUND_BASE_DAMAGE 70.0f
 // 当たり判定周り
 #define CARRIER_GROUND_RADIUS 450.0f
 #define CARRIER_GROUND_HEIGHT 300.0f
@@ -542,9 +543,9 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     }
     else if (m_controlInput.bTriggerB)
     {
-        // 攻撃フェーズ中は降りられない
-        if (pFortress)
+        if (pFortress->GetDisp())
         {
+            // 攻撃フェーズ中は降りられない
             if (!pFortress->GetAttackPhase())
             {
                 // 降りる処理（攻撃周りをリセット）
@@ -619,11 +620,9 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
         CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
-
-    // 連続攻撃の判定
-    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
+    else if (m_nCntAttackTime == 1)
     {
-        if (m_controlInput.bTriggerX)
+        if (m_bBurstAttack)
         {
             ResetAttack();
             m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
@@ -635,6 +634,16 @@ void CPlayer::AtkWarriorGround1(D3DXVECTOR3& playerPos)
                 SetRotY(m_controlInput.fPlayerAngle);
                 SetRotDestY(m_controlInput.fPlayerAngle);
             }
+        }
+    }
+
+    // 連続攻撃の判定
+    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
+    {
+        if (m_controlInput.bTriggerX)
+        {
+            // 連続攻撃のフラグを立てる
+            m_bBurstAttack = true;
         }
     }
 }
@@ -694,15 +703,13 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
         CDebug::Create(attackPos, D3DXVECTOR3(ATTACK_RADIUS, ATTACK_HEIGHT, ATTACK_RADIUS), CDebug::TYPE_MOMENT, 66);
 #endif // COLLISION_TEST
     }
-
-    // 連続攻撃の判定
-    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
+    else if (m_nCntAttackTime == 1)
     {
-        if (m_controlInput.bTriggerX)
+        if (m_bBurstAttack)
         {
             ResetAttack();
-            m_nCntAttackTime = WARRIOR_GROUND_WHOLE_FRAME;
-            m_attackState = ATTACK_STATE_WARRIOR_GROUND1;
+            m_nCntAttackTime = WARRIOR_SKY_WHOLE_FRAME;
+            m_attackState = ATTACK_STATE_WARRIOR_SKY;
 
             // 向きを即座に変えれる
             if (!m_controlInput.bPressR2)
@@ -710,6 +717,16 @@ void CPlayer::AtkWarriorGround2(D3DXVECTOR3& playerPos)
                 SetRotY(m_controlInput.fPlayerAngle);
                 SetRotDestY(m_controlInput.fPlayerAngle);
             }
+        }
+    }
+
+    // 連続攻撃の判定
+    if (m_nCntAttackTime <= WARRIOR_GROUND_COMBO_FRAME)
+    {
+        if (m_controlInput.bTriggerX)
+        {
+            // 連続攻撃のフラグを立てる
+            m_bBurstAttack = true;
         }
     }
 }
@@ -727,6 +744,9 @@ void CPlayer::AtkWarriorSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 着地したら、隙が発生し、攻撃は終了
         if (m_bGround)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(250.0f);
+
             // 着地音
             CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_SWORD);
 
@@ -837,7 +857,7 @@ void CPlayer::AtkHunterSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         if (m_nCntAttackTime == HUNTER_SKY_TARGETING_FRAME)
         {
             // 位置を保存
-            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos);
+            D3DXVECTOR3 targetPos = CGame::GetPosToClosestEnemy(playerPos, GetRot());
             m_afParam[PARAM_HUNTER_TARGET_POS_X] = targetPos.x;
             m_afParam[PARAM_HUNTER_TARGET_POS_Y] = targetPos.y;
             m_afParam[PARAM_HUNTER_TARGET_POS_Z] = targetPos.z;
@@ -989,6 +1009,9 @@ void CPlayer::AtkCarrierSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 着地したら、隙が発生し、攻撃は終了
         if (m_bGround)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(250.0f);
+
             // 着地音
             CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_NAIL);
 
@@ -1213,10 +1236,17 @@ void CPlayer::AtkTankSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
         // 挑発エフェクト
         if (m_nCntAttackTime == TANK_SKY_START_FRAME)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(300.0f);
+
             // 咆哮音
             CManager::SoundPlay(CSound::LABEL_SE_JUMP_ATTACK_SHIELD);
 
             CWave::Create(playerPos, D3DXVECTOR3(50.0f, 50.0f, 0.0f));
+
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_0, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_1, playerPos, playerPos);
+            CEffect3D::Emit(CEffectData::TYPE_ROAR_2, playerPos, playerPos);
         }
 
         // 縦の移動量は一定

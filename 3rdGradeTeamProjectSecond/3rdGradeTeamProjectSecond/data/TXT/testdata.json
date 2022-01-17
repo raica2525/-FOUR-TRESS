@@ -1,7 +1,48 @@
 {
   "blocks": [
     {
-      "breakable": false,
+      "breakable": true,
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "collision": {
+        "index": 8,
+        "pos": [
+          0,
+          0,
+          8217
+        ],
+        "size": [
+          1569,
+          2896,
+          1172
+        ]
+      },
+      "collisionindex": 8,
+      "goal": true,
+      "havecollision": true,
+      "modelname": "goal_out.x",
+      "name": "New_Building",
+      "pos": [
+        0,
+        0,
+        8295
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "breakable": true,
       "col": [
         255,
         255,
@@ -10,25 +51,25 @@
       "collision": {
         "index": 0,
         "pos": [
-          0,
-          956,
-          862
+          2955,
+          2480,
+          27
         ],
         "size": [
-          1055,
-          1829,
-          983
+          1000,
+          5000,
+          20000
         ]
       },
       "collisionindex": 0,
       "goal": false,
       "havecollision": true,
-      "modelname": "block1.x",
-      "name": "HaveCollision",
+      "modelname": "Debris.x",
+      "name": "New_Building",
       "pos": [
+        15,
         0,
-        0,
-        830
+        -1688
       ],
       "rot": [
         0,
@@ -50,12 +91,837 @@
         255
       ],
       "havecollision": false,
-      "modelname": "block1.x",
-      "name": "NotHaveCollision",
+      "modelname": "block3.x",
+      "name": "New_Building",
       "pos": [
-        -1142,
+        3485,
         0,
-        723
+        2334
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3477,
+        0,
+        4235
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        6292
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        8435
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        -8000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        -5945
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        -3834
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        -1674
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        3500,
+        0,
+        368
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3521,
+        0,
+        624
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        2107
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        4217
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3469,
+        0,
+        -236
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        -1100
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        -2042
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        -3042
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block1.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        -3989
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block5.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        -4874
+      ],
+      "rot": [
+        0,
+        1.5707963705062866,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -3500,
+        0,
+        6357
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        1498,
+        0,
+        10200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -613,
+        0,
+        10200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -2666,
+        0,
+        10200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -4714,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -6765,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -8800,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -10856,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -12937,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -15000,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -17136,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -19258,
+        0,
+        -4224
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -21379,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -23565,
+        0,
+        -4200
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building",
+      "pos": [
+        -3501,
+        0,
+        8368
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "col": [
+        255,
+        255,
+        255
+      ],
+      "havecollision": false,
+      "modelname": "block3.x",
+      "name": "New_Building_copy",
+      "pos": [
+        -25691,
+        0,
+        -4198
       ],
       "rot": [
         0,
@@ -73,69 +939,706 @@
     {
       "index": 1,
       "pos": [
-        1165,
-        515,
-        859
+        -2961,
+        2249,
+        5542
       ],
       "size": [
         1000,
-        1000,
+        5000,
+        8980
+      ]
+    },
+    {
+      "index": 2,
+      "pos": [
+        -3988,
+        1422,
+        -1579
+      ],
+      "size": [
+        2070,
+        4776,
+        7500
+      ]
+    },
+    {
+      "index": 3,
+      "pos": [
+        -11144,
+        2578,
+        -9430
+      ],
+      "size": [
+        27000,
+        5000,
         1000
+      ]
+    },
+    {
+      "index": 4,
+      "pos": [
+        -14547,
+        1319,
+        -4742
+      ],
+      "size": [
+        20000,
+        5000,
+        1000
+      ]
+    },
+    {
+      "index": 5,
+      "pos": [
+        -25786,
+        1187,
+        -7138
+      ],
+      "size": [
+        1076,
+        5000,
+        6246
+      ]
+    },
+    {
+      "index": 6,
+      "pos": [
+        -352,
+        1219,
+        9522
+      ],
+      "size": [
+        8660,
+        5000,
+        1000
+      ]
+    },
+    {
+      "index": 7,
+      "pos": [
+        100,
+        0,
+        -1363
+      ],
+      "size": [
+        6334,
+        2108,
+        1556
       ]
     }
   ],
   "enemys": [
     {
-      "appearstate": 0,
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "army.x",
+      "name": "army1",
+      "pos": [
+        -22000,
+        0,
+        -6000
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "army.x",
+      "name": "army2",
+      "pos": [
+        -22000,
+        0,
+        -8000
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "penpen.x",
+      "name": "pen1",
+      "pos": [
+        -21000,
+        0,
+        -6000
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "penpen.x",
+      "name": "pen2",
+      "pos": [
+        -21000,
+        0,
+        -8000
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 10,
+      "modelname": "commander.x",
+      "name": "com1",
+      "pos": [
+        -20000,
+        0,
+        -7000
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "kamikaze.x",
+      "name": "kami1",
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "kamikaze.x",
+      "name": "kami2",
+      "pos": [
+        657,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 50,
+      "modelname": "kamikaze.x",
+      "name": "kami3",
+      "pos": [
+        -620,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 25,
+      "modelname": "cannon.x",
+      "name": "can1",
+      "pos": [
+        1310,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 25,
+      "modelname": "cannon.x",
+      "name": "can2",
+      "pos": [
+        -1282,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 25,
+      "modelname": "penpen.x",
+      "name": "pen3",
+      "pos": [
+        1845,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": 25,
+      "modelname": "penpen.x",
+      "name": "pen4",
+      "pos": [
+        -1958,
+        0,
+        0
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kiwi.x",
+      "name": "kiwi1",
+      "pos": [
+        35,
+        0,
+        1198
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
       "chargevalue": -1,
       "modelname": "cannon.x",
-      "name": "cannon",
+      "name": "can03",
       "pos": [
-        -1193,
+        -15,
         0,
-        0
+        -3531
       ],
       "searchdistance": 0,
-      "strength": 0
+      "strength": 1
     },
     {
-      "appearstate": 0,
+      "appearstate": 1,
       "chargevalue": -1,
-      "modelname": "army.x",
-      "name": "army",
+      "modelname": "cannon.x",
+      "name": "can04",
       "pos": [
-        -678,
+        -1394,
         0,
-        0
+        -3531
       ],
       "searchdistance": 0,
-      "strength": 0
+      "strength": 1
     },
     {
-      "appearstate": 0,
+      "appearstate": 1,
       "chargevalue": -1,
-      "modelname": "kamikaze.x",
-      "name": "kamikaze",
+      "modelname": "cannon.x",
+      "name": "can05",
       "pos": [
+        1374,
         0,
-        0,
-        0
+        -3531
       ],
       "searchdistance": 0,
-      "strength": 0
+      "strength": 1
     },
     {
-      "appearstate": 0,
+      "appearstate": 1,
       "chargevalue": -1,
       "modelname": "commander.x",
-      "name": "commander",
+      "name": "com2",
       "pos": [
-        753,
+        -10147,
         0,
-        0
+        -7088
       ],
       "searchdistance": 0,
-      "strength": 0
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "com3",
+      "pos": [
+        -7417,
+        0,
+        -8319
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "com4",
+      "pos": [
+        -7450,
+        0,
+        -5772
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen4",
+      "pos": [
+        -6369,
+        0,
+        -7125
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen5",
+      "pos": [
+        -7439,
+        0,
+        -7133
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami3",
+      "pos": [
+        -7496,
+        0,
+        -6479
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami4",
+      "pos": [
+        -7469,
+        0,
+        -7702
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "army.x",
+      "name": "army3",
+      "pos": [
+        -8745,
+        0,
+        -7133
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "cannon.x",
+      "name": "can6",
+      "pos": [
+        -8744,
+        0,
+        -8232
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "cannon.x",
+      "name": "can7",
+      "pos": [
+        -8749,
+        0,
+        -5958
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kiwi.x",
+      "name": "kiwi2",
+      "pos": [
+        -5178,
+        0,
+        -7133
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "shinigami.x",
+      "name": "sinigami",
+      "pos": [
+        1601,
+        0,
+        3857
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami6",
+      "pos": [
+        -14169,
+        0,
+        -7672
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami7",
+      "pos": [
+        -14169,
+        0,
+        -6497
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami8",
+      "pos": [
+        -14169,
+        0,
+        -8439
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami9",
+      "pos": [
+        -14169,
+        0,
+        -5713
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "com",
+      "pos": [
+        -15887,
+        0,
+        -7133
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen",
+      "pos": [
+        -1909,
+        0,
+        -7061
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "penn1",
+      "pos": [
+        517,
+        0,
+        -7061
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "penn2",
+      "pos": [
+        -586,
+        0,
+        -8036
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "penn3",
+      "pos": [
+        -586,
+        0,
+        -6173
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "comnew",
+      "pos": [
+        -562,
+        0,
+        -6983
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": 10,
+      "modelname": "commander.x",
+      "name": "com p",
+      "pos": [
+        -18264,
+        0,
+        -7131
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami p",
+      "pos": [
+        -12811,
+        0,
+        -7123
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami p1",
+      "pos": [
+        -12811,
+        0,
+        -7517
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen p",
+      "pos": [
+        -11759,
+        0,
+        -7137
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "kami p2",
+      "pos": [
+        -12811,
+        0,
+        -6615
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen p2",
+      "pos": [
+        -3578,
+        0,
+        -7240
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen p3",
+      "pos": [
+        -3578,
+        0,
+        -6722
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen p4",
+      "pos": [
+        -3578,
+        0,
+        -7895
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 2,
+      "chargevalue": -1,
+      "modelname": "penpen.x",
+      "name": "pen p5",
+      "pos": [
+        -3012,
+        0,
+        -7194
+      ],
+      "searchdistance": 0,
+      "strength": 1
     }
   ],
   "grounds": [
@@ -143,23 +1646,328 @@
       "angle": 0,
       "name": "Ground",
       "pos": [
-        0,
+        -26,
         0,
         0
       ],
       "size": [
-        5000,
-        5000,
+        8930,
+        20000,
         0
       ],
-      "texturename": "000_default.png"
+      "texturename": "floor.png"
+    },
+    {
+      "angle": 90,
+      "name": "Ground",
+      "pos": [
+        -14500,
+        0,
+        -7437
+      ],
+      "size": [
+        5089,
+        24000,
+        0
+      ],
+      "texturename": "floor.png"
+    }
+  ],
+  "roads": [
+    {
+      "pos": [
+        9,
+        120,
+        7500
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "pos": [
+        0,
+        0,
+        -7000
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "pos": [
+        0,
+        0,
+        -7000
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        9,
+        120,
+        7500
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -20529.08984375,
+        0,
+        -7140
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -18476.181640625,
+        0,
+        -7126
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -16423.2734375,
+        0,
+        -7112
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -14370.36328125,
+        0,
+        -7098
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -12317.4541015625,
+        0,
+        -7084
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -10264.544921875,
+        0,
+        -7070
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -8211.6357421875,
+        0,
+        -7056
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -6158.7265625,
+        0,
+        -7042
+      ],
+      "rot": [
+        0,
+        1.5639768838882446,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -4105.81640625,
+        0,
+        -7028
+      ],
+      "rot": [
+        0,
+        1.563976526260376,
+        0
+      ]
+    },
+    {
+      "pos": [
+        -2051.907958984375,
+        0,
+        -7014
+      ],
+      "rot": [
+        0,
+        1.563976526260376,
+        0
+      ]
+    },
+    {
+      "pos": [
+        0.81818187236785889,
+        10.909090995788574,
+        -5681.818359375
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        1.6363637447357178,
+        21.818181991577148,
+        -4363.63623046875
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        2.4545454978942871,
+        32.727272033691406,
+        -3045.454345703125
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        3.2727274894714355,
+        43.636363983154297,
+        -1727.2724609375
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        4.090909481048584,
+        54.545455932617188,
+        -409.0908203125
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        4.9090909957885742,
+        65.454544067382813,
+        909.09130859375
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        5.7272729873657227,
+        76.363639831542969,
+        2227.2734375
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        6.5454549789428711,
+        87.272727966308594,
+        3545.455078125
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        7.3636369705200195,
+        98.181816101074219,
+        4863.63671875
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
+    },
+    {
+      "pos": [
+        8.181818962097168,
+        109.09091186523438,
+        6181.818359375
+      ],
+      "rot": [
+        0,
+        0.00062068959232419729,
+        0
+      ]
     }
   ],
   "spawn": {
     "pos": [
-      43,
+      -24000,
       0,
-      -1265
+      -7104
     ]
   }
 }

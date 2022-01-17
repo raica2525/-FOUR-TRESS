@@ -85,6 +85,12 @@ HRESULT CBlock::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CBlock::Uninit(void)
 {
+    // モデルエフェクトを使っていたものは、消すフラグを立てる（アルファ値が0を下回ったら消す処理を代用）
+    if (m_pModelEffect)
+    {
+        m_pModelEffect->SetColor(D3DXCOLOR(0.0f, 0.0f, 0.0f, -1.0f));
+    }
+
     CScene3D::Uninit();
 }
 

@@ -1,0 +1,14 @@
+{
+  "models": [
+    {
+      "collision": [
+        0,
+        0,
+        0
+      ],
+      "name": "block1.x",
+      "path": "data\\MODEL\\map\\block1.x"
+    }
+  ]
+}
+

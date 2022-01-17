@@ -143,6 +143,7 @@ HRESULT CGame::Init(void)
     const float SPLIT_RATE_ABOVE_2 = 0.333f;
 
     // プレイヤーの生成
+    D3DXVECTOR3 startPos = DEFAULT_VECTOR;
     D3DXVECTOR3 player1Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
     D3DXVECTOR3 player2Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
     D3DXVECTOR3 player3Pos = D3DXVECTOR3(1000.0f, 1000.0f * CREATE_POS_Y_RATE, 0.0f);
@@ -167,90 +168,94 @@ HRESULT CGame::Init(void)
         //CBg::Create(67, D3DXVECTOR3(3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
         //CBg::Create(67, D3DXVECTOR3(-3000.0f, 0.0f, -4000.0f), CBg::COLOR_PHASE_G_UP);
 
-        D3DXVECTOR3 startPos = DEFAULT_VECTOR;
         player1Pos = startPos;
         player2Pos = startPos;
         player3Pos = startPos;
         player4Pos = startPos;
-        m_pFortress = CFortress::Create(DEFAULT_VECTOR); // 移動要塞生成（無敵状態）
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
 
         CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(0.0f, 0.0f, 5000.0f), D3DXVECTOR3(500.0f, 500.0f, 500.0f), MODEL_DIRECT_LEFT);
     }
     else if (m_type == TYPE_ARENA)
     {
-        ////====================================================================
-        //// ジェイソンファイルからマップを生成し、初期地点も取得する
-        //CMapManager *pMapManager = CManager::GetMapManager();
-        //pMapManager->CreateMapFromJson(MAP_FILENAME);
-        //D3DXVECTOR3 startPos = pMapManager->GetStartPos();
-        //player1Pos = startPos;
-        //player2Pos = startPos;
-        //player3Pos = startPos;
-        //player4Pos = startPos;
-        //m_pFortress = CFortress::Create(startPos); // 移動要塞生成
-        ////====================================================================
+        //====================================================================
+        // ジェイソンファイルからマップを生成し、初期地点も取得する
+        CMapManager *pMapManager = CManager::GetMapManager();
+        pMapManager->CreateMapFromJson(MAP_FILENAME);
+        startPos = pMapManager->GetStartPos();
+        m_pFortress = CFortress::Create(startPos); // 移動要塞生成
+        player1Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_1);
+        player1Pos.y = 0.0f;
+        player2Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_2);
+        player2Pos.y = 0.0f;
+        player3Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_3);
+        player3Pos.y = 0.0f;
+        player4Pos = m_pFortress->GetPlayerSpawnPos(PLAYER_4);
+        player4Pos.y = 0.0f;
+        //====================================================================
 
-        m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
-        // 仮の道生成
-        D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
-        for (int nCnt = 0; nCnt < 20; nCnt++)
-        {
-            D3DXVECTOR3 rot = DEFAULT_VECTOR;
-            roadPos.x += 1000.0f;
-            rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
-            CRoad::Create(roadPos, rot);
-        }
+  //      m_pFortress = CFortress::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f)); // 移動要塞生成
+  //      // 仮の道生成
+  //      D3DXVECTOR3 roadPos = D3DXVECTOR3(1000.0f, 0.0f, 0.0f);
+  //      for (int nCnt = 0; nCnt < 20; nCnt++)
+  //      {
+  //          D3DXVECTOR3 rot = DEFAULT_VECTOR;
+  //          roadPos.x += 1000.0f;
+  //          rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
+  //          CRoad::Create(roadPos, rot);
+  //      }
 
-        // 仮の敵（最初の壁に至るまで）
-        D3DXVECTOR3 enemyPos = D3DXVECTOR3(3000.0f, 0.0f, 1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, 1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(3000.0f, 0.0f, -1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        enemyPos = D3DXVECTOR3(4000.0f, 0.0f, -1500.0f);
-        for (int nCnt = 0; nCnt < 3; nCnt++)
-        {
-            CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
-            enemyPos.x += 2000.0f;
-        }
-        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(10000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      // 仮の敵（最初の壁に至るまで）
+  //      D3DXVECTOR3 enemyPos = D3DXVECTOR3(3000.0f, 0.0f, 1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(4000.0f, 0.0f, 1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(3000.0f, 0.0f, -1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_KAMIKAZE, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      enemyPos = D3DXVECTOR3(4000.0f, 0.0f, -1500.0f);
+  //      for (int nCnt = 0; nCnt < 3; nCnt++)
+  //      {
+  //          CEnemy::Create(CEnemy::TYPE_ARMY, enemyPos, 1.0f, CEnemy::APPEAR_STATE_EXIST, 0.0f, 50.0f);
+  //          enemyPos.x += 2000.0f;
+  //      }
+  //      //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(7000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(10000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(10000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
 
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(15000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(17000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(14000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(16000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
-        CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(15000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(15000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(17000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(17000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(14000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(14000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, 500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(16000.0f, 0.0f, -500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(16000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(19000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+  //      CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(20500.0f, 0.0f, -750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
+		//CEnemy::Create(CEnemy::TYPE_KIWI, D3DXVECTOR3(2000.0f, 0.0f, 750.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST, 3000.0f);
 
-        // 仮のゴールゲート
-        CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
-        CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(22000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
+  //      // 仮のゴールゲート
+  //      CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(12000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
+  //      CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(22000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
     }
 
     // ステージのモデルを生成
@@ -268,14 +273,14 @@ HRESULT CGame::Init(void)
     {
     case 1:
         fSplitXRate = SPLIT_RATE_UNDER_3;
-        player1Pos.x *= -fSplitXRate;
+        //player1Pos.x *= -fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         break;
     case 2:
         fSplitXRate = SPLIT_RATE_UNDER_3;
-        player1Pos.x *= -fSplitXRate;
-        player2Pos.x *= fSplitXRate;
+        //player1Pos.x *= -fSplitXRate;
+        //player2Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_LEFT, 0.0f),
@@ -283,9 +288,9 @@ HRESULT CGame::Init(void)
         break;
     case 3:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2.0f;
-        player2Pos.x *= -fSplitXRate;
-        player3Pos.x *= fSplitXRate;
+        //player1Pos.x *= -fSplitXRate * 2.0f;
+        //player2Pos.x *= -fSplitXRate;
+        //player3Pos.x *= fSplitXRate;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
@@ -295,10 +300,10 @@ HRESULT CGame::Init(void)
         break;
     case 4:
         fSplitXRate = SPLIT_RATE_ABOVE_2;
-        player1Pos.x *= -fSplitXRate * 2.0f;
-        player2Pos.x *= -fSplitXRate;
-        player3Pos.x *= fSplitXRate;
-        player4Pos.x *= fSplitXRate * 2.0f;
+        //player1Pos.x *= -fSplitXRate * 2.0f;
+        //player2Pos.x *= -fSplitXRate;
+        //player3Pos.x *= fSplitXRate;
+        //player4Pos.x *= fSplitXRate * 2.0f;
         m_apPlayer[0] = CPlayer::CreateInGame(player1Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
             0, m_anMemoryIdxPlayer[0], m_aMemoryAILevel[0], m_anMemoryRole[0], m_bUseKeyboard);
         m_apPlayer[1] = CPlayer::CreateInGame(player2Pos, D3DXVECTOR3(0.0f, PLAYER_ROT_RIGHT, 0.0f),
@@ -310,7 +315,7 @@ HRESULT CGame::Init(void)
         break;
     }
     // カメラのロックオン場所を変える
-    CManager::GetCamera()->CCamera::ResetCamera(DEFAULT_VECTOR, CAMERA_DEFAULT_ROT, CCamera::SETTING_GAME);
+    CManager::GetCamera()->CCamera::ResetCamera(startPos, CAMERA_DEFAULT_ROT, CCamera::SETTING_GAME);
 
     // 反転合成用のエフェクトを生成
     m_pEffect2d_Nega = CEffect2D::Create(3, DEFAULT_VECTOR);
@@ -335,65 +340,6 @@ HRESULT CGame::Init(void)
         CManager::SoundPlay(CSound::LABEL_BGM_BATTLE02);
         break;
     }
-
-    //// 仮の見た目確認用モデル生成
-    //CDebug::Create(D3DXVECTOR3(0.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 31);
-    //CDebug::Create(D3DXVECTOR3(-1000.0f, 0.0f, -1000.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), CDebug::TYPE_PERMANENT, 0);
-
-    //// 仮の敵配置
-    //D3DXVECTOR3 enemyPos = D3DXVECTOR3(-2000.0f, 0.0f, -2000.0f);
-    //bool bNextParagraph = false;
-    //for (int nCnt = 1; nCnt < 26; nCnt++)
-    //{
-    //    if (bNextParagraph)
-    //    {
-    //        enemyPos.x = -2000.0f;
-    //        bNextParagraph = false;
-    //    }
-
-    //    CEnemy::Create(CEnemy::TYPE_SPIDER, enemyPos);
-
-    //    if (nCnt % 5 == 0)
-    //    {
-    //        enemyPos.z += 1000.0f;
-    //        bNextParagraph = true;
-    //    }
-    //    
-    //    enemyPos.x += 1000.0f;
-    //}
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(-1000.0f, 1000.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(0.0f, 0.0f, 1500.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_PLAYER);
-    //CEnemy::Create(CEnemy::TYPE_SPIDER, D3DXVECTOR3(1000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_WAIT_FORTRESS);
-    //CEnemy::Create(CEnemy::TYPE_ARMY, D3DXVECTOR3(2000.0f, 0.0f, 0.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_KAMIKAZE, D3DXVECTOR3(2000.0f, 0.0f, 1000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_CANNON, D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-    //CEnemy::Create(CEnemy::TYPE_COMMANDER, D3DXVECTOR3(2000.0f, 0.0f, 3000.0f), 1.0f, CEnemy::APPEAR_STATE_EXIST);
-
-    //// 仮の道生成
-    //D3DXVECTOR3 roadPos = D3DXVECTOR3(-1500.0f, 0.0f, -1500.0f);
-    //for (int nCnt = 0; nCnt < 10; nCnt++)
-    //{
-    //    D3DXVECTOR3 rot = DEFAULT_VECTOR;
-    //    if (nCnt < 5)
-    //    {
-    //        roadPos.z += 500.0f;
-    //    }
-    //    else
-    //    {
-    //        roadPos.x += 500.0f;
-    //        rot = D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f);
-    //    }
-    //    CRoad::Create(roadPos, rot);
-    //}
-    
-    //// 背景生成
-    //CBg::Create(56, D3DXVECTOR3(0.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    //CBg::Create(56, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-    //CBg::Create(56, D3DXVECTOR3(500.0f, 0.0f, 3000.0f), CBg::COLOR_PHASE_G_UP);
-
-    //// ブロック生成
-    //CBlock::Create(CBlock::TYPE_FRAME, D3DXVECTOR3(-500.0f, 0.0f, 3000.0f), D3DXVECTOR3(5000.0f, 500.0f, 500.0f), DEFAULT_VECTOR);
-    //CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(5000.0f, 0.0f, 0.0f), D3DXVECTOR3(500.0f, 500.0f, 5000.0f), MODEL_DIRECT_LEFT);
 
     return S_OK;
 }
@@ -642,6 +588,10 @@ void CGame::InButtle(void)
         else if (pInputKeyboard->GetKeyboardTrigger(DIK_6))
         {
             CEnemy::Create(CEnemy::TYPE_PENPEN, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_7))
+        {
+            CEnemy::Create(CEnemy::TYPE_KIWI, spawnPos);
         }
     }
         break;
@@ -1202,14 +1152,15 @@ HIT_SURFACE CGame::MapLimit(D3DXVECTOR3 &pos, D3DXVECTOR3 posOld, D3DXVECTOR3 my
 // 一番近い敵の位置を求める
 // Author : 後藤慎之助
 //========================================
-D3DXVECTOR3 CGame::GetPosToClosestEnemy(D3DXVECTOR3 myPos)
+D3DXVECTOR3 CGame::GetPosToClosestEnemy(D3DXVECTOR3 myPos, D3DXVECTOR3 myRot)
 {
     // 変数宣言
     float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
     D3DXVECTOR3 targetPos = DEFAULT_VECTOR;     // 対象の位置
 
+    // AI処理を優先したため削除
     // 対象の位置を、自分の正面へ一度決めておく
-    targetPos = D3DXVECTOR3(myPos.x + DEFAULT_INIT_DISTANCE, 0.0f, myPos.z);
+    targetPos = D3DXVECTOR3(myPos.x +(-sinf(myRot.y) * DEFAULT_INIT_DISTANCE), 0.0f, myPos.z + (-cosf(myRot.y) * DEFAULT_INIT_DISTANCE));
 
     CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
     for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
@@ -1323,4 +1274,57 @@ bool CGame::GetDispAnyPlayer(void)
     }
 
     return false;
+}
+
+//========================================
+// 一番近い敵の位置を求める_AI
+// Author : 後藤慎之助
+//========================================
+D3DXVECTOR3 CGame::GetPosToClosestEnemy_AI(D3DXVECTOR3 myPos)
+{
+    // 変数宣言
+    float fFirstDistance = DISTANCE_INIT_VALUE; // 距離
+    D3DXVECTOR3 targetPos = DEFAULT_VECTOR;     // 対象の位置
+
+    // AI処理を優先したため削除
+    //// 対象の位置を、自分の正面へ一度決めておく
+    //targetPos = D3DXVECTOR3(myPos.x + DEFAULT_INIT_DISTANCE, 0.0f, myPos.z);
+
+    CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
+    for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
+    {
+        // 中身があるなら
+        if (pScene)
+        {
+            // 次のシーンを記憶
+            CScene*pNextScene = pScene->GetNextScene();
+
+            // 敵にキャスト
+            CEnemy *pEnemy = (CEnemy*)pScene;
+
+            // 出現しているかつ、キウイ以外なら
+            if (pEnemy->GetAppearState() == CEnemy::APPEAR_STATE_EXIST && pEnemy->GetType() != CEnemy::TYPE_KIWI)
+            {
+                // 敵の位置
+                D3DXVECTOR3 enemyPos = pEnemy->GetPos();
+
+                // 距離を求める
+                float fSecondDistance = sqrtf(
+                    powf((myPos.x - enemyPos.x), 2.0f) +
+                    powf((myPos.z - enemyPos.z), 2.0f));
+
+                // 距離の比較と、対象の位置を更新
+                if (fFirstDistance > fSecondDistance)
+                {
+                    fFirstDistance = fSecondDistance;
+                    targetPos = enemyPos;
+                }
+            }
+
+            // 次のシーンにする
+            pScene = pNextScene;
+        }
+    }
+
+    return targetPos;
 }

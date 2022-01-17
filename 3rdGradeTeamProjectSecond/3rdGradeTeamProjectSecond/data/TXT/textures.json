@@ -2,7 +2,9 @@
   "textures": [
     "data\\TEXTURE\\000_default.png",
     "data\\TEXTURE\\000_default.png",
-    "data\\TEXTURE\\001_title_bg.png"
+    "data\\TEXTURE\\001_title_bg.png",
+    "data\\TEXTURE\\map\\floor.png",
+    "data\\TEXTURE\\000_default.png"
   ]
 }
 
