@@ -181,7 +181,9 @@ void CBullet::Update(void)
             if (m_Effect[nCnt].nCntTrail >= m_Effect[nCnt].interval)
             {
                 // ìdé•ñCånÇÕEmitÇ≈ê∂ê¨
-                if (m_Effect[nCnt].type == 61 ||
+
+                if (m_Effect[nCnt].type == 9 || 
+                    m_Effect[nCnt].type == 61 ||
                     m_Effect[nCnt].type == 59)
                 {
                     CEffect3D::Emit(m_Effect[nCnt].type, myPos, myPos);
