@@ -22,6 +22,7 @@
 #include "bullet.h"
 #include "fortress.h"
 #include "item.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -323,6 +324,9 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         // カミカゼの場合、プレイヤー以外にやられたら爆発を生み出す
         if (m_type == TYPE_KAMIKAZE)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(350.0f);
+
             // カミカゼ爆発音
             CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
@@ -333,6 +337,9 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         else
         {// カミカゼ以外は通常のエフェクトを出す
             CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
+
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(200.0f);
         }
     }
 

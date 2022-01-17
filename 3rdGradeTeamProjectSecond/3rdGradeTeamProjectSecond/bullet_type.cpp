@@ -306,7 +306,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-        m_nLife = 5;
+        m_nLife = 10;
         m_fDamage = 30.0f;
         m_bUseDraw = false;
         m_bHitErase = false;    // ŠÑ’Ê

@@ -195,6 +195,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nCntRespawnTime = 0;
     m_nContributionPoint = 0;
     m_bGetOffFortressInThisFrame = false;
+    m_bBurstAttack = false;
 }
 
 //=============================================================================
@@ -1253,6 +1254,7 @@ void CPlayer::ResetAttack(void)
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     m_bUsingGuard = false;
     SetTakeKnockBack(true);
+    m_bBurstAttack = false;
 }
 
 //=============================================================================

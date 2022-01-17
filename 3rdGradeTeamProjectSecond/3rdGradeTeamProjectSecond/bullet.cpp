@@ -22,6 +22,7 @@
 #include "enemy.h"
 #include "fortress.h"
 #include "block.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -575,6 +576,9 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         // タンクの地上攻撃Lv3なら爆発
         if (m_type == TYPE_TANK_GROUND_LV3)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(350.0f);
+
             CBullet *pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
             pBullet->SetWhoContribution(m_nWhoContribution);
             CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);

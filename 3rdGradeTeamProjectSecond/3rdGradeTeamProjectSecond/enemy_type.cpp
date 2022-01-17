@@ -20,6 +20,7 @@
 #include "modelEffect.h"
 #include "bullet.h"
 #include "effectData.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -83,7 +84,7 @@
 //===========================
 #define PENPEN_WHOLE_FRAME 150                // 全体フレーム
 #define PENPEN_START_FRAME 30                 // 攻撃開始フレーム
-#define PENPEN_INTERVAL_FRAME 5               // 発生間隔フレーム
+#define PENPEN_INTERVAL_FRAME 10              // 発生間隔フレーム
 #define PENPEN_WAIT_COUNT 50                  // 攻撃後の待機フレーム
 #define PENPEN_DISCOVERY_DISTANCE 1750.0f     // 検知距離
 #define PENPEN_ATK_SPEED 8.75f                // 攻撃中のスピード
@@ -580,13 +581,11 @@ void CEnemy::AtkKiwi(D3DXVECTOR3 &myPos)
 		else
 		{
 			// 現在の位置と、目的地までの移動角度/向きを求める
-			D3DXVECTOR3 targetPos = m_pTarget->GetPos();
+			D3DXVECTOR3 targetPos = CManager::GetCamera()->GetPosR();   // カメラの中心点から逃げるようにした
 			float fDestAngle = atan2((myPos.x - targetPos.x), (myPos.z - targetPos.z));
 			m_moveAngle = D3DXVECTOR3(sinf(fDestAngle), 0.0f, cosf(fDestAngle));
 			SetRotDestY(atan2((targetPos.x - myPos.x), (targetPos.z - myPos.z)));
 			myPos += m_moveAngle * KIWI_ATK_SPEED;
-			float fKeepDistance = 0.0f;
-			m_pTarget = CGame::GetDistanceAndPointerToClosestPlayer(myPos, fKeepDistance);
 			// 向きを調整
 			RotControl();
 

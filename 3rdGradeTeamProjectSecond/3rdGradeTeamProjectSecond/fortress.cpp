@@ -22,6 +22,7 @@
 #include "bullet.h"
 #include "block.h"
 #include "fade.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -43,7 +44,7 @@
 
 // 体力周り
 #define MAX_LIFE 3000.0f
-#define SMOKE_EFFECT_LIFE 250.0f
+#define SMOKE_EFFECT_LIFE 1000.0f
 
 // タイヤの回転
 #define TIRE_ROT_SPEED D3DXToRadian(1.0f)
@@ -61,7 +62,7 @@ CFortress::CFortress() :CCharacter(OBJTYPE::OBJTYPE_FORTRESS)
     m_pTargetRoad = NULL;
     m_bNowWhoRiding = false;
 
-    m_fChargeValue = 0.0f;
+    m_fChargeValue = 150.0f;
     m_bAttackPhase = false;
     m_nCntTime = 0;
 
@@ -238,7 +239,7 @@ float fLife = GetLife();// 移動要塞の体力取得
             if (m_Effect[EFFECT_SMOKE].nCntTrail >= m_Effect[EFFECT_SMOKE].interval)
             {
                 m_Effect[EFFECT_SMOKE].nCntTrail = 0;
-                D3DXVECTOR3 smokePos = myPos + D3DXVECTOR3(0.0f, GetCollisionSizeDefence().y / 2.0f, 0.0f);
+                D3DXVECTOR3 smokePos = myPos + D3DXVECTOR3(0.0f, GetCollisionSizeDefence().y, 0.0f);
                 CEffect3D::Emit(m_Effect[EFFECT_SMOKE].type, smokePos, smokePos);
             }
         }
@@ -454,18 +455,24 @@ void CFortress::AttackPhase(void)
             int nContributionPoint = 0;
             if (m_fChargeValue >= CHARGE_VALUE_LV1 && m_fChargeValue < CHARGE_VALUE_LV2)
             {
+                // カメラの振動
+                CManager::GetCamera()->CCamera::SetShake(400.0f);
                 CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv1);
                 pBullet = CBullet::Create(CBullet::TYPE_THUNDER, GetPos(), DEFAULT_VECTOR, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV1;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV2 && m_fChargeValue < CHARGE_VALUE_LV3)
             {
+                // カメラの振動
+                CManager::GetCamera()->CCamera::SetShake(500.0f);
                 CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv2);
                 pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV2, firePos, moveAngle, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV2;
             }
             else if (m_fChargeValue >= CHARGE_VALUE_LV3)
             {
+                // カメラの振動
+                CManager::GetCamera()->CCamera::SetShake(600.0f);
                 CManager::SoundPlay(CSound::LABEL_SE_ELECTROMAGNETIC_CANNON_Lv2);
                 pBullet = CBullet::Create(CBullet::TYPE_RAILGUN_LV3, firePos, moveAngle, OBJTYPE_FORTRESS);
                 nContributionPoint = CHARGE_POINT_LV3;
