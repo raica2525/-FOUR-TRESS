@@ -541,6 +541,8 @@ void CFortress::AttackPhase(void)
             m_Effect[EFFECT_LIGHTNING_SETUP].nCntTrail++;
             if (m_Effect[EFFECT_LIGHTNING_SETUP].nCntTrail >= m_Effect[EFFECT_LIGHTNING_SETUP].interval)
             {
+                m_Effect[EFFECT_LIGHTNING_SETUP].nCntTrail = 0;
+
                 D3DXVECTOR3 lightningPos = GetPartsPos(PARTS_CANNON_CENTER);//–C‘ä‚ÌˆÊ’u‚ðŽæ“¾
                 CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_SETUP].type, lightningPos, lightningPos);
             }
