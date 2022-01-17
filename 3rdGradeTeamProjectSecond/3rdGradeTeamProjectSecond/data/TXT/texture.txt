@@ -1251,4 +1251,19 @@ TEXTURESET
     NAME = data/TEXTURE/warning.png
 END_TEXTURESET
 
+#---------------------------------------
+# [151] ステージクリア
+#---------------------------------------
+TEXTURESET
+    TYPE = 151
+    NAME = data/TEXTURE/ingame/stageclear.png
+END_TEXTURESET
+
+#---------------------------------------
+# [152] ゲームオーバー
+#---------------------------------------
+TEXTURESET
+    TYPE = 152
+    NAME = data/TEXTURE/ingame/gameover.png
+END_TEXTURESET
 END_SCRIPT		# この行は絶対消さないこと！
