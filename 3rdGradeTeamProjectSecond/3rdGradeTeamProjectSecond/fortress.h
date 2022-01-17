@@ -55,6 +55,10 @@ public:
     {
         EFFECT_SMOKE=0,     // âå
         EFFECT_LIGHTNING,   // ìdåÇ
+        EFFECT_LIGHTNING_CHARGE_0,
+        EFFECT_LIGHTNING_CHARGE_1,
+        EFFECT_LIGHTNING_CHARGE_2,
+        EFFECT_LIGHTNING_SETUP,// çUåÇèÄîı
         EFFECT_MAX,
     }EFFECT;
 

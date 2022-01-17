@@ -60,9 +60,12 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
     m_bUseUninit = true;
     m_bUseKnockBack = true;
 
-    m_Effect.type = NOT_EXIST;
-    m_Effect.interval = 1;
-    m_Effect.nCntTrail = 0;
+    for (int nCnt = 0; nCnt < MAX_BULLET_EFFECT; nCnt++)
+    {
+    m_Effect[nCnt].type = NOT_EXIST;
+    m_Effect[nCnt].interval = 1;
+    m_Effect[nCnt].nCntTrail = 0;
+    }
   
     m_nWhoContribution = NOT_EXIST;
     m_nHitContributionPoint = 0;
@@ -170,13 +173,25 @@ void CBullet::Update(void)
     }
 
     // 軌跡エフェクト発生
-    if (m_Effect.type != NOT_EXIST)
+    for (int nCnt = 0; nCnt < MAX_BULLET_EFFECT; nCnt++)
     {
-        m_Effect.nCntTrail++;
-        if (m_Effect.nCntTrail >= m_Effect.interval)
+        if (m_Effect[nCnt].type != NOT_EXIST)
         {
-            m_Effect.nCntTrail = 0;
-            CEffect3D::Create(m_Effect.type, myPos);
+            m_Effect[nCnt].nCntTrail++;
+            if (m_Effect[nCnt].nCntTrail >= m_Effect[nCnt].interval)
+            {
+                // 電磁砲系はEmitで生成
+                if (m_Effect[nCnt].type == 61 ||
+                    m_Effect[nCnt].type == 59)
+                {
+                    CEffect3D::Emit(m_Effect[nCnt].type, myPos, myPos);
+                }
+                else
+                {// それ以外は1つずつ生成
+                    CEffect3D::Create(m_Effect[nCnt].type, myPos);
+                }
+                m_Effect[nCnt].nCntTrail = 0;
+            }
         }
     }
 

@@ -74,8 +74,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // モデルをバインド
         BindModelData(41);  // 仮にボール
         // エフェクト番号と発生間隔
-        m_Effect.type = 0;
-        m_Effect.interval = 5;
+        m_Effect[0].type = 60;
+        m_Effect[0].interval = 5;
         // ヒットエフェクト番号
         m_nIdxHitEffect = 20;
         break;
@@ -90,6 +90,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない
+        // エフェクト番号と発生間隔
+        m_Effect[0].type = 61;
+        m_Effect[0].interval = 12;
         break;
     case TYPE_RAILGUN_LV2:
         // 固有の情報
@@ -104,6 +107,11 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nHitContributionPoint = 16;   // 壊した時の貢献ポイント
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+        // エフェクト番号と発生間隔
+        m_Effect[0].type = 61;
+        m_Effect[0].interval = 12;
+        m_Effect[1].type = 59;
+        m_Effect[1].interval = 12;
         break;
     case TYPE_RAILGUN_LV3:
         // 固有の情報
@@ -118,6 +126,12 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nHitContributionPoint = 24;   // 壊した時の貢献ポイント
         // モデルをバインド
         BindModelData(32);  // 仮にボール
+
+        // エフェクト番号と発生間隔
+        m_Effect[0].type = 61;
+        m_Effect[0].interval = 12;
+        m_Effect[1].type = 59;
+        m_Effect[1].interval = 12;
         break;
     case TYPE_KAMIKAZE_EX:
         // 固有の情報
@@ -153,8 +167,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
         // エフェクト番号と発生間隔
-        m_Effect.type = 46;
-        m_Effect.interval = 3;
+        m_Effect[0].type = 46;
+        m_Effect[0].interval = 3;
         break;
     case TYPE_HUNTER_GROUND:
         // 固有の情報
@@ -170,8 +184,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // モデルをバインド
         BindModelData(40);  // 矢
         // エフェクト番号と発生間隔
-        m_Effect.type = 24;
-        m_Effect.interval = 3;
+        m_Effect[0].type = 24;
+        m_Effect[0].interval = 3;
         break;
     case TYPE_HUNTER_SKY:
         // 固有の情報
@@ -185,8 +199,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         // モデルをバインド
         BindModelData(69);
         // エフェクト番号と発生間隔
-        m_Effect.type = 24;
-        m_Effect.interval = 5;
+        m_Effect[0].type = 24;
+        m_Effect[0].interval = 5;
         break;
     case TYPE_CARRIER_SKY:
         // 固有の情報
@@ -261,8 +275,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通（要調整）
         m_nHitContributionPoint = 1;
         // エフェクト番号と発生間隔
-        m_Effect.type = 1;
-        m_Effect.interval = 5;
+        m_Effect[0].type = 1;
+        m_Effect[0].interval = 5;
         break;
     case TYPE_HEALER_SKY:
         // 固有の情報

@@ -18,6 +18,7 @@
 //================================================
 // マクロ定義
 //================================================
+#define MAX_BULLET_EFFECT (2)       // 弾で同時に使用するエフェクトの数
 
 //================================================
 // 前方宣言
@@ -121,7 +122,7 @@ private:
     bool m_bUseUninit;              // 終了処理を使うかどうか
     bool m_bUseKnockBack;           // ノックバックを使うかどうか
 
-    CEffectData::IntervalEffect m_Effect;   // 軌跡エフェクトの情報
+    CEffectData::IntervalEffect m_Effect[MAX_BULLET_EFFECT];   // 軌跡エフェクトの情報
     
     int m_nWhoContribution;         // 誰の貢献か
     int m_nHitContributionPoint;    // 当たった際の貢献度

@@ -27,7 +27,7 @@
 #define LAY_ROT_BACK D3DXVECTOR3(0.0f, D3DXToRadian(180.0f), 0.0f)
 #define LAY_ROT_FRONT D3DXVECTOR3(0.0f, 0.0f, D3DXToRadian(0.0001f))
 
-#define MAX_EFFECT_TYPE 64
+#define MAX_EFFECT_TYPE 128
 
 //================================================
 // クラス宣言
@@ -93,8 +93,8 @@ public:
         TYPE_SP_MAX_1,              // 必殺ゲージMAX1
         TYPE_SP_MAX_2,              // 必殺ゲージMAX2
         TYPE_KAMI,                  // 紙吹雪
-        TYPE_RESPAWN_0,                  // リスポーン0
-        TYPE_RESPAWN_1,                  // リスポーン1
+        TYPE_RESPAWN_0,             // リスポーン0
+        TYPE_RESPAWN_1,             // リスポーン1
         TYPE_SS_3,                  // ストライクシュート3
         TYPE_SS_BG,                 // ストライクシュート背景
         TYPE_SS_TEXT,               // ストライクシュート文字
@@ -102,6 +102,11 @@ public:
         TYPE_LIGHTNING_CHARGE_0,    // 電撃チャージ0
         TYPE_LIGHTNING_CHARGE_1,    // 電撃チャージ1
         TYPE_LIGHTNING_CHARGE_2,    // 電撃チャージ2
+        TYPE_BULLET_ARMYBULLET,     // アーミー弾
+        TYPE_BULLET_LIGHTNING_0,    // 電磁砲軌跡
+        TYPE_BULLET_LIGHTNING_1,    // 電磁砲軌跡
+        TYPE_LIGHTNING_HIT,         // 電磁砲被弾
+        TYPE_LIGHTNING_SETUP,       // 電磁砲準備
     }TYPE;  // 生成するエフェクトの種類
 
     typedef enum
