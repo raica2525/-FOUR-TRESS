@@ -122,8 +122,7 @@ void CTitle::Update(void)
                 // 仮にカスタマイズ画面に移行
                 CFade::SetFade(CManager::MODE_GAME);
 
-                // SE
-                //CManager::SoundPlay(CSound::LABEL_SE_HIT_BIG);
+                CManager::SoundPlay(CSound::LABEL_SE_KO);
 
                 // 仮にベータ用のステージへ
                 if (pInputKeyboard->GetKeyboardTrigger(DIK_RETURN))

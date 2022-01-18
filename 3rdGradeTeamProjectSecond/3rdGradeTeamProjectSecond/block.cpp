@@ -141,6 +141,7 @@ void CBlock::Update(void)
         {
         case TYPE_NORMAL_GATE:
         {
+            CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             D3DXVECTOR3 pos = GetPos();
             for (int nCnt = 0; nCnt < 10; nCnt++)
             {
@@ -161,6 +162,7 @@ void CBlock::Update(void)
         }
         case TYPE_GOAL_GATE:
         {
+            CManager::SoundPlay(CSound::LABEL_SE_END);
             D3DXVECTOR3 pos = GetPos();
             for (int nCnt = 0; nCnt < 5; nCnt++)
             {
