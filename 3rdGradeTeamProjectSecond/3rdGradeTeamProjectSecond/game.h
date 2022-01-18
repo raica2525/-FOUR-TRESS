@@ -122,7 +122,6 @@ public:
     static CPlayer *GetDistanceAndPointerToClosestPlayer_Denti(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
     static CCharacter *GetDistanceAndPointerToClosestPlayerOrFortress(D3DXVECTOR3 myPos, float &fKeepDistance, int nIdxPlayer = NOT_EXIST);
     static CCharacter *GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, float &fKeepDistance);
-    static void SetBallGauge(int nMax, int nNow);                                   // ボール発射ゲージ
     static int GetCharacterIdx(void) 
     { 
         m_nCharacterIdx++;

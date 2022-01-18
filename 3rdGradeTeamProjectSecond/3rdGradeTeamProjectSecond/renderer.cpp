@@ -23,7 +23,7 @@
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
 //========================================
 #ifdef _DEBUG
-bool CRenderer::m_bDispFont = true;
+bool CRenderer::m_bDispFont = false;
 #endif
 
 //========================================

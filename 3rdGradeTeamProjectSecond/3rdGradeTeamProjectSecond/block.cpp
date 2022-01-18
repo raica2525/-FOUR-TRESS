@@ -136,6 +136,48 @@ void CBlock::Update(void)
     // 使用フラグがなくなったら消滅
     if (!m_bUse)
     {
+        // 種類によっての処理
+        switch (m_type)
+        {
+        case TYPE_NORMAL_GATE:
+        {
+            D3DXVECTOR3 pos = GetPos();
+            for (int nCnt = 0; nCnt < 10; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(75, pos);
+                pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            }
+            for (int nCnt = 0; nCnt < 5; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(76, pos);
+                pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            }
+            for (int nCnt = 0; nCnt < 15; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(77, pos);
+                pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            }
+            break;
+        }
+        case TYPE_GOAL_GATE:
+        {
+            D3DXVECTOR3 pos = GetPos();
+            for (int nCnt = 0; nCnt < 5; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(78, pos);
+                pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            }
+            for (int nCnt = 0; nCnt < 15; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(77, pos);
+                pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            }
+            CModelEffect *pModel = CModelEffect::Create(33, pos);
+            pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
+            break;
+        }
+        }
+
         Uninit();
     }
 }

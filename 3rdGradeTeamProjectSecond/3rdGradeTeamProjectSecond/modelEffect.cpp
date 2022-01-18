@@ -9,6 +9,7 @@
 // インクルードファイル
 //========================
 #include "modelEffect.h"
+#include "library.h"
 
 //=============================================================================
 // コンストラクタ
@@ -23,6 +24,10 @@ CModelEffect::CModelEffect() :CScene3D(CScene::OBJTYPE_MODEL_EFFECT)
 
     m_bUseDraw = true;
     m_bUseAdditiveSynthesis = false;
+
+    m_bShootUp = false;
+    m_move = DEFAULT_VECTOR;
+    m_rotMove = DEFAULT_VECTOR;
 }
 
 //=============================================================================
@@ -68,6 +73,29 @@ void CModelEffect::Uninit(void)
 void CModelEffect::Update(void)
 {
     m_col += m_colChangeRate;
+
+    // 打ち上げ処理
+    if (m_bShootUp)
+    {
+        D3DXVECTOR3 pos = GetPos();
+        D3DXVECTOR3 rot = GetRot();
+        pos += m_move;
+        if (pos.y <= 0.0f)
+        {
+            pos.y = 0.0f;
+            m_move = DEFAULT_VECTOR;
+            m_rotMove = DEFAULT_VECTOR;
+        }
+        else
+        {
+            rot += m_rotMove;
+            m_move.y -= 1.1f;
+        }
+
+        // 設定
+        SetPos(pos);
+        SetRot(rot);
+    }
 
     if (m_col.a < 0.0f)
     {
@@ -117,4 +145,31 @@ CModelEffect * CModelEffect::Create(int nModelType, D3DXVECTOR3 pos, D3DXVECTOR3
     pModelEffect->m_bUseLight = bUseLight;
 
     return pModelEffect;
+}
+
+//=============================================================================
+// 打ち上げ処理の設定
+// Author : 後藤慎之助
+//=============================================================================
+void CModelEffect::SetShootUp(D3DXVECTOR2 slidePos)
+{
+    m_bShootUp = true;
+    m_colChangeRate = D3DXCOLOR(0.0f, 0.0f, 0.0f, -0.005f);
+
+    // 位置をずらす
+    D3DXVECTOR3 myPos = GetPos();
+    float fPosX = float(GetRandNum((int)slidePos.x, 0)) - float(GetRandNum((int)slidePos.x, 0));
+    float fPosZ = float(GetRandNum((int)slidePos.y, 0)) - float(GetRandNum((int)slidePos.y, 0));
+    myPos += D3DXVECTOR3(fPosX, 0.0f, fPosZ);
+    SetPos(myPos);
+
+    // 移動量を出す
+    float fSpeed = float(GetRandNum(5000, 4000)) / 100.0f;
+    m_move = D3DXVECTOR3(0.0f, fSpeed, 0.0f);
+
+    // 回転の速さを決める
+    float fRotSpeedX = float(GetRandNum(1500, 500)) / 100.0f - float(GetRandNum(1500, 500)) / 100.0f;
+    float fRotSpeedY = float(GetRandNum(1500, 500)) / 100.0f - float(GetRandNum(1500, 500)) / 100.0f;
+    float fRotSpeedZ = float(GetRandNum(1500, 500)) / 100.0f - float(GetRandNum(1500, 500)) / 100.0f;
+    m_rotMove = D3DXVECTOR3(D3DXToRadian(fRotSpeedX), D3DXToRadian(fRotSpeedY), D3DXToRadian(fRotSpeedZ));
 }

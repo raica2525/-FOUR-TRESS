@@ -225,7 +225,7 @@ void CEnemy::SetupInfoByType(void)
 	case TYPE_SHINIGAMI:
 		// å≈óLÇÃèÓïÒ
 		SetCollisionSizeDefence(D3DXVECTOR2(500.0f, 500.0f)); //å„Ç≈ïœÇ¶ÇÈ
-		m_fSpeed = 5.0f;
+		m_fSpeed = 6.0f;
 		fHP = 1260.0f;
 		m_fChargeValue = 44.0f;
 		m_walkMotion = SHINIGAMI_ANIM_WALK;

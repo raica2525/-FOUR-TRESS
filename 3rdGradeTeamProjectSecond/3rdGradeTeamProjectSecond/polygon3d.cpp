@@ -15,7 +15,11 @@ CPolygon3D::CPolygon3D(OBJTYPE objType) : CScene(objType)
 {
 	m_pTexture = NULL;
 	m_pVtxBuff = NULL;
-	m_bShow = true;
+
+    m_pos = DEFAULT_VECTOR;
+    m_size = DEFAULT_VECTOR;
+    m_rot = DEFAULT_VECTOR;
+    m_col = DEFAULT_COLOR;
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -104,39 +108,36 @@ void CPolygon3D::Update(void)
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
 void CPolygon3D::Draw(void)
 {
-	if (m_bShow)
-	{
-		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-		D3DXMATRIX mtxRot, mtxTrans, mtxWorld;
-		D3DXVECTOR3 rot = GetRot();
-		D3DXVECTOR3 pos = GetPos();
+    LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+    D3DXMATRIX mtxRot, mtxTrans, mtxWorld;
+    D3DXVECTOR3 rot = GetRot();
+    D3DXVECTOR3 pos = GetPos();
 
-		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-		//アルファテスト有効
-		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 40);
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-		//単位行列生成
-		D3DXMatrixIdentity(&mtxWorld);
-		//回転
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, D3DXToRadian(rot.y), D3DXToRadian(rot.x), D3DXToRadian(rot.z));
-		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
-		//移動
-		D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
-		D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
-		//行列適用
-		pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+    pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    //アルファテスト有効
+    pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    pDevice->SetRenderState(D3DRS_ALPHAREF, 40);
+    pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    //単位行列生成
+    D3DXMatrixIdentity(&mtxWorld);
+    //回転
+    D3DXMatrixRotationYawPitchRoll(&mtxRot, D3DXToRadian(rot.y), D3DXToRadian(rot.x), D3DXToRadian(rot.z));
+    D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
+    //移動
+    D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+    D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
+    //行列適用
+    pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-		pDevice->SetTexture(0, m_pTexture);
-		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
-		pDevice->SetFVF(FVF_VERTEX_3D);
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
+    pDevice->SetTexture(0, m_pTexture);
+    pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
+    pDevice->SetFVF(FVF_VERTEX_3D);
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, NUM_POLYGON);
 
-		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-		pDevice->SetTexture(0, NULL);
+    pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    pDevice->SetTexture(0, NULL);
 
-		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	}
+    pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

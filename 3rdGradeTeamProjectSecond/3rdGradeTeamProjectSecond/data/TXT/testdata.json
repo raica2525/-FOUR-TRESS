@@ -12,7 +12,7 @@
         "pos": [
           0,
           0,
-          8217
+          8223
         ],
         "size": [
           1569,
@@ -49,19 +49,19 @@
         255
       ],
       "collision": {
-        "index": 0,
+        "index": 7,
         "pos": [
-          2955,
-          2480,
-          27
+          100,
+          0,
+          -1358
         ],
         "size": [
-          1000,
-          5000,
-          20000
+          6334,
+          2108,
+          1556
         ]
       },
-      "collisionindex": 0,
+      "collisionindex": 7,
       "goal": false,
       "havecollision": true,
       "modelname": "Debris.x",
@@ -1015,16 +1015,16 @@
       ]
     },
     {
-      "index": 7,
+      "index": 0,
       "pos": [
-        100,
-        0,
-        -1363
+        2955,
+        2480,
+        27
       ],
       "size": [
-        6334,
-        2108,
-        1556
+        1000,
+        5000,
+        20000
       ]
     }
   ],
@@ -1639,6 +1639,45 @@
       ],
       "searchdistance": 0,
       "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "commander.x",
+      "name": "com g",
+      "pos": [
+        -119,
+        0,
+        4541
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "kamikaze.x",
+      "name": "com g1",
+      "pos": [
+        -1039,
+        0,
+        4541
+      ],
+      "searchdistance": 0,
+      "strength": 1
+    },
+    {
+      "appearstate": 1,
+      "chargevalue": -1,
+      "modelname": "cannon.x",
+      "name": "com g1_copy",
+      "pos": [
+        -81,
+        0,
+        5677
+      ],
+      "searchdistance": 0,
+      "strength": 1
     }
   ],
   "grounds": [
@@ -1661,9 +1700,9 @@
       "angle": 90,
       "name": "Ground",
       "pos": [
-        -14500,
+        -16489,
         0,
-        -7437
+        -7445
       ],
       "size": [
         5089,
