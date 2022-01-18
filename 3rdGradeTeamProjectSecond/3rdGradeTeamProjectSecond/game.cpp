@@ -34,6 +34,7 @@
 #include "block.h"
 #include "bullet.h"
 #include "mapmanager.h"
+#include "modelEffect.h"
 
 //========================================
 // マクロ定義
@@ -174,6 +175,7 @@ HRESULT CGame::Init(void)
         player4Pos = startPos;
         m_pFortress = CFortress::Create(startPos); // 移動要塞生成（無敵状態）
 
+        CBlock::Create(CBlock::TYPE_NORMAL_GATE, D3DXVECTOR3(0.0f, 0.0f, -5000.0f), D3DXVECTOR3(500.0f, 5000.0f, 5000.0f), MODEL_DIRECT_LEFT);
         CBlock::Create(CBlock::TYPE_GOAL_GATE, D3DXVECTOR3(0.0f, 0.0f, 5000.0f), D3DXVECTOR3(500.0f, 500.0f, 500.0f), MODEL_DIRECT_LEFT);
     }
     else if (m_type == TYPE_ARENA)
@@ -324,7 +326,7 @@ HRESULT CGame::Init(void)
     m_pEffect2d_Posi->SetUseUpdate(false);
 
     // スコア表示を生成
-    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(640.0f, 675.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), 0, false);
+    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(220.0f, 690.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 0, false);
 
     // BGMをランダム再生
     int nRand = GetRandNum(2, 0);
@@ -592,6 +594,14 @@ void CGame::InButtle(void)
         else if (pInputKeyboard->GetKeyboardTrigger(DIK_7))
         {
             CEnemy::Create(CEnemy::TYPE_KIWI, spawnPos);
+        }
+        else if (pInputKeyboard->GetKeyboardTrigger(DIK_8))
+        {
+            for (int nCnt = 0; nCnt < 10; nCnt++)
+            {
+                CModelEffect *pModel = CModelEffect::Create(77, spawnPos);
+                pModel->SetShootUp(D3DXVECTOR2(6000.0f, 2000.0f));
+            }
         }
     }
         break;
@@ -1090,27 +1100,6 @@ CCharacter *CGame::GetDistanceAndPointerToClosestFortress(D3DXVECTOR3 myPos, flo
     }
 
     return pTarget;
-}
-
-//========================================
-// ボール発射ゲージの設定
-// Author : 後藤慎之助
-//========================================
-void CGame::SetBallGauge(int nMax, int nNow)
-{
-    // UIを取得
-    CUI *pBallGaugeR = CUI::GetAccessUI(0);
-    CUI *pBallGaugeL = CUI::GetAccessUI(1);
-
-    // 左右のゲージを設定
-    if (pBallGaugeR)
-    {
-        pBallGaugeR->SetLeftToRightGauge((float)nMax, (float)nNow);
-    }
-    if (pBallGaugeL)
-    {
-        pBallGaugeL->SetRightToLeftGauge((float)nMax, (float)nNow);
-    }
 }
 
 //=============================================================================

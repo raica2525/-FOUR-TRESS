@@ -847,11 +847,11 @@ TEXTURESET
 END_TEXTURESET
 
 #---------------------------------------
-# [103] 翼
+# [103] スコア
 #---------------------------------------
 TEXTURESET
     TYPE = 103
-    NAME = data/TEXTURE/103_feather.png
+    NAME = data/TEXTURE/103_score.png
 END_TEXTURESET
 
 #---------------------------------------

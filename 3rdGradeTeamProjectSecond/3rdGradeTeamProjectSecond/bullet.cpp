@@ -434,6 +434,15 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                             bDamaged = pEnemy->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack, m_nIdxHitEffect);
                             if (bDamaged)
                             {
+                                if (m_type == TYPE_THUNDER)
+                                {
+                                    // ƒJƒƒ‰‚ÌU“®
+                                    CManager::GetCamera()->CCamera::SetShake(350.0f);
+                                    CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
+                                    CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, pEnemy->GetPos(), pEnemy->GetPos());
+                                    CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_1, pEnemy->GetPos(), pEnemy->GetPos());
+                                    CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, pEnemy->GetPos(), pEnemy->GetPos());
+                                }
                                 // vŒ£‚µ‚½l‚ðÝ’è
                                 pEnemy->SetWhoContribution(m_nWhoContribution);
                             }

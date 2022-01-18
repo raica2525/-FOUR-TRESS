@@ -103,6 +103,7 @@ private:
 
     CEffectData::IntervalEffect m_Effect[EFFECT_MAX];// エフェクト
     float m_fTireRotAngle;      // タイヤの回転角度
+    bool m_bShootUpDebris;      // 破片をばらまいたかどうか
 
     //=============================
     // このクラス内でのみ使う処理

@@ -36,7 +36,7 @@ public:
     void Uninit(void);
     void Update(void);
     void Draw(void);
-    static CModelEffect *Create(int nModelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot = DEFAULT_VECTOR, D3DXCOLOR col = SCENE3D_EMISSIVE_COLOR, D3DXCOLOR colChangeRate = DEFAULT_COLOR_NONE, bool bUseLight = true);
+    static CModelEffect *Create(int nModelType, D3DXVECTOR3 pos, D3DXVECTOR3 rot = DEFAULT_VECTOR, D3DXCOLOR col = DEFAULT_COLOR, D3DXCOLOR colChangeRate = DEFAULT_COLOR_NONE, bool bUseLight = true);
 
     //=======================
     // セッター
@@ -44,6 +44,7 @@ public:
     void SetAdditive(void) { m_bUseAdditiveSynthesis = true; }
     void SetUseDraw(bool bUseDraw) { m_bUseDraw = bUseDraw; }
     void SetColor(D3DXCOLOR col) { m_col = col; }
+    void SetShootUp(D3DXVECTOR2 slidePos);
 
     //=======================
     // ゲッター
@@ -57,6 +58,10 @@ private:
 
     bool m_bUseDraw;              // 描画するかどうか
     bool m_bUseAdditiveSynthesis; // 加算合成にするかどうか
+
+    bool m_bShootUp;              // 打ち上げるかどうか
+    D3DXVECTOR3 m_move;           // 移動量
+    D3DXVECTOR3 m_rotMove;        // 向きの移動量
 };
 
 #endif

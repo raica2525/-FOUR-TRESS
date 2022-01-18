@@ -604,5 +604,61 @@ MODEL_DATASET
 	NAME = data/MODEL/scorekiwi/04_L_foot.x
 END_MODEL_DATASET
 
+#---------------------------------------
+# [75] 障害物の木
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 75
+	NAME = data/MODEL/Dest_Wood.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [76] 障害物の本体
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 76
+	NAME = data/MODEL/Dest_Body.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [77] ガレキ
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 77
+	NAME = data/MODEL/all.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [78] ゴールの残骸
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 78
+	NAME = data/MODEL/Dest_Goal.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [79] 移動要塞の残骸
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 79
+	NAME = data/MODEL/Dest_CarBody.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [80] 移動要塞の残骸
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 80
+	NAME = data/MODEL/Dest_CarChair.x
+END_MODEL_DATASET
+
+#---------------------------------------
+# [81] 移動要塞の残骸
+#---------------------------------------
+MODEL_DATASET
+	TYPE = 81
+	NAME = data/MODEL/Dest_CarRailgun.x
+END_MODEL_DATASET
+
 
 END_SCRIPT		# この行は絶対消さないこと！

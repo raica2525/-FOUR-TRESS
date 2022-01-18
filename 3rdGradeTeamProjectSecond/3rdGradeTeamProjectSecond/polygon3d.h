@@ -22,7 +22,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void SetShow(bool bShow) { m_bShow = bShow; }
 
 	void BindTexture(LPDIRECT3DTEXTURE9 pTexture);
 
@@ -40,7 +39,6 @@ protected:
 	LPDIRECT3DTEXTURE9	m_pTexture;
 	LPDIRECT3DVERTEXBUFFER9		m_pVtxBuff;
 private:
-	bool m_bShow;		// •`‰æ‚·‚é‚©
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_size;
 	D3DXVECTOR3 m_rot;

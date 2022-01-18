@@ -97,9 +97,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない
-        // エフェクト番号と発生間隔
-        m_Effect[0].type = 61;
-        m_Effect[0].interval = 12;
+        //// エフェクト番号と発生間隔
+        //m_Effect[0].type = 61;
+        //m_Effect[0].interval = 12;
         break;
     case TYPE_RAILGUN_LV2:
         // 固有の情報
