@@ -141,8 +141,8 @@ CBg* CMapManager::CreateBgFromJsonObject(picojson::object obj)
 	D3DCOLOR col			= CJson::ArrayToD3DCol(CJson::Nullcheck<picojson::array>(obj, "col"));
 	std::string modelname	= CJson::Nullcheck<std::string>(obj, "modelname");
 
-	// オブジェクトの生成
-	return CBg::Create(CManager::GetModelData()->GetIndexByName(modelname), pos);
+	// オブジェクトの生成（強制的に色変え）
+	return CBg::Create(CManager::GetModelData()->GetIndexByName(modelname), pos, CBg::COLOR_PHASE_G_UP);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・
@@ -181,8 +181,8 @@ CEnemy* CMapManager::CreateEnemyFromJsonObject(picojson::object obj)
 	float fChargeValue = (float)CJson::Nullcheck<double>(obj, "chargevalue");
 	float fSearchDistance = (float)CJson::Nullcheck<double>(obj, "searchdistance");
 
-	// オブジェクトの生成
-    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos, fStrength, appearState, fSearchDistance, fChargeValue);
+	// オブジェクトの生成（サーチ距離は、デフォルト引数で固定した）
+    return CEnemy::Create(CManager::GetModelData()->GetEnemyTypeByName(modelname), pos, fStrength, appearState, fChargeValue);
 }
 
 //・・・・・・・・・・・・・・・・・・・・・・・・・・・

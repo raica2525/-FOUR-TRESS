@@ -22,6 +22,7 @@
 #include "enemy.h"
 #include "fortress.h"
 #include "block.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -62,11 +63,11 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
 
     for (int nCnt = 0; nCnt < MAX_BULLET_EFFECT; nCnt++)
     {
-    m_Effect[nCnt].type = NOT_EXIST;
-    m_Effect[nCnt].interval = 1;
-    m_Effect[nCnt].nCntTrail = 0;
+        m_Effect[nCnt].type = NOT_EXIST;
+        m_Effect[nCnt].interval = 1;
+        m_Effect[nCnt].nCntTrail = 0;
     }
-  
+
     m_nWhoContribution = NOT_EXIST;
     m_nHitContributionPoint = 0;
     m_nIdxHitEffect = DEFAULT_HIT_EFFECT_NUM;
@@ -151,6 +152,9 @@ void CBullet::Update(void)
     case TYPE_HEALER_SKY:
         bUseCollisionThisFrame = HealerSkyUseCollision();
         break;
+    case TYPE_ENERGY_BALL:
+        EnergyBallMove(myPos);
+        break;
     default:
         // 移動量を位置に反映
         myPos += m_moveAngle * m_fSpeed;
@@ -180,18 +184,7 @@ void CBullet::Update(void)
             m_Effect[nCnt].nCntTrail++;
             if (m_Effect[nCnt].nCntTrail >= m_Effect[nCnt].interval)
             {
-                // 電磁砲系はEmitで生成
-
-                if (m_Effect[nCnt].type == 9 || 
-                    m_Effect[nCnt].type == 61 ||
-                    m_Effect[nCnt].type == 59)
-                {
-                    CEffect3D::Emit(m_Effect[nCnt].type, myPos, myPos);
-                }
-                else
-                {// それ以外は1つずつ生成
-                    CEffect3D::Create(m_Effect[nCnt].type, myPos);
-                }
+                CEffect3D::Emit(m_Effect[nCnt].type, myPos, m_posOld);
                 m_Effect[nCnt].nCntTrail = 0;
             }
         }
@@ -537,6 +530,35 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         }
     }
 
+    // 移動要塞をチャージするかどうか
+    if (IS_BITON(m_collisionFlag, COLLISION_FLAG_CHARGE_FORTRESS))
+    {
+        CFortress *pFortress = CGame::GetFortress();
+        if (pFortress)
+        {
+            // インデックスを取得
+            int nIdx = pFortress->GetIdx();
+
+            // 多段ヒット回避用フラグがfalseなら
+            if (!m_abUseAvoidMultipleHits[nIdx])
+            {
+                // 当たっているなら
+                if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), D3DXVECTOR2(700.0f, 1000.0f)))
+                {
+                    // 多段ヒット回避用のフラグをtrueに
+                    m_abUseAvoidMultipleHits[nIdx] = true;
+
+                    // チャージ(ダメージ量がそのままチャージ量に)
+                    pFortress->AddChargeValue(m_fDamage);
+                    if (m_bHitErase)
+                    {
+                        m_nLife = HIT_NOT_EXIST;
+                    }
+                }
+            }
+        }
+    }
+
     // 床に当たったら消す
     if (bulletPos.y < 0.0f)
     {
@@ -560,6 +582,9 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         // タンクの地上攻撃Lv3なら爆発
         if (m_type == TYPE_TANK_GROUND_LV3)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(350.0f);
+
             CBullet *pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
             pBullet->SetWhoContribution(m_nWhoContribution);
             CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);

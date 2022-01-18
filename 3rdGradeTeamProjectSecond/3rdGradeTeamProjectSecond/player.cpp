@@ -56,7 +56,6 @@
 
 // リスポーン時間
 #define RESPAWN_FRAME 600
-#define RESPAWN_HEIGHT 500.0f
 
 //=======================
 // ウォーリアー
@@ -196,6 +195,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nCntRespawnTime = 0;
     m_nContributionPoint = 0;
     m_bGetOffFortressInThisFrame = false;
+    m_bBurstAttack = false;
 }
 
 //=============================================================================
@@ -1254,6 +1254,7 @@ void CPlayer::ResetAttack(void)
     memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     m_bUsingGuard = false;
     SetTakeKnockBack(true);
+    m_bBurstAttack = false;
 }
 
 //=============================================================================
@@ -1264,7 +1265,7 @@ void CPlayer::Respawn(void)
 {
     // リスポーン
     CFortress *pFortress = CGame::GetFortress();
-    D3DXVECTOR3 respawnPos = pFortress->GetPartsPos(CFortress::PARTS_FIRE_POS) + D3DXVECTOR3(0.0f, RESPAWN_HEIGHT, 0.0f);
+    D3DXVECTOR3 respawnPos = pFortress->GetPlayerSpawnPos(m_nIdxControlAndColor);
     SetPos(respawnPos);
     SetRot(pFortress->GetRot());
     SetDisp(true);
@@ -1689,7 +1690,8 @@ void CPlayer::Movement(float fSpeed)
     // マップ制限
     D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
     D3DXVECTOR3 myCubeSize = D3DXVECTOR3(collisionSizeDefence.x, collisionSizeDefence.y, collisionSizeDefence.x);
-    CGame::MapLimit(pos, GetPosOld(), myCubeSize);
+    D3DXVECTOR3 posOld = GetPosOld();
+    CGame::MapLimit(pos, posOld, myCubeSize);
 
     // 位置、移動量を反映
     SetPos(pos);
@@ -2154,20 +2156,33 @@ void CPlayer::ApplyMusk(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //=============================================================================
 void CPlayer::SendEnergyForFortress(void)
 {
+    // エナジーがないなら、関数を抜ける
+    if (m_fCurrentEnergy <= 0.0f)
+    {
+        return;
+    }
+
     // 移動要塞が存在するなら
     CFortress*pFortress = CGame::GetFortress();
     if (pFortress)
     {
-        // 当たっているなら
-        if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+        if (pFortress->GetDisp())
         {
-            // 攻撃フェーズ中以外かつ、エナジーがあるなら送る
-            if (!pFortress->GetAttackPhase() && m_fCurrentEnergy > 0.0f)
+            // 当たっているなら
+            if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), D3DXVECTOR2(2000.0f,1000.0f)))
             {
-                pFortress->AddChargeValue(m_fCurrentEnergy);
-                // 貢献度も加算
-                GainContribution((int)m_fCurrentEnergy);
-                m_fCurrentEnergy = 0.0f;
+                // 攻撃フェーズ中以外かつ、エナジーがあるなら送る
+                if (!pFortress->GetAttackPhase() && m_fCurrentEnergy > 0.0f)
+                {
+                    // エナジーボール生成
+                    CBullet *pBullet = CBullet::Create(CBullet::TYPE_ENERGY_BALL, GetPartsPos(PARTS_BODY), DEFAULT_VECTOR, OBJTYPE_PLAYER);
+                    pBullet->SetWhoContribution(m_nIdxCreate);
+                    pBullet->SetDamage(m_fCurrentEnergy);   // ダメージ量をチャージ量にする
+
+                    // 貢献度も加算
+                    GainContribution((int)m_fCurrentEnergy);
+                    m_fCurrentEnergy = 0.0f;
+                }
             }
         }
     }

@@ -182,38 +182,32 @@ BLOCK_HIT_INFO IsBlockCollision3D(D3DXVECTOR3 * pPos1, D3DXVECTOR3 * pPos1Old, c
         box1Max.z > box2Min.z&&
         box1Min.z < box2Max.z)
     {
-        if (box1Max.y > box2Min.y&&
-            pPos1Old->y + pSize1->y / 2.0f < box2Min.y)
+        if (pPos1Old->y + pSize1->y / 2.0f < box2Min.y)
         {// Y軸の下
             blockHitInfo.hitSurface = HIT_SURFACE_BOTTOM;
             blockHitInfo.pos.y = box2Min.y - pSize1->y;
         }
-        if (box1Min.y <= box2Max.y&&
-            pPos1Old->y >= box2Max.y)
+        if (pPos1Old->y >= box2Max.y)
         {// Y軸の上
             blockHitInfo.hitSurface = HIT_SURFACE_TOP;
             blockHitInfo.pos.y = box2Max.y;
         }
-        if (box1Max.x > box2Min.x&&
-            pPos1Old->x + pSize1->x / 2.0f <= box2Min.x)
+        if (pPos1Old->x + pSize1->x / 2.0f <= box2Min.x)
         {// X軸の左
             blockHitInfo.hitSurface = HIT_SURFACE_LEFT;
             blockHitInfo.pos.x = box2Min.x - pSize1->x / 2.0f;
         }
-        if (box1Min.x < box2Max.x&&
-            pPos1Old->x - pSize1->x / 2.0f >= box2Max.x)
+        if (pPos1Old->x - pSize1->x / 2.0f >= box2Max.x)
         {// X軸の右
             blockHitInfo.hitSurface = HIT_SURFACE_RIGHT;
             blockHitInfo.pos.x = box2Max.x + pSize1->x / 2.0f;
         }
-        if (box1Max.z > box2Min.z&&
-            pPos1Old->z + pSize1->z / 2.0f <= box2Min.z)
+        if (pPos1Old->z + pSize1->z / 2.0f <= box2Min.z)
         {// Z軸の手前
             blockHitInfo.hitSurface = HIT_SURFACE_FRONT;
             blockHitInfo.pos.z = box2Min.z - pSize1->z / 2.0f;
         }
-        if (box1Min.z < box2Max.z&&
-            pPos1Old->z - pSize1->z / 2.0f >= box2Max.z)
+        if (pPos1Old->z - pSize1->z / 2.0f >= box2Max.z)
         {// Z軸の奥
             blockHitInfo.hitSurface = HIT_SURFACE_BACK;
             blockHitInfo.pos.z = box2Max.z + pSize1->z / 2.0f;
@@ -244,26 +238,22 @@ HIT_SURFACE IsBlockCollisionXZ(D3DXVECTOR3 &pos1, const D3DXVECTOR3 posOld1, con
         box1Max.z > box2Min.z&&
         box1Min.z < box2Max.z)
     {
-        if (box1Max.x > box2Min.x&&
-            posOld1.x + size1.x / 2.0f <= box2Min.x)
+        if (posOld1.x + size1.x / 2.0f <= box2Min.x)
         {// X軸の左
             hitSurface = HIT_SURFACE_LEFT;
             pos1.x = box2Min.x - size1.x / 2.0f;
         }
-        if (box1Min.x < box2Max.x&&
-            posOld1.x - size1.x / 2.0f >= box2Max.x)
+        if (posOld1.x - size1.x / 2.0f >= box2Max.x)
         {// X軸の右
             hitSurface = HIT_SURFACE_RIGHT;
             pos1.x = box2Max.x + size1.x / 2.0f;
         }
-        if (box1Max.z > box2Min.z&&
-            posOld1.z + size1.z / 2.0f <= box2Min.z)
+        if (posOld1.z + size1.z / 2.0f <= box2Min.z)
         {// Z軸の手前
             hitSurface = HIT_SURFACE_FRONT;
             pos1.z = box2Min.z - size1.z / 2.0f;
         }
-        if (box1Min.z < box2Max.z&&
-            posOld1.z - size1.z / 2.0f >= box2Max.z)
+        if (posOld1.z - size1.z / 2.0f >= box2Max.z)
         {// Z軸の奥
             hitSurface = HIT_SURFACE_BACK;
             pos1.z = box2Max.z + size1.z / 2.0f;

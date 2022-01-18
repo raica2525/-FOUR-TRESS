@@ -22,6 +22,7 @@
 #include "bullet.h"
 #include "fortress.h"
 #include "item.h"
+#include "camera.h"
 
 //========================================
 // マクロ定義
@@ -217,6 +218,18 @@ void CEnemy::Update(void)
         SetPos(myPos);
         SetMove(move);
 
+        // 常に発生させるエフェクト
+        if (m_type == TYPE_SHINIGAMI)
+        {
+            m_Effect.nCntTrail++;
+            if (m_Effect.nCntTrail >= m_Effect.interval)
+            {
+                m_Effect.nCntTrail = 0;
+                CEffect3D::Emit(CEffectData::TYPE_DARKNESS_AURA_0, myPos, myPos);
+                CEffect3D::Emit(CEffectData::TYPE_DARKNESS_AURA_1, myPos, myPos);
+            }
+        }
+
         // アニメーションさせる
         if (GetAnimation())
         {
@@ -311,6 +324,9 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         // カミカゼの場合、プレイヤー以外にやられたら爆発を生み出す
         if (m_type == TYPE_KAMIKAZE)
         {
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(350.0f);
+
             // カミカゼ爆発音
             CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             CBullet::Create(CBullet::TYPE_KAMIKAZE_EX, myPos, DEFAULT_VECTOR, OBJTYPE_ENEMY, m_fStrength);
@@ -321,6 +337,9 @@ void CEnemy::DeathOneFrame(D3DXVECTOR3 myPos)
         else
         {// カミカゼ以外は通常のエフェクトを出す
             CEffect3D::Emit(CEffectData::TYPE_ENEMY_DESTROYING, myPos, myPos);
+
+            // カメラの振動
+            CManager::GetCamera()->CCamera::SetShake(200.0f);
         }
     }
 
@@ -365,7 +384,7 @@ void CEnemy::Draw(void)
 // 生成処理
 // Author : 後藤慎之助
 //=============================================================================
-CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearState, float fSearchDistanceForAppear, float fChargeValue)
+CEnemy *CEnemy::Create(int type, D3DXVECTOR3 pos, float fStrength, int appearState, float fChargeValue, float fSearchDistanceForAppear)
 {
     // メモリ確保
     CEnemy *pEnemy = NULL;
@@ -421,12 +440,12 @@ void CEnemy::DiscoveryTarget(CCharacter *pTarget)
     {
         m_pTarget = pTarget;
     }
-    D3DXVECTOR3 pos = GetPos();// 敵の位置を取得
-
-    pos.y += 500;// エフェクトを出す位置を調整
 
     // ここで、ビックリマーク的なものを出す
-    CEffect3D::Emit(CEffectData::TYPE_WARNING, pos, pos);
+    D3DXVECTOR3 effectPos = GetPos();                               // 敵の位置を取得
+    D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();   // 当たり判定を取得
+    effectPos.y += collisionSizeDefence.y;                          // エフェクトを出す位置を調整
+    CEffect3D::Emit(CEffectData::TYPE_WARNING, effectPos, effectPos);
 }
 
 //=============================================================================
@@ -540,15 +559,18 @@ void CEnemy::SquashedByFortress(D3DXVECTOR3 myPos)
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
-            // 当たっているなら
-            D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
-            if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+            if (pFortress->GetDisp())
             {
-                // HP0に
-                TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
+                // 当たっているなら
+                D3DXVECTOR2 collisionSizeDefence = GetCollisionSizeDefence();
+                if (IsCollisionCylinder(myPos, collisionSizeDefence, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
+                {
+                    // HP0に
+                    TakeDamage(FORTRESS_CRUSH_DAMAGE, myPos, pFortress->GetPos(), OBJTYPE_FORTRESS);
 
-                // 移動要塞に踏みつぶされた
-                m_bDeathBySquashed = true;
+                    // 移動要塞に踏みつぶされた
+                    m_bDeathBySquashed = true;
+                }
             }
         }
     }
@@ -772,6 +794,8 @@ void CEnemy::AttackAI(D3DXVECTOR3 &myPos)
         case TYPE_PENPEN:
             AtkPenpen(myPos);
             break;
+		case TYPE_KIWI:
+			AtkKiwi(myPos);
         }
     }
 }

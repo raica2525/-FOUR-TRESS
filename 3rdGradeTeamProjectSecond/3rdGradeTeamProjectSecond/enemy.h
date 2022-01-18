@@ -62,6 +62,7 @@ public:
         TYPE_COMMANDER,     // コマンダー
 		TYPE_SHINIGAMI,     // シニガミ
         TYPE_PENPEN,        // ペンペン
+		TYPE_KIWI,
     }TYPE;
 
     // 基本状態
@@ -215,14 +216,35 @@ public:
         PENPEN_PARTS_CUTTER_L,
         PENPEN_PARTS_MAX,
     }PENPEN_PARTS;
-
+	
+	//=========================
+	// キウイ
+	//=========================
+	typedef enum
+	{
+		KIWI_ANIM_IDLE = 0,      // 待機
+		KIWI_ANIM_WALK,          // 歩き
+		KIWI_ANIM_DAMAGE,        // ダメージ
+		KIWI_ANIM_DEATH,         // 死亡
+		KIWI_ANIM_RUN,           // 走り
+		KIWI_ANIM_MAX,           // 最大数
+	}KIWI_ANIMATION;
+	typedef enum
+	{
+		KIWI_PARTS_BODY = 0,
+		KIWI_PARTS_WING_R,
+		KIWI_PARTS_WING_L,
+		KIWI_PARTS_FOOT_R,
+		KIWI_PARTS_FOOT_L,
+		KIWI_PARTS_MAX,
+	}KIWI_PARTS;
 
     HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);                                    // 初期化処理
     void Uninit(void);                                                                  // 終了処理
     void Update(void);                                                                  // 更新処理
     void Draw(void);                                                                    // 描画処理
     static CEnemy *Create(int type, D3DXVECTOR3 pos, float fStrength = 1.0f,
-        int appearState = APPEAR_STATE_EXIST, float fSearchDistanceForAppear = 2000.0f, float fChargeValue = NOT_EXIST_F);// 生成処理
+        int appearState = APPEAR_STATE_EXIST, float fChargeValue = NOT_EXIST_F, float fSearchDistanceForAppear = 3000.0f);// 生成処理
 
     void DiscoveryTarget(CCharacter *pTarget);                                          // ターゲット発見処理
 
@@ -236,6 +258,7 @@ public:
     // ゲッター
     //=============================
     int GetAppearState(void) { return m_appearState; }
+    int GetType(void) { return m_type; }
 
 private:
     int m_type;                              // 種類
@@ -289,6 +312,7 @@ private:
     void AtkCommander(D3DXVECTOR3& myPos);
 	void AtkShinigami(D3DXVECTOR3& myPos);
     void AtkPenpen(D3DXVECTOR3& myPos);
+	void AtkKiwi(D3DXVECTOR3& myPos);
 
     //=============================
     // このクラス内でのみ使う処理

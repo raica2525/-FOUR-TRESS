@@ -19,6 +19,7 @@
 #include "effect3d.h"
 #include "modelEffect.h"
 #include "effectData.h"
+#include "fortress.h"
 
 //========================================
 // マクロ定義（特徴的な処理をするもののみ）
@@ -52,6 +53,12 @@ typedef enum
 #define HEALER_SKY_WHOLE_FRAME 180
 #define HEALER_SKY_INTERVAL 30
 
+//===========================
+// エナジーボール
+//===========================
+#define ENERGY_BALL_ACCEL_VALUE 1.1f
+#define ENERGY_BALL_MAX_SPEED 17.5f
+
 //=============================================================================
 // 種類ごとの初期設定
 // Author : 後藤慎之助
@@ -73,7 +80,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = false;
         // モデルをバインド
         BindModelData(41);  // 仮にボール
-        // エフェクト番号と発生間隔
+                            // エフェクト番号と発生間隔
         m_Effect[0].type = 60;
         m_Effect[0].interval = 5;
         // ヒットエフェクト番号
@@ -90,8 +97,8 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない
-        // エフェクト番号と発生間隔
-        m_Effect[0].type = 9;
+                            // エフェクト番号と発生間隔
+        m_Effect[0].type = 61;
         m_Effect[0].interval = 12;
         break;
     case TYPE_RAILGUN_LV2:
@@ -105,10 +112,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通
         m_bBreakGoalGate = true;    // ゴールゲートを壊せる
         m_nHitContributionPoint = 16;   // 壊した時の貢献ポイント
-        // モデルをバインド
+                                        // モデルをバインド
         BindModelData(32);  // 仮にボール
-        // エフェクト番号と発生間隔
-        m_Effect[0].type = 61;
+                            // エフェクト番号と発生間隔
+        m_Effect[0].type = 65;
         m_Effect[0].interval = 12;
         m_Effect[1].type = 59;
         m_Effect[1].interval = 12;
@@ -124,10 +131,10 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bHitErase = false;// 貫通
         m_bBreakGoalGate = true;    // ゴールゲートを壊せる
         m_nHitContributionPoint = 24;   // 壊した時の貢献ポイント
-        // モデルをバインド
+                                        // モデルをバインド
         BindModelData(32);  // 仮にボール
 
-        // エフェクト番号と発生間隔
+                            // エフェクト番号と発生間隔
         m_Effect[0].type = 61;
         m_Effect[0].interval = 12;
         m_Effect[1].type = 59;
@@ -166,9 +173,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_bUseDraw = false;
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK);   // ブロックで反射は、ブロックで消えなくするのとワンセット
-        // エフェクト番号と発生間隔
+                                                                // エフェクト番号と発生間隔
         m_Effect[0].type = 46;
-        m_Effect[0].interval = 3;
+        m_Effect[0].interval = 5;
         break;
     case TYPE_HUNTER_GROUND:
         // 固有の情報
@@ -181,9 +188,9 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 70.0f;
         m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通（要調整）
-        // モデルをバインド
+                            // モデルをバインド
         BindModelData(40);  // 矢
-        // エフェクト番号と発生間隔
+                            // エフェクト番号と発生間隔
         m_Effect[0].type = 24;
         m_Effect[0].interval = 3;
         break;
@@ -196,7 +203,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 50.0f;
         m_bUseDraw = false; // 1F目は向きを変えるため切った
         m_bHitErase = false;// 貫通
-        // モデルをバインド
+                            // モデルをバインド
         BindModelData(69);
         // エフェクト番号と発生間隔
         m_Effect[0].type = 24;
@@ -224,7 +231,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 50.0f;
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
-        // モデルをバインド
+                            // モデルをバインド
         BindModelData(68);
         break;
     case TYPE_TANK_GROUND_LV2:
@@ -236,7 +243,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fDamage = 150.0f;
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通（要調整）
-        // モデルをバインド
+                            // モデルをバインド
         BindModelData(68);
         break;
     case TYPE_TANK_GROUND_LV3:
@@ -296,28 +303,43 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_nHitContributionPoint = 1;
         break;
 
-	case TYPE_SHINIGAMI_ATTACK:
-		m_collisionSize = D3DXVECTOR2(525.0f, 500.0f);
-		m_fSpeed = 0.0f;
-		BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
-		BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-		m_nLife = 15;
-		m_fDamage = 9999.0f;       // 即死攻撃
-		m_bUseDraw = false;
-		m_bHitErase = false;    // 貫通
-		bUseShadow = false;     // 影を使用しない
-		break;
+    case TYPE_SHINIGAMI_ATTACK:
+        m_collisionSize = D3DXVECTOR2(525.0f, 500.0f);
+        m_fSpeed = 0.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 15;
+        m_fDamage = 9999.0f;       // 即死攻撃
+        m_bUseDraw = false;
+        m_bHitErase = false;    // 貫通
+        bUseShadow = false;     // 影を使用しない
+        break;
 
     case TYPE_PENPEN_ATTACK:
         m_collisionSize = D3DXVECTOR2(575.0f, 350.0f);
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_PLAYER);
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
-        m_nLife = 5;
+        m_nLife = 10;
         m_fDamage = 30.0f;
         m_bUseDraw = false;
         m_bHitErase = false;    // 貫通
         bUseShadow = false;     // 影を使用しない
+        break;
+    case TYPE_ENERGY_BALL:
+        // 固有の情報
+        m_collisionSize = D3DXVECTOR2(100.0f, 100.0f);
+        m_fSpeed = 1.0f;
+        BITON(m_collisionFlag, COLLISION_FLAG_CHARGE_FORTRESS);
+        BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
+        m_nLife = 999;
+        m_fDamage = 0.0f;
+        m_bUseDraw = false;
+        m_bHitErase = true;
+        bUseShadow = false; // 影を使用しない
+                            // エフェクト番号と発生間隔
+        m_Effect[0].type = CEffectData::TYPE_LIGHTNING_1;
+        m_Effect[0].interval = 4;
         break;
     }
 
@@ -472,4 +494,51 @@ bool CBullet::HealerSkyUseCollision(void)
     }
 
     return bUseCollision;
+}
+
+//=============================================================================
+// エナジーボールの移動処理
+// Author : 後藤慎之助
+//=============================================================================
+void CBullet::EnergyBallMove(D3DXVECTOR3 &myPos)
+{
+    // 移動量
+    D3DXVECTOR3 move = DEFAULT_VECTOR;
+
+    // 速度を加速させる
+    m_fSpeed *= ENERGY_BALL_ACCEL_VALUE;
+    if (m_fSpeed > ENERGY_BALL_MAX_SPEED)
+    {
+        m_fSpeed = ENERGY_BALL_MAX_SPEED;
+    }
+
+    // 移動要塞(ターゲット)の位置を取得
+    D3DXVECTOR3 targetPos = CGame::GetFortress()->GetPos() + D3DXVECTOR3(0.0f, 700.0f, 0.0f);
+
+    // 角度を求める
+    float fAngle = atan2f((myPos.x - targetPos.x), (myPos.z - targetPos.z));
+
+    // 横移動の移動量を決める
+    move.x = -sinf(fAngle) * m_fSpeed;
+    move.z = -cosf(fAngle) * m_fSpeed;
+
+    // 高さを比べ、縦移動を調整
+    float fDistanceY = 0.0f;
+    float fAdjustment = 0.0f;
+    if (myPos.y < targetPos.y)
+    {
+        fAdjustment = 1.0f;
+        fDistanceY = targetPos.y - myPos.y;
+    }
+    else if (myPos.y > targetPos.y)
+    {
+        fAdjustment = -1.0f;
+        fDistanceY = myPos.y - targetPos.y;
+    }
+
+    // 縦移動の角度を決める
+    move.y = (fDistanceY / m_fSpeed) * fAdjustment;
+
+    // 位置に移動量を加算
+    myPos += move;
 }
