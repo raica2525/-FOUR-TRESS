@@ -23,25 +23,25 @@
 #define MAX_SCORE 8
 
 #define MAX_RANKING2 5                                                       // 順位の最大数
-#define YOUR_SCORE_SIZE_X 200.0f
-#define YOUR_SCORE_SIZE D3DXVECTOR3(YOUR_SCORE_SIZE_X / MAX_SCORE, 40.0f, 0.0f)         // あなたのスコアの数字の大きさ
-#define RANKING2_SCORE_SIZE_X 350.0f
-#define RANKING2_SCORE_SIZE  D3DXVECTOR3(RANKING2_SCORE_SIZE_X / MAX_SCORE, 70.0f, 0.0f)  // ランキング2のスコアの数字の大きさ
+#define YOUR_SCORE_SIZE_X 300.0f
+#define YOUR_SCORE_SIZE D3DXVECTOR3(YOUR_SCORE_SIZE_X / MAX_SCORE, 60.0f, 0.0f)         // あなたのスコアの数字の大きさ
+#define RANKING2_SCORE_SIZE_X 300.0f
+#define RANKING2_SCORE_SIZE  D3DXVECTOR3(RANKING2_SCORE_SIZE_X / MAX_SCORE, 60.0f, 0.0f)  // ランキング2のスコアの数字の大きさ
 
-#define DOWN_POS_Y 100.0f                                    // 下にずらす値
+#define DOWN_POS_Y 90.0f                                    // 下にずらす値
 #define SLIDE D3DXVECTOR3(0.0f, -480.0f, 0.0f)              // 自分のスコアからずらす値
 
 #define RANKIN_COLOR D3DXCOLOR(1.0f , 0.0f, 0.0f, 1.0f)     // ランクインしたときの色
 
 // 各順位の、フェードイン
 #define FADE_IN_5 60
-#define FADE_IN_4 150
-#define FADE_IN_3 255
-#define FADE_IN_2 375
-#define FADE_IN_1 495
+#define FADE_IN_4 120
+#define FADE_IN_3 180
+#define FADE_IN_2 240
+#define FADE_IN_1 300
 #define STOP 1000               // カウンタのストップ
 #define FADE_IN_START_NUMBER 8  // 自分のスコアの次の数字からフェードイン開始
-#define FADE_IN_RATE 0.05f      // フェードイン割合
+#define FADE_IN_RATE 0.075f     // フェードイン割合
 
 // 各数字の、フェードイン時のディレイ
 #define DELAY_ALPHA 0.5f
@@ -95,36 +95,37 @@ CRanking2* CRanking2::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 HRESULT CRanking2::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
     // 自分のスコア
+    const D3DXVECTOR3 myScorePos = D3DXVECTOR3(380.0f, 425.0f, 0.0f);
     // 大きい位から、それぞれCreate
-    m_apNumber[0] = CNumber::Create(12,D3DXVECTOR3(pos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 1) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[0] = CNumber::Create(12,D3DXVECTOR3(myScorePos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 1) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[0] = 1.0f;
 
-    m_apNumber[1] = CNumber::Create(12, D3DXVECTOR3(pos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 3) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[1] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 3) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[1] = 1.0f;
 
-    m_apNumber[2] = CNumber::Create(12, D3DXVECTOR3(pos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 5) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[2] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 5) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[2] = 1.0f;
 
-    m_apNumber[3] = CNumber::Create(12, D3DXVECTOR3(pos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 7) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[3] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x - YOUR_SCORE_SIZE_X * (MAX_SCORE - 7) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[3] = 1.0f;
 
-    m_apNumber[4] = CNumber::Create(12, D3DXVECTOR3(pos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 7) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[4] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 7) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[4] = 1.0f;
 
-    m_apNumber[5] = CNumber::Create(12, D3DXVECTOR3(pos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 5) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[5] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 5) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[5] = 1.0f;
 
-    m_apNumber[6] = CNumber::Create(12, D3DXVECTOR3(pos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 3) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[6] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 3) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[6] = 1.0f;
 
-    m_apNumber[7] = CNumber::Create(12, D3DXVECTOR3(pos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 1) / MAX_SCORE / 2, pos.y, 0.0f),
+    m_apNumber[7] = CNumber::Create(12, D3DXVECTOR3(myScorePos.x + YOUR_SCORE_SIZE_X * (MAX_SCORE - 1) / MAX_SCORE / 2, myScorePos.y, 0.0f),
         YOUR_SCORE_SIZE, DEFAULT_COLOR, false);
     m_aAlpha[7] = 1.0f;
 
