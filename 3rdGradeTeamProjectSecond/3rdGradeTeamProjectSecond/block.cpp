@@ -164,7 +164,7 @@ void CBlock::Update(void)
             D3DXVECTOR3 pos = GetPos();
             for (int nCnt = 0; nCnt < 5; nCnt++)
             {
-                CModelEffect *pModel = CModelEffect::Create(79, pos);
+                CModelEffect *pModel = CModelEffect::Create(78, pos);
                 pModel->SetShootUp(D3DXVECTOR2(m_collisionSize.x, m_collisionSize.z));
             }
             for (int nCnt = 0; nCnt < 15; nCnt++)

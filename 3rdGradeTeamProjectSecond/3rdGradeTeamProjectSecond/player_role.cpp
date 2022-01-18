@@ -522,15 +522,25 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)
     {
-        // 自身の位置を、座席にする
-        playerPos = pFortress->GetPartsPos(CFortress::PARTS_SEAT);
+        if (pFortress->GetDisp())
+        {
+            // 自身の位置を、座席にする
+            playerPos = pFortress->GetPartsPos(CFortress::PARTS_SEAT);
 
-        // 移動量を念のためリセットする
-        move = DEFAULT_VECTOR;
+            // 移動量を念のためリセットする
+            move = DEFAULT_VECTOR;
 
-        // 向きを合わせる
-        SetRotDest(pFortress->GetRot());
-        SetRot(pFortress->GetRot());
+            // 向きを合わせる
+            SetRotDest(pFortress->GetRot());
+            SetRot(pFortress->GetRot());
+        }
+        else
+        {
+            // 移動要塞がないなら、強制で降りる
+            ResetAttack();
+            m_bGetOffFortressInThisFrame = true;
+            return;
+        }
     }
 
     // 電力消費攻撃
@@ -543,24 +553,15 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     }
     else if (m_controlInput.bTriggerB)
     {
-        if (pFortress->GetDisp())
+        // 攻撃フェーズ中は降りられない
+        if (!pFortress->GetAttackPhase())
         {
-            // 攻撃フェーズ中は降りられない
-            if (!pFortress->GetAttackPhase())
-            {
-                // 降りる処理（攻撃周りをリセット）
-                ResetAttack();
-                m_bGetOffFortressInThisFrame = true;
-
-                // 移動要塞側の座っているフラグを戻す
-                pFortress->SetNowWhoRiding(false);
-            }
-        }
-        else
-        {
-            // 移動要塞がないなら、強制で降りる
+            // 降りる処理（攻撃周りをリセット）
             ResetAttack();
             m_bGetOffFortressInThisFrame = true;
+
+            // 移動要塞側の座っているフラグを戻す
+            pFortress->SetNowWhoRiding(false);
         }
     }
 }
