@@ -1,12 +1,12 @@
 //======================================================================================
 //
-// å¼¾å‡¦ç† (bullet.cpp)
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ’eˆ— (bullet.cpp)
+// Author : Œã“¡T”V•
 //
 //======================================================================================
 
 //========================
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 //========================
 #include "bullet.h"
 #include "manager.h"
@@ -25,13 +25,13 @@
 #include "camera.h"
 
 //========================================
-// ãƒã‚¯ãƒ­å®šç¾©
+// ƒ}ƒNƒ’è‹`
 //========================================
 #define HIT_NOT_EXIST -99
 
 //=============================================================================
-// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
 {
@@ -74,35 +74,35 @@ CBullet::CBullet() :CScene3D(CScene::OBJTYPE_BULLET)
 }
 
 //=============================================================================
-// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ƒfƒXƒgƒ‰ƒNƒ^
+// Author : Œã“¡T”V•
 //=============================================================================
 CBullet::~CBullet()
 {
 }
 
 //=============================================================================
-// åˆæœŸåŒ–å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ‰Šú‰»ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 HRESULT CBullet::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-    // åˆæœŸåŒ–
+    // ‰Šú‰»
     CScene3D::Init(pos, size);
 
-    // ã‚¹ã‚±ãƒ¼ãƒ«ã‚’è¨­å®š
+    // ƒXƒP[ƒ‹‚ğİ’è
     SetScale(size);
 
     return S_OK;
 }
 
 //=============================================================================
-// çµ‚äº†å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// I—¹ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CBullet::Uninit(void)
 {
-    // å½±ã‚’æ¶ˆã™
+    // ‰e‚ğÁ‚·
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->SetDontUse();
@@ -112,24 +112,24 @@ void CBullet::Uninit(void)
 }
 
 //=============================================================================
-// æ›´æ–°å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// XVˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CBullet::Update(void)
 {
-    // æ›´æ–°å‡¦ç†ã‚’ä½¿ã‚ãªã„ãªã‚‰ã€é–¢æ•°ã‚’æŠœã‘ã‚‹
+    // XVˆ—‚ğg‚í‚È‚¢‚È‚çAŠÖ”‚ğ”²‚¯‚é
     if (!m_bUseUpdate)
     {
         return;
     }
 
-    // ä½ç½®ã€å¤§ãã•ã‚’å–å¾—
+    // ˆÊ’uA‘å‚«‚³‚ğæ“¾
     D3DXVECTOR3 myPos = GetPos();
 
-    // 1Få‰ã®ä½ç½®ã‚’çµã³ã¤ã‘ã‚‹
+    // 1F‘O‚ÌˆÊ’u‚ğŒ‹‚Ñ‚Â‚¯‚é
     m_posOld = myPos;
 
-    // ç¨®é¡ã”ã¨ã®å‡¦ç†
+    // í—Ş‚²‚Æ‚Ìˆ—
     bool bUseCollisionThisFrame = true;
     switch (m_type)
     {
@@ -156,27 +156,27 @@ void CBullet::Update(void)
         EnergyBallMove(myPos);
         break;
     default:
-        // ç§»å‹•é‡ã‚’ä½ç½®ã«åæ˜ 
+        // ˆÚ“®—Ê‚ğˆÊ’u‚É”½‰f
         myPos += m_moveAngle * m_fSpeed;
         break;
     }
 
-    // å½“ãŸã‚Šåˆ¤å®šã‚’è¨­å®š
+    // “–‚½‚è”»’è‚ğİ’è
     if (bUseCollisionThisFrame)
     {
         Collision(myPos);
     }
 
-    // ä½ç½®ã‚’è¨­å®š
+    // ˆÊ’u‚ğİ’è
     SetPos(myPos);
 
-    // å½±ã®ä½ç½®ã‚’æ›´æ–°
+    // ‰e‚ÌˆÊ’u‚ğXV
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->SetPos(D3DXVECTOR3(myPos.x, SHADOW_POS_Y, myPos.z));
     }
 
-    // è»Œè·¡ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
+    // ‹OÕƒGƒtƒFƒNƒg”­¶
     for (int nCnt = 0; nCnt < MAX_BULLET_EFFECT; nCnt++)
     {
         if (m_Effect[nCnt].type != NOT_EXIST)
@@ -190,7 +190,7 @@ void CBullet::Update(void)
         }
     }
 
-    // ãƒ©ã‚¤ãƒ•ãŒãªããªã£ãŸã€ã¾ãŸã¯ä½¿ç”¨ãƒ•ãƒ©ã‚°ãŒãªããªã£ãŸã‚‰ã€æ¶ˆæ»…
+    // ƒ‰ƒCƒt‚ª‚È‚­‚È‚Á‚½A‚Ü‚½‚Íg—pƒtƒ‰ƒO‚ª‚È‚­‚È‚Á‚½‚çAÁ–Å
     if (m_bUseUninit)
     {
         m_nLife--;
@@ -202,18 +202,18 @@ void CBullet::Update(void)
 }
 
 //=============================================================================
-// æç”»å‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// •`‰æˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CBullet::Draw(void)
 {
-    // å½±
+    // ‰e
     if (m_pEffect3d_Shadow)
     {
         m_pEffect3d_Shadow->CBillboard::Draw();
     }
 
-    // æç”»ã™ã‚‹ãªã‚‰
+    // •`‰æ‚·‚é‚È‚ç
     if (m_bUseDraw)
     {
         CScene3D::Draw();
@@ -221,101 +221,101 @@ void CBullet::Draw(void)
 }
 
 //=============================================================================
-// ç”Ÿæˆå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// ¶¬ˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 CBullet * CBullet::Create(int type, D3DXVECTOR3 pos, D3DXVECTOR3 moveAngle, OBJTYPE whoShot, float fStrength, D3DXVECTOR3 rot)
 {
-    // ãƒ¡ãƒ¢ãƒªç¢ºä¿
+    // ƒƒ‚ƒŠŠm•Û
     CBullet *pBullet = NULL;
     pBullet = new CBullet;
 
-    // å…ˆã«çµã³ã¤ã‘ã¦ãŠã
+    // æ‚ÉŒ‹‚Ñ‚Â‚¯‚Ä‚¨‚­
     pBullet->m_type = type;
     pBullet->SetRot(rot);
     pBullet->m_fStrength = fStrength;
     pBullet->m_whoShot = whoShot;
     pBullet->m_posOld = pos;
 
-    // åˆæœŸåŒ–
+    // ‰Šú‰»
     pBullet->SetupInfoByType(fStrength, pos);
     pBullet->Init(pos, DEFAULT_SCALE);
 
-    // å¼•æ•°ã‚’çµã³ã¤ã‘ã¦ãŠã
+    // ˆø”‚ğŒ‹‚Ñ‚Â‚¯‚Ä‚¨‚­
     pBullet->m_moveAngle = moveAngle;
 
     return pBullet;
 }
 
 //=============================================================================
-// è¡çªå‡¦ç†
-// Author : å¾Œè—¤æ…ä¹‹åŠ©
+// Õ“Ëˆ—
+// Author : Œã“¡T”V•
 //=============================================================================
 void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 {
-    // ãƒ¬ãƒ¼ãƒ«ã‚¬ãƒ³ã¯åœ°ã‚’é€™ã†
+    // ƒŒ[ƒ‹ƒKƒ“‚Í’n‚ğ”‡‚¤
     D3DXVECTOR3 collisionPos = bulletPos;
     if (m_type == TYPE_RAILGUN_LV2 || m_type == TYPE_RAILGUN_LV3)
     {
         collisionPos.y = 0.0f;
     }
 
-    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã€ç§»å‹•è¦å¡ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    // ƒvƒŒƒCƒ„[AˆÚ“®—vÇ‚Æ‚Ì“–‚½‚è”»’è
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PLAYER))
     {
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_PLAYER);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_PLAYER); nCntScene++)
         {
-            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+            // ’†g‚ª‚ ‚é‚È‚ç
             if (pScene)
             {
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚­ãƒ£ã‚¹ãƒˆ
+                // ƒvƒŒƒCƒ„[‚ÉƒLƒƒƒXƒg
                 CPlayer *pPlayer = (CPlayer*)pScene;
 
-                // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+                // ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
                 int nIdx = pPlayer->GetIdx();
                 if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
                 {
-                    // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                    // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                     pScene = pNextScene;
                     continue;
                 }
 
-                // è¡¨ç¤ºã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+                // •\¦‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
                 if (!pPlayer->GetDisp())
                 {
                     continue;
                 }
 
-                // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ãƒ•ãƒ©ã‚°ãŒfalseãªã‚‰
+                // ‘½’iƒqƒbƒg‰ñ”ğ—pƒtƒ‰ƒO‚ªfalse‚È‚ç
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
-                    // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+                    // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
                     if (IsCollisionCylinder(bulletPos, m_collisionSize, pPlayer->GetPos(), pPlayer->GetCollisionSizeDefence()))
                     {
-                        // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
+                        // ‘½’iƒqƒbƒg‰ñ”ğ—p‚Ìƒtƒ‰ƒO‚ğtrue‚É
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
-                        // ãƒ€ãƒ¡ãƒ¼ã‚¸ãŒå…¥ã£ãŸã‹ã©ã†ã‹
+                        // ƒ_ƒ[ƒW‚ª“ü‚Á‚½‚©‚Ç‚¤‚©
                         bool bDamaged = false;
 
-                        // å›å¾©ã™ã‚‹ãªã‚‰
+                        // ‰ñ•œ‚·‚é‚È‚ç
                         if (IS_BITON(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER))
                         {
-                            // æ’ƒã¡æ‰‹ã¯å›å¾©ã§ããªã„
+                            // Œ‚‚¿è‚Í‰ñ•œ‚Å‚«‚È‚¢
                             if (m_nWhoContribution == pPlayer->GetIdxCreate())
                             {
                                 continue;
                             }
 
-                            // å›å¾©ã¯ç„¡æ•µã®æœ‰ç„¡ã«ã‹ã‹ã‚ã‚‰ãšå…¥ã‚‹
+                            // ‰ñ•œ‚Í–³“G‚Ì—L–³‚É‚©‚©‚í‚ç‚¸“ü‚é
                             bDamaged = true;
                             if (pPlayer->Healing(m_fHealValue))
                             {
-                                // æ’ƒã£ãŸäººã®è²¢çŒ®åº¦ãŒä¸ŠãŒã‚‹
+                                // Œ‚‚Á‚½l‚ÌvŒ£“x‚ªã‚ª‚é
                                 if (m_nWhoContribution != NOT_EXIST)
                                 {
                                     CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nHitContributionPoint);
@@ -324,7 +324,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         }
                         else
                         {
-                            // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹ãªã‚‰ã€ã‚¬ãƒ¼ãƒ‰ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+                            // ƒ_ƒ[ƒW‚ğó‚¯‚é‚È‚çAƒK[ƒh‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
                             if (pPlayer->GetUsingGuard())
                             {
                                 bDamaged = pPlayer->TakeDamage_TankUsingGuard(m_fDamage, bulletPos, m_posOld, m_bUseKnockBack, m_nIdxHitEffect);
@@ -342,30 +342,30 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     }
                 }
 
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                 pScene = pNextScene;
             }
         }
 
-        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’å›å¾©ã•ã›ãªã„ãªã‚‰ã€ç§»å‹•è¦å¡ã‚’å–å¾—ï¼ˆä»Šå¾Œç§»å‹•è¦å¡å‘¨ã‚Šã®ãƒ•ãƒ©ã‚°ãŒå¢—ãˆã‚‹ãªã‚‰ã€è¦æ”¹å–„ï¼‰
+        // ƒvƒŒƒCƒ„[‚ğ‰ñ•œ‚³‚¹‚È‚¢‚È‚çAˆÚ“®—vÇ‚ğæ“¾i¡ŒãˆÚ“®—vÇü‚è‚Ìƒtƒ‰ƒO‚ª‘‚¦‚é‚È‚çA—v‰ü‘Pj
         if (IS_BITOFF(m_collisionFlag, COLLISION_FLAG_HEAL_PLAYER))
         {
             CFortress *pFortress = CGame::GetFortress();
             if (pFortress)
             {
-                // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+                // ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
                 int nIdx = pFortress->GetIdx();
 
-                // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ãƒ•ãƒ©ã‚°ãŒfalseãªã‚‰
+                // ‘½’iƒqƒbƒg‰ñ”ğ—pƒtƒ‰ƒO‚ªfalse‚È‚ç
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
-                    // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+                    // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
                     if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
                     {
-                        // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
+                        // ‘½’iƒqƒbƒg‰ñ”ğ—p‚Ìƒtƒ‰ƒO‚ğtrue‚É
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
-                        // ãƒ€ãƒ¡ãƒ¼ã‚¸
+                        // ƒ_ƒ[ƒW
                         bool bDamaged = pFortress->TakeDamage(m_fDamage, bulletPos, m_posOld, m_whoShot, m_bUseKnockBack, m_nIdxHitEffect);
                         if (bDamaged && m_bHitErase)
                         {
@@ -377,47 +377,47 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         }
     }
 
-    // æ•µã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    // “G‚Æ‚Ì“–‚½‚è”»’è
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_ENEMY))
     {
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_ENEMY);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_ENEMY); nCntScene++)
         {
-            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+            // ’†g‚ª‚ ‚é‚È‚ç
             if (pScene)
             {
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // æ•µã«ã‚­ãƒ£ã‚¹ãƒˆ
+                // “G‚ÉƒLƒƒƒXƒg
                 CEnemy *pEnemy = (CEnemy*)pScene;
 
-                // å‡ºç¾ã—ã¦ã„ãªã„ãªã‚‰ã€æ¬¡ã¸
+                // oŒ»‚µ‚Ä‚¢‚È‚¢‚È‚çAŸ‚Ö
                 if (pEnemy->GetAppearState() != CEnemy::APPEAR_STATE_EXIST)
                 {
-                    // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                    // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                     pScene = pNextScene;
                     continue;
                 }
 
-                // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+                // ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
                 int nIdx = pEnemy->GetIdx();
                 if (nIdx < 0 || nIdx >= CHARACTER_IDX_MAX)
                 {
-                    // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                    // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                     pScene = pNextScene;
                     continue;
                 }
 
-                // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ãƒ•ãƒ©ã‚°ãŒfalseãªã‚‰
+                // ‘½’iƒqƒbƒg‰ñ”ğ—pƒtƒ‰ƒO‚ªfalse‚È‚ç
                 if (!m_abUseAvoidMultipleHits[nIdx])
                 {
                     if (IsCollisionCylinder(collisionPos, m_collisionSize, pEnemy->GetPos(), pEnemy->GetCollisionSizeDefence()))
                     {
-                        // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
+                        // ‘½’iƒqƒbƒg‰ñ”ğ—p‚Ìƒtƒ‰ƒO‚ğtrue‚É
                         m_abUseAvoidMultipleHits[nIdx] = true;
 
-                        // ãƒ€ãƒ¡ãƒ¼ã‚¸ã‹å¼•ã£å¼µã‚Š
+                        // ƒ_ƒ[ƒW‚©ˆø‚Á’£‚è
                         bool bDamaged = false;
                         if (IS_BITON(m_collisionFlag, COLLISION_FLAG_PULL_ENEMY))
                         {
@@ -425,7 +425,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                         }
                         else if (IS_BITON(m_collisionFlag, COLLISION_FLAG_HEAL_ENEMY))
                         {
-                            // å›å¾©ã¯ç„¡æ•µã®æœ‰ç„¡ã«ã‹ã‹ã‚ã‚‰ãšå…¥ã‚‹
+                            // ‰ñ•œ‚Í–³“G‚Ì—L–³‚É‚©‚©‚í‚ç‚¸“ü‚é
                             bDamaged = true;
                             pEnemy->Healing(m_fHealValue);
                         }
@@ -437,7 +437,7 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 
                                 if (m_type == TYPE_THUNDER)
                                 {
-                                    // ã‚«ãƒ¡ãƒ©ã®æŒ¯å‹•
+                                    // ƒJƒƒ‰‚ÌU“®
                                     CManager::GetCamera()->CCamera::SetShake(350.0f);
                                     CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
                                     CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_0, pEnemy->GetPos(), pEnemy->GetPos());
@@ -445,11 +445,11 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                                     CEffect3D::Emit(CEffectData::TYPE_EXPLOSION_2, pEnemy->GetPos(), pEnemy->GetPos());
                                 }
 
-                                // è²¢çŒ®ã—ãŸäººã‚’è¨­å®š
+                                // vŒ£‚µ‚½l‚ğİ’è
                                 pEnemy->SetWhoContribution(m_nWhoContribution);
                             }
                         }
-                        // æ¶ˆã™å¼¾ãªã‚‰æ¶ˆã™
+                        // Á‚·’e‚È‚çÁ‚·
                         if (bDamaged && m_bHitErase)
                         {
                             m_nLife = HIT_NOT_EXIST;
@@ -457,70 +457,70 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     }
                 }
 
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                 pScene = pNextScene;
             }
         }
     }
 
-    // ãƒ–ãƒ­ãƒƒã‚¯ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    // ƒuƒƒbƒN‚Æ‚Ì“–‚½‚è”»’è
     if (IS_BITOFF(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK))
     {
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
         {
-            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+            // ’†g‚ª‚ ‚é‚È‚ç
             if (pScene)
             {
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // ãƒ–ãƒ­ãƒƒã‚¯ã«ã‚­ãƒ£ã‚¹ãƒˆ
+                // ƒuƒƒbƒN‚ÉƒLƒƒƒXƒg
                 CBlock *pBlock = (CBlock*)pScene;
 
-                // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+                // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
                 D3DXVECTOR3 myCubeSize = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
                 if (IsCollisionRectangle3D(&bulletPos, &pBlock->GetPos(),
                     &myCubeSize, &pBlock->GetCollisionSize()))
                 {
-                    // ãƒ€ãƒ¡ãƒ¼ã‚¸
+                    // ƒ_ƒ[ƒW
                     if (pBlock->TakeDamage(m_bBreakGoalGate))
                     {
-                        // æ’ƒã£ãŸäººã®è²¢çŒ®åº¦ãŒä¸ŠãŒã‚‹
+                        // Œ‚‚Á‚½l‚ÌvŒ£“x‚ªã‚ª‚é
                         if (m_nWhoContribution != NOT_EXIST)
                         {
                             CGame::GetPlayer(m_nWhoContribution)->GainContribution(m_nHitContributionPoint);
                         }
                     }
-                    m_nLife = HIT_NOT_EXIST;    // ãƒ–ãƒ­ãƒƒã‚¯ã¯è²«é€šå‡ºæ¥ãªã„
+                    m_nLife = HIT_NOT_EXIST;    // ƒuƒƒbƒN‚ÍŠÑ’Êo—ˆ‚È‚¢
                 }
 
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                 pScene = pNextScene;
             }
         }
     }
 
-    // ãƒ–ãƒ­ãƒƒã‚¯ã§åå°„ã™ã‚‹ã‹ã©ã†ã‹ã®åˆ¤å®š
+    // ƒuƒƒbƒN‚Å”½Ë‚·‚é‚©‚Ç‚¤‚©‚Ì”»’è
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_REFLECT_BLOCK))
     {
         CScene *pScene = CScene::GetTopScene(CScene::OBJTYPE_BLOCK);
         for (int nCntScene = 0; nCntScene < CScene::GetNumAll(CScene::OBJTYPE_BLOCK); nCntScene++)
         {
-            // ä¸­èº«ãŒã‚ã‚‹ãªã‚‰
+            // ’†g‚ª‚ ‚é‚È‚ç
             if (pScene)
             {
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’è¨˜æ†¶
+                // Ÿ‚ÌƒV[ƒ“‚ğ‹L‰¯
                 CScene*pNextScene = pScene->GetNextScene();
 
-                // ãƒ–ãƒ­ãƒƒã‚¯ã«ã‚­ãƒ£ã‚¹ãƒˆ
+                // ƒuƒƒbƒN‚ÉƒLƒƒƒXƒg
                 CBlock *pBlock = (CBlock*)pScene;
 
-                // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+                // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
                 D3DXVECTOR3 myCubeSize = D3DXVECTOR3(m_collisionSize.x, m_collisionSize.y, m_collisionSize.x);
                 HIT_SURFACE hitSurface = CGame::MapLimit(bulletPos, m_posOld, myCubeSize);
 
-                // åå°„
+                // ”½Ë
                 switch (hitSurface)
                 {
                 case HIT_SURFACE_LEFT:
@@ -535,31 +535,31 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     break;
                 }
 
-                // æ¬¡ã®ã‚·ãƒ¼ãƒ³ã«ã™ã‚‹
+                // Ÿ‚ÌƒV[ƒ“‚É‚·‚é
                 pScene = pNextScene;
             }
         }
     }
 
-    // ç§»å‹•è¦å¡ã‚’ãƒãƒ£ãƒ¼ã‚¸ã™ã‚‹ã‹ã©ã†ã‹
+    // ˆÚ“®—vÇ‚ğƒ`ƒƒ[ƒW‚·‚é‚©‚Ç‚¤‚©
     if (IS_BITON(m_collisionFlag, COLLISION_FLAG_CHARGE_FORTRESS))
     {
         CFortress *pFortress = CGame::GetFortress();
         if (pFortress)
         {
-            // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+            // ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
             int nIdx = pFortress->GetIdx();
 
-            // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ãƒ•ãƒ©ã‚°ãŒfalseãªã‚‰
+            // ‘½’iƒqƒbƒg‰ñ”ğ—pƒtƒ‰ƒO‚ªfalse‚È‚ç
             if (!m_abUseAvoidMultipleHits[nIdx])
             {
-                // å½“ãŸã£ã¦ã„ã‚‹ãªã‚‰
+                // “–‚½‚Á‚Ä‚¢‚é‚È‚ç
                 if (IsCollisionCylinder(bulletPos, m_collisionSize, pFortress->GetPos(), D3DXVECTOR2(700.0f, 1000.0f)))
                 {
-                    // å¤šæ®µãƒ’ãƒƒãƒˆå›é¿ç”¨ã®ãƒ•ãƒ©ã‚°ã‚’trueã«
+                    // ‘½’iƒqƒbƒg‰ñ”ğ—p‚Ìƒtƒ‰ƒO‚ğtrue‚É
                     m_abUseAvoidMultipleHits[nIdx] = true;
 
-                    // ãƒãƒ£ãƒ¼ã‚¸(ãƒ€ãƒ¡ãƒ¼ã‚¸é‡ãŒãã®ã¾ã¾ãƒãƒ£ãƒ¼ã‚¸é‡ã«)
+                    // ƒ`ƒƒ[ƒW(ƒ_ƒ[ƒW—Ê‚ª‚»‚Ì‚Ü‚Üƒ`ƒƒ[ƒW—Ê‚É)
                     pFortress->AddChargeValue(m_fDamage);
                     if (m_bHitErase)
                     {
@@ -570,16 +570,16 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         }
     }
 
-    // åºŠã«å½“ãŸã£ãŸã‚‰æ¶ˆã™
+    // °‚É“–‚½‚Á‚½‚çÁ‚·
     if (bulletPos.y < 0.0f)
     {
         bulletPos.y = 0.0f;
         m_nLife = HIT_NOT_EXIST;
 
-        // ã‚³ãƒãƒ³ãƒ€ãƒ¼ã®å¼¾ãªã‚‰ã€æ•µã‚’ç”Ÿæˆ
+        // ƒRƒ}ƒ“ƒ_[‚Ì’e‚È‚çA“G‚ğ¶¬
         if (m_type == TYPE_COMMANDER_ATTACK)
         {
-            // æ•µå‡ºç¾ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+            // “GoŒ»ƒGƒtƒFƒNƒg
             CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
             CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
 
@@ -587,13 +587,13 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
         }
     }
 
-    // å½“ãŸã£ãŸãªã‚‰
+    // “–‚½‚Á‚½‚È‚ç
     if (m_nLife == HIT_NOT_EXIST)
     {
-        // ã‚¿ãƒ³ã‚¯ã®åœ°ä¸Šæ”»æ’ƒLv3ãªã‚‰çˆ†ç™º
+        // ƒ^ƒ“ƒN‚Ì’nãUŒ‚Lv3‚È‚ç”š”­
         if (m_type == TYPE_TANK_GROUND_LV3)
         {
-            // ã‚«ãƒ¡ãƒ©ã®æŒ¯å‹•
+            // ƒJƒƒ‰‚ÌU“®
             CManager::GetCamera()->CCamera::SetShake(350.0f);
 
             CBullet *pBullet = CBullet::Create(CBullet::TYPE_TANK_GROUND_EX, bulletPos, DEFAULT_VECTOR, m_whoShot);
