@@ -1255,6 +1255,7 @@ void CPlayer::ResetAttack(void)
     m_bUsingGuard = false;
     SetTakeKnockBack(true);
     m_bBurstAttack = false;
+    SetPartsDisp(PARTS_WEP, true);
 }
 
 //=============================================================================

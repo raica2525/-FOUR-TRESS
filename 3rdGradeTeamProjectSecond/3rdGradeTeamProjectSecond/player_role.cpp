@@ -518,6 +518,9 @@ void CPlayer::AtkSitDown(D3DXVECTOR3 &playerPos, D3DXVECTOR3& move)
     // ‚±‚ÌUŒ‚’†‚Í–³“G
     SetInvincible(true);
 
+    // •Ší‚ÍŒ©‚¦‚È‚¢
+    SetPartsDisp(PARTS_WEP, false);
+
     // ˆÚ“®—vÇ‚ğæ“¾
     CFortress *pFortress = CGame::GetFortress();
     if (pFortress)

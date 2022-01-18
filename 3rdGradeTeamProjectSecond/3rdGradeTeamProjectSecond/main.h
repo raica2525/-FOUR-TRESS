@@ -34,7 +34,7 @@
 
 // ウインドウのクラス名とキャプション名
 #define CLASS_NAME		"AppClass"
-#define WINDOW_NAME		"BLAZE_SMASH"
+#define WINDOW_NAME		"黒色無双_彩"
 
 // ウインドウの位置
 #define	WINDOW_POS_X	(0)
