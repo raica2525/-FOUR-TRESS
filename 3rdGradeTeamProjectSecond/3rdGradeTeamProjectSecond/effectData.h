@@ -99,7 +99,7 @@ public:
         TYPE_SS_BG,                 // ストライクシュート背景
         TYPE_SS_TEXT,               // ストライクシュート文字
         TYPE_WARNING,               // プレイヤー発見
-        TYPE_LIGHTNING_CHARGE_0,    // 電撃チャージ0
+        TYPE_LIGHTNING_CHARGE_LV3,  // 電撃チャージ(Lv3)
         TYPE_LIGHTNING_CHARGE_1,    // 電撃チャージ1
         TYPE_LIGHTNING_CHARGE_2,    // 電撃チャージ2
         TYPE_BULLET_ARMYBULLET,     // アーミー弾
@@ -107,6 +107,9 @@ public:
         TYPE_BULLET_LIGHTNING_1,    // 電磁砲軌跡
         TYPE_LIGHTNING_HIT,         // 電磁砲被弾
         TYPE_LIGHTNING_SETUP,       // 電磁砲準備
+        TYPE_BULLET_LIGHTNING_LV2,     // 電磁砲軌跡(Lv2)
+        TYPE_LIGHTNING_CHARGE_LV2,     // 電磁砲チャージ(Lv2)
+        TYPE_LIGHTNING_CHARGE_LV1,     // 電磁砲チャージ(Lv1)
     }TYPE;  // 生成するエフェクトの種類
 
     typedef enum

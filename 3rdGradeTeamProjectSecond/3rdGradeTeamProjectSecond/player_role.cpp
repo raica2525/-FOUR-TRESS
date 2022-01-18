@@ -1343,6 +1343,7 @@ void CPlayer::AtkHealerSky(D3DXVECTOR3& playerPos, D3DXVECTOR3& move)
             // ガードエフェクト発生
             CEffect3D::Emit(CEffectData::TYPE_MAGIC_CIRCLE_0, bulletPos, bulletPos);
             CEffect3D::Emit(CEffectData::TYPE_MAGIC_CIRCLE_2, bulletPos, bulletPos);
+            CEffect3D::Emit(CEffectData::TYPE_HEAL, bulletPos, bulletPos);
             // 現在のエナジー量に応じて、ダメージを設定する
             float fDamage = HEALER_SKY_BASE_DAMAGE + (m_fCurrentEnergy * HEALER_SKY_ADD_DAMAGE_RATE);
             float fHealing = HEALER_SKY_BASE_HEALING + (m_fCurrentEnergy * HEALER_SKY_ADD_HEALING_RATE);
