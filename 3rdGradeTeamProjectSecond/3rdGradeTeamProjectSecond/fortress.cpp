@@ -122,12 +122,11 @@ HRESULT CFortress::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
     m_Effect[EFFECT_LIGHTNING].type = CEffectData::TYPE_LIGHTNING_RANGE;    // エフェクトの種類
     m_Effect[EFFECT_LIGHTNING].interval = 20;                                // エフェクトの発生感覚
     m_Effect[EFFECT_LIGHTNING_CHARGE_0].interval = 30;                                  // エフェクトの発生感覚
-    m_Effect[EFFECT_LIGHTNING_CHARGE_0].type = CEffectData::TYPE_LIGHTNING_CHARGE_0;    // エフェクトの種類
-    m_Effect[EFFECT_LIGHTNING_CHARGE_1].type = CEffectData::TYPE_LIGHTNING_CHARGE_1;    // エフェクトの種類
-    m_Effect[EFFECT_LIGHTNING_CHARGE_2].type = CEffectData::TYPE_LIGHTNING_CHARGE_2;    // エフェクトの種類
+    m_Effect[EFFECT_LIGHTNING_CHARGE_0].type = CEffectData::TYPE_LIGHTNING_CHARGE_LV1;    // チャージ時の電気エフェクト(Lvによって変更)
+    m_Effect[EFFECT_LIGHTNING_CHARGE_1].type = CEffectData::TYPE_LIGHTNING_CHARGE_2;    // チャージLv2以降の光のエフェクト
     // 電磁砲準備
-    m_Effect[EFFECT_LIGHTNING_SETUP].type = CEffectData::TYPE_LIGHTNING_SETUP;    // エフェクトの種類
-    m_Effect[EFFECT_LIGHTNING_SETUP].interval = 20;                                   // エフェクトの発生感覚
+    m_Effect[EFFECT_LIGHTNING_SETUP].type = CEffectData::TYPE_LIGHTNING_SETUP;          // エフェクトの種類
+    m_Effect[EFFECT_LIGHTNING_SETUP].interval = 20;                                     // エフェクトの発生感覚
 
     return S_OK;
 }
@@ -199,7 +198,8 @@ void CFortress::Update(void)
     CDebug::Create(GetPos(), size, CDebug::TYPE_MOMENT, 65);
 #endif // COLLISION_TEST
 
-    if (m_fChargeValue >= CHARGE_VALUE_LV1)//電磁法が打てる状態のとき電撃エフェクト発生(Lv.1)
+    if (m_fChargeValue >= CHARGE_VALUE_LV1
+        &&m_fChargeValue < CHARGE_VALUE_LV2)//電磁法が打てる状態のとき電撃エフェクト発生(Lv.1)
     {
         if (m_Effect[EFFECT_LIGHTNING].type != NOT_EXIST)
         {
@@ -209,14 +209,14 @@ void CFortress::Update(void)
                 D3DXVECTOR3 lightningPos = GetPartsPos(PARTS_CANNON_CENTER);//砲台の位置を取得
 
                 m_Effect[EFFECT_LIGHTNING].nCntTrail = 0;
-
+                
+                m_Effect[EFFECT_LIGHTNING_CHARGE_0].type = CEffectData::TYPE_LIGHTNING_CHARGE_LV1;// エフェクトをLv1のものに変更
                 CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_0].type, lightningPos, lightningPos);
-                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_2].type, lightningPos, lightningPos);
-
             }
         }
     }
-    if (m_fChargeValue >= CHARGE_VALUE_LV2)//電磁法が打てる状態のとき電撃エフェクト発生(Lv.2)
+    if (m_fChargeValue >= CHARGE_VALUE_LV2
+        &&m_fChargeValue < CHARGE_VALUE_LV3)//電磁法が打てる状態のとき電撃エフェクト発生(Lv.2)
     {
         if (m_Effect[EFFECT_LIGHTNING].type != NOT_EXIST)
         {
@@ -226,10 +226,9 @@ void CFortress::Update(void)
                 D3DXVECTOR3 lightningPos = GetPartsPos(PARTS_CANNON_CENTER);//砲台の位置を取得
 
                 m_Effect[EFFECT_LIGHTNING].nCntTrail = 0;
-
+                m_Effect[EFFECT_LIGHTNING_CHARGE_0].type = CEffectData::TYPE_LIGHTNING_CHARGE_LV2;// エフェクトをLv2のものに変更
                 CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_0].type, lightningPos, lightningPos);
-                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_2].type, lightningPos, lightningPos);
-
+                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_1].type, lightningPos, lightningPos);
             }
         }
     }
@@ -243,11 +242,9 @@ void CFortress::Update(void)
                 D3DXVECTOR3 lightningPos = GetPartsPos(PARTS_CANNON_CENTER);//砲台の位置を取得
 
                 m_Effect[EFFECT_LIGHTNING].nCntTrail = 0;
-
+                m_Effect[EFFECT_LIGHTNING_CHARGE_0].type = CEffectData::TYPE_LIGHTNING_CHARGE_LV3;// エフェクトをLv3のものに変更
                 CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_0].type, lightningPos, lightningPos);
-                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_2].type, lightningPos, lightningPos);
-
-
+                CEffect3D::Emit(m_Effect[EFFECT_LIGHTNING_CHARGE_1].type, lightningPos, lightningPos);
             }
         }
     }
