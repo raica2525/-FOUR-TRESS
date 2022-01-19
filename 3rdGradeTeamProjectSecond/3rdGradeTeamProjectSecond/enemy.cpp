@@ -542,8 +542,16 @@ void CEnemy::Appear(void)
         m_appearState = APPEAR_STATE_EXIST;
         SetInvincible(false);
         // 敵出現エフェクト
+        if (m_type== TYPE_SHINIGAMI|| m_type == TYPE_KIWI)
+        {
+            CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_M, GetPos(), GetPos());
+            CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_M, GetPos(), GetPos());
+        }
+        else
+        {
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_0, GetPos(), GetPos());
         CEffect3D::Emit(CEffectData::TYPE_ENEMY_POP_1, GetPos(), GetPos());
+        }
     }
 }
 
