@@ -491,6 +491,8 @@ private:
     int m_nContributionPoint;   // 貢献度
     bool m_bGetOffFortressInThisFrame;  // ゴリ押し
     bool m_bBurstAttack;        // 連続攻撃
+    CUI *m_pUI_Wait;                     // リスポーン待機表示へのポインタ
+    CNumberArray *m_pNumArray_Wait;      // リスポーン待機カウントへのポインタ
 
     //===================================
     // このクラス内でのみ使う処理

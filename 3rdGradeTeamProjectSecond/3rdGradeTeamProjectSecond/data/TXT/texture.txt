@@ -257,13 +257,12 @@ TEXTURESET
 END_TEXTURESET
 
 #---------------------------------------
-# [30] コンポL
+# [30] リスポーン待機
 #---------------------------------------
 TEXTURESET
 	TYPE = 30
-	NAME = data/TEXTURE/030_compoL.png
+	NAME = data/TEXTURE/ingame/Despenalty.png
 END_TEXTURESET
-
 
 #---------------------------------------
 # [31] コンポLO

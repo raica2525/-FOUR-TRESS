@@ -50,6 +50,8 @@ HRESULT CResult::Init(void)
 
     // çvå£ìxÇï\é¶
     float fDigitY = 0.0f;
+    fDigitY -= 130.0f * (MAX_PLAYER - CGame::GetNumAllPlayer());
+
     for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
     {
         CGame::INFO_IN_RESULT infoInResult = CGame::GetInfoInResult(nCntPlayer);

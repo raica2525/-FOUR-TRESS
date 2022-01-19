@@ -155,6 +155,11 @@ void CBullet::Update(void)
     case TYPE_ENERGY_BALL:
         EnergyBallMove(myPos);
         break;
+    case TYPE_RAILGUN_LV2:
+    case TYPE_RAILGUN_LV3:
+        m_fHealValue += m_fSpeed * 20.0f;   // 距離によって、破壊スコアを上げる
+        myPos += m_moveAngle * m_fSpeed;
+        break;
     default:
         // 移動量を位置に反映
         myPos += m_moveAngle * m_fSpeed;
@@ -486,6 +491,9 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
                     // ダメージ
                     if (pBlock->TakeDamage(m_bBreakGoalGate))
                     {
+                        // スコアが入る
+                        CGame::AddScore((int)m_fHealValue);
+
                         // 撃った人の貢献度が上がる
                         if (m_nWhoContribution != NOT_EXIST)
                         {

@@ -24,6 +24,8 @@ CNumberArray::CNumberArray() :CScene(OBJTYPE::OBJTYPE_UI_FRONT_TEXT)
     m_createColor = DEFAULT_COLOR;
     m_bDispUselessDigits = true;
     m_fSizeX = 0.0f;
+
+    m_bDisp = true;
 }
 
 //========================================
@@ -139,12 +141,15 @@ void CNumberArray::Update(void)
 //========================================
 void CNumberArray::Draw(void)
 {
-    for (int nCntNumber = 0; nCntNumber < MAX_NUMBER_ARRAY; nCntNumber++)
+    if (m_bDisp)
     {
-        // ’†g‚ª‚ ‚é‚È‚ç
-        if (m_apNumber[nCntNumber] != NULL)
+        for (int nCntNumber = 0; nCntNumber < MAX_NUMBER_ARRAY; nCntNumber++)
         {
-            m_apNumber[nCntNumber]->Draw();
+            // ’†g‚ª‚ ‚é‚È‚ç
+            if (m_apNumber[nCntNumber] != NULL)
+            {
+                m_apNumber[nCntNumber]->Draw();
+            }
         }
     }
 }

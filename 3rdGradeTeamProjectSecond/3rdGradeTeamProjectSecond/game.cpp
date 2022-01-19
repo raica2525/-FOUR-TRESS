@@ -46,7 +46,7 @@
 #define CREATE_POS_Y_RATE 0.8f         // ボールの発生位置Yの割合
 #define FADE_IN_TELOP 30               // テロップのフェードイン開始フレーム
 #define FADE_OUT_TELOP 150             // テロップのフェードアウト開始フレーム
-#define FADE_IN_FINISH_TELOP 90        // フィニッシュテロップのフェードイン開始フレーム
+#define FADE_IN_FINISH_TELOP 60        // フィニッシュテロップのフェードイン開始フレーム
 
 #define DISTANCE_INIT_VALUE 999999.9f  // 距離初期化値
 #define DEFAULT_INIT_DISTANCE 2000.0f
@@ -263,6 +263,9 @@ HRESULT CGame::Init(void)
     // ステージのモデルを生成
     //CBg::Create(34, DEFAULT_VECTOR);    // ステージ1は34
 
+    // スコア表示を生成
+    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(220.0f, 690.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 0, false);
+
     // UIを生成
     CUI::Place(CUI::SET_GAME);
 
@@ -324,9 +327,6 @@ HRESULT CGame::Init(void)
     m_pEffect2d_Nega->SetUseUpdate(false);
     m_pEffect2d_Posi = CEffect2D::Create(3, DEFAULT_VECTOR);
     m_pEffect2d_Posi->SetUseUpdate(false);
-
-    // スコア表示を生成
-    m_pScore = CNumberArray::Create(12, D3DXVECTOR3(220.0f, 690.0f, 0.0f), NUMBER_SIZE_X_BALL_SPD, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 0, false);
 
     // BGMをランダム再生
     int nRand = GetRandNum(2, 0);
@@ -414,9 +414,35 @@ void CGame::ManageState(void)
         break;
 
     case STATE_FINISH:
+    {
+        if (m_bWin)
+        {
+            // 変数宣言
+            const float ANGLE_ADJUST = 90.0f;   // 時計でいう0が0度の時に合わせる（2Dポリゴンの頂点をZで指定しているから）
+            const float POS_Y_ADJUST = 50.0f;
+            const int RAND_X = 1380;
+            const float BASE_ANGLE = 67.5f;
+            D3DXVECTOR3 pos = DEFAULT_VECTOR;
+            float fAngle = 0.0f;
+            CEffectData::TYPE effectType = CEffectData::TYPE_KAMI;
+
+            // 位置を決める
+            pos.y = -POS_Y_ADJUST;
+            pos.x = float(rand() % RAND_X);
+            fAngle = D3DXToRadian(180.0f) + BASE_ANGLE - ANGLE_ADJUST;
+
+            // 紙吹雪生成
+            CEffect2D *pKami = CEffect2D::Create(effectType, pos, fAngle);
+            float fRed = (float)GetRandNum(100, 0) / 100.0f;
+            float fGreen = (float)GetRandNum(100, 0) / 100.0f;
+            float fBlue = (float)GetRandNum(100, 0) / 100.0f;
+            pKami->CEffect2D::SetCol(D3DXCOLOR(fRed, fGreen, fBlue, 1.0f));
+        }
+
         // 勝敗判定
         JudgmentFinish();
         break;
+    }
 
     case STATE_PAUSE_MENU:
         // ポーズの更新
@@ -809,47 +835,36 @@ void CGame::JudgmentFinish(void)
             }
         }
 
-        //// 死んだプレイヤーが全体のプレイヤー-1に達したら
-        //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
-        //{
-            // リザルトに移行
-            CFade::SetFade(CManager::MODE_RESULT);
-        //}
-        //else
-        //{
-        //    // やられたプレイヤー人数をリセット
-        //    m_nNumDefeatPlayer = 0;
+        // 移動要塞の残り体力分、スコアが増える
+        float fGetScoreByFortress = m_pFortress->GetLife() * 10.0f;
+        CGame::AddScore((int)fGetScoreByFortress);
 
-        //    // もう一度ラウンド開始へ
-        //    m_state = STATE_ROUND_START;
-        //}
+        // リザルトに移行
+        CFade::SetFade(CManager::MODE_RESULT);
     }
     else if (m_nCntGameTime == FADE_IN_FINISH_TELOP)
     {
-        //// 死んだプレイヤーが全体のプレイヤー-1に達したら
-        //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
-        //{
-        //    // SE
-        //    CManager::SoundPlay(CSound::LABEL_SE_FINISH);
+        // SE
+        CManager::SoundPlay(CSound::LABEL_SE_FINISH);
 
-        //    // フィニッシュ
-        //    CUI *pTelopBg = CUI::GetAccessUI(6);
-        //    CUI *pTelop = CUI::GetAccessUI(7);
-        //    if (pTelopBg)
-        //    {
-        //        pTelopBg->SetActionReset(0);
-        //        pTelopBg->SetActionLock(0, false);
-        //        pTelopBg->SetActionReset(2);
-        //    }
-        //    if (pTelop)
-        //    {
-        //        pTelop->SetActionReset(0);
-        //        pTelop->SetActionLock(0, false);
-        //        pTelop->SetActionReset(1);
-        //        pTelop->SetActionLock(1, false);
-        //        pTelop->SetActionReset(2);
-        //    }
-        //}
+        // 勝利判定
+        if (m_bWin)
+        {
+            CUI *pTelopBg = CUI::GetAccessUI(5);
+            if (pTelopBg)
+            {
+                pTelopBg->SetActionLock(0, false);
+                pTelopBg->SetActionLock(1, false);
+            }
+        }
+        else
+        {
+            CUI *pTelopBg = CUI::GetAccessUI(4);
+            if (pTelopBg)
+            {
+                pTelopBg->SetActionLock(0, false);
+            }
+        }
     }
 }
 

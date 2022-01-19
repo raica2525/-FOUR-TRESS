@@ -54,8 +54,9 @@
 #define CARRY_ENERGY_DEFAULT 50.0f
 #define CARRY_ENERGY_CARRIER 80.0f 
 
-// リスポーン時間
+// リスポーン周り
 #define RESPAWN_FRAME 600
+#define RESPAWN_DOWN_CONT_VALUE 50
 
 //=======================
 // ウォーリアー
@@ -196,6 +197,8 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_nContributionPoint = 0;
     m_bGetOffFortressInThisFrame = false;
     m_bBurstAttack = false;
+    m_pUI_Wait = NULL;
+    m_pNumArray_Wait = NULL;
 }
 
 //=============================================================================
@@ -1182,6 +1185,15 @@ void CPlayer::UpdateGameUI(void)
 //=============================================================================
 void CPlayer::DeadMove(void)
 {
+    // リスポーン表示見えるように
+    m_pNumArray_SP->SetDisp(false);
+    m_pNumArray_Wait->SetDisp(true);
+    m_pUI_Wait->SetDisp(true);
+
+    // リスポーン時間を更新
+    int nDispNum = (RESPAWN_FRAME - m_nCntRespawnTime) / 60;
+    m_pNumArray_Wait->SetDispNumber(nDispNum);
+
     // 硬直していないなら
     if (m_nCntStopTime <= 0)
     {
@@ -1291,6 +1303,18 @@ void CPlayer::Respawn(void)
     CEffect3D::Emit(CEffectData::TYPE_RESPAWN_1, respawnPos, respawnPos);
 
     m_fCurrentEnergy = 0.0f;
+
+    // 貢献度を下げる
+    m_nContributionPoint -= RESPAWN_DOWN_CONT_VALUE;
+    if (m_nContributionPoint < 0)
+    {
+        m_nContributionPoint = 0;
+    }
+
+    // 電力を見える/リスポーン時間を見えないように
+    m_pNumArray_SP->SetDisp(true);
+    m_pNumArray_Wait->SetDisp(false);
+    m_pUI_Wait->SetDisp(false);
 }
 
 //=============================================================================
@@ -1443,6 +1467,14 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
     CUI::Create(86, D3DXVECTOR3(fDigitPosX - 57.5f, 60.0f, 0.0f), D3DXVECTOR3(20.0f, 20.0f, 0.0f), 0, DEFAULT_COLOR);
     pPlayer->m_pNumArray_SP = CNumberArray::Create(12, D3DXVECTOR3(fDigitPosX - 87.5f, 60.0f, 0.0f), 15.0f,
         DEFAULT_COLOR, 0, false);
+
+    // リスポーン待機表示
+    pPlayer->m_pUI_Wait = CUI::Create(30, D3DXVECTOR3(fDigitPosX - 75.0f, 75.0f, 0.0f), D3DXVECTOR3(120.0f, 120.0f, 0.0f), 0, DEFAULT_COLOR);
+    pPlayer->m_pUI_Wait->SetActionInfo(0, 2, false, 1.0f, 0.0f, 1.0f, 4.0f, 30.0f);
+    pPlayer->m_pUI_Wait->SetDisp(false);
+    pPlayer->m_pNumArray_Wait = CNumberArray::Create(12, D3DXVECTOR3(fDigitPosX - 77.7f, 75.5f, 0.0f), 20.0f,
+        DEFAULT_COLOR, 0, false);
+    pPlayer->m_pNumArray_Wait->SetDisp(false);
 
     // Player表示
     CUI::Create(nTexTypePlayer, D3DXVECTOR3(fDigitPosX + 10.0f, 50.0f, 0.0f), D3DXVECTOR3(82.5f, 54.0f, 0.0f), 0, DEFAULT_COLOR);
@@ -1930,8 +1962,9 @@ void CPlayer::Jump(D3DXVECTOR3& move)
                     // ジャンプ音
                     CManager::SoundPlay(CSound::LABEL_SE_JUMP);
 
-                    //// 1Fだけ向きを変えることができる
-                    //RotControl();
+                    // 1Fだけ向きを変えることができる
+                    SetRotY(m_controlInput.fPlayerAngle);
+                    SetRotDestY(m_controlInput.fPlayerAngle);
 
                     // ジャンプの初期量
                     move.y = PLAYER_JUMP_FIRST_RATE * PLAYER_NEXT_JUMP_DOWN_RATE;

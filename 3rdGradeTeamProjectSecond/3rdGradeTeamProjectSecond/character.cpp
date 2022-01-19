@@ -735,6 +735,7 @@ bool CCharacter::Healing(float fHealValue)
     }
 
     // 自身の位置から回復エフェクトを発生
+    CEffect3D::Emit(CEffectData::TYPE_HEAL, GetPos(), GetPos());
 
     // 回復成功
     return true;

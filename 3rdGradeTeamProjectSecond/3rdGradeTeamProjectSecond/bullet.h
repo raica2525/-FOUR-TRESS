@@ -119,7 +119,7 @@ private:
 
     float m_afParam[PARAM_DATA_MAX];// 汎用データ
     OBJTYPE m_whoShot;              // 誰が撃ったか
-    float m_fHealValue;             // 回復量
+    float m_fHealValue;             // 回復量（電磁砲のみ、距離によるスコア処理も入っている）
     bool m_bUseUpdate;              // 更新処理を使うかどうか
     bool m_bUseUninit;              // 終了処理を使うかどうか
     bool m_bUseKnockBack;           // ノックバックを使うかどうか

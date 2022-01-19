@@ -45,6 +45,7 @@ public:
     void Update(void);
     void Draw(void);
     void SetDispNumber(int nDispNumber, bool bMove = false);  // 表示する数字を設定
+    void SetDisp(bool bDisp) { m_bDisp = bDisp; }
 
 private:
     int m_nTexType;                         // 使うテクスチャ番号
@@ -54,6 +55,8 @@ private:
     D3DXCOLOR m_createColor;                // 生成色
     bool m_bDispUselessDigits;              // 不要な桁数も描画するかどうか
     float m_fSizeX;                         // 横の大きさ
+
+    bool m_bDisp;                           // 表示するかどうか
 };
 
 #endif

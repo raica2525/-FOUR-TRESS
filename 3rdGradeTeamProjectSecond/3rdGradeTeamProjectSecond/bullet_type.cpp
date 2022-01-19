@@ -477,6 +477,7 @@ bool CBullet::HealerSkyUseCollision(void)
     bool bUseCollision = false;
     if (m_nCntTime % HEALER_SKY_INTERVAL == 0)
     {
+        CEffect3D::Emit(CEffectData::TYPE_HEAL, GetPos(), GetPos());
         bUseCollision = true;
         memset(m_abUseAvoidMultipleHits, false, sizeof(m_abUseAvoidMultipleHits));
     }
