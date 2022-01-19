@@ -61,6 +61,7 @@ public:
         LABEL_SE_ATTACK_NAIL, // 爪攻撃by.マサラ
         LABEL_SE_EXPLOSION_KAMIKAZE, // カミカゼ爆発by.マサラ
         LABEL_SE_ATTACK_COMMANDER, // コマンダー攻撃by.マサラ
+        LABEL_SE_END, // 終わり
         LABEL_MAX,
     } LABEL;
 

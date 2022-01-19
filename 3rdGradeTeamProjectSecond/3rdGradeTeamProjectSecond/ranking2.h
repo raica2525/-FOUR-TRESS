@@ -21,8 +21,8 @@ class CNumber;
 //================================================
 // マクロ定義
 //================================================
-#define RANKING2_FIRST_POS D3DXVECTOR3(SCREEN_WIDTH / 2 + 30.0f, 665.0f, 0.0f)   // ランキング2の最初の位置
-#define RANKING2_CREATE_SCORE_SIZE D3DXVECTOR3(200.0f, 40.0f, 0.0f)   // ランキング2の一つの大きさ
+#define RANKING2_FIRST_POS D3DXVECTOR3(SCREEN_WIDTH / 2 + 410.0f, 725.0f, 0.0f)   // ランキング2の最初の位置
+#define RANKING2_CREATE_SCORE_SIZE D3DXVECTOR3(175.0f, 35.0f, 0.0f)   // ランキング2の一つの大きさ
 #define MAX_RANKING2_NUMBER 48                                                   // ランキング2の数字の最大数(自分のスコアと、8桁*5位まで)
 
 #define RANKING2_SCORE_MAX (6)   //5位まで(内部で6つの値を計算するため6)

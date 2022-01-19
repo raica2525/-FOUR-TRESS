@@ -55,6 +55,7 @@ CSound::PARAM CSound::m_aParam[LABEL_MAX] =
     { "data/SOUND/SE/Nail_Attack.wav", 0 , CATEGORY_SE }, // 爪攻撃by.マサラ
     { "data/SOUND/SE/Explosion_Kamikaze.wav", 0 , CATEGORY_SE }, // カミカゼ爆発by.マサラ
     { "data/SOUND/SE/Commander_Attack.wav", 0 , CATEGORY_SE }, // コマンダー攻撃by.マサラ
+    { "data/SOUND/SE/02_crystal.wav", 0 , CATEGORY_SE }, // 終わり
 };
 
 //=============================================================================

@@ -206,6 +206,7 @@ float fLife = GetLife();// ˆÚ“®—vÇ‚Ì‘Ì—Íæ“¾
     {
         if (!m_bShootUpDebris)
         {
+            CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);
             m_bShootUpDebris = true;
             D3DXVECTOR3 pos = GetPos();
             D3DXVECTOR2 size = D3DXVECTOR2(GetCollisionSizeDefence().x, GetCollisionSizeDefence().x);

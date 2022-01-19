@@ -53,9 +53,16 @@ HRESULT CResult::Init(void)
     for (int nCntPlayer = 0; nCntPlayer < CGame::GetNumAllPlayer(); nCntPlayer++)
     {
         CGame::INFO_IN_RESULT infoInResult = CGame::GetInfoInResult(nCntPlayer);
-        CNumberArray::Create(12, D3DXVECTOR3(640.0f, 175.0f + fDigitY, 0.0f), NUMBER_SIZE_X_RESULT_CONTRIBUTION, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f), infoInResult.nContributionPoint, false);
 
-        fDigitY += 100.0f;
+        CUI *pBar = CUI::GetAccessUI(infoInResult.nIdxControlAndColor);
+        if (pBar)
+        {
+            pBar->SetPosition(D3DXVECTOR3(640.0f, 600.0f + fDigitY, 0.0f));
+        }
+
+        CNumberArray::Create(12, D3DXVECTOR3(835.0f, 600.0f + fDigitY, 0.0f), NUMBER_SIZE_X_RESULT_CONTRIBUTION, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), infoInResult.nContributionPoint, false);
+
+        fDigitY -= 130.0f;
     }
 
     //// ÉvÉåÉCÉÑÅ[ê∂ê¨

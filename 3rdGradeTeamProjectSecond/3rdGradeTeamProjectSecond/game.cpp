@@ -786,6 +786,29 @@ void CGame::JudgmentFinish(void)
             m_aInfoInResult[nCntPlayer].nContributionPoint = m_apPlayer[nCntPlayer]->GetContributionPoint();
         }
 
+        // 描画順をソート(選択法)を使って、貢献度順に並び替える（昇順）
+        for (int nNum01 = 0; nNum01 < m_nNumAllPlayer - 1; nNum01++)
+        {
+            for (int nNum02 = nNum01 + 1; nNum02 < m_nNumAllPlayer; nNum02++)
+            {
+                // 若い番号の貢献度のほうが大きいなら
+                if (m_aInfoInResult[nNum01].nContributionPoint > m_aInfoInResult[nNum02].nContributionPoint)
+                {
+                    // 若い番号を記憶
+                    int nMemoryCont = m_aInfoInResult[nNum01].nContributionPoint;
+                    int nMemoryIdx = m_aInfoInResult[nNum01].nIdxControlAndColor;
+
+                    // 若い番号に次の番号を代入
+                    m_aInfoInResult[nNum01].nContributionPoint = m_aInfoInResult[nNum02].nContributionPoint;
+                    m_aInfoInResult[nNum01].nIdxControlAndColor = m_aInfoInResult[nNum02].nIdxControlAndColor;
+
+                    // 次の番号に記憶したものを代入
+                    m_aInfoInResult[nNum02].nContributionPoint = nMemoryCont;
+                    m_aInfoInResult[nNum02].nIdxControlAndColor = nMemoryIdx;
+                }
+            }
+        }
+
         //// 死んだプレイヤーが全体のプレイヤー-1に達したら
         //if (m_nNumDeathPlayer >= m_nNumAllPlayer - 1)
         //{
