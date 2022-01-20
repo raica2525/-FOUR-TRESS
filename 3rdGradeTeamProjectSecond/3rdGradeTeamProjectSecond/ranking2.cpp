@@ -34,11 +34,11 @@
 #define RANKIN_COLOR D3DXCOLOR(1.0f , 0.0f, 0.0f, 1.0f)     // ランクインしたときの色
 
 // 各順位の、フェードイン
-#define FADE_IN_5 60
-#define FADE_IN_4 120
-#define FADE_IN_3 180
-#define FADE_IN_2 240
-#define FADE_IN_1 300
+#define FADE_IN_5 30
+#define FADE_IN_4 60
+#define FADE_IN_3 90
+#define FADE_IN_2 120
+#define FADE_IN_1 150
 #define STOP 1000               // カウンタのストップ
 #define FADE_IN_START_NUMBER 8  // 自分のスコアの次の数字からフェードイン開始
 #define FADE_IN_RATE 0.075f     // フェードイン割合

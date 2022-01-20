@@ -442,6 +442,9 @@ void CBullet::Collision(D3DXVECTOR3 &bulletPos)
 
                                 if (m_type == TYPE_THUNDER)
                                 {
+                                    // ƒXƒRƒA‰ÁŽZ
+                                    CGame::AddScore(1000);
+
                                     // ƒJƒƒ‰‚ÌU“®
                                     CManager::GetCamera()->CCamera::SetShake(350.0f);
                                     CManager::SoundPlay(CSound::LABEL_SE_EXPLOSION_KAMIKAZE);

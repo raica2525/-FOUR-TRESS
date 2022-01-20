@@ -165,6 +165,75 @@ void CFortress::Update(void)
     // 位置を設定
     SetPos(myPos);
 
+    // 発射or発射不可
+    if (m_bNowWhoRiding)
+    {
+        if (m_fChargeValue >= CHARGE_VALUE_LV1 && !m_bAttackPhase && GetDisp())
+        {
+            // 発射
+            CUI *pUI_1 = CUI::GetAccessUI(6);
+            if (pUI_1)
+            {
+                pUI_1->SetPosTo2D(myPos + D3DXVECTOR3(0.0f, 1500.0f, 0.0f));
+                pUI_1->SetDisp(true);
+            }
+
+            CUI *pUI_2 = CUI::GetAccessUI(7);
+            if (pUI_2)
+            {
+                pUI_2->SetDisp(false);
+            }
+        }
+        else
+        {
+            // チャージ中は発射不可出さない
+            if (m_nCntTime > 0)
+            {
+                CUI *pUI_1 = CUI::GetAccessUI(6);
+                if (pUI_1)
+                {
+                    pUI_1->SetDisp(false);
+                }
+
+                CUI *pUI_2 = CUI::GetAccessUI(7);
+                if (pUI_2)
+                {
+                    pUI_2->SetDisp(false);
+                }
+            }
+            else
+            {
+                // 発射不可
+                CUI *pUI_2 = CUI::GetAccessUI(7);
+                if (pUI_2)
+                {
+                    pUI_2->SetPosTo2D(myPos + D3DXVECTOR3(0.0f, 1500.0f, 0.0f));
+                    pUI_2->SetDisp(true);
+                }
+
+                CUI *pUI_1 = CUI::GetAccessUI(6);
+                if (pUI_1)
+                {
+                    pUI_1->SetDisp(false);
+                }
+            }
+        }
+    }
+    else
+    {
+        CUI *pUI_1 = CUI::GetAccessUI(6);
+        if (pUI_1)
+        {
+            pUI_1->SetDisp(false);
+        }
+
+        CUI *pUI_2 = CUI::GetAccessUI(7);
+        if (pUI_2)
+        {
+            pUI_2->SetDisp(false);
+        }
+    }
+
     // タイヤの回転
     m_fTireRotAngle -= TIRE_ROT_SPEED;
     if (m_fTireRotAngle > D3DX_PI)

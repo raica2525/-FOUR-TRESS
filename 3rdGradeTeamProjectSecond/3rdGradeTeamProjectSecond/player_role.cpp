@@ -300,7 +300,7 @@ void CPlayer::AttackGenerator(void)
                     break;
                 }
             }
-            else if (m_controlInput.bTriggerB)
+            else
             {
                 // 移動要塞に乗る
                 RideFortress();
@@ -335,7 +335,7 @@ void CPlayer::AttackGenerator(void)
                     break;
                 }
             }
-            else if (m_controlInput.bTriggerB)
+            else
             {
                 // 移動要塞に乗る
                 RideFortress();
@@ -500,10 +500,29 @@ void CPlayer::RideFortress(void)
                 // 当たっているなら
                 if (IsCollisionCylinder(GetPos(), GetCollisionSizeDefence(), pFortress->GetPos(), pFortress->GetCollisionSizeDefence()))
                 {
-                    // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
-                    m_attackState = ATTACK_STATE_SIT_DOWN;
-                    pFortress->SetNowWhoRiding(true);
+                    // AIがないなら
+                    if (!m_pAI)
+                    {
+                        m_pUI_Ride->SetDisp(true);
+                    }
+
+                    // Bを押して座れる
+                    if (m_controlInput.bTriggerB)
+                    {
+                        m_pUI_Ride->SetDisp(false);
+                        // 座る（攻撃時間を設定しないことで、一定時間で攻撃をリセットするフラグを立たせない）
+                        m_attackState = ATTACK_STATE_SIT_DOWN;
+                        pFortress->SetNowWhoRiding(true);
+                    }
                 }
+                else
+                {
+                    m_pUI_Ride->SetDisp(false);
+                }
+            }
+            else
+            {
+                m_pUI_Ride->SetDisp(false);
             }
         }
     }

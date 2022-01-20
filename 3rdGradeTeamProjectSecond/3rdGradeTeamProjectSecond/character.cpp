@@ -26,6 +26,7 @@
 #include "wave.h"
 #include "number_array.h"
 #include "block.h"
+#include "fortress.h"
 
 //========================================
 // マクロ定義
@@ -595,8 +596,11 @@ bool CCharacter::TakeDamage(float fDamage, D3DXVECTOR3 damagePos, D3DXVECTOR3 da
         // ダメージ表記とエフェクトを表示
         if (fDamage > 0.0f)
         {
-            D3DXVECTOR3 dispDamagePos = ConvertScreenPos(myPos);
-            CNumberArray::Create(12, dispDamagePos, NUMBER_SIZE_X_DAMAGE, D3DXCOLOR(0.933f, 0.427f, 0.513f, 1.0f), (int)fDamage, false, true);
+            if (fDamage != FORTRESS_CRUSH_DAMAGE)
+            {
+                D3DXVECTOR3 dispDamagePos = ConvertScreenPos(myPos);
+                CNumberArray::Create(12, dispDamagePos, NUMBER_SIZE_X_DAMAGE, D3DXCOLOR(0.933f, 0.427f, 0.513f, 1.0f), (int)fDamage, false, true);
+            }
 
             // もしダメージの位置と、1F前のダメージの位置が同じなら、ダメージの位置をキャラクターの位置にする
             D3DXVECTOR3 hitEffectPos = damagePos;

@@ -126,6 +126,7 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_pAI = NULL;
     m_pUI_SP = NULL;
     m_pUI_Playable = NULL;
+    m_pUI_Ride = NULL;
     m_pNumArray_SP = NULL;
     m_pUI_Custom_Atk = NULL;
     m_pUI_Custom_Def = NULL;
@@ -1209,10 +1210,13 @@ void CPlayer::UpdateGameUI(void)
         }
         m_pUI_Playable->SetPosTo2D(GetPos() + D3DXVECTOR3(0.0f, fSizeY + 50.0f, 0.0f));
         m_pUI_Playable->SetDisp(true);
+
+        m_pUI_Ride->SetPosTo2D(GetPos());
     }
     else
     {
         m_pUI_Playable->SetDisp(false);
+        m_pUI_Ride->SetDisp(false);
     }
 }
 
@@ -1521,6 +1525,8 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
 
     // プレイアブル表示
     pPlayer->m_pUI_Playable = CUI::Create(nTexTypePlayable, DEFAULT_VECTOR, D3DXVECTOR3(50.0f, 50.0f, 0.0f), 0, playableCol);
+    pPlayer->m_pUI_Ride = CUI::Create(26, DEFAULT_VECTOR, D3DXVECTOR3(123.0f, 54.75f, 0.0f), 0, DEFAULT_COLOR);
+    pPlayer->m_pUI_Ride->SetDisp(false);
 
     // 光の盾生成
     pPlayer->m_pLightGuard = CModelEffect::Create(30, DEFAULT_VECTOR, DEFAULT_VECTOR,

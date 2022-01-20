@@ -88,12 +88,12 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         break;
     case TYPE_THUNDER:
         // 固有の情報
-        m_collisionSize = D3DXVECTOR2(3000.0f, 1000.0f);
+        m_collisionSize = D3DXVECTOR2(4000.0f, 1000.0f);
         m_fSpeed = 0.0f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         BITON(m_collisionFlag, COLLISION_FLAG_OFF_BLOCK);
         m_nLife = 60;
-        m_fDamage = 9999.0f;
+        m_fDamage = 1000.0f;
         m_bUseDraw = false;
         m_bHitErase = false;// 貫通
         bUseShadow = false; // 影を使用しない
@@ -107,7 +107,7 @@ void CBullet::SetupInfoByType(float fStrength, const D3DXVECTOR3 pos)
         m_fSpeed = 17.5f;
         BITON(m_collisionFlag, COLLISION_FLAG_ENEMY);
         m_nLife = 180;
-        m_fDamage = 5000.0f;
+        m_fDamage = 7500.0f;
         m_bUseDraw = false;  // 仮
         m_bHitErase = false;// 貫通
         m_bBreakGoalGate = true;    // ゴールゲートを壊せる

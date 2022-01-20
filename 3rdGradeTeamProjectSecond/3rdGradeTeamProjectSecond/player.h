@@ -421,6 +421,7 @@ private:
     CAi *m_pAI;                              // AIへのポインタ
     CUI *m_pUI_SP;                           // SPゲージへのポインタ
     CUI *m_pUI_Playable;                     // プレイヤー表示へのポインタ
+    CUI *m_pUI_Ride;                         // 乗降表示へのポインタ
     CNumberArray *m_pNumArray_SP;            // SPパーセントへのポインタ
     CUI *m_pUI_Custom_Atk;                   // カスタマイズ画面_攻撃ゲージ
     CUI *m_pUI_Custom_Def;                   // カスタマイズ画面_防御ゲージ
