@@ -493,6 +493,8 @@ private:
     bool m_bBurstAttack;        // 連続攻撃
     CUI *m_pUI_Wait;                     // リスポーン待機表示へのポインタ
     CNumberArray *m_pNumArray_Wait;      // リスポーン待機カウントへのポインタ
+    int m_nCntAFK;              // 放置のカウンタ
+    bool m_bPlayerEntry;             // プレイヤーエントリーかどうか
 
     //===================================
     // このクラス内でのみ使う処理

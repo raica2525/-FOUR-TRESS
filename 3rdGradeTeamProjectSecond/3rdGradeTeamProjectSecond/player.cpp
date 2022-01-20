@@ -199,6 +199,8 @@ CPlayer::CPlayer() :CCharacter(OBJTYPE::OBJTYPE_PLAYER)
     m_bBurstAttack = false;
     m_pUI_Wait = NULL;
     m_pNumArray_Wait = NULL;
+    m_nCntAFK = 0;
+    m_bPlayerEntry = false;
 }
 
 //=============================================================================
@@ -702,6 +704,21 @@ void CPlayer::Input(void)
             m_controlInput.bTiltedRightStick = false;
         }
     }
+
+    // 放置のカウンタ
+    if (!m_controlInput.bTiltedLeftStick)
+    {
+        m_nCntAFK++;
+        if (m_nCntAFK >= 600)
+        {
+            m_AIlevel = AI_LEVEL_1;
+            m_pAI = CAi::Create(this);
+        }
+    }
+    else
+    {
+        m_nCntAFK = 0;
+    }
 }
 
 //=============================================================================
@@ -755,6 +772,26 @@ void CPlayer::Update(void)
             {
                 // AI更新処理
                 m_pAI->Update();
+
+                // プレイヤーとしてエントリーしたなら、スティックを動かした際にAIを捨てる
+                if (m_bPlayerEntry)
+                {
+                    // コントローラを取得
+                    CInputJoypad *pInputJoypad = CManager::GetInputJoypad();
+                    D3DXVECTOR2 stickValue[CInputJoypad::LR_MAX];
+                    for (int nCount = 0; nCount < CInputJoypad::LR_MAX; nCount++)
+                    {
+                        stickValue[nCount] = pInputJoypad->GetStickValue(m_nIdxControlAndColor, (CInputJoypad::LR)nCount);
+                    }
+
+                    // 左スティックが傾いたら、AI破棄
+                    if (stickValue[CInputJoypad::LEFT].x || stickValue[CInputJoypad::LEFT].y)
+                    {
+                        // メモリ開放
+                        delete m_pAI;
+                        m_pAI = NULL;
+                    }
+                }
             }
 
             // 硬直していないなら
@@ -1452,6 +1489,9 @@ CPlayer * CPlayer::CreateInGame(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxCreate
         break;
     case AI_LEVEL_3:
         nTexTypePlayable = 28;
+        break;
+    case AI_LEVEL_NONE:
+        pPlayer->m_bPlayerEntry = true;
         break;
     }
     // HPゲージ（キャラクターに移行しました）

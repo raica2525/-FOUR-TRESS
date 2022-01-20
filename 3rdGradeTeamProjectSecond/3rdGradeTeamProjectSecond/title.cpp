@@ -133,17 +133,26 @@ void CTitle::Update(void)
                 {
                     CGame::SetNextGameInDebug(CGame::TYPE_ARENA, 4);
                 }
+
+                // 発表会バージョンは、全員プレイヤー
                 CGame::SetAILevel(PLAYER_1, CPlayer::AI_LEVEL_NONE);
-                CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_2);
-                CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_2);
-                CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_3);
+                CGame::SetAILevel(PLAYER_2, CPlayer::AI_LEVEL_NONE);
+                CGame::SetAILevel(PLAYER_3, CPlayer::AI_LEVEL_NONE);
+                CGame::SetAILevel(PLAYER_4, CPlayer::AI_LEVEL_NONE);
                 CGame::SetIdxPlayer(0, 0);
                 CGame::SetIdxPlayer(1, 1);
                 CGame::SetIdxPlayer(2, 2);
                 CGame::SetIdxPlayer(3, 3);
-                CGame::SetRole(PLAYER_3, CPlayer::ROLE_CARRIER);
-                CGame::SetRole(PLAYER_4, CPlayer::ROLE_HUNTER);
-                CGame::SetRole(PLAYER_2, CPlayer::ROLE_TANK);
+
+                // 役割はランダム
+                CGame::SetRole(PLAYER_1, GetRandNum(CPlayer::ROLE_HEALER, CPlayer::ROLE_WARRIOR));
+                CGame::SetRole(PLAYER_2, GetRandNum(CPlayer::ROLE_HEALER, CPlayer::ROLE_WARRIOR));
+                CGame::SetRole(PLAYER_3, GetRandNum(CPlayer::ROLE_HEALER, CPlayer::ROLE_WARRIOR));
+                CGame::SetRole(PLAYER_4, GetRandNum(CPlayer::ROLE_HEALER, CPlayer::ROLE_WARRIOR));
+
+                // 誰か確定でウォーリアーにする
+                int nRandPlayer = GetRandNum(PLAYER_4, PLAYER_1);
+                CGame::SetRole(nRandPlayer, CPlayer::ROLE_WARRIOR);
 
                 // プレスボタンを点滅させる
                 if (pPressButton)
